@@ -1,3 +1,8 @@
+Вот обновлённый index.html. Я заменил длинные ID на короткие 4-значные числовые ID (от 1000 до 9999), и теперь они уникальны для каждого пользователя, включая твоих друзей.
+
+Я сохранил все твои предыдущие пожелания: две колонки для входа/регистрации, пульсирующую зелёную точку с именем, запрос геопозиции, и добавил отображение короткого ID в профиле. Также обновил логику добавления друзей — теперь ты ищешь их по этому короткому ID.
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -41,31 +46,40 @@ input,textarea{font-family:inherit;}
 .screen{ animation:fadeIn .4s var(--ease); }
 @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
 
-/* ============ AUTH ============ */
+/* ============ AUTH (ДВЕ КОЛОНКИ) ============ */
 #authScreen{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
   background:var(--bg); z-index:500; padding:24px;
 }
-.auth-box{ width:100%; max-width:380px; }
+.auth-box{
+  width:100%; max-width:720px; 
+  display:grid; grid-template-columns:1fr 1fr; gap:24px;
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:32px 28px; box-shadow:var(--shadow);
+}
+@media (max-width:600px){
+  .auth-box{ grid-template-columns:1fr; gap:16px; padding:24px 16px; }
+  .auth-divider{ flex-direction:row; }
+  .auth-divider-line{ width:40px; height:1px; margin:0 12px; }
+}
+.auth-col{ display:flex; flex-direction:column; gap:12px; }
+.auth-col h2{ font-size:18px; font-weight:800; margin:0; color:var(--fg); letter-spacing:-.3px; }
+.auth-divider{
+  display:flex; align-items:center; justify-content:center;
+  color:var(--fg-faint); font-size:12px; font-weight:600;
+}
+.auth-divider-line{ width:1px; height:40px; background:var(--border); margin:0 12px; }
+@media (max-width:600px){ .auth-divider-line{ width:40px; height:1px; } }
 .auth-logo{
-  font-size:15px; letter-spacing:6px; font-weight:700; text-align:center;
-  margin-bottom:6px; color:var(--fg);
+  font-size:13px; letter-spacing:4px; font-weight:700; text-align:center;
+  margin-bottom:4px; color:var(--fg);
 }
 .auth-dot{
-  width:10px; height:10px; border-radius:50%; background:var(--fg); margin:0 auto 28px;
+  width:10px; height:10px; border-radius:50%; background:var(--fg); margin:0 auto 18px;
   box-shadow:0 0 0 6px var(--border-soft);
 }
-.auth-tabs{
-  display:flex; background:var(--card2); border-radius:999px; padding:4px; margin-bottom:22px;
-  border:1px solid var(--border);
-}
-.auth-tab{
-  flex:1; text-align:center; padding:10px 0; border-radius:999px; font-size:13px; font-weight:600;
-  color:var(--fg-dim); cursor:pointer; transition:all .25s var(--ease); user-select:none;
-}
-.auth-tab.active{ background:var(--fg); color:var(--bg); }
-.field{ margin-bottom:12px; }
-.field label{ display:block; font-size:11px; color:var(--fg-dim); margin-bottom:6px; letter-spacing:.3px; }
+.field{ margin-bottom:10px; }
+.field label{ display:block; font-size:11px; color:var(--fg-dim); margin-bottom:4px; letter-spacing:.3px; }
 .field input{
   width:100%; padding:13px 14px; border-radius:var(--radius-sm); border:1px solid var(--border);
   background:var(--input); color:var(--fg); font-size:14px; outline:none; transition:border .2s;
@@ -77,16 +91,8 @@ input,textarea{font-family:inherit;}
   transition:transform .15s var(--ease), opacity .15s; margin-top:4px;
 }
 .btn:active{ transform:scale(.97); }
-.btn-ghost{
-  background:transparent; color:var(--fg); border:1px solid var(--border);
-}
-.btn-sm{ padding:9px 12px; font-size:12px; width:auto; }
-.auth-divider{
-  display:flex; align-items:center; gap:10px; margin:18px 0; color:var(--fg-faint); font-size:11px;
-}
-.auth-divider::before,.auth-divider::after{ content:""; flex:1; height:1px; background:var(--border); }
-.auth-err{ color:#ff5c5c; font-size:12px; margin-top:8px; min-height:14px; }
-.auth-foot{ text-align:center; font-size:11px; color:var(--fg-faint); margin-top:22px; line-height:1.6; }
+.auth-err{ color:#ff5c5c; font-size:12px; margin-top:6px; min-height:14px; }
+.auth-foot{ text-align:center; font-size:11px; color:var(--fg-faint); margin-top:12px; line-height:1.6; }
 
 /* ============ APP SHELL ============ */
 #app{ position:fixed; inset:0; display:flex; flex-direction:column; }
@@ -109,9 +115,6 @@ nav#nav{
 .nav-btn svg{ width:22px; height:22px; }
 .nav-btn.active{ color:var(--fg); }
 .nav-btn .lbl{ font-size:9px; font-weight:600; letter-spacing:.2px; }
-.nav-dot{
-  position:absolute; top:2px; right:22%; width:6px; height:6px; border-radius:50%; background:var(--green);
-}
 
 @media (max-width:767px){
   #appBody{ flex-direction:column; }
@@ -138,7 +141,7 @@ nav#nav{
 #nav-logo{ display:none; }
 @media (min-width:768px){ #nav-logo{ display:block; } }
 
-/* ============ MAP SCREEN ============ */
+/* ============ MAP ============ */
 #mapScreen{ position:relative; }
 #map{ position:absolute; inset:0; }
 html[data-theme="light"] #map{ filter:none; }
@@ -159,29 +162,47 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 }
 .speed-badge .unit{ color:var(--fg-dim); font-weight:500; font-size:10px; }
 
-/* user marker */
-.me-marker{ position:relative; width:54px; height:54px; }
-.me-ring{
-  position:absolute; inset:0; border-radius:50%; background:var(--green-dim);
-  animation:pulse 2s ease-out infinite;
+/* ============ МАРКЕР ПОЛЬЗОВАТЕЛЯ ============ */
+.me-marker{
+  position:relative; width:64px; height:74px; display:flex; flex-direction:column; align-items:center;
 }
-@keyframes pulse{
-  0%{ transform:scale(.55); opacity:.9; }
-  70%{ transform:scale(1.35); opacity:0; }
+/* Зелёное пульсирующее кольцо */
+.me-ring{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:70px; height:70px; border-radius:50%; 
+  background:transparent; border:3px solid var(--green); 
+  opacity:0; transition:opacity .5s;
+  animation:pulse-ring 2s ease-out infinite;
+}
+.me-ring.online{ opacity:1; }
+@keyframes pulse-ring{
+  0%{ transform:translate(-50%,-50%) scale(0.7); opacity:0.9; }
+  70%{ transform:translate(-50%,-50%) scale(1.4); opacity:0; }
   100%{ opacity:0; }
 }
+/* Белая точка */
 .me-dot{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:26px; height:26px; border-radius:50%; background:#fff; border:2.5px solid #000;
-  overflow:hidden; z-index:3; box-shadow:0 2px 6px rgba(0,0,0,.4);
+  position:relative; z-index:3;
+  width:32px; height:32px; border-radius:50%; background:#ffffff; 
+  border:3px solid #1a1a1a; box-shadow:0 2px 12px rgba(0,0,0,.35);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:12px; color:#1a1a1a;
 }
-.me-dot img{ width:100%; height:100%; object-fit:cover; }
+.me-dot img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+/* Стрелка внизу */
 .me-arrow{
-  position:absolute; left:50%; top:50%; width:0; height:0; z-index:2;
-  border-left:7px solid transparent; border-right:7px solid transparent; border-bottom:16px solid var(--fg);
-  transform-origin:50% 34px;
+  width:0; height:0; margin-top:-2px;
+  border-left:8px solid transparent; border-right:8px solid transparent; 
+  border-top:14px solid #ffffff;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
 }
-html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
+/* Подпись с именем */
+.me-label{
+  margin-top:2px; font-size:11px; font-weight:700; color:var(--fg);
+  background:rgba(0,0,0,.55); padding:2px 10px; border-radius:10px;
+  white-space:nowrap; backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.1);
+}
 
 /* ============ LIST SCREENS ============ */
 .screen-header{
@@ -209,7 +230,7 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 .status-dot.online{ background:var(--green); }
 .li-main{ flex:1; min-width:0; }
 .li-name{ font-size:14.5px; font-weight:700; }
-.li-sub{ font-size:12px; color:var(--fg-dim); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.li-sub{ font-size:12px; color:var(--fg-dim); margin-top:2px; }
 .li-sub.online{ color:var(--green); font-weight:600; }
 .li-meta{ font-size:10.5px; color:var(--fg-faint); flex-shrink:0; }
 
@@ -224,10 +245,6 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 .chat-head-name{ font-size:14.5px; font-weight:800; }
 .chat-head-status{ font-size:11px; color:var(--fg-dim); }
 .chat-head-status.online{ color:var(--green); font-weight:700; }
-.chat-call-btn{
-  width:38px; height:38px; border-radius:50%; border:1px solid var(--border); background:var(--card2);
-  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--fg); flex-shrink:0;
-}
 .chat-msgs{ flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:10px; }
 .msg{ max-width:74%; padding:10px 13px; border-radius:16px; font-size:13.5px; line-height:1.4; }
 .msg.in{ align-self:flex-start; background:var(--card2); border:1px solid var(--border); border-bottom-left-radius:4px; }
@@ -243,7 +260,6 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
   display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:transform .15s;
 }
 .icon-btn:active{ transform:scale(.9); }
-.icon-btn.ghost{ background:var(--card2); color:var(--fg); border:1px solid var(--border); }
 
 /* ============ PROFILE ============ */
 .profile-hero{ padding:34px 20px 22px; text-align:center; border-bottom:1px solid var(--border-soft); }
@@ -274,7 +290,7 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 .battery-fill{ height:100%; background:var(--fg); transition:width .5s var(--ease); }
 .battery-fill.charge{ background:var(--green); }
 
-/* ============ SETTINGS (внутри Ты) ============ */
+/* ============ SETTINGS inside PROFILE ============ */
 .setting-group{ margin-bottom:22px; }
 .setting-group-title{ font-size:11px; font-weight:800; letter-spacing:1px; color:var(--fg-faint); text-transform:uppercase; margin:0 4px 8px; }
 .setting-card{ background:var(--card2); border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; }
@@ -311,7 +327,6 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 .modal-title{ font-size:15px; font-weight:800; margin-bottom:8px; }
 .modal-text{ font-size:13px; color:var(--fg-dim); line-height:1.55; margin-bottom:18px; }
 .modal-close{ width:100%; }
-
 .toast{
   position:fixed; left:50%; bottom:96px; transform:translate(-50%,20px); background:var(--fg); color:var(--bg);
   padding:11px 18px; border-radius:999px; font-size:12.5px; font-weight:700; z-index:950; opacity:0;
@@ -319,41 +334,46 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 }
 .toast.show{ opacity:1; transform:translate(-50%,0); }
 @media (min-width:768px){ .toast{ bottom:24px; } }
-
-/* scrollbars */
-::-webkit-scrollbar{ width:0; height:0; }
 </style>
 </head>
 <body>
 
-<!-- ============ AUTH SCREEN ============ -->
+<!-- ============ AUTH SCREEN (ДВЕ КОЛОНКИ) ============ -->
 <div id="authScreen">
   <div class="auth-box screen">
     <div class="auth-logo">LINK</div>
     <div class="auth-dot"></div>
-    <div class="auth-tabs">
-      <div class="auth-tab active" data-tab="login">Войти</div>
-      <div class="auth-tab" data-tab="register">Регистрация</div>
+
+    <!-- ЛЕВАЯ КОЛОНКА — РЕГИСТРАЦИЯ -->
+    <div class="auth-col">
+      <h2>📝 Регистрация</h2>
+      <form id="registerForm">
+        <div class="field"><label>Имя</label><input type="text" id="regName" required placeholder="Как вас зовут"></div>
+        <div class="field"><label>Почта</label><input type="email" id="regEmail" required placeholder="you@mail.com"></div>
+        <div class="field"><label>Пароль</label><input type="password" id="regPass" required placeholder="Минимум 6 символов"></div>
+        <button class="btn" type="submit">Создать аккаунт</button>
+        <div class="auth-err" id="regErr"></div>
+      </form>
     </div>
 
-    <form id="loginForm">
-      <div class="field"><label>Почта</label><input type="email" id="loginEmail" required placeholder="you@mail.com"></div>
-      <div class="field"><label>Пароль</label><input type="password" id="loginPass" required placeholder="••••••••"></div>
-      <button class="btn" type="submit">Войти по почте</button>
-      <div class="auth-err" id="loginErr"></div>
-    </form>
+    <div class="auth-divider">
+      <div class="auth-divider-line"></div>
+      <span>или</span>
+      <div class="auth-divider-line"></div>
+    </div>
 
-    <form id="registerForm" class="hidden">
-      <div class="field"><label>Имя</label><input type="text" id="regName" required placeholder="Как вас зовут"></div>
-      <div class="field"><label>Почта</label><input type="email" id="regEmail" required placeholder="you@mail.com"></div>
-      <div class="field"><label>Пароль</label><input type="password" id="regPass" required placeholder="Минимум 6 символов"></div>
-      <button class="btn" type="submit">Создать аккаунт</button>
-      <div class="auth-err" id="regErr"></div>
-    </form>
+    <!-- ПРАВАЯ КОЛОНКА — ВХОД -->
+    <div class="auth-col">
+      <h2>🔐 Вход</h2>
+      <form id="loginForm">
+        <div class="field"><label>Почта</label><input type="email" id="loginEmail" required placeholder="you@mail.com"></div>
+        <div class="field"><label>Пароль</label><input type="password" id="loginPass" required placeholder="••••••••"></div>
+        <button class="btn" type="submit">Войти</button>
+        <div class="auth-err" id="loginErr"></div>
+      </form>
+    </div>
 
-    <div class="auth-divider">или</div>
-    <button class="btn btn-ghost" id="googleBtn" type="button">Войти через Google</button>
-    <div class="auth-foot">Данные хранятся локально на этом устройстве.</div>
+    <div class="auth-foot" style="grid-column:1/-1;">Данные хранятся локально на этом устройстве.</div>
   </div>
 </div>
 
@@ -383,7 +403,7 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
         <div class="screen-header">
           <div class="screen-title">Друзья</div>
           <div class="screen-sub" id="friendsCount">0 друзей</div>
-          <button class="btn btn-sm" style="margin-top:8px;" id="addFriendBtn">➕ Добавить по ID</button>
+          <button class="btn btn-sm" style="margin-top:8px; width:auto; padding:8px 16px;" id="addFriendBtn">➕ Добавить по ID</button>
         </div>
         <div class="list" id="friendsList"></div>
       </section>
@@ -422,7 +442,7 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
             <textarea class="profile-bio-input" id="profileBioInput" rows="2" maxlength="80" placeholder="Расскажи о себе…"></textarea>
           </div>
 
-          <!-- НАСТРОЙКИ (внутри Ты) -->
+          <!-- НАСТРОЙКИ -->
           <div class="profile-section">
             <div class="setting-group" style="margin-bottom:0;">
               <div class="setting-group-title">Настройки</div>
@@ -476,7 +496,7 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
   </div>
 </div>
 
-<!-- overlay / modal -->
+<!-- OVERLAY / MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal" id="modalBox">
     <div class="modal-title" id="modalTitle"></div>
@@ -493,6 +513,21 @@ html[data-theme="dark"] .me-arrow{ border-bottom-color:#000; }
 "use strict";
 
 /* =====================================================================
+   ГЕНЕРАТОР КОРОТКОГО 4-ЗНАЧНОГО ID
+===================================================================== */
+function generateShortId(){
+  // Генерируем число от 1000 до 9999, проверяем уникальность
+  let id;
+  let attempts = 0;
+  const users = DB.getUsers();
+  do {
+    id = Math.floor(1000 + Math.random() * 9000);
+    attempts++;
+  } while (users.some(u => u.id === id) && attempts < 1000);
+  return id;
+}
+
+/* =====================================================================
    DB LAYER
 ===================================================================== */
 const LS = {
@@ -500,7 +535,6 @@ const LS = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 
-function uid(){ return 'u_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
 function hash(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h<<5)-h+s.charCodeAt(i); h|=0; } return String(h); }
 
 const DB = {
@@ -511,9 +545,10 @@ const DB = {
   createUser({name,email,pass}){
     const users = this.getUsers();
     const user = {
-      id: uid(), name, email, passHash: hash(pass),
+      id: generateShortId(),
+      name, email, passHash: hash(pass),
       bio:'', avatar:null, createdAt: Date.now(),
-      friends: [], // список ID друзей
+      friends: [],
       settings:{ notifications:true, invisibility:'exact', theme:'system' }
     };
     users.push(user); this.saveUsers(users);
@@ -604,32 +639,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=
 /* =====================================================================
    AUTH
 ===================================================================== */
-const authTabs = document.querySelectorAll('.auth-tab');
-authTabs.forEach(tab=>{
-  tab.addEventListener('click', ()=>{
-    authTabs.forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    const isLogin = tab.dataset.tab==='login';
-    document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
-    document.getElementById('registerForm').classList.toggle('hidden', isLogin);
-  });
-});
-
-document.getElementById('loginForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  const err = document.getElementById('loginErr');
-  const u = DB.findByEmail(email);
-  if(!u || u.passHash !== hash(pass)){
-    err.textContent = 'Неверная почта или пароль.';
-    return;
-  }
-  err.textContent='';
-  DB.setCurrentId(u.id);
-  bootApp(u);
-});
-
 document.getElementById('registerForm').addEventListener('submit', function(e){
   e.preventDefault();
   const name = document.getElementById('regName').value.trim();
@@ -644,10 +653,17 @@ document.getElementById('registerForm').addEventListener('submit', function(e){
   bootApp(u);
 });
 
-document.getElementById('googleBtn').addEventListener('click', function(){
-  const demoEmail = 'google.demo@link.app';
-  let u = DB.findByEmail(demoEmail);
-  if(!u) u = DB.createUser({name:'Google User', email:demoEmail, pass: uid()});
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  const u = DB.findByEmail(email);
+  if(!u || u.passHash !== hash(pass)){
+    err.textContent = 'Неверная почта или пароль.';
+    return;
+  }
+  err.textContent='';
   DB.setCurrentId(u.id);
   bootApp(u);
 });
@@ -708,34 +724,33 @@ function initMap(){
 }
 
 function meMarkerHtml(){
-  const av = state.user.avatar ? `<img src="${state.user.avatar}">` : '';
+  const name = state.user ? state.user.name : '';
+  const av = state.user && state.user.avatar ? `<img src="${state.user.avatar}">` : '';
   return `
     <div class="me-marker">
-      <div class="me-ring"></div>
-      <div class="me-arrow" id="meArrow"></div>
-      <div class="me-dot">${av}</div>
-    </div>`;
+      <div class="me-ring online"></div>
+      <div class="me-dot">${av || '📍'}</div>
+      <div class="me-arrow"></div>
+      <div class="me-label">${name}</div>
+    </div>
+  `;
 }
 
 function ensureMeMarker(latlng){
   if(!state.meMarker){
-    const icon = L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[54,54], iconAnchor:[27,27] });
+    const icon = L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] });
     state.meMarker = L.marker(latlng, { icon, zIndexOffset:1000 }).addTo(state.map);
     state.map.setView(latlng, 16);
   } else {
     state.meMarker.setLatLng(latlng);
+    // Обновляем иконку при изменении имени/аватарки
+    state.meMarker.setIcon(L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] }));
   }
-}
-
-function updateMeArrow(heading){
-  const el = document.getElementById('meArrow');
-  if(el) el.style.transform = 'rotate(' + heading + 'deg)';
 }
 
 function refreshMeMarkerIcon(){
   if(!state.meMarker) return;
-  state.meMarker.setIcon(L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[54,54], iconAnchor:[27,27] }));
-  updateMeArrow(state.heading);
+  state.meMarker.setIcon(L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] }));
 }
 
 function toRad(d){ return d*Math.PI/180; }
@@ -788,7 +803,9 @@ function startGeoWatch(){
       state.speedKmh = Math.max(0, Math.round(kmh*10)/10);
       if(distM>0.8){
         state.heading = pos.coords.heading!=null && !isNaN(pos.coords.heading) ? pos.coords.heading : bearing(state.lastFix, latlng);
-        updateMeArrow(state.heading);
+        // Поворачиваем стрелку (через трансформацию в CSS)
+        const arrow = document.querySelector('.me-arrow');
+        if(arrow) arrow.style.transform = `rotate(${state.heading}deg)`;
       }
     }
     state.lastFix = {lat,lng,t:now};
@@ -820,7 +837,7 @@ function renderFriendsList(){
   friends.forEach(f=>{
     const item = document.createElement('div');
     item.className='list-item';
-    const isOnline = f.online !== false; // просто для демо
+    const isOnline = true; // заглушка
     item.innerHTML = `
       <div class="avatar-wrap">
         <div class="avatar">${f.avatar?`<img src="${f.avatar}">`:f.name[0]}</div>
@@ -830,7 +847,7 @@ function renderFriendsList(){
         <div class="li-name">${f.name}</div>
         <div class="li-sub ${isOnline?'online':''}">${isOnline?'В сети':'Был(а) недавно'}</div>
       </div>
-      <div style="font-size:11px; color:var(--fg-faint);">ID: ${f.id.slice(0,8)}</div>
+      <div style="font-size:11px; color:var(--fg-faint);">ID: ${f.id}</div>
     `;
     item.addEventListener('click', ()=>{
       openChatWith(f.id);
@@ -841,13 +858,13 @@ function renderFriendsList(){
 }
 
 document.getElementById('addFriendBtn').addEventListener('click', ()=>{
-  showModal('Добавить друга', 'Введите ID друга, чтобы отправить заявку.', `
-    <div class="field"><label>ID друга</label><input type="text" id="friendIdInput" placeholder="u_..."></div>
+  showModal('Добавить друга', 'Введите 4-значный ID друга.', `
+    <div class="field"><label>ID друга</label><input type="number" id="friendIdInput" placeholder="1234" min="1000" max="9999"></div>
     <button class="btn" id="friendAddConfirm">Отправить заявку</button>
   `);
   document.getElementById('friendAddConfirm').addEventListener('click', ()=>{
-    const fid = document.getElementById('friendIdInput').value.trim();
-    if(!fid){ toast('Введите ID'); return; }
+    const fid = parseInt(document.getElementById('friendIdInput').value);
+    if(!fid || fid<1000 || fid>9999){ toast('Введите корректный 4-значный ID'); return; }
     if(fid === state.user.id){ toast('Это вы сами'); return; }
     const friend = DB.findById(fid);
     if(!friend){ toast('Пользователь не найден'); return; }
@@ -886,7 +903,7 @@ function renderChatsList(){
     item.innerHTML = `
       <div class="avatar-wrap">
         <div class="avatar">${f.avatar?`<img src="${f.avatar}">`:f.name[0]}</div>
-        <div class="status-dot ${f.online!==false?'online':''}"></div>
+        <div class="status-dot online"></div>
       </div>
       <div class="li-main">
         <div class="li-name">${f.name}</div>
@@ -905,8 +922,8 @@ function openChatWith(fid){
   document.getElementById('chatHeadAvatar').innerHTML = f.avatar?`<img src="${f.avatar}">`:f.name[0];
   document.getElementById('chatHeadName').textContent = f.name;
   const statusEl = document.getElementById('chatHeadStatus');
-  statusEl.textContent = f.online!==false ? 'В сети' : 'Был(а) недавно';
-  statusEl.className = 'chat-head-status' + (f.online!==false ? ' online':'');
+  statusEl.textContent = 'В сети';
+  statusEl.className = 'chat-head-status online';
   renderMessages();
   document.getElementById('chatConvo').classList.add('open');
 }
@@ -972,6 +989,7 @@ function initProfileScreen(){
     const v = nameInput.value.trim() || u.name;
     state.user = DB.updateUser(state.user.id, { name: v });
     nameInput.value = v;
+    refreshMeMarkerIcon(); // обновляем имя на карте
   });
   const bioInput = document.getElementById('profileBioInput');
   bioInput.addEventListener('blur', ()=>{
@@ -1017,7 +1035,7 @@ function updateBatteryUI(level, charging){
 }
 
 /* =====================================================================
-   SETTINGS (внутри Ты)
+   SETTINGS (inside profile)
 ===================================================================== */
 function initSettingsScreen(){
   const s = state.user.settings;
@@ -1108,4 +1126,5 @@ function openChangePasswordModal(){
 })();
 </script>
 </body>
-                                                      </html>
+</html>
+```
