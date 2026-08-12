@@ -1,8 +1,3 @@
-Вот обновлённый index.html. Я заменил длинные ID на короткие 4-значные числовые ID (от 1000 до 9999), и теперь они уникальны для каждого пользователя, включая твоих друзей.
-
-Я сохранил все твои предыдущие пожелания: две колонки для входа/регистрации, пульсирующую зелёную точку с именем, запрос геопозиции, и добавил отображение короткого ID в профиле. Также обновил логику добавления друзей — теперь ты ищешь их по этому короткому ID.
-
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -46,7 +41,7 @@ input,textarea{font-family:inherit;}
 .screen{ animation:fadeIn .4s var(--ease); }
 @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
 
-/* ============ AUTH (ДВЕ КОЛОНКИ) ============ */
+/* ============ AUTH ============ */
 #authScreen{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
   background:var(--bg); z-index:500; padding:24px;
@@ -59,25 +54,12 @@ input,textarea{font-family:inherit;}
 }
 @media (max-width:600px){
   .auth-box{ grid-template-columns:1fr; gap:16px; padding:24px 16px; }
-  .auth-divider{ flex-direction:row; }
-  .auth-divider-line{ width:40px; height:1px; margin:0 12px; }
 }
 .auth-col{ display:flex; flex-direction:column; gap:12px; }
 .auth-col h2{ font-size:18px; font-weight:800; margin:0; color:var(--fg); letter-spacing:-.3px; }
-.auth-divider{
-  display:flex; align-items:center; justify-content:center;
-  color:var(--fg-faint); font-size:12px; font-weight:600;
-}
+.auth-divider{ display:flex; align-items:center; justify-content:center; color:var(--fg-faint); font-size:12px; font-weight:600; }
 .auth-divider-line{ width:1px; height:40px; background:var(--border); margin:0 12px; }
 @media (max-width:600px){ .auth-divider-line{ width:40px; height:1px; } }
-.auth-logo{
-  font-size:13px; letter-spacing:4px; font-weight:700; text-align:center;
-  margin-bottom:4px; color:var(--fg);
-}
-.auth-dot{
-  width:10px; height:10px; border-radius:50%; background:var(--fg); margin:0 auto 18px;
-  box-shadow:0 0 0 6px var(--border-soft);
-}
 .field{ margin-bottom:10px; }
 .field label{ display:block; font-size:11px; color:var(--fg-dim); margin-bottom:4px; letter-spacing:.3px; }
 .field input{
@@ -91,10 +73,12 @@ input,textarea{font-family:inherit;}
   transition:transform .15s var(--ease), opacity .15s; margin-top:4px;
 }
 .btn:active{ transform:scale(.97); }
+.btn-ghost{ background:transparent; color:var(--fg); border:1px solid var(--border); }
+.btn-sm{ padding:9px 12px; font-size:12px; width:auto; }
 .auth-err{ color:#ff5c5c; font-size:12px; margin-top:6px; min-height:14px; }
 .auth-foot{ text-align:center; font-size:11px; color:var(--fg-faint); margin-top:12px; line-height:1.6; }
 
-/* ============ APP SHELL ============ */
+/* ============ APP ============ */
 #app{ position:fixed; inset:0; display:flex; flex-direction:column; }
 #appBody{ position:relative; flex:1; min-height:0; display:flex; }
 #screens{ position:relative; flex:1; min-width:0; }
@@ -162,11 +146,20 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 }
 .speed-badge .unit{ color:var(--fg-dim); font-weight:500; font-size:10px; }
 
+.map-battery{
+  position:absolute; bottom:20px; left:16px; z-index:450;
+  background:var(--card); border:1px solid var(--border); border-radius:999px; 
+  padding:8px 16px; font-size:12px; font-weight:700; box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:8px; pointer-events:auto;
+}
+.map-battery .b-icon{ font-size:16px; }
+.map-battery .b-pct{ color:var(--fg); }
+.map-battery .b-charge{ color:var(--green); }
+
 /* ============ МАРКЕР ПОЛЬЗОВАТЕЛЯ ============ */
 .me-marker{
   position:relative; width:64px; height:74px; display:flex; flex-direction:column; align-items:center;
 }
-/* Зелёное пульсирующее кольцо */
 .me-ring{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   width:70px; height:70px; border-radius:50%; 
@@ -180,23 +173,21 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
   70%{ transform:translate(-50%,-50%) scale(1.4); opacity:0; }
   100%{ opacity:0; }
 }
-/* Белая точка */
 .me-dot{
   position:relative; z-index:3;
   width:32px; height:32px; border-radius:50%; background:#ffffff; 
   border:3px solid #1a1a1a; box-shadow:0 2px 12px rgba(0,0,0,.35);
   display:flex; align-items:center; justify-content:center;
   font-weight:800; font-size:12px; color:#1a1a1a;
+  overflow:hidden;
 }
 .me-dot img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
-/* Стрелка внизу */
 .me-arrow{
   width:0; height:0; margin-top:-2px;
   border-left:8px solid transparent; border-right:8px solid transparent; 
   border-top:14px solid #ffffff;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
 }
-/* Подпись с именем */
 .me-label{
   margin-top:2px; font-size:11px; font-weight:700; color:var(--fg);
   background:rgba(0,0,0,.55); padding:2px 10px; border-radius:10px;
@@ -235,7 +226,10 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .li-meta{ font-size:10.5px; color:var(--fg-faint); flex-shrink:0; }
 
 /* ============ CHAT ============ */
-#chatConvo{ position:absolute; inset:0; background:var(--bg); display:flex; flex-direction:column; transform:translateX(100%); transition:transform .32s var(--ease); z-index:60; }
+#chatConvo{
+  position:absolute; inset:0; background:var(--bg); display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .32s var(--ease); z-index:60;
+}
 #chatConvo.open{ transform:translateX(0); }
 .chat-head{
   display:flex; align-items:center; gap:12px; padding:16px 16px; border-bottom:1px solid var(--border-soft);
@@ -245,28 +239,63 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .chat-head-name{ font-size:14.5px; font-weight:800; }
 .chat-head-status{ font-size:11px; color:var(--fg-dim); }
 .chat-head-status.online{ color:var(--green); font-weight:700; }
-.chat-msgs{ flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:10px; }
-.msg{ max-width:74%; padding:10px 13px; border-radius:16px; font-size:13.5px; line-height:1.4; }
+.chat-call-btn{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--border); background:var(--card2);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--fg); flex-shrink:0;
+  font-size:16px; transition:background .2s;
+}
+.chat-call-btn:hover{ background:var(--border); }
+
+.chat-msgs{
+  flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:10px;
+}
+.msg{
+  max-width:74%; padding:10px 13px; border-radius:16px; font-size:13.5px; line-height:1.4;
+}
 .msg.in{ align-self:flex-start; background:var(--card2); border:1px solid var(--border); border-bottom-left-radius:4px; }
 .msg.out{ align-self:flex-end; background:var(--fg); color:var(--bg); border-bottom-right-radius:4px; }
 .msg-time{ font-size:9.5px; opacity:.55; margin-top:4px; display:block; }
-.chat-input-bar{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-top:1px solid var(--border-soft); }
+.msg-sticker{ font-size:32px; padding:4px 8px; background:transparent; }
+
+.chat-input-bar{
+  display:flex; align-items:center; gap:8px; padding:10px 12px; border-top:1px solid var(--border-soft);
+  flex-wrap:wrap;
+}
 .chat-input-bar input{
   flex:1; border:1px solid var(--border); background:var(--input); border-radius:999px; padding:11px 16px;
-  color:var(--fg); font-size:13.5px; outline:none;
+  color:var(--fg); font-size:13.5px; outline:none; min-width:120px;
 }
 .icon-btn{
   width:40px; height:40px; border-radius:50%; border:none; background:var(--fg); color:var(--bg);
   display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:transform .15s;
+  font-size:18px;
 }
 .icon-btn:active{ transform:scale(.9); }
+.icon-btn.ghost{ background:var(--card2); color:var(--fg); border:1px solid var(--border); }
+
+/* ============ СТИКЕРЫ ============ */
+.sticker-panel{
+  display:none; padding:8px 12px 12px; gap:8px; flex-wrap:wrap; justify-content:center;
+  border-top:1px solid var(--border-soft); background:var(--bg);
+}
+.sticker-panel.open{ display:flex; }
+.sticker{
+  font-size:32px; cursor:pointer; padding:4px 6px; border-radius:var(--radius-sm);
+  transition:transform .15s, background .2s; user-select:none;
+}
+.sticker:hover{ transform:scale(1.2); background:var(--card2); }
+.sticker-fly{
+  position:fixed; font-size:40px; z-index:999; pointer-events:none;
+  transition:all .8s cubic-bezier(.22,.9,.35,1);
+}
 
 /* ============ PROFILE ============ */
 .profile-hero{ padding:34px 20px 22px; text-align:center; border-bottom:1px solid var(--border-soft); }
 .profile-avatar-wrap{ position:relative; width:104px; height:104px; margin:0 auto 16px; cursor:pointer; }
 .profile-avatar{
-  width:100%; height:100%; border-radius:50%; background:var(--card2); border:1px solid var(--border);
+  width:100%; height:100%; border-radius:50%; 
   display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; overflow:hidden;
+  border:1px solid var(--border);
 }
 .profile-avatar img{ width:100%; height:100%; object-fit:cover; }
 .profile-avatar-edit{
@@ -284,13 +313,12 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .profile-section{ padding:16px 20px; border-bottom:1px solid var(--border-soft); }
 .profile-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
 .profile-row-label{ font-size:13px; color:var(--fg-dim); display:flex; align-items:center; gap:8px; }
-.battery-pct{ font-size:15px; font-weight:800; }
-.battery-charging{ color:var(--green); font-size:12px; font-weight:700; display:flex; align-items:center; gap:4px; }
-.battery-bar{ width:100%; height:8px; background:var(--card2); border-radius:6px; overflow:hidden; margin-top:8px; border:1px solid var(--border); }
-.battery-fill{ height:100%; background:var(--fg); transition:width .5s var(--ease); }
-.battery-fill.charge{ background:var(--green); }
+.color-pickers{ display:flex; gap:8px; justify-content:center; margin:8px 0; }
+.color-pickers input[type="color"]{ width:40px; height:40px; border:none; border-radius:50%; cursor:pointer; background:none; padding:0; }
+.color-pickers input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; }
+.color-pickers input[type="color"]::-webkit-color-swatch{ border-radius:50%; border:2px solid var(--border); }
 
-/* ============ SETTINGS inside PROFILE ============ */
+/* ============ SETTINGS ============ */
 .setting-group{ margin-bottom:22px; }
 .setting-group-title{ font-size:11px; font-weight:800; letter-spacing:1px; color:var(--fg-faint); text-transform:uppercase; margin:0 4px 8px; }
 .setting-card{ background:var(--card2); border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; }
@@ -311,7 +339,7 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .theme-opt{ flex:1; padding:12px 6px; text-align:center; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:11.5px; font-weight:700; cursor:pointer; }
 .theme-opt.active{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
 
-/* ============ MODAL / TOAST ============ */
+/* ============ MODAL ============ */
 .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:900; display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity .25s; }
 .overlay.show{ opacity:1; pointer-events:auto; }
 @media (min-width:768px){ .overlay{ align-items:center; } }
@@ -334,17 +362,26 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 }
 .toast.show{ opacity:1; transform:translate(-50%,0); }
 @media (min-width:768px){ .toast{ bottom:24px; } }
+
+/* ============ ЗВОНОК ============ */
+.call-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:800;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+}
+.call-overlay.show{ display:flex; }
+.call-box{
+  background:var(--card); padding:32px; border-radius:var(--radius-lg); text-align:center; max-width:340px; width:90%;
+}
+.call-box video{ width:100%; border-radius:var(--radius-md); background:#000; margin:12px 0; }
+.call-timer{ font-size:24px; font-weight:800; color:var(--fg); }
+.call-end-btn{ background:#e33; color:#fff; border:none; border-radius:999px; padding:14px 28px; font-weight:700; cursor:pointer; margin-top:16px; }
 </style>
 </head>
 <body>
 
-<!-- ============ AUTH SCREEN (ДВЕ КОЛОНКИ) ============ -->
+<!-- ============ AUTH ============ -->
 <div id="authScreen">
-  <div class="auth-box screen">
-    <div class="auth-logo">LINK</div>
-    <div class="auth-dot"></div>
-
-    <!-- ЛЕВАЯ КОЛОНКА — РЕГИСТРАЦИЯ -->
+  <div class="auth-box">
     <div class="auth-col">
       <h2>📝 Регистрация</h2>
       <form id="registerForm">
@@ -355,14 +392,7 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
         <div class="auth-err" id="regErr"></div>
       </form>
     </div>
-
-    <div class="auth-divider">
-      <div class="auth-divider-line"></div>
-      <span>или</span>
-      <div class="auth-divider-line"></div>
-    </div>
-
-    <!-- ПРАВАЯ КОЛОНКА — ВХОД -->
+    <div class="auth-divider"><div class="auth-divider-line"></div><span>или</span><div class="auth-divider-line"></div></div>
     <div class="auth-col">
       <h2>🔐 Вход</h2>
       <form id="loginForm">
@@ -372,8 +402,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
         <div class="auth-err" id="loginErr"></div>
       </form>
     </div>
-
-    <div class="auth-foot" style="grid-column:1/-1;">Данные хранятся локально на этом устройстве.</div>
   </div>
 </div>
 
@@ -396,6 +424,11 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
           <div class="pill">LINK</div>
           <div class="speed-badge" id="speedBadge">0 <span class="unit">км/ч</span></div>
         </div>
+        <div class="map-battery" id="mapBattery">
+          <span class="b-icon">🔋</span>
+          <span class="b-pct" id="mapBatteryPct">--%</span>
+          <span class="b-charge hidden" id="mapBatteryCharge">⚡</span>
+        </div>
       </section>
 
       <!-- FRIENDS -->
@@ -403,7 +436,7 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
         <div class="screen-header">
           <div class="screen-title">Друзья</div>
           <div class="screen-sub" id="friendsCount">0 друзей</div>
-          <button class="btn btn-sm" style="margin-top:8px; width:auto; padding:8px 16px;" id="addFriendBtn">➕ Добавить по ID</button>
+          <button class="btn btn-sm" style="margin-top:8px;" id="addFriendBtn">➕ Добавить по ID</button>
         </div>
         <div class="list" id="friendsList"></div>
       </section>
@@ -420,9 +453,22 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
               <div class="chat-head-name" id="chatHeadName"></div>
               <div class="chat-head-status" id="chatHeadStatus"></div>
             </div>
+            <button class="chat-call-btn" id="chatAudioCall" title="Аудиозвонок">📞</button>
+            <button class="chat-call-btn" id="chatVideoCall" title="Видеозвонок">📹</button>
           </div>
           <div class="chat-msgs" id="chatMsgs"></div>
+          <div class="sticker-panel" id="stickerPanel">
+            <span class="sticker" data-sticker="🎉">🎉</span>
+            <span class="sticker" data-sticker="❤️">❤️</span>
+            <span class="sticker" data-sticker="😂">😂</span>
+            <span class="sticker" data-sticker="😍">😍</span>
+            <span class="sticker" data-sticker="🎊">🎊</span>
+            <span class="sticker" data-sticker="💪">💪</span>
+            <span class="sticker" data-sticker="🤝">🤝</span>
+            <span class="sticker" data-sticker="🌟">🌟</span>
+          </div>
           <div class="chat-input-bar">
+            <button class="icon-btn ghost" id="stickerToggleBtn">😊</button>
             <input type="text" id="chatInput" placeholder="Сообщение…">
             <button class="icon-btn" id="chatSendBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l20-9L2 3v7l15 2-15 2v7z"/></svg></button>
           </div>
@@ -434,15 +480,25 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
         <div class="list" style="padding:0;">
           <div class="profile-hero">
             <div class="profile-avatar-wrap" id="avatarUploadWrap">
-              <div class="profile-avatar" id="profileAvatar"></div>
+              <div class="profile-avatar" id="profileAvatar" style="background:linear-gradient(135deg,#ffffff,#a0a0a0,#000000);"></div>
               <div class="profile-avatar-edit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13.5" r="3"/></svg></div>
               <input type="file" id="avatarInput" accept="image/*" class="hidden">
+            </div>
+            <div class="color-pickers">
+              <input type="color" id="color1" value="#ffffff">
+              <input type="color" id="color2" value="#a0a0a0">
+              <input type="color" id="color3" value="#000000">
+              <button class="btn btn-sm" id="randomColorsBtn">🎲 Рандом</button>
+              <button class="btn btn-sm" id="saveColorsBtn">💾 Сохранить</button>
             </div>
             <input class="profile-name-input" id="profileNameInput" maxlength="30">
             <textarea class="profile-bio-input" id="profileBioInput" rows="2" maxlength="80" placeholder="Расскажи о себе…"></textarea>
           </div>
 
-          <!-- НАСТРОЙКИ -->
+          <div class="profile-section">
+            <div class="profile-row"><div class="profile-row-label">🆔 Ваш ID</div><div class="li-meta" id="profileUserId">—</div></div>
+          </div>
+
           <div class="profile-section">
             <div class="setting-group" style="margin-bottom:0;">
               <div class="setting-group-title">Настройки</div>
@@ -474,20 +530,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
           </div>
 
           <div class="profile-section" style="border-bottom:none;">
-            <div class="profile-row">
-              <div class="profile-row-label">Заряд телефона</div>
-              <div id="batteryWrap"><span class="battery-pct" id="batteryPct">—</span></div>
-            </div>
-            <div class="battery-bar"><div class="battery-fill" id="batteryFill" style="width:0%"></div></div>
-            <div id="chargingLabel" class="battery-charging hidden" style="margin-top:8px;">⚡ Заряжается</div>
-          </div>
-
-          <div class="profile-section" style="border-bottom:none;">
-            <div class="profile-row"><div class="profile-row-label">Почта</div><div class="li-meta" id="profileEmail">—</div></div>
-            <div class="profile-row"><div class="profile-row-label">Ваш ID</div><div class="li-meta" id="profileUserId">—</div></div>
-          </div>
-
-          <div class="profile-section" style="border-bottom:none;">
             <button class="btn btn-ghost" id="logoutBtn">Выйти из аккаунта</button>
           </div>
         </div>
@@ -496,7 +538,16 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
   </div>
 </div>
 
-<!-- OVERLAY / MODAL -->
+<!-- ============ ЗВОНОК ============ -->
+<div class="call-overlay" id="callOverlay">
+  <div class="call-box">
+    <div class="call-timer" id="callTimer">00:00</div>
+    <video id="callVideo" autoplay muted></video>
+    <button class="call-end-btn" id="callEndBtn">⏹ Завершить</button>
+  </div>
+</div>
+
+<!-- ============ OVERLAY / MODAL ============ -->
 <div class="overlay" id="overlay">
   <div class="modal" id="modalBox">
     <div class="modal-title" id="modalTitle"></div>
@@ -513,22 +564,18 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 "use strict";
 
 /* =====================================================================
-   ГЕНЕРАТОР КОРОТКОГО 4-ЗНАЧНОГО ID
+   ГЕНЕРАТОР ID
 ===================================================================== */
 function generateShortId(){
-  // Генерируем число от 1000 до 9999, проверяем уникальность
   let id;
-  let attempts = 0;
   const users = DB.getUsers();
-  do {
-    id = Math.floor(1000 + Math.random() * 9000);
-    attempts++;
-  } while (users.some(u => u.id === id) && attempts < 1000);
+  do { id = Math.floor(1000 + Math.random() * 9000); }
+  while (users.some(u => u.id === id));
   return id;
 }
 
 /* =====================================================================
-   DB LAYER
+   DB
 ===================================================================== */
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v===null? d : JSON.parse(v); }catch(e){ return d; } },
@@ -547,7 +594,7 @@ const DB = {
     const user = {
       id: generateShortId(),
       name, email, passHash: hash(pass),
-      bio:'', avatar:null, createdAt: Date.now(),
+      bio:'', avatar:null, bgColors:['#ffffff','#a0a0a0','#000000'],
       friends: [],
       settings:{ notifications:true, invisibility:'exact', theme:'system' }
     };
@@ -564,13 +611,6 @@ const DB = {
     const u = this.findById(userId);
     if(!u || u.friends.includes(friendId)) return false;
     u.friends.push(friendId);
-    this.saveUsers(this.getUsers());
-    return true;
-  },
-  removeFriend(userId, friendId){
-    const u = this.findById(userId);
-    if(!u) return false;
-    u.friends = u.friends.filter(id=>id!==friendId);
     this.saveUsers(this.getUsers());
     return true;
   },
@@ -598,7 +638,9 @@ const state = {
   trailLayers:[],
   activeChatId:null,
   chats:{},
-  batteryObj:null
+  batteryObj:null,
+  callInterval:null,
+  callSeconds:0
 };
 
 /* =====================================================================
@@ -668,7 +710,6 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
   bootApp(u);
 });
 
-/* auto-login */
 (function tryAutoLogin(){
   const u = DB.getCurrent();
   if(u) bootApp(u);
@@ -680,6 +721,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e){
 function bootApp(user){
   state.user = user;
   if(!user.settings) user.settings = { notifications:true, invisibility:'exact', theme:'system' };
+  if(!user.bgColors) user.bgColors = ['#ffffff','#a0a0a0','#000000'];
   applyTheme(user.settings.theme || 'system');
 
   document.getElementById('authScreen').classList.add('hidden');
@@ -743,7 +785,6 @@ function ensureMeMarker(latlng){
     state.map.setView(latlng, 16);
   } else {
     state.meMarker.setLatLng(latlng);
-    // Обновляем иконку при изменении имени/аватарки
     state.meMarker.setIcon(L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] }));
   }
 }
@@ -803,7 +844,6 @@ function startGeoWatch(){
       state.speedKmh = Math.max(0, Math.round(kmh*10)/10);
       if(distM>0.8){
         state.heading = pos.coords.heading!=null && !isNaN(pos.coords.heading) ? pos.coords.heading : bearing(state.lastFix, latlng);
-        // Поворачиваем стрелку (через трансформацию в CSS)
         const arrow = document.querySelector('.me-arrow');
         if(arrow) arrow.style.transform = `rotate(${state.heading}deg)`;
       }
@@ -938,7 +978,12 @@ function renderMessages(){
   arr.forEach(m=>{
     const el = document.createElement('div');
     el.className = 'msg ' + (m.from==='me'?'out':'in');
-    el.innerHTML = m.text + `<span class="msg-time">${new Date(m.t).getHours().toString().padStart(2,'0')+':'+new Date(m.t).getMinutes().toString().padStart(2,'0')}</span>`;
+    if(m.type==='sticker'){
+      el.className += ' msg-sticker';
+      el.textContent = m.text;
+    } else {
+      el.innerHTML = m.text + `<span class="msg-time">${new Date(m.t).getHours().toString().padStart(2,'0')+':'+new Date(m.t).getMinutes().toString().padStart(2,'0')}</span>`;
+    }
     wrap.appendChild(el);
   });
   wrap.scrollTop = wrap.scrollHeight;
@@ -960,6 +1005,126 @@ function sendMessage(){
   renderMessages();
   renderChatsList();
 }
+
+/* =====================================================================
+   СТИКЕРЫ
+===================================================================== */
+document.getElementById('stickerToggleBtn').addEventListener('click', ()=>{
+  document.getElementById('stickerPanel').classList.toggle('open');
+});
+
+document.querySelectorAll('.sticker').forEach(el=>{
+  el.addEventListener('click', function(){
+    const sticker = this.dataset.sticker;
+    if(!state.activeChatId) return;
+    sendSticker(sticker);
+  });
+});
+
+function sendSticker(sticker){
+  if(!state.activeChatId) return;
+  state.chats[state.activeChatId] = state.chats[state.activeChatId]||[];
+  state.chats[state.activeChatId].push({from:'me', type:'sticker', text:sticker, t:Date.now()});
+  saveChats();
+  renderMessages();
+  renderChatsList();
+  animateSticker(sticker);
+  playStickerSound();
+}
+
+function animateSticker(sticker){
+  const el = document.createElement('div');
+  el.className = 'sticker-fly';
+  el.textContent = sticker;
+  el.style.left = '50%';
+  el.style.top = '80%';
+  el.style.transform = 'translateX(-50%) scale(0.5)';
+  document.body.appendChild(el);
+
+  requestAnimationFrame(()=>{
+    el.style.left = '20%';
+    el.style.top = '20%';
+    el.style.transform = 'translateX(0) scale(1.2)';
+  });
+
+  setTimeout(()=>{
+    el.style.opacity = '0';
+    setTimeout(()=>el.remove(), 400);
+  }, 800);
+}
+
+function playStickerSound(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880 + Math.random()*400;
+    osc.type = 'sine';
+    gain.gain.value = 0.15;
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.2);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime+0.2);
+  } catch(e){}
+}
+
+/* =====================================================================
+   ЗВОНКИ
+===================================================================== */
+let callStream = null;
+
+function startCall(isVideo){
+  const overlay = document.getElementById('callOverlay');
+  overlay.classList.add('show');
+  document.getElementById('callTimer').textContent = '00:00';
+  state.callSeconds = 0;
+  if(state.callInterval) clearInterval(state.callInterval);
+  state.callInterval = setInterval(()=>{
+    state.callSeconds++;
+    const m = String(Math.floor(state.callSeconds/60)).padStart(2,'0');
+    const s = String(state.callSeconds%60).padStart(2,'0');
+    document.getElementById('callTimer').textContent = m+':'+s;
+  }, 1000);
+
+  const video = document.getElementById('callVideo');
+  if(isVideo && navigator.mediaDevices){
+    navigator.mediaDevices.getUserMedia({video:true, audio:true})
+      .then(stream=>{
+        callStream = stream;
+        video.srcObject = stream;
+        video.play();
+        video.style.display = 'block';
+      })
+      .catch(()=>{
+        toast('Нет доступа к камере');
+        video.style.display = 'none';
+      });
+  } else {
+    video.style.display = 'none';
+  }
+}
+
+document.getElementById('chatAudioCall').addEventListener('click', ()=>{
+  if(!state.activeChatId) return;
+  startCall(false);
+});
+
+document.getElementById('chatVideoCall').addEventListener('click', ()=>{
+  if(!state.activeChatId) return;
+  startCall(true);
+});
+
+document.getElementById('callEndBtn').addEventListener('click', ()=>{
+  if(callStream){
+    callStream.getTracks().forEach(t=>t.stop());
+    callStream = null;
+  }
+  document.getElementById('callOverlay').classList.remove('show');
+  document.getElementById('callVideo').pause();
+  clearInterval(state.callInterval);
+  toast('Звонок завершён');
+});
 
 /* =====================================================================
    PROFILE
@@ -989,7 +1154,7 @@ function initProfileScreen(){
     const v = nameInput.value.trim() || u.name;
     state.user = DB.updateUser(state.user.id, { name: v });
     nameInput.value = v;
-    refreshMeMarkerIcon(); // обновляем имя на карте
+    refreshMeMarkerIcon();
   });
   const bioInput = document.getElementById('profileBioInput');
   bioInput.addEventListener('blur', ()=>{
@@ -1000,18 +1165,59 @@ function initProfileScreen(){
     DB.setCurrentId(null);
     location.reload();
   });
+
+  // Цвета
+  const c1 = document.getElementById('color1');
+  const c2 = document.getElementById('color2');
+  const c3 = document.getElementById('color3');
+  c1.value = u.bgColors[0] || '#ffffff';
+  c2.value = u.bgColors[1] || '#a0a0a0';
+  c3.value = u.bgColors[2] || '#000000';
+  updateAvatarBg();
+
+  c1.addEventListener('input', updateAvatarBg);
+  c2.addEventListener('input', updateAvatarBg);
+  c3.addEventListener('input', updateAvatarBg);
+
+  document.getElementById('randomColorsBtn').addEventListener('click', ()=>{
+    const randomColor = ()=> '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+    c1.value = randomColor();
+    c2.value = randomColor();
+    c3.value = randomColor();
+    updateAvatarBg();
+  });
+
+  document.getElementById('saveColorsBtn').addEventListener('click', ()=>{
+    const colors = [c1.value, c2.value, c3.value];
+    state.user = DB.updateUser(state.user.id, { bgColors: colors });
+    toast('Цвета сохранены!');
+  });
+}
+
+function updateAvatarBg(){
+  const c1 = document.getElementById('color1').value;
+  const c2 = document.getElementById('color2').value;
+  const c3 = document.getElementById('color3').value;
+  document.getElementById('profileAvatar').style.background = `linear-gradient(135deg, ${c1}, ${c2}, ${c3})`;
 }
 
 function refreshProfileUI(){
   const u = state.user;
-  document.getElementById('profileAvatar').innerHTML = u.avatar ? `<img src="${u.avatar}">` : u.name[0];
+  document.getElementById('profileAvatar').innerHTML = u.avatar ? `<img src="${u.avatar}">` : '';
   document.getElementById('profileNameInput').value = u.name || '';
   document.getElementById('profileBioInput').value = u.bio || '';
-  document.getElementById('profileEmail').textContent = u.email;
   document.getElementById('profileUserId').textContent = u.id;
+  if(u.bgColors){
+    document.getElementById('color1').value = u.bgColors[0] || '#ffffff';
+    document.getElementById('color2').value = u.bgColors[1] || '#a0a0a0';
+    document.getElementById('color3').value = u.bgColors[2] || '#000000';
+    updateAvatarBg();
+  }
 }
 
-/* battery */
+/* =====================================================================
+   BATTERY
+===================================================================== */
 function initBattery(){
   if(navigator.getBattery){
     navigator.getBattery().then(b=>{
@@ -1027,15 +1233,13 @@ function initBattery(){
 function fallbackBattery(){ updateBatteryUI(0.78, false); }
 function updateBatteryUI(level, charging){
   const pct = Math.round(level*100);
-  document.getElementById('batteryPct').textContent = pct + '%';
-  const fill = document.getElementById('batteryFill');
-  fill.style.width = pct + '%';
-  fill.classList.toggle('charge', charging);
-  document.getElementById('chargingLabel').classList.toggle('hidden', !charging);
+  document.getElementById('mapBatteryPct').textContent = pct + '%';
+  const chargeEl = document.getElementById('mapBatteryCharge');
+  chargeEl.classList.toggle('hidden', !charging);
 }
 
 /* =====================================================================
-   SETTINGS (inside profile)
+   SETTINGS
 ===================================================================== */
 function initSettingsScreen(){
   const s = state.user.settings;
@@ -1127,4 +1331,3 @@ function openChangePasswordModal(){
 </script>
 </body>
 </html>
-```
