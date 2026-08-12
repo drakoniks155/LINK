@@ -604,9 +604,7 @@ const DB = {
     let users = this.getUsers();
     users = users.filter(u=>u.id!==id);
     this.saveUsers(users);
-    // Удаляем все чаты этого пользователя
     LS.set('link_chats_'+id, {});
-    // Если это текущий пользователь — очищаем сессию
     if(this.getCurrentId()===id) this.setCurrentId(null);
     return true;
   },
@@ -763,9 +761,13 @@ function initNav(){
    MAP
 ===================================================================== */
 function initMap(){
-  state.map = L.map('map', { zoomControl:false, attributionControl:false }).setView([55.751244, 37.618423], 15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(state.map);
-  L.control.zoom({ position:'bottomright' }).addTo(state.map);
+  try {
+    state.map = L.map('map', { zoomControl:false, attributionControl:false }).setView([55.751244, 37.618423], 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(state.map);
+    L.control.zoom({ position:'bottomright' }).addTo(state.map);
+  } catch(e){
+    toast('Ошибка загрузки карты: ' + e.message);
+  }
 }
 
 function meMarkerHtml(){
@@ -782,6 +784,7 @@ function meMarkerHtml(){
 }
 
 function ensureMeMarker(latlng){
+  if(!state.map) return;
   if(!state.meMarker){
     const icon = L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] });
     state.meMarker = L.marker(latlng, { icon, zIndexOffset:1000 }).addTo(state.map);
@@ -793,7 +796,7 @@ function ensureMeMarker(latlng){
 }
 
 function refreshMeMarkerIcon(){
-  if(!state.meMarker) return;
+  if(!state.meMarker || !state.map) return;
   state.meMarker.setIcon(L.divIcon({ html: meMarkerHtml(), className:'', iconSize:[64,74], iconAnchor:[32,37] }));
 }
 
@@ -812,6 +815,7 @@ function bearing(a,b){
 }
 
 function addTrailPoint(lat,lng){
+  if(!state.map) return;
   const now = Date.now();
   state.trail.push({lat,lng,t:now});
   if(state.trail.length>36) state.trail.shift();
@@ -819,6 +823,7 @@ function addTrailPoint(lat,lng){
 }
 
 function redrawTrail(){
+  if(!state.map) return;
   state.trailLayers.forEach(l=>state.map.removeLayer(l));
   state.trailLayers = [];
   const pts = state.trail;
@@ -858,7 +863,7 @@ function startGeoWatch(){
     addTrailPoint(lat,lng);
     document.getElementById('speedBadge').innerHTML = state.speedKmh + ' <span class="unit">км/ч</span>';
 
-    if(!state._centeredOnce){ state._centeredOnce = true; state.map.setView([lat,lng], 16); }
+    if(!state._centeredOnce){ state._centeredOnce = true; if(state.map) state.map.setView([lat,lng], 16); }
   }, err=>{
     toast('Не удалось получить геопозицию');
   }, { enableHighAccuracy:true, maximumAge:2000, timeout:15000 });
@@ -1142,13 +1147,11 @@ function initProfileScreen(){
     state.user = DB.updateUser(state.user.id, { bio: bioInput.value.trim() });
   });
 
-  // ВЫХОД
   document.getElementById('logoutBtn').addEventListener('click', ()=>{
     DB.setCurrentId(null);
     location.reload();
   });
 
-  // УДАЛЕНИЕ АККАУНТА
   document.getElementById('deleteAccountBtn').addEventListener('click', ()=>{
     if(confirm('Вы уверены, что хотите удалить аккаунт? Это действие необратимо.')){
       DB.deleteUser(state.user.id);
@@ -1156,12 +1159,10 @@ function initProfileScreen(){
     }
   });
 
-  // ЦВЕТА ФОНА АВАТАРКИ
   const c1 = document.getElementById('color1');
   const c2 = document.getElementById('color2');
   const c3 = document.getElementById('color3');
   
-  // Загружаем сохранённые цвета
   if(u.bgColors){
     c1.value = u.bgColors[0] || '#ffffff';
     c2.value = u.bgColors[1] || '#a0a0a0';
