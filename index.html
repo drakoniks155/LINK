@@ -41,7 +41,7 @@ input,textarea{font-family:inherit;}
 .screen{ animation:fadeIn .4s var(--ease); }
 @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
 
-/* ============ AUTH ============ */
+/* ============ AUTH (ДВЕ КОЛОНКИ) ============ */
 #authScreen{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
   background:var(--bg); z-index:500; padding:24px;
@@ -75,6 +75,8 @@ input,textarea{font-family:inherit;}
 .btn:active{ transform:scale(.97); }
 .btn-ghost{ background:transparent; color:var(--fg); border:1px solid var(--border); }
 .btn-sm{ padding:9px 12px; font-size:12px; width:auto; }
+.btn-danger{ background:#e33; color:#fff; border-color:#e33; }
+.btn-danger:hover{ background:#f55; }
 .auth-err{ color:#ff5c5c; font-size:12px; margin-top:6px; min-height:14px; }
 .auth-foot{ text-align:center; font-size:11px; color:var(--fg-faint); margin-top:12px; line-height:1.6; }
 
@@ -99,6 +101,7 @@ nav#nav{
 .nav-btn svg{ width:22px; height:22px; }
 .nav-btn.active{ color:var(--fg); }
 .nav-btn .lbl{ font-size:9px; font-weight:600; letter-spacing:.2px; }
+#nav-logo{ display:none; font-size:10px; letter-spacing:3px; font-weight:800; color:var(--fg-faint); margin-bottom:18px; }
 
 @media (max-width:767px){
   #appBody{ flex-direction:column; }
@@ -118,12 +121,8 @@ nav#nav{
   }
   .nav-btn{ width:60px; height:56px; border-radius:var(--radius-md); }
   #screens{ order:2; }
-  #nav-logo{
-    font-size:10px; letter-spacing:3px; font-weight:800; color:var(--fg-faint); margin-bottom:18px;
-  }
+  #nav-logo{ display:block; }
 }
-#nav-logo{ display:none; }
-@media (min-width:768px){ #nav-logo{ display:block; } }
 
 /* ============ MAP ============ */
 #mapScreen{ position:relative; }
@@ -152,7 +151,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
   padding:8px 16px; font-size:12px; font-weight:700; box-shadow:var(--shadow);
   display:flex; align-items:center; gap:8px; pointer-events:auto;
 }
-.map-battery .b-icon{ font-size:16px; }
 .map-battery .b-pct{ color:var(--fg); }
 .map-battery .b-charge{ color:var(--green); }
 
@@ -273,7 +271,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .icon-btn:active{ transform:scale(.9); }
 .icon-btn.ghost{ background:var(--card2); color:var(--fg); border:1px solid var(--border); }
 
-/* ============ СТИКЕРЫ ============ */
 .sticker-panel{
   display:none; padding:8px 12px 12px; gap:8px; flex-wrap:wrap; justify-content:center;
   border-top:1px solid var(--border-soft); background:var(--bg);
@@ -284,10 +281,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
   transition:transform .15s, background .2s; user-select:none;
 }
 .sticker:hover{ transform:scale(1.2); background:var(--card2); }
-.sticker-fly{
-  position:fixed; font-size:40px; z-index:999; pointer-events:none;
-  transition:all .8s cubic-bezier(.22,.9,.35,1);
-}
 
 /* ============ PROFILE ============ */
 .profile-hero{ padding:34px 20px 22px; text-align:center; border-bottom:1px solid var(--border-soft); }
@@ -313,7 +306,7 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 .profile-section{ padding:16px 20px; border-bottom:1px solid var(--border-soft); }
 .profile-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
 .profile-row-label{ font-size:13px; color:var(--fg-dim); display:flex; align-items:center; gap:8px; }
-.color-pickers{ display:flex; gap:8px; justify-content:center; margin:8px 0; }
+.color-pickers{ display:flex; gap:8px; justify-content:center; margin:8px 0; flex-wrap:wrap; }
 .color-pickers input[type="color"]{ width:40px; height:40px; border:none; border-radius:50%; cursor:pointer; background:none; padding:0; }
 .color-pickers input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; }
 .color-pickers input[type="color"]::-webkit-color-swatch{ border-radius:50%; border:2px solid var(--border); }
@@ -425,7 +418,6 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
           <div class="speed-badge" id="speedBadge">0 <span class="unit">км/ч</span></div>
         </div>
         <div class="map-battery" id="mapBattery">
-          <span class="b-icon">🔋</span>
           <span class="b-pct" id="mapBatteryPct">--%</span>
           <span class="b-charge hidden" id="mapBatteryCharge">⚡</span>
         </div>
@@ -530,7 +522,8 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
           </div>
 
           <div class="profile-section" style="border-bottom:none;">
-            <button class="btn btn-ghost" id="logoutBtn">Выйти из аккаунта</button>
+            <button class="btn btn-ghost" id="logoutBtn" style="margin-bottom:6px;">🚪 Выйти из аккаунта</button>
+            <button class="btn btn-danger" id="deleteAccountBtn">🗑️ Удалить аккаунт</button>
           </div>
         </div>
       </section>
@@ -564,7 +557,7 @@ html[data-theme="dark"] .leaflet-marker-icon, html[data-theme="dark"] .leaflet-p
 "use strict";
 
 /* =====================================================================
-   ГЕНЕРАТОР ID
+   ГЕНЕРАТОР 4-ЗНАЧНОГО ID
 ===================================================================== */
 function generateShortId(){
   let id;
@@ -606,6 +599,16 @@ const DB = {
     const idx = users.findIndex(u=>u.id===id);
     if(idx>-1){ users[idx] = Object.assign({}, users[idx], patch); this.saveUsers(users); return users[idx]; }
     return null;
+  },
+  deleteUser(id){
+    let users = this.getUsers();
+    users = users.filter(u=>u.id!==id);
+    this.saveUsers(users);
+    // Удаляем все чаты этого пользователя
+    LS.set('link_chats_'+id, {});
+    // Если это текущий пользователь — очищаем сессию
+    if(this.getCurrentId()===id) this.setCurrentId(null);
+    return true;
   },
   addFriend(userId, friendId){
     const u = this.findById(userId);
@@ -877,7 +880,7 @@ function renderFriendsList(){
   friends.forEach(f=>{
     const item = document.createElement('div');
     item.className='list-item';
-    const isOnline = true; // заглушка
+    const isOnline = true;
     item.innerHTML = `
       <div class="avatar-wrap">
         <div class="avatar">${f.avatar?`<img src="${f.avatar}">`:f.name[0]}</div>
@@ -1028,29 +1031,7 @@ function sendSticker(sticker){
   saveChats();
   renderMessages();
   renderChatsList();
-  animateSticker(sticker);
   playStickerSound();
-}
-
-function animateSticker(sticker){
-  const el = document.createElement('div');
-  el.className = 'sticker-fly';
-  el.textContent = sticker;
-  el.style.left = '50%';
-  el.style.top = '80%';
-  el.style.transform = 'translateX(-50%) scale(0.5)';
-  document.body.appendChild(el);
-
-  requestAnimationFrame(()=>{
-    el.style.left = '20%';
-    el.style.top = '20%';
-    el.style.transform = 'translateX(0) scale(1.2)';
-  });
-
-  setTimeout(()=>{
-    el.style.opacity = '0';
-    setTimeout(()=>el.remove(), 400);
-  }, 800);
 }
 
 function playStickerSound(){
@@ -1161,18 +1142,31 @@ function initProfileScreen(){
     state.user = DB.updateUser(state.user.id, { bio: bioInput.value.trim() });
   });
 
+  // ВЫХОД
   document.getElementById('logoutBtn').addEventListener('click', ()=>{
     DB.setCurrentId(null);
     location.reload();
   });
 
-  // Цвета
+  // УДАЛЕНИЕ АККАУНТА
+  document.getElementById('deleteAccountBtn').addEventListener('click', ()=>{
+    if(confirm('Вы уверены, что хотите удалить аккаунт? Это действие необратимо.')){
+      DB.deleteUser(state.user.id);
+      location.reload();
+    }
+  });
+
+  // ЦВЕТА ФОНА АВАТАРКИ
   const c1 = document.getElementById('color1');
   const c2 = document.getElementById('color2');
   const c3 = document.getElementById('color3');
-  c1.value = u.bgColors[0] || '#ffffff';
-  c2.value = u.bgColors[1] || '#a0a0a0';
-  c3.value = u.bgColors[2] || '#000000';
+  
+  // Загружаем сохранённые цвета
+  if(u.bgColors){
+    c1.value = u.bgColors[0] || '#ffffff';
+    c2.value = u.bgColors[1] || '#a0a0a0';
+    c3.value = u.bgColors[2] || '#000000';
+  }
   updateAvatarBg();
 
   c1.addEventListener('input', updateAvatarBg);
