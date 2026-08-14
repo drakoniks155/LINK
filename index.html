@@ -1,1747 +1,2144 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
-
-  <meta name="theme-color" content="#050505">
-
-  <title>LINкK</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  >
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  >
-
-  <style>
-
-    /* =========================================================
-       RESET
-    ========================================================= */
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #050505;
-      color: #fff;
-      font-family: "Inter", sans-serif;
-    }
-
-    body {
-      touch-action: manipulation;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-
-    /* =========================================================
-       APP
-    ========================================================= */
-
-    #app {
-      position: fixed;
-      inset: 0;
-      background: #050505;
-    }
-
-    #map {
-      position: absolute;
-      inset: 0;
-      background: #101010;
-    }
-
-
-    /* =========================================================
-       LOADING SCREEN
-    ========================================================= */
-
-    #loadingScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background: #050505;
-
-      transition:
-        opacity .6s ease,
-        visibility .6s ease;
-    }
-
-    #loadingScreen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .loading-logo {
-      font-size: 54px;
-      font-weight: 800;
-      letter-spacing: -5px;
-
-      animation:
-        logoPulse 1.4s ease-in-out infinite;
-    }
-
-    @keyframes logoPulse {
-
-      0%,
-      100% {
-        opacity: .35;
-        transform: scale(.96);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-    }
-
-
-    /* =========================================================
-       TOP BAR
-    ========================================================= */
-
-    .top-bar {
-      position: absolute;
-
-      top: 15px;
-      left: 15px;
-      right: 15px;
-
-      z-index: 500;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      pointer-events: none;
-    }
-
-    .logo {
-      padding: 12px 15px;
-
-      border-radius: 17px;
-
-      background: rgba(5, 5, 5, .76);
-      border: 1px solid rgba(255, 255, 255, .1);
-
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      font-size: 20px;
-      font-weight: 800;
-
-      letter-spacing: -1.6px;
-
-      box-shadow:
-        0 10px 35px rgba(0, 0, 0, .2);
-
-      pointer-events: auto;
-    }
-
-
-    /* =========================================================
-       PROFILE BUTTON
-    ========================================================= */
-
-    .profile-button {
-      width: 46px;
-      height: 46px;
-
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 50%;
-
-      background: rgba(5, 5, 5, .76);
-      color: #fff;
-
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      overflow: hidden;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      cursor: pointer;
-
-      pointer-events: auto;
-
-      transition:
-        transform .2s ease,
-        border-color .2s ease;
-    }
-
-    .profile-button:active {
-      transform: scale(.92);
-    }
-
-    .profile-button img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-
-    /* =========================================================
-       LEAFLET
-    ========================================================= */
-
-    .leaflet-control-zoom {
-      border: none !important;
-
-      margin-top: 78px !important;
-      margin-right: 15px !important;
-    }
-
-    .leaflet-control-zoom a {
-      width: 42px !important;
-      height: 42px !important;
-
-      line-height: 40px !important;
-
-      background: rgba(7, 7, 7, .84) !important;
-      color: #fff !important;
-
-      border: 1px solid rgba(255, 255, 255, .1) !important;
-
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-    }
-
-    .leaflet-control-zoom a:first-child {
-      border-radius: 13px 13px 0 0 !important;
-    }
-
-    .leaflet-control-zoom a:last-child {
-      border-radius: 0 0 13px 13px !important;
-    }
-
-    .leaflet-control-attribution {
-      background: rgba(0, 0, 0, .45) !important;
-      color: #777 !important;
-    }
-
-    .leaflet-control-attribution a {
-      color: #999 !important;
-    }
-
-
-    /* =========================================================
-       LOCATION CARD
-    ========================================================= */
-
-    .location-card {
-      position: absolute;
-
-      left: 50%;
-      bottom: 19px;
-
-      transform: translateX(-50%);
-
-      z-index: 500;
-
-      width: min(410px, calc(100% - 30px));
-
-      min-height: 76px;
-
-      padding: 13px 15px;
-
-      display: flex;
-      align-items: center;
-
-      gap: 12px;
-
-      border-radius: 23px;
-
-      background: rgba(7, 7, 7, .80);
-
-      border: 1px solid rgba(255, 255, 255, .11);
-
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-
-      box-shadow:
-        0 20px 70px rgba(0, 0, 0, .4);
-    }
-
-
-    /* =========================================================
-       MINI AVATAR
-    ========================================================= */
-
-    .mini-avatar {
-      width: 47px;
-      height: 47px;
-
-      flex: 0 0 47px;
-
-      border-radius: 50%;
-
-      background: #fff;
-      color: #000;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      overflow: hidden;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      border: 2px solid rgba(255, 255, 255, .8);
-    }
-
-    .mini-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-
-    /* =========================================================
-       LOCATION INFO
-    ========================================================= */
-
-    .location-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .location-name {
-      font-size: 15px;
-      font-weight: 700;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .location-status {
-      margin-top: 5px;
-
-      font-size: 11px;
-
-      color: #8d8d8d;
-
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-
-      border-radius: 50%;
-
-      background: #fff;
-
-      box-shadow:
-        0 0 10px rgba(255, 255, 255, .8);
-
-      animation:
-        statusPulse 1.7s ease-in-out infinite;
-    }
-
-    @keyframes statusPulse {
-
-      0%,
-      100% {
-        opacity: .4;
-      }
-
-      50% {
-        opacity: 1;
-      }
-
-    }
-
-
-    /* =========================================================
-       BATTERY
-    ========================================================= */
-
-    .battery {
-      min-width: 75px;
-
-      text-align: right;
-
-      color: #888;
-
-      font-size: 10px;
-      line-height: 1.5;
-    }
-
-    .battery strong {
-      color: #fff;
-      font-size: 14px;
-    }
-
-
-    /* =========================================================
-       LOCATION PERMISSION
-    ========================================================= */
-
-    .permission-overlay {
-      position: absolute;
-      inset: 0;
-
-      z-index: 2000;
-
-      display: none;
-
-      align-items: center;
-      justify-content: center;
-
-      padding: 20px;
-
-      background: rgba(0, 0, 0, .42);
-
-      backdrop-filter: blur(9px);
-      -webkit-backdrop-filter: blur(9px);
-    }
-
-    .permission-overlay.visible {
-      display: flex;
-    }
-
-    .permission-box {
-      width: min(390px, 100%);
-
-      padding: 27px;
-
-      border-radius: 29px;
-
-      background: rgba(12, 12, 12, .95);
-
-      border: 1px solid rgba(255, 255, 255, .12);
-
-      box-shadow:
-        0 30px 100px rgba(0, 0, 0, .6);
-
-      text-align: center;
-
-      animation:
-        permissionIn .35s ease;
-    }
-
-    @keyframes permissionIn {
-
-      from {
-        opacity: 0;
-        transform: translateY(15px) scale(.97);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-
-    }
-
-    .permission-icon {
-      width: 70px;
-      height: 70px;
-
-      margin: 0 auto 18px;
-
-      border-radius: 23px;
-
-      background: #fff;
-      color: #000;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 30px;
-
-      box-shadow:
-        0 12px 40px rgba(255, 255, 255, .08);
-    }
-
-    .permission-box h2 {
-      margin: 0;
-
-      font-size: 21px;
-      font-weight: 700;
-
-      letter-spacing: -.5px;
-    }
-
-    .permission-box p {
-      margin: 11px 0 22px;
-
-      color: #888;
-
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .location-button {
-      width: 100%;
-      height: 54px;
-
-      border: 0;
-      border-radius: 17px;
-
-      background: #fff;
-      color: #000;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      cursor: pointer;
-
-      transition:
-        transform .2s ease;
-    }
-
-    .location-button:active {
-      transform: scale(.97);
-    }
-
-
-    /* =========================================================
-       ERROR / STATUS
-    ========================================================= */
-
-    .error-message {
-      position: absolute;
-
-      top: 82px;
-      left: 50%;
-
-      transform: translateX(-50%) translateY(-10px);
-
-      z-index: 1500;
-
-      width: min(370px, calc(100% - 30px));
-
-      padding: 13px 16px;
-
-      border-radius: 15px;
-
-      background: rgba(10, 10, 10, .88);
-
-      border: 1px solid rgba(255, 255, 255, .1);
-
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      color: #bbb;
-
-      text-align: center;
-
-      font-size: 12px;
-
-      opacity: 0;
-      pointer-events: none;
-
-      transition:
-        opacity .3s ease,
-        transform .3s ease;
-    }
-
-    .error-message.show {
-      opacity: 1;
-
-      transform:
-        translateX(-50%)
-        translateY(0);
-    }
-
-
-    /* =========================================================
-       USER MAP MARKER
-    ========================================================= */
-
-    .link-marker {
-      position: relative;
-
-      width: 82px;
-      height: 105px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .marker-pulse {
-      position: absolute;
-
-      width: 55px;
-      height: 55px;
-
-      border-radius: 50%;
-
-      background:
-        rgba(255, 255, 255, .23);
-
-      animation:
-        pulseMain 2s ease-in-out infinite;
-    }
-
-    .marker-pulse-ring {
-      position: absolute;
-
-      width: 70px;
-      height: 70px;
-
-      border-radius: 50%;
-
-      border: 1px solid rgba(255, 255, 255, .25);
-
-      animation:
-        pulseRing 2.3s ease-out infinite;
-    }
-
-    .marker-core {
-      position: relative;
-
-      z-index: 5;
-
-      width: 55px;
-      height: 55px;
-
-      border-radius: 50%;
-
-      background: #fff;
-      color: #000;
-
-      border: 3px solid #fff;
-
-      box-shadow:
-        0 6px 28px rgba(0, 0, 0, .55),
-        0 0 0 3px rgba(0, 0, 0, .28);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      overflow: hidden;
-
-      animation:
-        markerFloat 2s ease-in-out infinite;
-    }
-
-    .marker-core img {
-      width: 100%;
-      height: 100%;
-
-      object-fit: cover;
-    }
-
-    .marker-core span {
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .marker-name {
-      position: absolute;
-
-      top: 72px;
-      left: 50%;
-
-      transform: translateX(-50%);
-
-      white-space: nowrap;
-
-      padding: 5px 9px;
-
-      border-radius: 10px;
-
-      background: rgba(0, 0, 0, .78);
-
-      border: 1px solid rgba(255, 255, 255, .08);
-
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-
-      color: #fff;
-
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    @keyframes pulseMain {
-
-      0%,
-      100% {
-        transform: scale(.78);
-        opacity: .34;
-      }
-
-      50% {
-        transform: scale(1.18);
-        opacity: .1;
-      }
-
-    }
-
-    @keyframes pulseRing {
-
-      0% {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    background: #111;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111;
+}
+
+.app {
+    width: 100%;
+    max-width: 520px;
+    height: 100vh;
+    height: 100dvh;
+    margin: auto;
+    background: #f4f4f4;
+    overflow: hidden;
+    position: relative;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth {
+    padding: 28px 22px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    font-size: 58px;
+    font-weight: 900;
+    letter-spacing: -5px;
+    margin-bottom: 3px;
+}
+
+.subtitle {
+    color: #777;
+    margin: 0 0 28px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 28px;
+    padding: 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.1);
+}
+
+.auth-tabs {
+    display: flex;
+    background: #eee;
+    padding: 4px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.auth-tabs button {
+    flex: 1;
+    border: 0;
+    padding: 12px;
+    border-radius: 11px;
+    background: transparent;
+    font-weight: 800;
+    color: #777;
+}
+
+.auth-tabs button.active {
+    background: #111;
+    color: white;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+.field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 900;
+    color: #777;
+    margin-bottom: 7px;
+}
+
+.field input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 15px;
+    background: #fafafa;
+    outline: none;
+    font-size: 15px;
+}
+
+.field input:focus {
+    border-color: #111;
+}
+
+.primary {
+    width: 100%;
+    border: 0;
+    background: #111;
+    color: white;
+    border-radius: 15px;
+    padding: 15px;
+    font-weight: 900;
+    margin-top: 5px;
+}
+
+.error {
+    min-height: 20px;
+    color: #d22;
+    font-size: 13px;
+    margin-top: 9px;
+}
+
+.demo {
+    color: #999;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+    position: relative;
+    flex-direction: column;
+}
+
+.topbar {
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-size: 26px;
+    font-weight: 950;
+    letter-spacing: -1px;
+}
+
+.top-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: rgba(255,255,255,.9);
+    font-size: 20px;
+}
+
+/* =========================
+   MAP
+========================= */
+
+.map {
+    position: absolute;
+    inset: 0 0 95px 0;
+    overflow: hidden;
+    background:
+        linear-gradient(30deg, transparent 47%, #fff 48%, #fff 51%, transparent 52%),
+        linear-gradient(-30deg, transparent 47%, #fff 48%, #fff 51%, transparent 52%),
+        #e9e9e7;
+    background-size: 180px 180px;
+}
+
+.map::before {
+    content: "";
+    position: absolute;
+    width: 150%;
+    height: 45px;
+    background: #fff;
+    top: 38%;
+    left: -25%;
+    transform: rotate(-18deg);
+    box-shadow: 0 0 0 1px #ddd;
+}
+
+.map::after {
+    content: "";
+    position: absolute;
+    width: 150%;
+    height: 30px;
+    background: #fff;
+    top: 67%;
+    left: -25%;
+    transform: rotate(15deg);
+    box-shadow: 0 0 0 1px #ddd;
+}
+
+.location {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.pulse {
+    position: absolute;
+    inset: 0;
+    border: 3px solid #20d66f;
+    border-radius: 50%;
+    animation: pulse 1.7s infinite;
+}
+
+.location-dot {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    left: 11px;
+    top: 11px;
+    background: white;
+    border: 3px solid #111;
+    border-radius: 50%;
+    box-shadow: 0 5px 20px rgba(0,0,0,.2);
+}
+
+.arrow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 16px solid #111;
+}
+
+@keyframes pulse {
+    0% {
         transform: scale(.7);
-        opacity: .65;
-      }
+        opacity: 1;
+    }
 
-      100% {
-        transform: scale(1.4);
+    70% {
+        transform: scale(1.8);
         opacity: 0;
-      }
-
     }
 
-    @keyframes markerFloat {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-7px);
-      }
-
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
     }
+}
 
+/* =========================
+   LOCATION PERMISSION
+========================= */
 
-    /* =========================================================
-       MOBILE
-    ========================================================= */
+.permission {
+    display: none;
+    position: absolute;
+    z-index: 30;
+    left: 18px;
+    right: 18px;
+    bottom: 110px;
+    background: white;
+    padding: 18px;
+    border-radius: 23px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.2);
+}
 
-    @media (max-width: 600px) {
+.permission.show {
+    display: block;
+}
 
-      .top-bar {
-        top: 12px;
-        left: 12px;
-        right: 12px;
-      }
+.permission strong {
+    display: block;
+    font-size: 17px;
+}
 
-      .location-card {
-        bottom: 14px;
+.permission p {
+    margin: 7px 0 14px;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.4;
+}
 
-        width:
-          calc(100% - 24px);
-      }
+.permission-buttons {
+    display: flex;
+    gap: 8px;
+}
 
-      .leaflet-control-zoom {
-        margin-top: 72px !important;
-        margin-right: 12px !important;
-      }
+.permission-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: 0;
+    border-radius: 13px;
+    font-weight: 900;
+}
 
+.cancel {
+    background: #eee;
+}
+
+.allow {
+    background: #111;
+    color: white;
+}
+
+/* =========================
+   PANELS
+========================= */
+
+.panel {
+    display: none;
+    position: absolute;
+    z-index: 15;
+    inset: 0 0 95px;
+    padding: 85px 18px 20px;
+    overflow-y: auto;
+    background: #f4f4f4;
+}
+
+.panel.active {
+    display: block;
+}
+
+.panel h1 {
+    margin: 0 0 20px;
+    font-size: 34px;
+    letter-spacing: -2px;
+}
+
+.card {
+    background: white;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.muted {
+    color: #888;
+    font-size: 13px;
+}
+
+.code {
+    font-size: 31px;
+    font-weight: 950;
+    margin-top: 10px;
+    letter-spacing: 5px;
+}
+
+.avatar {
+    width: 54px;
+    height: 54px;
+    background: #111;
+    color: white;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.friend:last-child {
+    border-bottom: 0;
+}
+
+.friend-info {
+    flex: 1;
+}
+
+.friend-name {
+    font-weight: 900;
+}
+
+.online {
+    width: 9px;
+    height: 9px;
+    background: #20d66f;
+    border-radius: 50%;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.big-avatar {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #111;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.profile-name {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.setting:last-child {
+    border-bottom: 0;
+}
+
+.setting-title {
+    font-weight: 850;
+}
+
+.setting-description {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.toggle {
+    width: 50px;
+    height: 29px;
+    border: 0;
+    background: #ddd;
+    border-radius: 20px;
+    position: relative;
+}
+
+.toggle::after {
+    content: "";
+    width: 23px;
+    height: 23px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: .2s;
+}
+
+.toggle.on {
+    background: #111;
+}
+
+.toggle.on::after {
+    left: 24px;
+}
+
+.logout {
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 14px;
+    font-weight: 900;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.bottom-nav {
+    position: absolute;
+    z-index: 40;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    height: 70px;
+    border-radius: 25px;
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(18px);
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    padding: 7px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.15);
+}
+
+.bottom-nav button {
+    border: 0;
+    background: transparent;
+    border-radius: 19px;
+    color: #777;
+    font-weight: 850;
+    font-size: 11px;
+}
+
+.bottom-nav button.active {
+    background: #111;
+    color: white;
+}
+
+.nav-icon {
+    display: block;
+    font-size: 21px;
+    margin-bottom: 3px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    left: 18px;
+    right: 18px;
+    top: 78px;
+    padding: 14px;
+    background: #111;
+    color: white;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.toast.show {
+    display: block;
+}
+
+@media (min-width: 700px) {
+    .app {
+        margin-top: 20px;
+        height: 900px;
+        border-radius: 35px;
+        box-shadow: 0 20px 80px #000;
     }
-
-  </style>
+}
+</style>
 </head>
-
 
 <body>
 
+<div class="app">
 
-  <!-- =======================================================
-       APP
-  ======================================================== -->
+<!-- =========================
+     LOGIN / REGISTER
+========================= -->
 
-  <main id="app">
+<section id="authScreen" class="screen auth active">
 
-    <div id="map"></div>
+    <div class="logo">Link</div>
+    <p class="subtitle">Друзья. Карта. Связь.</p>
 
+    <div class="auth-card">
 
-    <!-- =====================================================
-         TOP BAR
-    ====================================================== -->
+        <div class="auth-tabs">
+            <button id="loginTab"
+                    class="active"
+                    onclick="changeAuthMode('login')">
+                Войти
+            </button>
 
-    <div class="top-bar">
-
-      <div class="logo">
-        LINK
-      </div>
-
-      <button
-        class="profile-button"
-        id="profileButton"
-        type="button"
-        aria-label="Профиль"
-      >
-        <span id="profileInitial">?</span>
-      </button>
-
-    </div>
-
-
-    <!-- =====================================================
-         ERROR
-    ====================================================== -->
-
-    <div
-      class="error-message"
-      id="errorMessage"
-    ></div>
-
-
-    <!-- =====================================================
-         LOCATION CARD
-    ====================================================== -->
-
-    <div class="location-card">
-
-      <div
-        class="mini-avatar"
-        id="miniAvatar"
-      >
-        <span id="miniInitial">?</span>
-      </div>
-
-
-      <div class="location-info">
-
-        <div
-          class="location-name"
-          id="userName"
-        >
-          Ты
+            <button id="registerTab"
+                    onclick="changeAuthMode('register')">
+                Регистрация
+            </button>
         </div>
 
-        <div class="location-status">
-
-          <span class="status-dot"></span>
-
-          <span id="locationStatus">
-            Определяем геопозицию...
-          </span>
-
+        <div class="field">
+            <label>EMAIL</label>
+            <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+            >
         </div>
 
-      </div>
-
-
-      <div
-        class="battery"
-        id="batteryInfo"
-      >
-        🔋 <strong>—</strong>
-      </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         LOCATION PERMISSION
-    ====================================================== -->
-
-    <div
-      class="permission-overlay"
-      id="permissionOverlay"
-    >
-
-      <div class="permission-box">
-
-        <div class="permission-icon">
-          ◎
+        <div class="field">
+            <label>ПАРОЛЬ</label>
+            <input
+                id="password"
+                type="password"
+                placeholder="Минимум 6 символов"
+            >
         </div>
 
-        <h2>
-          Твоя геопозиция
-        </h2>
+        <div id="usernameField"
+             class="field"
+             style="display:none">
 
-        <p>
-          Link покажет твоё местоположение
-          на карте. Для этого разреши браузеру
-          доступ к геопозиции устройства.
-        </p>
+            <label>ИМЯ</label>
+
+            <input
+                id="username"
+                type="text"
+                placeholder="Твоё имя"
+            >
+        </div>
 
         <button
-          class="location-button"
-          id="locationButton"
-          type="button"
-        >
-          Разрешить геопозицию
+            id="authButton"
+            class="primary"
+            onclick="authenticate()">
+
+            Войти
+
         </button>
 
-      </div>
+        <div id="authError" class="error"></div>
+
+        <p class="demo">
+            Демо-версия Link.<br>
+            Данные сохраняются только в этом браузере.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MAIN APPLICATION
+========================= -->
+
+<section id="mainScreen" class="screen main">
+
+    <header class="topbar">
+
+        <div class="brand">
+            Link
+        </div>
+
+        <div class="top-buttons">
+
+            <button
+                class="icon"
+                onclick="showToast('Новых уведомлений нет')">
+                ♢
+            </button>
+
+            <button
+                class="icon"
+                onclick="showToast('Поиск друзей')">
+                ⌕
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAP -->
+
+    <div id="map" class="map">
+
+        <div
+            id="locationMarker"
+            class="location">
+
+            <div class="pulse"></div>
+
+            <div class="location-dot"></div>
+
+            <div class="arrow"></div>
+
+        </div>
 
     </div>
 
 
-    <!-- =====================================================
-         LOADING
-    ====================================================== -->
+    <!-- LOCATION PERMISSION -->
 
-    <div id="loadingScreen">
+    <div id="permission"
+         class="permission">
 
-      <div class="loading-logo">
-        LINK
-      </div>
+        <strong>
+            Показать твою геопозицию?
+        </strong>
+
+        <p>
+            Link может использовать твою геопозицию,
+            чтобы показать тебя на карте.
+        </p>
+
+        <div class="permission-buttons">
+
+            <button
+                class="cancel"
+                onclick="hidePermission()">
+                Позже
+            </button>
+
+            <button
+                class="allow"
+                onclick="requestLocation()">
+                Разрешить
+            </button>
+
+        </div>
 
     </div>
 
-  </main>
 
+    <!-- FRIENDS -->
 
-  <!-- =======================================================
-       LEAFLET
-  ======================================================== -->
+    <section
+        id="friendsPanel"
+        class="panel">
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  ></script>
+        <h1>Друзья</h1>
 
+        <div class="card">
 
-  <script>
+            <div class="row">
 
-    /* =========================================================
-       LINK — CONFIGURATION
-    ========================================================= */
+                <div>
+                    <b>Твой код</b>
 
-    const CONFIG = {
+                    <div class="muted">
+                        Отправь его другу
+                    </div>
+                </div>
 
-      /*
-        Имя пользователя.
-
-        Позже его можно заменить на имя
-        из профиля Link.
-      */
-
-      username: "Ты",
-
-      /*
-        URL аватарки.
-
-        Если оставить пустым — будет
-        белый круг с первой буквой имени.
-      */
-
-      avatarUrl: "",
-
-      /*
-        Показывать ли запрос геопозиции
-        автоматически.
-      */
-
-      requestLocationAutomatically: true
-
-    };
-
-
-    /* =========================================================
-       STATE
-    ========================================================= */
-
-    let map = null;
-
-    let userMarker = null;
-
-    let locationWatchId = null;
-
-    let hasCenteredMap = false;
-
-    let battery = null;
-
-
-    /* =========================================================
-       ELEMENTS
-    ========================================================= */
-
-    const loadingScreen =
-      document.getElementById(
-        "loadingScreen"
-      );
-
-    const permissionOverlay =
-      document.getElementById(
-        "permissionOverlay"
-      );
-
-    const locationButton =
-      document.getElementById(
-        "locationButton"
-      );
-
-    const userName =
-      document.getElementById(
-        "userName"
-      );
-
-    const locationStatus =
-      document.getElementById(
-        "locationStatus"
-      );
-
-    const batteryInfo =
-      document.getElementById(
-        "batteryInfo"
-      );
-
-    const profileButton =
-      document.getElementById(
-        "profileButton"
-      );
-
-    const profileInitial =
-      document.getElementById(
-        "profileInitial"
-      );
-
-    const miniAvatar =
-      document.getElementById(
-        "miniAvatar"
-      );
-
-    const miniInitial =
-      document.getElementById(
-        "miniInitial"
-      );
-
-    const errorMessage =
-      document.getElementById(
-        "errorMessage"
-      );
-
-
-    /* =========================================================
-       INITIALIZE PROFILE
-    ========================================================= */
-
-    function initializeProfile() {
-
-      const name =
-        CONFIG.username ||
-        "Ты";
-
-      const firstLetter =
-        name
-          .trim()
-          .charAt(0)
-          .toUpperCase() ||
-        "?";
-
-
-      userName.textContent =
-        name;
-
-      profileInitial.textContent =
-        firstLetter;
-
-      miniInitial.textContent =
-        firstLetter;
-
-
-      if (CONFIG.avatarUrl) {
-
-        profileButton.innerHTML =
-          `
-            <img
-              src="${escapeHtml(CONFIG.avatarUrl)}"
-              alt=""
-            >
-          `;
-
-        miniAvatar.innerHTML =
-          `
-            <img
-              src="${escapeHtml(CONFIG.avatarUrl)}"
-              alt=""
-            >
-          `;
-
-      }
-
-    }
-
-
-    /* =========================================================
-       INITIALIZE MAP
-    ========================================================= */
-
-    function initializeMap() {
-
-      if (map) {
-        return;
-      }
-
-
-      /*
-        Стартовая позиция.
-
-        Она нужна только до получения
-        реальной геопозиции.
-      */
-
-      map = L.map(
-        "map",
-        {
-          zoomControl: true,
-          attributionControl: true
-        }
-      ).setView(
-        [54.7104, 20.4522],
-        13
-      );
-
-
-      /*
-        Тёмная карта.
-      */
-
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 20,
-
-          attribution:
-            '&copy; OpenStreetMap &copy; CARTO'
-        }
-      ).addTo(map);
-
-
-      /*
-        Исправляем размер карты
-        после загрузки.
-      */
-
-      setTimeout(
-        () => {
-          map.invalidateSize();
-        },
-        500
-      );
-
-    }
-
-
-    /* =========================================================
-       LOCATION PERMISSION
-    ========================================================= */
-
-    function askForLocation() {
-
-      if (!navigator.geolocation) {
-
-        showError(
-          "Твой браузер не поддерживает геопозицию."
-        );
-
-        locationStatus.textContent =
-          "Геопозиция недоступна";
-
-        hideLoading();
-
-        return;
-      }
-
-
-      /*
-        Показываем собственный красивый экран
-        перед системным запросом браузера.
-      */
-
-      permissionOverlay.classList.add(
-        "visible"
-      );
-
-    }
-
-
-    /* =========================================================
-       START LOCATION
-    ========================================================= */
-
-    function startLocation() {
-
-      permissionOverlay.classList.remove(
-        "visible"
-      );
-
-
-      locationStatus.textContent =
-        "Получаем геопозицию...";
-
-
-      /*
-        Получаем позицию сразу.
-      */
-
-      navigator.geolocation.getCurrentPosition(
-        onLocationSuccess,
-        onLocationError,
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 5000
-        }
-      );
-
-
-      /*
-        Затем продолжаем следить за пользователем.
-      */
-
-      locationWatchId =
-        navigator.geolocation.watchPosition(
-          onLocationSuccess,
-          onLocationError,
-          {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 3000
-          }
-        );
-
-    }
-
-
-    /* =========================================================
-       LOCATION BUTTON
-    ========================================================= */
-
-    locationButton.addEventListener(
-      "click",
-      startLocation
-    );
-
-
-    /* =========================================================
-       LOCATION SUCCESS
-    ========================================================= */
-
-    function onLocationSuccess(
-      position
-    ) {
-
-      const latitude =
-        position.coords.latitude;
-
-      const longitude =
-        position.coords.longitude;
-
-      const accuracy =
-        position.coords.accuracy;
-
-
-      console.log(
-        "LINK location:",
-        {
-          latitude,
-          longitude,
-          accuracy
-        }
-      );
-
-
-      locationStatus.textContent =
-        "Геопозиция активна";
-
-
-      /*
-        Создаём маркер.
-      */
-
-      if (!userMarker) {
-
-        userMarker =
-          L.marker(
-            [
-              latitude,
-              longitude
-            ],
-            {
-              icon:
-                createUserMarker()
-            }
-          ).addTo(map);
-
-      } else {
-
-        /*
-          Обновляем положение.
-        */
-
-        userMarker.setLatLng(
-          [
-            latitude,
-            longitude
-          ]
-        );
-
-      }
-
-
-      /*
-        При первом получении координат
-        центрируем карту.
-      */
-
-      if (!hasCenteredMap) {
-
-        map.setView(
-          [
-            latitude,
-            longitude
-          ],
-          17,
-          {
-            animate: true
-          }
-        );
-
-        hasCenteredMap = true;
-
-      }
-
-
-      hideLoading();
-
-    }
-
-
-    /* =========================================================
-       LOCATION ERROR
-    ========================================================= */
-
-    function onLocationError(
-      error
-    ) {
-
-      console.warn(
-        "Location error:",
-        error
-      );
-
-
-      if (error.code === 1) {
-
-        locationStatus.textContent =
-          "Доступ к геопозиции запрещён";
-
-        showError(
-          "Разреши доступ к геопозиции в настройках браузера."
-        );
-
-      }
-
-
-      else if (error.code === 2) {
-
-        locationStatus.textContent =
-          "Не удалось определить геопозицию";
-
-        showError(
-          "Не удалось определить твоё местоположение."
-        );
-
-      }
-
-
-      else if (error.code === 3) {
-
-        locationStatus.textContent =
-          "Истекло время ожидания";
-
-        showError(
-          "Получение геопозиции заняло слишком много времени."
-        );
-
-      }
-
-
-      else {
-
-        locationStatus.textContent =
-          "Ошибка геопозиции";
-
-        showError(
-          "Не удалось получить геопозицию."
-        );
-
-      }
-
-
-      hideLoading();
-
-    }
-
-
-    /* =========================================================
-       CREATE USER MARKER
-    ========================================================= */
-
-    function createUserMarker() {
-
-      const name =
-        CONFIG.username ||
-        "Ты";
-
-
-      const firstLetter =
-        name
-          .trim()
-          .charAt(0)
-          .toUpperCase() ||
-        "?";
-
-
-      let core;
-
-
-      /*
-        Если аватарки нет —
-        белый круг с именем/буквой.
-
-        Если аватарка есть —
-        показываем фотографию.
-      */
-
-      if (CONFIG.avatarUrl) {
-
-        core =
-          `
-            <img
-              src="${escapeHtml(CONFIG.avatarUrl)}"
-              alt=""
-            >
-          `;
-
-      } else {
-
-        core =
-          `
-            <span>
-              ${escapeHtml(firstLetter)}
-            </span>
-          `;
-
-      }
-
-
-      return L.divIcon({
-
-        className: "",
-
-        html:
-          `
-            <div class="link-marker">
-
-              <div
-                class="marker-pulse"
-              ></div>
-
-              <div
-                class="marker-pulse-ring"
-              ></div>
-
-              <div
-                class="marker-core"
-              >
-                ${core}
-              </div>
-
-              <div
-                class="marker-name"
-              >
-                ${escapeHtml(name)}
-              </div>
+                <button
+                    class="icon"
+                    onclick="copyFriendCode()">
+                    ⧉
+                </button>
 
             </div>
-          `,
 
-        iconSize:
-          [82, 105],
+            <div
+                id="friendCode"
+                class="code">
+                ----
+            </div>
 
-        iconAnchor:
-          [41, 42]
+        </div>
 
-      });
 
+        <div class="card">
+
+            <div
+                class="friend"
+                onclick="addFriend()">
+
+                <div class="avatar">
+                    +
+                </div>
+
+                <div class="friend-info">
+
+                    <div class="friend-name">
+                        Добавить друга
+                    </div>
+
+                    <div class="muted">
+                        По 4-значному коду
+                    </div>
+
+                </div>
+
+                <b>›</b>
+
+            </div>
+
+            <div id="friendList"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHATS -->
+
+    <section
+        id="chatsPanel"
+        class="panel">
+
+        <h1>Чаты</h1>
+
+        <div class="card">
+
+            <div class="friend">
+
+                <div class="avatar">
+                    L
+                </div>
+
+                <div class="friend-info">
+
+                    <div class="friend-name">
+                        Link
+                    </div>
+
+                    <div class="muted">
+                        Здесь появятся твои сообщения
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="primary"
+                onclick="showToast('Добавь друга, чтобы начать чат')">
+
+                Новый чат
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+
+    <section
+        id="mePanel"
+        class="panel">
+
+        <h1>Я</h1>
+
+        <div class="card">
+
+            <div class="profile">
+
+                <div
+                    id="bigAvatar"
+                    class="big-avatar">
+                    L
+                </div>
+
+                <div>
+
+                    <div
+                        id="profileName"
+                        class="profile-name">
+                        Link
+                    </div>
+
+                    <div
+                        id="profileEmail"
+                        class="muted">
+                        —
+                    </div>
+
+                    <div class="muted">
+
+                        ID:
+                        <span id="profileCode">
+                            ----
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="logout"
+                onclick="editProfile()">
+
+                Редактировать профиль
+
+            </button>
+
+        </div>
+
+
+        <!-- SETTINGS -->
+
+        <div class="card">
+
+            <div class="setting">
+
+                <div>
+
+                    <div class="setting-title">
+                        Режим невидимки
+                    </div>
+
+                    <div class="setting-description">
+                        Не показывать тебя друзьям
+                    </div>
+
+                </div>
+
+                <button
+                    id="invisibleToggle"
+                    class="toggle"
+                    onclick="toggleInvisible()">
+                </button>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+
+                    <div class="setting-title">
+                        Геопозиция
+                    </div>
+
+                    <div class="setting-description">
+                        Показывать своё местоположение
+                    </div>
+
+                </div>
+
+                <button
+                    id="locationToggle"
+                    class="toggle on"
+                    onclick="toggleLocationSharing()">
+                </button>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+
+                    <div class="setting-title">
+                        Уведомления
+                    </div>
+
+                    <div class="setting-description">
+                        Сообщения и заявки друзей
+                    </div>
+
+                </div>
+
+                <button
+                    class="toggle on"
+                    onclick="this.classList.toggle('on')">
+                </button>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+
+                    <div class="setting-title">
+                        Тёмная тема
+                    </div>
+
+                    <div class="setting-description">
+                        Чёрно-белый интерфейс
+                    </div>
+
+                </div>
+
+                <button
+                    class="toggle"
+                    onclick="showToast('В этой версии тема уже монохромная')">
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- OTHER OPTIONS -->
+
+        <div class="card">
+
+            <div class="setting">
+
+                <div>
+                    <div class="setting-title">
+                        Безопасность
+                    </div>
+
+                    <div class="setting-description">
+                        Пароль и сессии
+                    </div>
+                </div>
+
+                <b>›</b>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+                    <div class="setting-title">
+                        Приватность
+                    </div>
+
+                    <div class="setting-description">
+                        Кто может видеть тебя
+                    </div>
+                </div>
+
+                <b>›</b>
+
+            </div>
+
+
+            <div class="setting">
+
+                <div>
+                    <div class="setting-title">
+                        О Link
+                    </div>
+
+                    <div class="setting-description">
+                        Версия 1.0 Demo
+                    </div>
+                </div>
+
+                <b>›</b>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="logout"
+            onclick="logout()">
+
+            Выйти из аккаунта
+
+        </button>
+
+    </section>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+        <button
+            id="navMap"
+            class="active"
+            onclick="openTab('map')">
+
+            <span class="nav-icon">
+                ⌖
+            </span>
+
+            Карта
+
+        </button>
+
+
+        <button
+            id="navFriends"
+            onclick="openTab('friends')">
+
+            <span class="nav-icon">
+                ♧
+            </span>
+
+            Друзья
+
+        </button>
+
+
+        <button
+            id="navChats"
+            onclick="openTab('chats')">
+
+            <span class="nav-icon">
+                ◌
+            </span>
+
+            Чаты
+
+        </button>
+
+
+        <button
+            id="navMe"
+            onclick="openTab('me')">
+
+            <span class="nav-icon">
+                ●
+            </span>
+
+            Я
+
+        </button>
+
+    </nav>
+
+
+    <div
+        id="toast"
+        class="toast">
+    </div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =====================================
+   LINK DEMO DATABASE
+===================================== */
+
+const USERS_KEY = "link_users";
+const SESSION_KEY = "link_session";
+
+let authMode = "login";
+let watchId = null;
+
+
+/* =====================================
+   HELPERS
+===================================== */
+
+function getUsers() {
+
+    return JSON.parse(
+        localStorage.getItem(USERS_KEY) || "[]"
+    );
+
+}
+
+
+function saveUsers(users) {
+
+    localStorage.setItem(
+        USERS_KEY,
+        JSON.stringify(users)
+    );
+
+}
+
+
+function getCurrentUser() {
+
+    const id =
+        localStorage.getItem(SESSION_KEY);
+
+    return getUsers().find(
+        user => user.id === id
+    );
+
+}
+
+
+function createId() {
+
+    if (crypto.randomUUID) {
+        return crypto.randomUUID();
     }
 
+    return Date.now().toString();
 
-    /* =========================================================
-       BATTERY
-    ========================================================= */
+}
 
-    async function initializeBattery() {
 
-      /*
-        Battery Status API доступен
-        не во всех браузерах.
-      */
+function createFriendCode() {
 
-      if (
-        !("getBattery" in navigator)
-      ) {
+    let code;
 
-        batteryInfo.innerHTML =
-          `
-            🔋 <strong>—</strong>
-          `;
+    do {
+
+        code =
+            Math.floor(
+                1000 +
+                Math.random() * 9000
+            ).toString();
+
+    } while (
+        getUsers().some(
+            user => user.code === code
+        )
+    );
+
+    return code;
+
+}
+
+
+/* =====================================
+   AUTH MODE
+===================================== */
+
+function changeAuthMode(mode) {
+
+    authMode = mode;
+
+    document
+        .getElementById("loginTab")
+        .classList.toggle(
+            "active",
+            mode === "login"
+        );
+
+    document
+        .getElementById("registerTab")
+        .classList.toggle(
+            "active",
+            mode === "register"
+        );
+
+    document
+        .getElementById("usernameField")
+        .style.display =
+            mode === "register"
+            ? "block"
+            : "none";
+
+    document
+        .getElementById("authButton")
+        .textContent =
+            mode === "register"
+            ? "Создать аккаунт"
+            : "Войти";
+
+    document
+        .getElementById("authError")
+        .textContent = "";
+
+}
+
+
+/* =====================================
+   REGISTER / LOGIN
+===================================== */
+
+function authenticate() {
+
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const password =
+        document
+            .getElementById("password")
+            .value;
+
+    const username =
+        document
+            .getElementById("username")
+            .value
+            .trim();
+
+    const error =
+        document
+            .getElementById("authError");
+
+
+    if (!email || !password) {
+
+        error.textContent =
+            "Заполни email и пароль.";
 
         return;
 
-      }
-
-
-      try {
-
-        battery =
-          await navigator.getBattery();
-
-
-        updateBattery();
-
-
-        battery.addEventListener(
-          "levelchange",
-          updateBattery
-        );
-
-
-        battery.addEventListener(
-          "chargingchange",
-          updateBattery
-        );
-
-
-      } catch (error) {
-
-        console.warn(
-          "Battery API unavailable:",
-          error
-        );
-
-      }
-
     }
 
 
-    /* =========================================================
-       UPDATE BATTERY
-    ========================================================= */
+    if (password.length < 6) {
 
-    function updateBattery() {
+        error.textContent =
+            "Пароль должен содержать минимум 6 символов.";
 
-      if (!battery) {
         return;
-      }
-
-
-      const percent =
-        Math.round(
-          battery.level * 100
-        );
-
-
-      const charging =
-        battery.charging;
-
-
-      batteryInfo.innerHTML =
-        `
-          🔋 <strong>${percent}%</strong><br>
-          ${charging
-            ? "Заряжается"
-            : "Не заряжается"
-          }
-        `;
 
     }
 
 
-    /* =========================================================
-       PROFILE BUTTON
-    ========================================================= */
+    let users = getUsers();
 
-    profileButton.addEventListener(
-      "click",
-      () => {
 
-        showError(
-          "Профиль Link появится здесь."
+    /* REGISTER */
+
+    if (authMode === "register") {
+
+        if (!username) {
+
+            error.textContent =
+                "Введите имя.";
+
+            return;
+
+        }
+
+
+        if (
+            users.some(
+                user => user.email === email
+            )
+        ) {
+
+            error.textContent =
+                "Такой аккаунт уже существует.";
+
+            return;
+
+        }
+
+
+        const newUser = {
+
+            id: createId(),
+
+            email: email,
+
+            password: password,
+
+            name: username,
+
+            code: createFriendCode(),
+
+            friends: [],
+
+            invisible: false,
+
+            shareLocation: true
+
+        };
+
+
+        users.push(newUser);
+
+        saveUsers(users);
+
+        localStorage.setItem(
+            SESSION_KEY,
+            newUser.id
         );
 
-      }
+        openApplication();
+
+        return;
+
+    }
+
+
+    /* LOGIN */
+
+    const user =
+        users.find(
+            item =>
+                item.email === email &&
+                item.password === password
+        );
+
+
+    if (!user) {
+
+        error.textContent =
+            "Неверный email или пароль.";
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        SESSION_KEY,
+        user.id
+    );
+
+    openApplication();
+
+}
+
+
+/* =====================================
+   OPEN APP
+===================================== */
+
+function openApplication() {
+
+    document
+        .getElementById("authScreen")
+        .classList.remove("active");
+
+    document
+        .getElementById("mainScreen")
+        .classList.add("active");
+
+
+    updateProfile();
+
+    renderFriends();
+
+
+    setTimeout(() => {
+
+        document
+            .getElementById("permission")
+            .classList.add("show");
+
+    }, 600);
+
+}
+
+
+/* =====================================
+   PROFILE
+===================================== */
+
+function updateProfile() {
+
+    const user =
+        getCurrentUser();
+
+    if (!user) return;
+
+
+    document
+        .getElementById("profileName")
+        .textContent =
+            user.name;
+
+
+    document
+        .getElementById("profileEmail")
+        .textContent =
+            user.email;
+
+
+    document
+        .getElementById("profileCode")
+        .textContent =
+            user.code;
+
+
+    document
+        .getElementById("friendCode")
+        .textContent =
+            user.code;
+
+
+    document
+        .getElementById("bigAvatar")
+        .textContent =
+            user.name
+                .charAt(0)
+                .toUpperCase();
+
+
+    document
+        .getElementById("invisibleToggle")
+        .classList.toggle(
+            "on",
+            user.invisible
+        );
+
+
+    document
+        .getElementById("locationToggle")
+        .classList.toggle(
+            "on",
+            user.shareLocation
+        );
+
+}
+
+
+/* =====================================
+   LOGOUT
+===================================== */
+
+function logout() {
+
+    localStorage.removeItem(
+        SESSION_KEY
+    );
+
+    location.reload();
+
+}
+
+
+/* =====================================
+   TABS
+===================================== */
+
+function openTab(tab) {
+
+    const map =
+        document.getElementById("map");
+
+    const permission =
+        document.getElementById("permission");
+
+
+    const panels =
+        document.querySelectorAll(".panel");
+
+    panels.forEach(
+        panel =>
+            panel.classList.remove("active")
     );
 
 
-    /* =========================================================
-       SHOW ERROR
-    ========================================================= */
-
-    let errorTimer = null;
-
-    function showError(
-      text
-    ) {
-
-      errorMessage.textContent =
-        text;
-
-      errorMessage.classList.add(
-        "show"
-      );
+    document
+        .querySelectorAll(".bottom-nav button")
+        .forEach(
+            button =>
+                button.classList.remove("active")
+        );
 
 
-      clearTimeout(
-        errorTimer
-      );
+    if (tab === "map") {
+
+        map.style.display = "block";
+
+        permission.style.display = "";
+
+        document
+            .getElementById("navMap")
+            .classList.add("active");
+
+        return;
+
+    }
 
 
-      errorTimer =
-        setTimeout(
-          () => {
+    map.style.display = "none";
 
-            errorMessage.classList.remove(
-              "show"
+    permission.style.display = "none";
+
+
+    if (tab === "friends") {
+
+        document
+            .getElementById("friendsPanel")
+            .classList.add("active");
+
+        document
+            .getElementById("navFriends")
+            .classList.add("active");
+
+    }
+
+
+    if (tab === "chats") {
+
+        document
+            .getElementById("chatsPanel")
+            .classList.add("active");
+
+        document
+            .getElementById("navChats")
+            .classList.add("active");
+
+    }
+
+
+    if (tab === "me") {
+
+        document
+            .getElementById("mePanel")
+            .classList.add("active");
+
+        document
+            .getElementById("navMe")
+            .classList.add("active");
+
+    }
+
+}
+
+
+/* =====================================
+   GEOLOCATION
+===================================== */
+
+function hidePermission() {
+
+    document
+        .getElementById("permission")
+        .classList.remove("show");
+
+}
+
+
+function requestLocation() {
+
+    if (!navigator.geolocation) {
+
+        showToast(
+            "Геолокация не поддерживается браузером."
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            hidePermission();
+
+            updateMarker(
+                position.coords.latitude,
+                position.coords.longitude
             );
 
-          },
-          4500
-        );
-
-    }
+            showToast(
+                "Геопозиция разрешена"
+            );
 
 
-    /* =========================================================
-       HIDE LOADING
-    ========================================================= */
+            if (watchId !== null) {
 
-    function hideLoading() {
+                navigator.geolocation.clearWatch(
+                    watchId
+                );
 
-      setTimeout(
-        () => {
-
-          loadingScreen.classList.add(
-            "hidden"
-          );
-
-        },
-        300
-      );
-
-    }
+            }
 
 
-    /* =========================================================
-       ESCAPE HTML
-    ========================================================= */
+            watchId =
+                navigator.geolocation.watchPosition(
 
-    function escapeHtml(
-      value
-    ) {
+                    function(pos) {
 
-      return String(value)
+                        updateMarker(
+                            pos.coords.latitude,
+                            pos.coords.longitude
+                        );
 
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
+                    },
 
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
+                    function() {},
 
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
+                    {
+                        enableHighAccuracy: true,
+                        maximumAge: 10000
+                    }
 
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
-
-    }
-
-
-    /* =========================================================
-       START LINK
-    ========================================================= */
-
-    function startLink() {
-
-      initializeProfile();
-
-      initializeMap();
-
-      initializeBattery();
-
-
-      /*
-        Небольшая задержка,
-        чтобы карта успела загрузиться.
-      */
-
-      setTimeout(
-        () => {
-
-          hideLoading();
-
-
-          if (
-            CONFIG.requestLocationAutomatically
-          ) {
-
-            askForLocation();
-
-          }
+                );
 
         },
-        700
-      );
 
-    }
+        function() {
 
+            showToast(
+                "Не удалось получить геопозицию."
+            );
 
-    /* =========================================================
-       START
-    ========================================================= */
+        },
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      startLink
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+
     );
 
-  </script>
+}
+
+
+/*
+   Визуально перемещаем точку.
+   Для настоящей карты сюда можно
+   подключить Mapbox / Google Maps /
+   OpenStreetMap.
+*/
+
+function updateMarker(latitude, longitude) {
+
+    const x =
+        50 +
+        ((longitude % 1) * 15);
+
+    const y =
+        50 -
+        ((latitude % 1) * 15);
+
+
+    const marker =
+        document.getElementById(
+            "locationMarker"
+        );
+
+
+    marker.style.left =
+        Math.max(
+            8,
+            Math.min(92, x)
+        ) + "%";
+
+
+    marker.style.top =
+        Math.max(
+            12,
+            Math.min(88, y)
+        ) + "%";
+
+}
+
+
+/* =====================================
+   FRIENDS
+===================================== */
+
+function copyFriendCode() {
+
+    const user =
+        getCurrentUser();
+
+    if (!user) return;
+
+
+    if (
+        navigator.clipboard
+    ) {
+
+        navigator.clipboard.writeText(
+            user.code
+        );
+
+    }
+
+
+    showToast(
+        "Код скопирован"
+    );
+
+}
+
+
+function addFriend() {
+
+    const code =
+        prompt(
+            "Введите 4-значный код друга:"
+        );
+
+
+    if (!code) return;
+
+
+    const users =
+        getUsers();
+
+    const me =
+        getCurrentUser();
+
+
+    const friend =
+        users.find(
+            user =>
+                user.code === code &&
+                user.id !== me.id
+        );
+
+
+    if (!friend) {
+
+        showToast(
+            "Пользователь не найден"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !me.friends.includes(
+            friend.id
+        )
+    ) {
+
+        me.friends.push(
+            friend.id
+        );
+
+    }
+
+
+    if (
+        !friend.friends.includes(
+            me.id
+        )
+    ) {
+
+        friend.friends.push(
+            me.id
+        );
+
+    }
+
+
+    saveUsers(users);
+
+    renderFriends();
+
+    showToast(
+        "Друг добавлен"
+    );
+
+}
+
+
+function renderFriends() {
+
+    const me =
+        getCurrentUser();
+
+    const users =
+        getUsers();
+
+
+    const list =
+        document.getElementById(
+            "friendList"
+        );
+
+
+    const friends =
+        (me.friends || [])
+            .map(
+                id =>
+                    users.find(
+                        user =>
+                            user.id === id
+                    )
+            )
+            .filter(Boolean);
+
+
+    if (!friends.length) {
+
+        list.innerHTML = `
+            <div class="muted"
+                 style="padding-top:15px">
+
+                Пока нет друзей.<br>
+                Добавь первого по коду.
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        friends.map(
+            friend => `
+
+                <div class="friend">
+
+                    <div class="avatar">
+
+                        ${escapeHTML(
+                            friend.name
+                                .charAt(0)
+                                .toUpperCase()
+                        )}
+
+                    </div>
+
+                    <div class="friend-info">
+
+                        <div class="friend-name">
+
+                            ${escapeHTML(
+                                friend.name
+                            )}
+
+                        </div>
+
+                        <div class="muted">
+
+                            ID ${friend.code}
+
+                        </div>
+
+                    </div>
+
+                    <div class="online"></div>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(
+            /[&<>"']/g,
+            character => {
+
+                const symbols = {
+
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#039;"
+
+                };
+
+                return symbols[character];
+
+            }
+        );
+
+}
+
+
+/* =====================================
+   PROFILE SETTINGS
+===================================== */
+
+function toggleInvisible() {
+
+    const users =
+        getUsers();
+
+    const me =
+        getCurrentUser();
+
+
+    me.invisible =
+        !me.invisible;
+
+
+    saveUsers(users);
+
+    updateProfile();
+
+
+    showToast(
+        me.invisible
+            ? "Режим невидимки включён"
+            : "Режим невидимки выключен"
+    );
+
+}
+
+
+function toggleLocationSharing() {
+
+    const users =
+        getUsers();
+
+    const me =
+        getCurrentUser();
+
+
+    me.shareLocation =
+        !me.shareLocation;
+
+
+    saveUsers(users);
+
+    updateProfile();
+
+
+    showToast(
+        me.shareLocation
+            ? "Геопозиция включена"
+            : "Геопозиция выключена"
+    );
+
+}
+
+
+function editProfile() {
+
+    const me =
+        getCurrentUser();
+
+
+    const newName =
+        prompt(
+            "Новое имя:",
+            me.name
+        );
+
+
+    if (!newName) return;
+
+
+    const users =
+        getUsers();
+
+
+    const user =
+        users.find(
+            item =>
+                item.id === me.id
+        );
+
+
+    user.name =
+        newName.trim();
+
+
+    saveUsers(users);
+
+    updateProfile();
+
+    renderFriends();
+
+
+    showToast(
+        "Профиль обновлён"
+    );
+
+}
+
+
+/* =====================================
+   TOAST
+===================================== */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        2200
+    );
+
+}
+
+
+/* =====================================
+   STARTUP
+===================================== */
+
+(function start() {
+
+    const session =
+        localStorage.getItem(
+            SESSION_KEY
+        );
+
+
+    const user =
+        getCurrentUser();
+
+
+    if (
+        session &&
+        user
+    ) {
+
+        openApplication();
+
+    }
+
+})();
+
+</script>
 
 </body>
 </html>
