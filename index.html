@@ -2,41 +2,63 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Link</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Blink — друзья рядом</title>
+
+<meta name="theme-color" content="#000000">
+
+<!-- Leaflet -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
 }
 
+:root {
+    --bg: #050505;
+    --card: #101010;
+    --card2: #171717;
+    --text: #ffffff;
+    --muted: #888888;
+    --line: #292929;
+    --green: #4cff88;
+    --red: #ff5050;
+}
+
+html,
 body {
-    margin: 0;
-    background: #111;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #111;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
 }
 
 .app {
     width: 100%;
-    max-width: 520px;
-    height: 100vh;
     height: 100dvh;
-    margin: auto;
-    background: #f4f4f4;
-    overflow: hidden;
-    position: relative;
-}
-
-.screen {
-    display: none;
-    width: 100%;
-    height: 100%;
-}
-
-.screen.active {
-    display: flex;
+    background: #050505;
 }
 
 /* =========================
@@ -44,51 +66,103 @@ body {
 ========================= */
 
 .auth {
-    padding: 28px 22px;
-    flex-direction: column;
+    width: 100%;
+    height: 100dvh;
+    display: flex;
     justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #222 0,
+            #090909 35%,
+            #000 75%
+        );
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 420px;
+    animation: appear .6s ease;
 }
 
 .logo {
-    font-size: 58px;
-    font-weight: 900;
-    letter-spacing: -5px;
-    margin-bottom: 3px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.subtitle {
+.logo-mark {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #fff;
+    border-radius: 25px;
+
+    font-size: 38px;
+    font-weight: 900;
+
+    box-shadow:
+        0 0 40px rgba(255,255,255,.12);
+}
+
+.logo h1 {
+    font-size: 42px;
+    letter-spacing: -3px;
+}
+
+.logo p {
+    margin-top: 7px;
     color: #777;
-    margin: 0 0 28px;
 }
 
 .auth-card {
-    background: white;
-    border-radius: 28px;
-    padding: 22px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.1);
+    padding: 23px;
+
+    border: 1px solid #292929;
+    border-radius: 27px;
+
+    background: rgba(15,15,15,.94);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.5);
+
+    backdrop-filter: blur(20px);
 }
 
 .auth-tabs {
     display: flex;
-    background: #eee;
+    gap: 5px;
+
     padding: 4px;
-    border-radius: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+
+    border-radius: 15px;
+    background: #080808;
 }
 
-.auth-tabs button {
+.auth-tab {
     flex: 1;
+
     border: 0;
+    border-radius: 12px;
+
     padding: 12px;
-    border-radius: 11px;
-    background: transparent;
-    font-weight: 800;
+
     color: #777;
+    background: transparent;
+
+    font-weight: 800;
 }
 
-.auth-tabs button.active {
-    background: #111;
-    color: white;
+.auth-tab.active {
+    background: #fff;
+    color: #000;
 }
 
 .field {
@@ -97,49 +171,69 @@ body {
 
 .field label {
     display: block;
-    font-size: 11px;
-    font-weight: 900;
+
+    margin: 0 0 7px 4px;
+
     color: #777;
-    margin-bottom: 7px;
+    font-size: 12px;
 }
 
 .field input {
     width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    padding: 15px;
-    background: #fafafa;
+    height: 52px;
+
+    padding: 0 15px;
+
     outline: none;
-    font-size: 15px;
+
+    border: 1px solid #292929;
+    border-radius: 15px;
+
+    background: #090909;
+    color: #fff;
+
+    transition: .2s;
 }
 
 .field input:focus {
-    border-color: #111;
+    border-color: #777;
+
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.04);
 }
 
-.primary {
+.primary-btn {
     width: 100%;
-    border: 0;
-    background: #111;
-    color: white;
-    border-radius: 15px;
-    padding: 15px;
-    font-weight: 900;
+    height: 54px;
+
     margin-top: 5px;
+
+    border: 0;
+    border-radius: 16px;
+
+    background: #fff;
+    color: #000;
+
+    font-weight: 900;
+
+    transition: .2s;
 }
 
-.error {
-    min-height: 20px;
-    color: #d22;
-    font-size: 13px;
-    margin-top: 9px;
+.primary-btn:hover {
+    transform: translateY(-2px);
 }
 
-.demo {
-    color: #999;
-    text-align: center;
+.primary-btn:active {
+    transform: scale(.97);
+}
+
+.demo-text {
+    margin-top: 15px;
+
+    color: #555;
     font-size: 11px;
-    line-height: 1.5;
+
+    text-align: center;
 }
 
 /* =========================
@@ -147,267 +241,426 @@ body {
 ========================= */
 
 .main {
+    display: none;
+
+    width: 100%;
+    height: 100dvh;
+
     position: relative;
-    flex-direction: column;
 }
 
-.topbar {
+.main.active {
+    display: block;
+}
+
+.screen {
+    display: none;
+
     position: absolute;
-    z-index: 20;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 72px;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    inset: 0;
+
+    padding:
+        20px
+        18px
+        105px;
+
+    overflow-y: auto;
+
+    animation: screenIn .3s ease;
 }
 
-.brand {
-    font-size: 26px;
-    font-weight: 950;
+.screen.active {
+    display: block;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.top h2 {
+    font-size: 28px;
     letter-spacing: -1px;
 }
 
-.top-buttons {
-    display: flex;
-    gap: 8px;
+.icon-btn {
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid #292929;
+    border-radius: 14px;
+
+    background: #101010;
+    color: #fff;
+
+    font-size: 20px;
+
+    transition: .2s;
 }
 
-.icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    background: rgba(255,255,255,.9);
-    font-size: 20px;
+.icon-btn:hover {
+    background: #191919;
+    transform: translateY(-2px);
 }
 
 /* =========================
-   MAP
+   REAL MAP
 ========================= */
 
-.map {
-    position: absolute;
-    inset: 0 0 95px 0;
+.map-screen {
+    padding: 0;
     overflow: hidden;
-    background:
-        linear-gradient(30deg, transparent 47%, #fff 48%, #fff 51%, transparent 52%),
-        linear-gradient(-30deg, transparent 47%, #fff 48%, #fff 51%, transparent 52%),
-        #e9e9e7;
-    background-size: 180px 180px;
 }
 
-.map::before {
-    content: "";
-    position: absolute;
-    width: 150%;
-    height: 45px;
-    background: #fff;
-    top: 38%;
-    left: -25%;
-    transform: rotate(-18deg);
-    box-shadow: 0 0 0 1px #ddd;
-}
-
-.map::after {
-    content: "";
-    position: absolute;
-    width: 150%;
-    height: 30px;
-    background: #fff;
-    top: 67%;
-    left: -25%;
-    transform: rotate(15deg);
-    box-shadow: 0 0 0 1px #ddd;
-}
-
-.location {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 64px;
-    height: 64px;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-}
-
-.pulse {
+#map {
     position: absolute;
     inset: 0;
-    border: 3px solid #20d66f;
-    border-radius: 50%;
-    animation: pulse 1.7s infinite;
+
+    width: 100%;
+    height: 100%;
+
+    background: #111;
 }
 
-.location-dot {
+/* затемнение карты */
+
+.map-overlay {
     position: absolute;
-    width: 42px;
-    height: 42px;
-    left: 11px;
-    top: 11px;
-    background: white;
-    border: 3px solid #111;
-    border-radius: 50%;
-    box-shadow: 0 5px 20px rgba(0,0,0,.2);
-}
+    z-index: 500;
 
-.arrow {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 0;
-    height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 16px solid #111;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(.7);
-        opacity: 1;
-    }
-
-    70% {
-        transform: scale(1.8);
-        opacity: 0;
-    }
-
-    100% {
-        transform: scale(1.8);
-        opacity: 0;
-    }
-}
-
-/* =========================
-   LOCATION PERMISSION
-========================= */
-
-.permission {
-    display: none;
-    position: absolute;
-    z-index: 30;
+    top: 18px;
     left: 18px;
     right: 18px;
-    bottom: 110px;
-    background: white;
-    padding: 18px;
-    border-radius: 23px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.2);
-}
 
-.permission.show {
-    display: block;
-}
-
-.permission strong {
-    display: block;
-    font-size: 17px;
-}
-
-.permission p {
-    margin: 7px 0 14px;
-    color: #777;
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.permission-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.permission-buttons button {
-    flex: 1;
-    padding: 12px;
-    border: 0;
-    border-radius: 13px;
-    font-weight: 900;
-}
-
-.cancel {
-    background: #eee;
-}
-
-.allow {
-    background: #111;
-    color: white;
-}
-
-/* =========================
-   PANELS
-========================= */
-
-.panel {
-    display: none;
-    position: absolute;
-    z-index: 15;
-    inset: 0 0 95px;
-    padding: 85px 18px 20px;
-    overflow-y: auto;
-    background: #f4f4f4;
-}
-
-.panel.active {
-    display: block;
-}
-
-.panel h1 {
-    margin: 0 0 20px;
-    font-size: 34px;
-    letter-spacing: -2px;
-}
-
-.card {
-    background: white;
-    border-radius: 24px;
-    padding: 18px;
-    margin-bottom: 12px;
-    border: 1px solid #ddd;
-}
-
-.row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    pointer-events: none;
 }
 
-.muted {
-    color: #888;
-    font-size: 13px;
+.map-title {
+    padding: 11px 15px;
+
+    border: 1px solid #333;
+    border-radius: 16px;
+
+    background: rgba(0,0,0,.88);
+    color: #fff;
+
+    font-weight: 900;
+
+    backdrop-filter: blur(15px);
 }
 
-.code {
-    font-size: 31px;
-    font-weight: 950;
-    margin-top: 10px;
-    letter-spacing: 5px;
-}
+.map-title span {
+    display: inline-block;
 
-.avatar {
-    width: 54px;
-    height: 54px;
-    background: #111;
-    color: white;
+    width: 9px;
+    height: 9px;
+
+    margin-right: 6px;
+
     border-radius: 50%;
-    display: grid;
-    place-items: center;
+
+    background: var(--green);
+
+    box-shadow:
+        0 0 12px var(--green);
+}
+
+.map-notification {
+    position: relative;
+
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid #333;
+    border-radius: 14px;
+
+    background: rgba(0,0,0,.9);
+    color: #fff;
+
+    pointer-events: auto;
+
+    font-size: 19px;
+}
+
+.map-bottom {
+    position: absolute;
+    z-index: 500;
+
+    left: 15px;
+    right: 15px;
+    bottom: 92px;
+}
+
+.location-card {
+    padding: 15px;
+
+    border: 1px solid #333;
+    border-radius: 20px;
+
+    background: rgba(0,0,0,.88);
+
+    backdrop-filter: blur(20px);
+}
+
+.location-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.location-title {
     font-weight: 900;
 }
 
-.friend {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 0;
-    border-bottom: 1px solid #eee;
+.location-status {
+    margin-top: 4px;
+
+    color: #777;
+    font-size: 12px;
 }
 
-.friend:last-child {
-    border-bottom: 0;
+.location-button {
+    padding: 10px 13px;
+
+    border: 1px solid #333;
+    border-radius: 12px;
+
+    background: #181818;
+    color: #fff;
+
+    font-weight: 700;
+}
+
+/* Leaflet */
+
+.leaflet-container {
+    background: #111;
+}
+
+.leaflet-control-zoom {
+    border: 0 !important;
+    margin-top: 85px !important;
+}
+
+.leaflet-control-zoom a {
+    background: #111 !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(0,0,0,.7) !important;
+    color: #aaa !important;
+}
+
+.leaflet-control-attribution a {
+    color: #fff !important;
+}
+
+/* наша точка */
+
+.my-marker {
+    width: 25px;
+    height: 25px;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    border: 5px solid #000;
+
+    box-shadow:
+        0 0 0 6px rgba(255,255,255,.2),
+        0 0 25px rgba(255,255,255,.8);
+
+    position: relative;
+}
+
+.my-marker::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 65px;
+    height: 65px;
+
+    border: 2px solid rgba(255,255,255,.45);
+
+    border-radius: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.5);
+
+    animation:
+        locationPulse 2s infinite;
+}
+
+.friend-marker {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #111;
+
+    color: #fff;
+
+    border: 3px solid #fff;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.5);
+}
+
+.marker-name {
+    position: absolute;
+
+    top: 52px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    padding: 6px 9px;
+
+    white-space: nowrap;
+
+    border-radius: 9px;
+
+    background: rgba(0,0,0,.88);
+
+    color: #fff;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    padding: 17px;
+
+    margin-bottom: 13px;
+
+    border: 1px solid #292929;
+    border-radius: 21px;
+
+    background: #101010;
+}
+
+.card-title {
+    font-weight: 900;
+}
+
+.muted {
+    color: #777;
+    font-size: 14px;
+}
+
+.profile-head {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.avatar {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 20px;
+
+    background: #fff;
+    color: #000;
+
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.avatar.small {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 15px;
+
+    font-size: 17px;
+}
+
+.code-box {
+    padding: 22px;
+
+    border: 1px dashed #444;
+    border-radius: 18px;
+
+    background: #080808;
+
+    text-align: center;
+}
+
+.code {
+    margin-top: 5px;
+
+    font-size: 36px;
+    font-weight: 900;
+
+    letter-spacing: 8px;
+}
+
+.code-sub {
+    margin-top: 6px;
+
+    color: #666;
+    font-size: 12px;
+}
+
+.small-btn {
+    padding: 9px 11px;
+
+    border: 1px solid #333;
+    border-radius: 11px;
+
+    background: #181818;
+    color: #fff;
+
+    font-size: 12px;
+}
+
+.small-btn.light {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.friend-row {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
 }
 
 .friend-info {
@@ -418,139 +671,442 @@ body {
     font-weight: 900;
 }
 
-.online {
-    width: 9px;
-    height: 9px;
-    background: #20d66f;
-    border-radius: 50%;
+.friend-code {
+    margin-top: 3px;
+
+    color: #666;
+    font-size: 12px;
+}
+
+.section-title {
+    margin:
+        24px
+        4px
+        10px;
+
+    color: #777;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* =========================
-   PROFILE
+   CHATS
 ========================= */
 
-.profile {
+.chat-row {
     display: flex;
     align-items: center;
+
+    gap: 13px;
+
+    padding: 14px 3px;
+
+    border-bottom: 1px solid #222;
+}
+
+.chat-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.chat-preview {
+    margin-top: 3px;
+
+    color: #666;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-time {
+    color: #555;
+    font-size: 10px;
+}
+
+/* =========================
+   CHAT WINDOW
+========================= */
+
+.chat-window {
+    display: none;
+
+    position: absolute;
+    z-index: 1000;
+
+    inset: 0;
+
+    flex-direction: column;
+
+    background: #060606;
+}
+
+.chat-window.active {
+    display: flex;
+}
+
+.chat-header {
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 14px;
+
+    border-bottom: 1px solid #222;
+}
+
+.chat-header-info {
+    flex: 1;
+}
+
+.messages {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding:
+        18px
+        15px
+        10px;
+}
+
+.message {
+    max-width: 78%;
+
+    padding: 10px 13px;
+
+    margin-bottom: 9px;
+
+    border-radius: 17px;
+
+    line-height: 1.35;
+
+    font-size: 14px;
+}
+
+.message.mine {
+    margin-left: auto;
+
+    border-bottom-right-radius: 5px;
+
+    background: #fff;
+    color: #000;
+}
+
+.message.theirs {
+    border-bottom-left-radius: 5px;
+
+    background: #171717;
+}
+
+.message-time {
+    display: block;
+
+    margin-top: 4px;
+
+    opacity: .45;
+
+    font-size: 9px;
+}
+
+.chat-input {
+    display: flex;
+
+    gap: 8px;
+
+    padding:
+        10px
+        12px
+        18px;
+
+    border-top: 1px solid #222;
+
+    background: #090909;
+}
+
+.chat-input input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 50px;
+
+    padding: 0 14px;
+
+    outline: none;
+
+    border: 1px solid #292929;
+    border-radius: 16px;
+
+    background: #151515;
+    color: #fff;
+}
+
+.send-btn {
+    width: 50px;
+    height: 50px;
+
+    border: 0;
+    border-radius: 16px;
+
+    background: #fff;
+    color: #000;
+
+    font-weight: 900;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.setting-row {
+    display: flex;
+    align-items: center;
+
     gap: 15px;
-    margin-bottom: 20px;
+
+    padding: 16px 0;
+
+    border-bottom: 1px solid #222;
 }
 
-.big-avatar {
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    background: #111;
-    color: white;
-    display: grid;
-    place-items: center;
-    font-size: 28px;
-    font-weight: 900;
-}
-
-.profile-name {
-    font-size: 20px;
-    font-weight: 900;
-}
-
-.setting {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.setting:last-child {
+.setting-row:last-child {
     border-bottom: 0;
 }
 
+.setting-info {
+    flex: 1;
+}
+
 .setting-title {
-    font-weight: 850;
+    font-weight: 800;
 }
 
 .setting-description {
-    font-size: 12px;
-    color: #888;
     margin-top: 4px;
+
+    color: #666;
+    font-size: 12px;
 }
 
-.toggle {
-    width: 50px;
-    height: 29px;
-    border: 0;
-    background: #ddd;
+.switch {
+    width: 48px;
+    height: 28px;
+
+    padding: 3px;
+
     border-radius: 20px;
-    position: relative;
+
+    background: #292929;
 }
 
-.toggle::after {
-    content: "";
-    width: 23px;
-    height: 23px;
-    background: white;
+.switch span {
+    display: block;
+
+    width: 22px;
+    height: 22px;
+
     border-radius: 50%;
-    position: absolute;
-    top: 3px;
-    left: 3px;
+
+    background: #777;
+
     transition: .2s;
 }
 
-.toggle.on {
-    background: #111;
+.switch.on {
+    background: #fff;
 }
 
-.toggle.on::after {
-    left: 24px;
-}
+.switch.on span {
+    background: #000;
 
-.logout {
-    width: 100%;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    padding: 14px;
-    font-weight: 900;
+    transform:
+        translateX(20px);
 }
 
 /* =========================
-   NAVIGATION
+   BOTTOM NAV
 ========================= */
 
 .bottom-nav {
     position: absolute;
-    z-index: 40;
-    left: 14px;
-    right: 14px;
-    bottom: 14px;
-    height: 70px;
-    border-radius: 25px;
-    background: rgba(255,255,255,.94);
-    backdrop-filter: blur(18px);
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    padding: 7px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.15);
+
+    z-index: 900;
+
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    height: 66px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    border: 1px solid #292929;
+    border-radius: 22px;
+
+    background: rgba(12,12,12,.94);
+
+    backdrop-filter: blur(20px);
 }
 
-.bottom-nav button {
+.nav-item {
+    position: relative;
+
+    width: 20%;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 3px;
+
     border: 0;
-    background: transparent;
-    border-radius: 19px;
-    color: #777;
-    font-weight: 850;
-    font-size: 11px;
-}
 
-.bottom-nav button.active {
-    background: #111;
-    color: white;
+    background: transparent;
+    color: #666;
+
+    transition: .2s;
 }
 
 .nav-icon {
-    display: block;
+    font-size: 20px;
+}
+
+.nav-label {
+    font-size: 9px;
+}
+
+.nav-item.active {
+    color: #fff;
+}
+
+.nav-item.active::before {
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #fff;
+}
+
+.badge {
+    position: absolute;
+
+    top: 5px;
+    right: 15px;
+
+    min-width: 17px;
+    height: 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    border-radius: 10px;
+
+    background: #fff;
+    color: #000;
+
+    font-size: 9px;
+    font-weight: 900;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+    display: none;
+
+    position: fixed;
+    z-index: 3000;
+
+    inset: 0;
+
+    align-items: flex-end;
+    justify-content: center;
+
+    background: rgba(0,0,0,.75);
+
+    backdrop-filter: blur(5px);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 500px;
+
+    padding: 22px;
+
+    border:
+        1px solid #292929;
+
+    border-bottom: 0;
+
+    border-radius:
+        27px
+        27px
+        0
+        0;
+
+    background: #111;
+
+    animation: modalUp .3s ease;
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.modal-head h3 {
     font-size: 21px;
-    margin-bottom: 3px;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty {
+    padding: 45px 20px;
+
+    color: #666;
+
+    text-align: center;
+}
+
+.empty-icon {
+    margin-bottom: 10px;
+
+    font-size: 42px;
 }
 
 /* =========================
@@ -558,30 +1114,121 @@ body {
 ========================= */
 
 .toast {
-    display: none;
-    position: absolute;
-    z-index: 100;
-    left: 18px;
-    right: 18px;
-    top: 78px;
-    padding: 14px;
-    background: #111;
-    color: white;
-    border-radius: 15px;
-    text-align: center;
+    position: fixed;
+
+    z-index: 9999;
+
+    left: 50%;
+    bottom: 92px;
+
+    max-width: calc(100% - 30px);
+
+    padding: 12px 17px;
+
+    border-radius: 14px;
+
+    background: #fff;
+    color: #000;
+
     font-size: 13px;
+    font-weight: 800;
+
+    text-align: center;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform:
+        translate(-50%, 20px);
+
+    transition: .3s;
 }
 
 .toast.show {
-    display: block;
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes screenIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes locationPulse {
+    0% {
+        opacity: .8;
+        transform:
+            translate(-50%, -50%)
+            scale(.4);
+    }
+
+    70% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(1.4);
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 @media (min-width: 700px) {
-    .app {
-        margin-top: 20px;
-        height: 900px;
-        border-radius: 35px;
-        box-shadow: 0 20px 80px #000;
+
+    .bottom-nav {
+        left: 50%;
+        right: auto;
+
+        width: 520px;
+
+        transform:
+            translateX(-50%);
+    }
+
+    .screen:not(.map-screen) {
+        left: 50%;
+
+        width: 720px;
+
+        transform:
+            translateX(-50%);
     }
 }
 </style>
@@ -591,813 +1238,1215 @@ body {
 
 <div class="app">
 
-<!-- =========================
-     LOGIN / REGISTER
-========================= -->
+<!-- =====================================================
+     AUTH
+===================================================== -->
 
-<section id="authScreen" class="screen auth active">
+<section id="auth" class="auth">
 
-    <div class="logo">Link</div>
-    <p class="subtitle">Друзья. Карта. Связь.</p>
+    <div class="auth-box">
 
-    <div class="auth-card">
+        <div class="logo">
 
-        <div class="auth-tabs">
-            <button id="loginTab"
-                    class="active"
-                    onclick="changeAuthMode('login')">
-                Войти
-            </button>
+            <div class="logo-mark">
+                B
+            </div>
 
-            <button id="registerTab"
-                    onclick="changeAuthMode('register')">
-                Регистрация
-            </button>
-        </div>
+            <h1>Blink</h1>
 
-        <div class="field">
-            <label>EMAIL</label>
-            <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-            >
-        </div>
-
-        <div class="field">
-            <label>ПАРОЛЬ</label>
-            <input
-                id="password"
-                type="password"
-                placeholder="Минимум 6 символов"
-            >
-        </div>
-
-        <div id="usernameField"
-             class="field"
-             style="display:none">
-
-            <label>ИМЯ</label>
-
-            <input
-                id="username"
-                type="text"
-                placeholder="Твоё имя"
-            >
-        </div>
-
-        <button
-            id="authButton"
-            class="primary"
-            onclick="authenticate()">
-
-            Войти
-
-        </button>
-
-        <div id="authError" class="error"></div>
-
-        <p class="demo">
-            Демо-версия Link.<br>
-            Данные сохраняются только в этом браузере.
-        </p>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     MAIN APPLICATION
-========================= -->
-
-<section id="mainScreen" class="screen main">
-
-    <header class="topbar">
-
-        <div class="brand">
-            Link
-        </div>
-
-        <div class="top-buttons">
-
-            <button
-                class="icon"
-                onclick="showToast('Новых уведомлений нет')">
-                ♢
-            </button>
-
-            <button
-                class="icon"
-                onclick="showToast('Поиск друзей')">
-                ⌕
-            </button>
+            <p>
+                Друзья рядом. Всегда.
+            </p>
 
         </div>
 
-    </header>
+        <div class="auth-card">
 
-
-    <!-- MAP -->
-
-    <div id="map" class="map">
-
-        <div
-            id="locationMarker"
-            class="location">
-
-            <div class="pulse"></div>
-
-            <div class="location-dot"></div>
-
-            <div class="arrow"></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- LOCATION PERMISSION -->
-
-    <div id="permission"
-         class="permission">
-
-        <strong>
-            Показать твою геопозицию?
-        </strong>
-
-        <p>
-            Link может использовать твою геопозицию,
-            чтобы показать тебя на карте.
-        </p>
-
-        <div class="permission-buttons">
-
-            <button
-                class="cancel"
-                onclick="hidePermission()">
-                Позже
-            </button>
-
-            <button
-                class="allow"
-                onclick="requestLocation()">
-                Разрешить
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- FRIENDS -->
-
-    <section
-        id="friendsPanel"
-        class="panel">
-
-        <h1>Друзья</h1>
-
-        <div class="card">
-
-            <div class="row">
-
-                <div>
-                    <b>Твой код</b>
-
-                    <div class="muted">
-                        Отправь его другу
-                    </div>
-                </div>
+            <div class="auth-tabs">
 
                 <button
-                    class="icon"
-                    onclick="copyFriendCode()">
-                    ⧉
+                    class="auth-tab active"
+                    id="loginTab"
+                >
+                    Войти
+                </button>
+
+                <button
+                    class="auth-tab"
+                    id="registerTab"
+                >
+                    Регистрация
                 </button>
 
             </div>
 
-            <div
-                id="friendCode"
-                class="code">
-                ----
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div
-                class="friend"
-                onclick="addFriend()">
-
-                <div class="avatar">
-                    +
-                </div>
-
-                <div class="friend-info">
-
-                    <div class="friend-name">
-                        Добавить друга
-                    </div>
-
-                    <div class="muted">
-                        По 4-значному коду
-                    </div>
-
-                </div>
-
-                <b>›</b>
-
-            </div>
-
-            <div id="friendList"></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- CHATS -->
-
-    <section
-        id="chatsPanel"
-        class="panel">
-
-        <h1>Чаты</h1>
-
-        <div class="card">
-
-            <div class="friend">
-
-                <div class="avatar">
-                    L
-                </div>
-
-                <div class="friend-info">
-
-                    <div class="friend-name">
-                        Link
-                    </div>
-
-                    <div class="muted">
-                        Здесь появятся твои сообщения
-                    </div>
-
-                </div>
-
-            </div>
-
-            <button
-                class="primary"
-                onclick="showToast('Добавь друга, чтобы начать чат')">
-
-                Новый чат
-
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- PROFILE -->
-
-    <section
-        id="mePanel"
-        class="panel">
-
-        <h1>Я</h1>
-
-        <div class="card">
-
-            <div class="profile">
+            <form id="authForm">
 
                 <div
-                    id="bigAvatar"
-                    class="big-avatar">
-                    L
-                </div>
+                    class="field"
+                    id="usernameField"
+                    style="display:none;"
+                >
 
-                <div>
+                    <label>
+                        Имя
+                    </label>
 
-                    <div
-                        id="profileName"
-                        class="profile-name">
-                        Link
-                    </div>
-
-                    <div
-                        id="profileEmail"
-                        class="muted">
-                        —
-                    </div>
-
-                    <div class="muted">
-
-                        ID:
-                        <span id="profileCode">
-                            ----
-                        </span>
-
-                    </div>
+                    <input
+                        id="usernameInput"
+                        type="text"
+                        maxlength="20"
+                        placeholder="Твоё имя"
+                    >
 
                 </div>
 
-            </div>
+                <div class="field">
 
-            <button
-                class="logout"
-                onclick="editProfile()">
+                    <label>
+                        Email
+                    </label>
 
-                Редактировать профиль
+                    <input
+                        id="emailInput"
+                        type="email"
+                        required
+                        placeholder="you@example.com"
+                    >
 
-            </button>
+                </div>
 
-        </div>
+                <div class="field">
 
+                    <label>
+                        Пароль
+                    </label>
 
-        <!-- SETTINGS -->
-
-        <div class="card">
-
-            <div class="setting">
-
-                <div>
-
-                    <div class="setting-title">
-                        Режим невидимки
-                    </div>
-
-                    <div class="setting-description">
-                        Не показывать тебя друзьям
-                    </div>
+                    <input
+                        id="passwordInput"
+                        type="password"
+                        minlength="4"
+                        required
+                        placeholder="Минимум 4 символа"
+                    >
 
                 </div>
 
                 <button
-                    id="invisibleToggle"
-                    class="toggle"
-                    onclick="toggleInvisible()">
+                    class="primary-btn"
+                    type="submit"
+                    id="authButton"
+                >
+                    Войти в Blink
                 </button>
 
-            </div>
+            </form>
 
-
-            <div class="setting">
-
-                <div>
-
-                    <div class="setting-title">
-                        Геопозиция
-                    </div>
-
-                    <div class="setting-description">
-                        Показывать своё местоположение
-                    </div>
-
-                </div>
-
-                <button
-                    id="locationToggle"
-                    class="toggle on"
-                    onclick="toggleLocationSharing()">
-                </button>
-
-            </div>
-
-
-            <div class="setting">
-
-                <div>
-
-                    <div class="setting-title">
-                        Уведомления
-                    </div>
-
-                    <div class="setting-description">
-                        Сообщения и заявки друзей
-                    </div>
-
-                </div>
-
-                <button
-                    class="toggle on"
-                    onclick="this.classList.toggle('on')">
-                </button>
-
-            </div>
-
-
-            <div class="setting">
-
-                <div>
-
-                    <div class="setting-title">
-                        Тёмная тема
-                    </div>
-
-                    <div class="setting-description">
-                        Чёрно-белый интерфейс
-                    </div>
-
-                </div>
-
-                <button
-                    class="toggle"
-                    onclick="showToast('В этой версии тема уже монохромная')">
-                </button>
-
+            <div class="demo-text">
+                Данные сохраняются в браузере
             </div>
 
         </div>
 
-
-        <!-- OTHER OPTIONS -->
-
-        <div class="card">
-
-            <div class="setting">
-
-                <div>
-                    <div class="setting-title">
-                        Безопасность
-                    </div>
-
-                    <div class="setting-description">
-                        Пароль и сессии
-                    </div>
-                </div>
-
-                <b>›</b>
-
-            </div>
-
-
-            <div class="setting">
-
-                <div>
-                    <div class="setting-title">
-                        Приватность
-                    </div>
-
-                    <div class="setting-description">
-                        Кто может видеть тебя
-                    </div>
-                </div>
-
-                <b>›</b>
-
-            </div>
-
-
-            <div class="setting">
-
-                <div>
-                    <div class="setting-title">
-                        О Link
-                    </div>
-
-                    <div class="setting-description">
-                        Версия 1.0 Demo
-                    </div>
-                </div>
-
-                <b>›</b>
-
-            </div>
-
-        </div>
-
-
-        <button
-            class="logout"
-            onclick="logout()">
-
-            Выйти из аккаунта
-
-        </button>
-
-    </section>
-
-
-    <!-- BOTTOM NAV -->
-
-    <nav class="bottom-nav">
-
-        <button
-            id="navMap"
-            class="active"
-            onclick="openTab('map')">
-
-            <span class="nav-icon">
-                ⌖
-            </span>
-
-            Карта
-
-        </button>
-
-
-        <button
-            id="navFriends"
-            onclick="openTab('friends')">
-
-            <span class="nav-icon">
-                ♧
-            </span>
-
-            Друзья
-
-        </button>
-
-
-        <button
-            id="navChats"
-            onclick="openTab('chats')">
-
-            <span class="nav-icon">
-                ◌
-            </span>
-
-            Чаты
-
-        </button>
-
-
-        <button
-            id="navMe"
-            onclick="openTab('me')">
-
-            <span class="nav-icon">
-                ●
-            </span>
-
-            Я
-
-        </button>
-
-    </nav>
-
-
-    <div
-        id="toast"
-        class="toast">
     </div>
 
 </section>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<section id="main" class="main">
+
+
+<!-- =====================================================
+     MAP
+===================================================== -->
+
+<section
+    id="screen-map"
+    class="screen map-screen active"
+>
+
+    <div id="map"></div>
+
+    <div class="map-overlay">
+
+        <div class="map-title">
+            <span></span>
+            Blink
+        </div>
+
+        <button
+            class="map-notification"
+            onclick="openNotifications()"
+        >
+            ♡
+
+            <span
+                class="badge"
+                id="mapNotifBadge"
+                style="display:none;"
+            >
+                0
+            </span>
+
+        </button>
+
+    </div>
+
+    <div class="map-bottom">
+
+        <div class="location-card">
+
+            <div class="location-card-row">
+
+                <div>
+
+                    <div class="location-title">
+                        Моя геопозиция
+                    </div>
+
+                    <div
+                        class="location-status"
+                        id="locationStatus"
+                    >
+                        Нажми, чтобы определить твоё местоположение
+                    </div>
+
+                </div>
+
+                <button
+                    class="location-button"
+                    id="locationButton"
+                    onclick="requestLocation()"
+                >
+                    📍 Найти меня
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FRIENDS
+===================================================== -->
+
+<section
+    id="screen-friends"
+    class="screen"
+>
+
+    <div class="top">
+
+        <h2>
+            Друзья
+        </h2>
+
+        <button
+            class="icon-btn"
+            onclick="openAddFriend()"
+        >
+            ＋
+        </button>
+
+    </div>
+
+    <div class="code-box">
+
+        <div class="muted">
+            Твой код друга
+        </div>
+
+        <div
+            class="code"
+            id="myCode"
+        >
+            0000
+        </div>
+
+        <div class="code-sub">
+            Отправь его другу
+        </div>
+
+        <button
+            class="small-btn light"
+            style="margin-top:13px;"
+            onclick="copyCode()"
+        >
+            Скопировать
+        </button>
+
+    </div>
+
+    <div class="section-title">
+        Мои друзья
+    </div>
+
+    <div id="friendsList"></div>
+
+</section>
+
+
+<!-- =====================================================
+     CHATS
+===================================================== -->
+
+<section
+    id="screen-chats"
+    class="screen"
+>
+
+    <div class="top">
+
+        <h2>
+            Чаты
+        </h2>
+
+    </div>
+
+    <div id="chatsList"></div>
+
+</section>
+
+
+<!-- =====================================================
+     PROFILE
+===================================================== -->
+
+<section
+    id="screen-profile"
+    class="screen"
+>
+
+    <div class="top">
+
+        <h2>
+            Профиль
+        </h2>
+
+        <button
+            class="icon-btn"
+            onclick="editProfile()"
+        >
+            ✎
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <div class="profile-head">
+
+            <div
+                class="avatar"
+                id="profileAvatar"
+            >
+                N
+            </div>
+
+            <div>
+
+                <div
+                    id="profileName"
+                    style="
+                        font-size:20px;
+                        font-weight:900;
+                    "
+                >
+                    Никс
+                </div>
+
+                <div
+                    id="profileEmail"
+                    class="muted"
+                >
+                    email
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            Код друга
+        </div>
+
+        <div
+            id="profileCode"
+            style="
+                margin-top:8px;
+                font-size:30px;
+                font-weight:900;
+                letter-spacing:7px;
+            "
+        >
+            0000
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            О себе
+        </div>
+
+        <div
+            id="profileBio"
+            class="muted"
+            style="margin-top:8px;"
+        >
+            Пока ничего не написано.
+        </div>
+
+    </div>
+
+    <button
+        class="primary-btn"
+        style="
+            background:#171717;
+            color:#fff;
+            border:1px solid #333;
+        "
+        onclick="logout()"
+    >
+        Выйти
+    </button>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section
+    id="screen-settings"
+    class="screen"
+>
+
+    <div class="top">
+
+        <h2>
+            Настройки
+        </h2>
+
+    </div>
+
+    <div class="card">
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-title">
+                    Геопозиция
+                </div>
+
+                <div class="setting-description">
+                    Показывать твоё местоположение
+                </div>
+
+            </div>
+
+            <div
+                class="switch"
+                id="locationSwitch"
+                onclick="toggleSetting('location')"
+            >
+                <span></span>
+            </div>
+
+        </div>
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-title">
+                    Уведомления
+                </div>
+
+                <div class="setting-description">
+                    Уведомления от друзей
+                </div>
+
+            </div>
+
+            <div
+                class="switch on"
+                id="notificationSwitch"
+                onclick="toggleSetting('notifications')"
+            >
+                <span></span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            Blink
+        </div>
+
+        <div
+            class="muted"
+            style="margin-top:7px;"
+        >
+            Версия 2.0
+        </div>
+
+        <div
+            class="muted"
+            style="margin-top:5px;"
+        >
+            Карта + настоящая геолокация
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     NAV
+===================================================== -->
+
+<nav class="bottom-nav">
+
+    <button
+        class="nav-item active"
+        data-screen="map"
+        onclick="switchScreen('map')"
+    >
+
+        <span class="nav-icon">
+            ⌖
+        </span>
+
+        <span class="nav-label">
+            Карта
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-screen="friends"
+        onclick="switchScreen('friends')"
+    >
+
+        <span class="nav-icon">
+            ♙
+        </span>
+
+        <span class="nav-label">
+            Друзья
+        </span>
+
+        <span
+            class="badge"
+            id="friendBadge"
+            style="display:none;"
+        >
+            0
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-screen="chats"
+        onclick="switchScreen('chats')"
+    >
+
+        <span class="nav-icon">
+            ◌
+        </span>
+
+        <span class="nav-label">
+            Чаты
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-screen="profile"
+        onclick="switchScreen('profile')"
+    >
+
+        <span class="nav-icon">
+            ●
+        </span>
+
+        <span class="nav-label">
+            Профиль
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        data-screen="settings"
+        onclick="switchScreen('settings')"
+    >
+
+        <span class="nav-icon">
+            ⚙
+        </span>
+
+        <span class="nav-label">
+            Настройки
+        </span>
+
+    </button>
+
+</nav>
+
+</section>
+
+
+<!-- =====================================================
+     CHAT
+===================================================== -->
+
+<div
+    id="chatWindow"
+    class="chat-window"
+>
+
+    <div class="chat-header">
+
+        <button
+            class="icon-btn"
+            onclick="closeChat()"
+        >
+            ‹
+        </button>
+
+        <div
+            class="avatar small"
+            id="chatAvatar"
+        >
+            A
+        </div>
+
+        <div class="chat-header-info">
+
+            <div
+                id="chatName"
+                style="font-weight:900;"
+            >
+                Друг
+            </div>
+
+            <div
+                class="muted"
+                style="font-size:11px;"
+            >
+                Blink
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        id="messages"
+        class="messages"
+    ></div>
+
+    <form
+        id="messageForm"
+        class="chat-input"
+    >
+
+        <input
+            id="messageInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Написать сообщение..."
+        >
+
+        <button
+            class="send-btn"
+            type="submit"
+        >
+            ➤
+        </button>
+
+    </form>
 
 </div>
 
 
+<!-- =====================================================
+     ADD FRIEND
+===================================================== -->
+
+<div
+    id="addFriendModal"
+    class="modal"
+    onclick="closeModalOutside(event)"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h3>
+                Добавить друга
+            </h3>
+
+            <button
+                class="icon-btn"
+                onclick="closeAddFriend()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="muted"
+            style="margin-bottom:15px;"
+        >
+            Введи 4-значный код друга.
+        </div>
+
+        <div class="field">
+
+            <label>
+                Код
+            </label>
+
+            <input
+                id="friendCodeInput"
+                type="text"
+                inputmode="numeric"
+                maxlength="4"
+                placeholder="1234"
+            >
+
+        </div>
+
+        <button
+            class="primary-btn"
+            onclick="addFriend()"
+        >
+            Добавить друга
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PROFILE MODAL
+===================================================== -->
+
+<div
+    id="profileModal"
+    class="modal"
+    onclick="closeModalOutside(event)"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h3>
+                Профиль
+            </h3>
+
+            <button
+                class="icon-btn"
+                onclick="closeProfileModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div class="field">
+
+            <label>
+                Имя
+            </label>
+
+            <input
+                id="editNameInput"
+                type="text"
+                maxlength="20"
+            >
+
+        </div>
+
+        <div class="field">
+
+            <label>
+                О себе
+            </label>
+
+            <input
+                id="editBioInput"
+                type="text"
+                maxlength="80"
+                placeholder="Расскажи о себе"
+            >
+
+        </div>
+
+        <button
+            class="primary-btn"
+            onclick="saveProfile()"
+        >
+            Сохранить
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+</div>
+
+
+<!-- Leaflet -->
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
 <script>
+/* =========================================================
+   BLINK DATABASE
+========================================================= */
 
-/* =====================================
-   LINK DEMO DATABASE
-===================================== */
+const DB_KEY = "blink_database_v2";
 
-const USERS_KEY = "link_users";
-const SESSION_KEY = "link_session";
+let db =
+    JSON.parse(
+        localStorage.getItem(DB_KEY) || "null"
+    );
+
+if (!db) {
+
+    db = {
+        users: [],
+        currentUser: null,
+        friends: {},
+        chats: {},
+        notifications: {}
+    };
+
+    saveDB();
+}
 
 let authMode = "login";
+
+let currentChatUser = null;
+
+let map = null;
+
+let myMarker = null;
+
 let watchId = null;
 
 
-/* =====================================
-   HELPERS
-===================================== */
+/* =========================================================
+   DATABASE
+========================================================= */
 
-function getUsers() {
-
-    return JSON.parse(
-        localStorage.getItem(USERS_KEY) || "[]"
-    );
-
-}
-
-
-function saveUsers(users) {
+function saveDB() {
 
     localStorage.setItem(
-        USERS_KEY,
-        JSON.stringify(users)
+        DB_KEY,
+        JSON.stringify(db)
     );
-
 }
 
+function currentUser() {
 
-function getCurrentUser() {
-
-    const id =
-        localStorage.getItem(SESSION_KEY);
-
-    return getUsers().find(
-        user => user.id === id
-    );
-
-}
-
-
-function createId() {
-
-    if (crypto.randomUUID) {
-        return crypto.randomUUID();
+    if (!db.currentUser) {
+        return null;
     }
 
-    return Date.now().toString();
+    return db.users.find(
+        user =>
+            user.id === db.currentUser
+    ) || null;
+}
+
+function getUser(id) {
+
+    return db.users.find(
+        user =>
+            user.id === id
+    );
+}
+
+function getFriends() {
+
+    const user = currentUser();
+
+    if (!user) {
+        return [];
+    }
+
+    return (
+        db.friends[user.id] || []
+    )
+    .map(id => getUser(id))
+    .filter(Boolean);
+}
+
+function getNotifications() {
+
+    const user = currentUser();
+
+    if (!user) {
+        return [];
+    }
+
+    return db.notifications[user.id] || [];
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initMap();
+
+        if (
+            db.currentUser &&
+            currentUser()
+        ) {
+
+            showMain();
+
+        } else {
+
+            showAuth();
+        }
+
+        renderEverything();
+
+        document
+            .getElementById("messageForm")
+            .addEventListener(
+                "submit",
+                sendMessage
+            );
+
+        startLocationTracking();
+
+    }
+);
+
+
+/* =========================================================
+   MAP INIT
+========================================================= */
+
+function initMap() {
+
+    map =
+        L.map(
+            "map",
+            {
+                zoomControl: true,
+                attributionControl: true
+            }
+        )
+        .setView(
+            [52.2297, 21.0122],
+            13
+        );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(map);
 
 }
 
 
-function createFriendCode() {
+/* =========================================================
+   AUTH
+========================================================= */
 
-    let code;
-
-    do {
-
-        code =
-            Math.floor(
-                1000 +
-                Math.random() * 9000
-            ).toString();
-
-    } while (
-        getUsers().some(
-            user => user.code === code
-        )
+document
+    .getElementById("loginTab")
+    .addEventListener(
+        "click",
+        () => setAuthMode("login")
     );
 
-    return code;
+document
+    .getElementById("registerTab")
+    .addEventListener(
+        "click",
+        () => setAuthMode("register")
+    );
 
-}
 
-
-/* =====================================
-   AUTH MODE
-===================================== */
-
-function changeAuthMode(mode) {
+function setAuthMode(mode) {
 
     authMode = mode;
 
-    document
-        .getElementById("loginTab")
-        .classList.toggle(
-            "active",
-            mode === "login"
+    const loginTab =
+        document.getElementById(
+            "loginTab"
         );
 
-    document
-        .getElementById("registerTab")
-        .classList.toggle(
-            "active",
-            mode === "register"
+    const registerTab =
+        document.getElementById(
+            "registerTab"
         );
 
-    document
-        .getElementById("usernameField")
-        .style.display =
-            mode === "register"
-            ? "block"
-            : "none";
+    const usernameField =
+        document.getElementById(
+            "usernameField"
+        );
 
-    document
-        .getElementById("authButton")
-        .textContent =
-            mode === "register"
-            ? "Создать аккаунт"
-            : "Войти";
+    const button =
+        document.getElementById(
+            "authButton"
+        );
 
-    document
-        .getElementById("authError")
-        .textContent = "";
 
+    if (mode === "login") {
+
+        loginTab.classList.add(
+            "active"
+        );
+
+        registerTab.classList.remove(
+            "active"
+        );
+
+        usernameField.style.display =
+            "none";
+
+        button.textContent =
+            "Войти в Blink";
+
+    } else {
+
+        loginTab.classList.remove(
+            "active"
+        );
+
+        registerTab.classList.add(
+            "active"
+        );
+
+        usernameField.style.display =
+            "block";
+
+        button.textContent =
+            "Создать аккаунт";
+    }
 }
 
 
-/* =====================================
-   REGISTER / LOGIN
-===================================== */
+document
+    .getElementById("authForm")
+    .addEventListener(
+        "submit",
+        event => {
 
-function authenticate() {
+            event.preventDefault();
 
-    const email =
-        document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
+            const email =
+                document
+                    .getElementById(
+                        "emailInput"
+                    )
+                    .value
+                    .trim()
+                    .toLowerCase();
 
-    const password =
-        document
-            .getElementById("password")
-            .value;
+            const password =
+                document
+                    .getElementById(
+                        "passwordInput"
+                    )
+                    .value;
+
+
+            if (
+                !email ||
+                !password
+            ) {
+
+                toast(
+                    "Заполни все поля"
+                );
+
+                return;
+            }
+
+
+            if (
+                authMode ===
+                "register"
+            ) {
+
+                registerUser(
+                    email,
+                    password
+                );
+
+            } else {
+
+                loginUser(
+                    email,
+                    password
+                );
+            }
+
+        }
+    );
+
+
+function registerUser(
+    email,
+    password
+) {
 
     const username =
         document
-            .getElementById("username")
+            .getElementById(
+                "usernameInput"
+            )
             .value
             .trim();
 
-    const error =
-        document
-            .getElementById("authError");
 
+    if (!username) {
 
-    if (!email || !password) {
-
-        error.textContent =
-            "Заполни email и пароль.";
-
-        return;
-
-    }
-
-
-    if (password.length < 6) {
-
-        error.textContent =
-            "Пароль должен содержать минимум 6 символов.";
-
-        return;
-
-    }
-
-
-    let users = getUsers();
-
-
-    /* REGISTER */
-
-    if (authMode === "register") {
-
-        if (!username) {
-
-            error.textContent =
-                "Введите имя.";
-
-            return;
-
-        }
-
-
-        if (
-            users.some(
-                user => user.email === email
-            )
-        ) {
-
-            error.textContent =
-                "Такой аккаунт уже существует.";
-
-            return;
-
-        }
-
-
-        const newUser = {
-
-            id: createId(),
-
-            email: email,
-
-            password: password,
-
-            name: username,
-
-            code: createFriendCode(),
-
-            friends: [],
-
-            invisible: false,
-
-            shareLocation: true
-
-        };
-
-
-        users.push(newUser);
-
-        saveUsers(users);
-
-        localStorage.setItem(
-            SESSION_KEY,
-            newUser.id
+        toast(
+            "Введи имя"
         );
 
-        openApplication();
-
         return;
-
     }
 
 
-    /* LOGIN */
+    if (
+        db.users.some(
+            user =>
+                user.email === email
+        )
+    ) {
+
+        toast(
+            "Этот email уже используется"
+        );
+
+        return;
+    }
+
+
+    const user = {
+
+        id:
+            typeof crypto !== "undefined" &&
+            crypto.randomUUID
+                ? crypto.randomUUID()
+                : "user_" + Date.now(),
+
+        username,
+
+        email,
+
+        password,
+
+        code:
+            generateCode(),
+
+        bio: "",
+
+        locationSharing: false,
+
+        notifications: true,
+
+        latitude: null,
+
+        longitude: null,
+
+        accuracy: null,
+
+        createdAt:
+            Date.now()
+    };
+
+
+    db.users.push(user);
+
+    db.friends[user.id] = [];
+
+    db.notifications[user.id] = [];
+
+    db.currentUser =
+        user.id;
+
+    saveDB();
+
+    showMain();
+
+    toast(
+        "🎉 Добро пожаловать в Blink!"
+    );
+}
+
+
+function loginUser(
+    email,
+    password
+) {
 
     const user =
-        users.find(
+        db.users.find(
             item =>
                 item.email === email &&
                 item.password === password
@@ -1406,406 +2455,545 @@ function authenticate() {
 
     if (!user) {
 
-        error.textContent =
-            "Неверный email или пароль.";
+        toast(
+            "Неверный email или пароль"
+        );
 
         return;
-
     }
 
 
-    localStorage.setItem(
-        SESSION_KEY,
-        user.id
+    db.currentUser =
+        user.id;
+
+    saveDB();
+
+    showMain();
+
+    toast(
+        "С возвращением! 👋"
     );
-
-    openApplication();
-
 }
 
 
-/* =====================================
-   OPEN APP
-===================================== */
+function generateCode() {
 
-function openApplication() {
+    let code;
+
+    do {
+
+        code =
+            Math.floor(
+                1000 +
+                Math.random() *
+                9000
+            ).toString();
+
+    } while (
+        db.users.some(
+            user =>
+                user.code === code
+        )
+    );
+
+    return code;
+}
+
+
+/* =========================================================
+   SHOW
+========================================================= */
+
+function showAuth() {
 
     document
-        .getElementById("authScreen")
-        .classList.remove("active");
+        .getElementById("auth")
+        .style.display =
+            "flex";
 
     document
-        .getElementById("mainScreen")
-        .classList.add("active");
+        .getElementById("main")
+        .classList.remove(
+            "active"
+        );
+}
 
 
-    updateProfile();
+function showMain() {
+
+    document
+        .getElementById("auth")
+        .style.display =
+            "none";
+
+    document
+        .getElementById("main")
+        .classList.add(
+            "active"
+        );
+
+    renderEverything();
+
+    setTimeout(
+        () => {
+
+            if (map) {
+                map.invalidateSize();
+            }
+
+        },
+        100
+    );
+}
+
+
+/* =========================================================
+   NAV
+========================================================= */
+
+function switchScreen(
+    screen
+) {
+
+    document
+        .querySelectorAll(
+            ".screen"
+        )
+        .forEach(
+            element =>
+                element.classList.remove(
+                    "active"
+                )
+        );
+
+
+    const target =
+        document.getElementById(
+            "screen-" + screen
+        );
+
+
+    if (target) {
+
+        target.classList.add(
+            "active"
+        );
+    }
+
+
+    document
+        .querySelectorAll(
+            ".nav-item"
+        )
+        .forEach(
+            item => {
+
+                item.classList.toggle(
+                    "active",
+                    item.dataset.screen ===
+                        screen
+                );
+
+            }
+        );
+
+
+    if (
+        screen === "map" &&
+        map
+    ) {
+
+        setTimeout(
+            () =>
+                map.invalidateSize(),
+            100
+        );
+    }
+
+
+    if (
+        screen === "friends"
+    ) {
+
+        renderFriends();
+    }
+
+
+    if (
+        screen === "chats"
+    ) {
+
+        renderChats();
+    }
+
+
+    if (
+        screen === "profile"
+    ) {
+
+        renderProfile();
+    }
+
+
+    if (
+        screen === "settings"
+    ) {
+
+        renderSettings();
+    }
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderEverything() {
+
+    if (!currentUser()) {
+        return;
+    }
+
+    renderProfile();
 
     renderFriends();
 
+    renderChats();
 
-    setTimeout(() => {
+    renderSettings();
 
-        document
-            .getElementById("permission")
-            .classList.add("show");
+    renderNotifications();
 
-    }, 600);
+    renderMap();
 
 }
 
 
-/* =====================================
+/* =========================================================
    PROFILE
-===================================== */
+========================================================= */
 
-function updateProfile() {
+function renderProfile() {
 
     const user =
-        getCurrentUser();
+        currentUser();
 
     if (!user) return;
 
 
     document
-        .getElementById("profileName")
+        .getElementById(
+            "profileName"
+        )
         .textContent =
-            user.name;
+            user.username;
 
 
     document
-        .getElementById("profileEmail")
+        .getElementById(
+            "profileEmail"
+        )
         .textContent =
             user.email;
 
 
     document
-        .getElementById("profileCode")
+        .getElementById(
+            "profileCode"
+        )
         .textContent =
             user.code;
 
 
     document
-        .getElementById("friendCode")
+        .getElementById(
+            "myCode"
+        )
         .textContent =
             user.code;
 
 
     document
-        .getElementById("bigAvatar")
+        .getElementById(
+            "profileBio"
+        )
         .textContent =
-            user.name
+            user.bio ||
+            "Пока ничего не написано.";
+
+
+    document
+        .getElementById(
+            "profileAvatar"
+        )
+        .textContent =
+            user.username
                 .charAt(0)
                 .toUpperCase();
-
-
-    document
-        .getElementById("invisibleToggle")
-        .classList.toggle(
-            "on",
-            user.invisible
-        );
-
-
-    document
-        .getElementById("locationToggle")
-        .classList.toggle(
-            "on",
-            user.shareLocation
-        );
-
 }
 
 
-/* =====================================
-   LOGOUT
-===================================== */
-
-function logout() {
-
-    localStorage.removeItem(
-        SESSION_KEY
-    );
-
-    location.reload();
-
-}
-
-
-/* =====================================
-   TABS
-===================================== */
-
-function openTab(tab) {
-
-    const map =
-        document.getElementById("map");
-
-    const permission =
-        document.getElementById("permission");
-
-
-    const panels =
-        document.querySelectorAll(".panel");
-
-    panels.forEach(
-        panel =>
-            panel.classList.remove("active")
-    );
-
-
-    document
-        .querySelectorAll(".bottom-nav button")
-        .forEach(
-            button =>
-                button.classList.remove("active")
-        );
-
-
-    if (tab === "map") {
-
-        map.style.display = "block";
-
-        permission.style.display = "";
-
-        document
-            .getElementById("navMap")
-            .classList.add("active");
-
-        return;
-
-    }
-
-
-    map.style.display = "none";
-
-    permission.style.display = "none";
-
-
-    if (tab === "friends") {
-
-        document
-            .getElementById("friendsPanel")
-            .classList.add("active");
-
-        document
-            .getElementById("navFriends")
-            .classList.add("active");
-
-    }
-
-
-    if (tab === "chats") {
-
-        document
-            .getElementById("chatsPanel")
-            .classList.add("active");
-
-        document
-            .getElementById("navChats")
-            .classList.add("active");
-
-    }
-
-
-    if (tab === "me") {
-
-        document
-            .getElementById("mePanel")
-            .classList.add("active");
-
-        document
-            .getElementById("navMe")
-            .classList.add("active");
-
-    }
-
-}
-
-
-/* =====================================
-   GEOLOCATION
-===================================== */
-
-function hidePermission() {
-
-    document
-        .getElementById("permission")
-        .classList.remove("show");
-
-}
-
-
-function requestLocation() {
-
-    if (!navigator.geolocation) {
-
-        showToast(
-            "Геолокация не поддерживается браузером."
-        );
-
-        return;
-
-    }
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            hidePermission();
-
-            updateMarker(
-                position.coords.latitude,
-                position.coords.longitude
-            );
-
-            showToast(
-                "Геопозиция разрешена"
-            );
-
-
-            if (watchId !== null) {
-
-                navigator.geolocation.clearWatch(
-                    watchId
-                );
-
-            }
-
-
-            watchId =
-                navigator.geolocation.watchPosition(
-
-                    function(pos) {
-
-                        updateMarker(
-                            pos.coords.latitude,
-                            pos.coords.longitude
-                        );
-
-                    },
-
-                    function() {},
-
-                    {
-                        enableHighAccuracy: true,
-                        maximumAge: 10000
-                    }
-
-                );
-
-        },
-
-        function() {
-
-            showToast(
-                "Не удалось получить геопозицию."
-            );
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-
-    );
-
-}
-
-
-/*
-   Визуально перемещаем точку.
-   Для настоящей карты сюда можно
-   подключить Mapbox / Google Maps /
-   OpenStreetMap.
-*/
-
-function updateMarker(latitude, longitude) {
-
-    const x =
-        50 +
-        ((longitude % 1) * 15);
-
-    const y =
-        50 -
-        ((latitude % 1) * 15);
-
-
-    const marker =
-        document.getElementById(
-            "locationMarker"
-        );
-
-
-    marker.style.left =
-        Math.max(
-            8,
-            Math.min(92, x)
-        ) + "%";
-
-
-    marker.style.top =
-        Math.max(
-            12,
-            Math.min(88, y)
-        ) + "%";
-
-}
-
-
-/* =====================================
-   FRIENDS
-===================================== */
-
-function copyFriendCode() {
+function editProfile() {
 
     const user =
-        getCurrentUser();
+        currentUser();
 
-    if (!user) return;
+    document
+        .getElementById(
+            "editNameInput"
+        )
+        .value =
+            user.username;
+
+    document
+        .getElementById(
+            "editBioInput"
+        )
+        .value =
+            user.bio || "";
 
 
-    if (
-        navigator.clipboard
-    ) {
+    document
+        .getElementById(
+            "profileModal"
+        )
+        .classList.add(
+            "active"
+        );
+}
 
-        navigator.clipboard.writeText(
-            user.code
+
+function saveProfile() {
+
+    const user =
+        currentUser();
+
+    const name =
+        document
+            .getElementById(
+                "editNameInput"
+            )
+            .value
+            .trim();
+
+    const bio =
+        document
+            .getElementById(
+                "editBioInput"
+            )
+            .value
+            .trim();
+
+
+    if (!name) {
+
+        toast(
+            "Имя не может быть пустым"
         );
 
+        return;
     }
 
 
-    showToast(
-        "Код скопирован"
-    );
+    user.username =
+        name;
 
+    user.bio =
+        bio;
+
+    saveDB();
+
+    closeProfileModal();
+
+    renderProfile();
+
+    toast(
+        "Профиль сохранён"
+    );
+}
+
+
+function closeProfileModal() {
+
+    document
+        .getElementById(
+            "profileModal"
+        )
+        .classList.remove(
+            "active"
+        );
+}
+
+
+/* =========================================================
+   FRIENDS
+========================================================= */
+
+function renderFriends() {
+
+    const list =
+        document.getElementById(
+            "friendsList"
+        );
+
+    const friends =
+        getFriends();
+
+
+    if (!friends.length) {
+
+        list.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">
+                    ♙
+                </div>
+
+                <div>
+                    Пока нет друзей
+                </div>
+
+                <div
+                    style="
+                        margin-top:5px;
+                        font-size:12px;
+                    "
+                >
+                    Добавь друга по коду
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    list.innerHTML =
+        friends
+            .map(
+                friend => `
+
+                <div class="card">
+
+                    <div class="friend-row">
+
+                        <div class="avatar small">
+                            ${escapeHTML(
+                                friend.username
+                                    .charAt(0)
+                                    .toUpperCase()
+                            )}
+                        </div>
+
+                        <div class="friend-info">
+
+                            <div class="friend-name">
+                                ${escapeHTML(
+                                    friend.username
+                                )}
+                            </div>
+
+                            <div class="friend-code">
+                                ID ${friend.code}
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="small-btn light"
+                            onclick="
+                                openChat(
+                                    '${friend.id}'
+                                )
+                            "
+                        >
+                            Чат
+                        </button>
+
+                    </div>
+
+                </div>
+            `
+            )
+            .join("");
+
+
+    updateFriendMarkers();
+}
+
+
+function openAddFriend() {
+
+    document
+        .getElementById(
+            "friendCodeInput"
+        )
+        .value = "";
+
+    document
+        .getElementById(
+            "addFriendModal"
+        )
+        .classList.add(
+            "active"
+        );
+
+
+    setTimeout(
+        () => {
+
+            document
+                .getElementById(
+                    "friendCodeInput"
+                )
+                .focus();
+
+        },
+        200
+    );
+}
+
+
+function closeAddFriend() {
+
+    document
+        .getElementById(
+            "addFriendModal"
+        )
+        .classList.remove(
+            "active"
+        );
 }
 
 
 function addFriend() {
 
     const code =
-        prompt(
-            "Введите 4-значный код друга:"
+        document
+            .getElementById(
+                "friendCodeInput"
+            )
+            .value
+            .trim();
+
+
+    if (
+        !/^\d{4}$/.test(code)
+    ) {
+
+        toast(
+            "Код должен состоять из 4 цифр"
         );
 
+        return;
+    }
 
-    if (!code) return;
-
-
-    const users =
-        getUsers();
 
     const me =
-        getCurrentUser();
+        currentUser();
 
 
     const friend =
-        users.find(
+        db.users.find(
             user =>
                 user.code === code &&
                 user.id !== me.id
@@ -1814,329 +3002,1358 @@ function addFriend() {
 
     if (!friend) {
 
-        showToast(
+        toast(
             "Пользователь не найден"
         );
 
         return;
-
     }
 
 
     if (
-        !me.friends.includes(
+        (
+            db.friends[me.id] ||
+            []
+        ).includes(
             friend.id
         )
     ) {
 
-        me.friends.push(
-            friend.id
+        toast(
+            "Этот пользователь уже твой друг"
         );
 
+        return;
     }
+
+
+    if (!db.friends[me.id]) {
+        db.friends[me.id] = [];
+    }
+
+    if (!db.friends[friend.id]) {
+        db.friends[friend.id] = [];
+    }
+
+
+    db.friends[me.id]
+        .push(friend.id);
+
+    db.friends[friend.id]
+        .push(me.id);
 
 
     if (
-        !friend.friends.includes(
-            me.id
-        )
+        !db.notifications[friend.id]
     ) {
 
-        friend.friends.push(
-            me.id
-        );
-
+        db.notifications[
+            friend.id
+        ] = [];
     }
 
 
-    saveUsers(users);
+    db.notifications[
+        friend.id
+    ].push({
 
-    renderFriends();
+        id: Date.now(),
 
-    showToast(
-        "Друг добавлен"
+        title: "Новый друг",
+
+        body:
+            me.username +
+            " добавил тебя в друзья",
+
+        read: false,
+
+        time: Date.now()
+
+    });
+
+
+    saveDB();
+
+    closeAddFriend();
+
+    renderEverything();
+
+    toast(
+        "🎉 " +
+        friend.username +
+        " добавлен!"
     );
-
 }
 
 
-function renderFriends() {
+function copyCode() {
 
-    const me =
-        getCurrentUser();
-
-    const users =
-        getUsers();
+    const code =
+        currentUser().code;
 
 
-    const list =
+    if (
+        navigator.clipboard
+    ) {
+
+        navigator.clipboard
+            .writeText(code)
+            .then(
+                () =>
+                    toast(
+                        "Код скопирован!"
+                    )
+            );
+
+    } else {
+
+        toast(
+            "Твой код: " + code
+        );
+    }
+}
+
+
+/* =========================================================
+   REAL GEOLOCATION
+========================================================= */
+
+function requestLocation() {
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        toast(
+            "❌ Геолокация не поддерживается"
+        );
+
+        return;
+    }
+
+
+    const button =
         document.getElementById(
-            "friendList"
+            "locationButton"
+        );
+
+    const status =
+        document.getElementById(
+            "locationStatus"
         );
 
 
-    const friends =
-        (me.friends || [])
-            .map(
-                id =>
-                    users.find(
-                        user =>
-                            user.id === id
-                    )
+    button.textContent =
+        "⌛ Ищу...";
+
+    status.textContent =
+        "Получаю твою настоящую геопозицию...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        position => {
+
+            saveMyPosition(
+                position
+            );
+
+            button.textContent =
+                "✓ Я здесь";
+
+            status.textContent =
+                "📍 Твоя геопозиция определена";
+
+            toast(
+                "📍 Нашёл тебя!"
+            );
+
+            startLocationTracking();
+
+        },
+
+        error => {
+
+            button.textContent =
+                "📍 Найти меня";
+
+
+            if (
+                error.code === 1
+            ) {
+
+                status.textContent =
+                    "Разреши браузеру доступ к геолокации";
+
+                toast(
+                    "⚠️ Разреши доступ к геолокации"
+                );
+
+            } else if (
+                error.code === 2
+            ) {
+
+                status.textContent =
+                    "Геопозиция недоступна";
+
+                toast(
+                    "📡 Не удалось определить местоположение"
+                );
+
+            } else if (
+                error.code === 3
+            ) {
+
+                status.textContent =
+                    "Время ожидания истекло";
+
+                toast(
+                    "⏱️ Попробуй ещё раз"
+                );
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+
+            timeout: 20000,
+
+            maximumAge: 0
+        }
+
+    );
+}
+
+
+function saveMyPosition(
+    position
+) {
+
+    const user =
+        currentUser();
+
+    if (!user) return;
+
+
+    user.latitude =
+        position.coords.latitude;
+
+    user.longitude =
+        position.coords.longitude;
+
+    user.accuracy =
+        position.coords.accuracy;
+
+    user.locationSharing =
+        true;
+
+
+    saveDB();
+
+
+    showMyPosition(
+        user.latitude,
+        user.longitude
+    );
+
+
+    updateSettingsUI();
+}
+
+
+function startLocationTracking() {
+
+    if (
+        !navigator.geolocation
+    ) {
+        return;
+    }
+
+
+    if (
+        watchId !== null
+    ) {
+
+        navigator.geolocation.clearWatch(
+            watchId
+        );
+    }
+
+
+    const user =
+        currentUser();
+
+
+    if (
+        !user ||
+        !user.locationSharing
+    ) {
+
+        return;
+    }
+
+
+    watchId =
+        navigator.geolocation.watchPosition(
+
+            position => {
+
+                saveMyPosition(
+                    position
+                );
+
+            },
+
+            error => {
+
+                console.log(
+                    "GPS:",
+                    error.message
+                );
+
+            },
+
+            {
+
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    20000,
+
+                maximumAge:
+                    3000
+            }
+
+        );
+}
+
+
+function showMyPosition(
+    latitude,
+    longitude
+) {
+
+    if (!map) return;
+
+
+    if (!myMarker) {
+
+        const icon =
+            L.divIcon({
+
+                className:
+                    "my-marker-wrapper",
+
+                html:
+                    '<div class="my-marker"></div>',
+
+                iconSize:
+                    [25,25],
+
+                iconAnchor:
+                    [12,12]
+            });
+
+
+        myMarker =
+            L.marker(
+                [
+                    latitude,
+                    longitude
+                ],
+                {
+                    icon
+                }
             )
-            .filter(Boolean);
+            .addTo(map)
+            .bindPopup(
+                "<b>Ты здесь 📍</b>"
+            );
+
+    } else {
+
+        myMarker.setLatLng(
+            [
+                latitude,
+                longitude
+            ]
+        );
+    }
+
+
+    map.setView(
+        [
+            latitude,
+            longitude
+        ],
+        16,
+        {
+            animate: true
+        }
+    );
+
+
+    updateFriendMarkers();
+}
+
+
+function renderMap() {
+
+    const user =
+        currentUser();
+
+    if (!user) return;
+
+
+    const status =
+        document.getElementById(
+            "locationStatus"
+        );
+
+    const button =
+        document.getElementById(
+            "locationButton"
+        );
+
+
+    if (
+        user.locationSharing &&
+        user.latitude &&
+        user.longitude
+    ) {
+
+        status.textContent =
+            "📍 Твоя геопозиция определена";
+
+        button.textContent =
+            "✓ Я здесь";
+
+
+        showMyPosition(
+            user.latitude,
+            user.longitude
+        );
+
+    } else {
+
+        status.textContent =
+            "Нажми, чтобы определить твоё местоположение";
+
+        button.textContent =
+            "📍 Найти меня";
+    }
+
+
+    updateFriendMarkers();
+}
+
+
+/* =========================================================
+   FRIEND MARKERS
+========================================================= */
+
+let friendMarkers = [];
+
+
+function updateFriendMarkers() {
+
+    if (!map) return;
+
+
+    friendMarkers.forEach(
+        marker =>
+            map.removeLayer(
+                marker
+            )
+    );
+
+
+    friendMarkers = [];
+
+
+    const friends =
+        getFriends();
+
+
+    friends.forEach(
+        friend => {
+
+            if (
+                !friend.locationSharing ||
+                !friend.latitude ||
+                !friend.longitude
+            ) {
+
+                return;
+            }
+
+
+            const first =
+                friend.username
+                    .charAt(0)
+                    .toUpperCase();
+
+
+            const icon =
+                L.divIcon({
+
+                    className:
+                        "friend-marker-wrapper",
+
+                    html: `
+                        <div
+                            class="friend-marker"
+                        >
+                            ${escapeHTML(first)}
+
+                            <div
+                                class="marker-name"
+                            >
+                                ${escapeHTML(
+                                    friend.username
+                                )}
+                            </div>
+
+                        </div>
+                    `,
+
+                    iconSize:
+                        [46,46],
+
+                    iconAnchor:
+                        [23,23]
+                });
+
+
+            const marker =
+                L.marker(
+                    [
+                        friend.latitude,
+                        friend.longitude
+                    ],
+                    {
+                        icon
+                    }
+                )
+                .addTo(map)
+                .bindPopup(
+                    `
+                    <b>
+                        ${escapeHTML(
+                            friend.username
+                        )}
+                    </b>
+                    <br>
+                    Друг Blink
+                    `
+                );
+
+
+            friendMarkers.push(
+                marker
+            );
+
+        }
+    );
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function renderSettings() {
+
+    updateSettingsUI();
+}
+
+
+function updateSettingsUI() {
+
+    const user =
+        currentUser();
+
+    if (!user) return;
+
+
+    document
+        .getElementById(
+            "locationSwitch"
+        )
+        .classList.toggle(
+            "on",
+            !!user.locationSharing
+        );
+
+
+    document
+        .getElementById(
+            "notificationSwitch"
+        )
+        .classList.toggle(
+            "on",
+            user.notifications !== false
+        );
+}
+
+
+function toggleSetting(
+    setting
+) {
+
+    const user =
+        currentUser();
+
+
+    if (
+        setting === "location"
+    ) {
+
+        user.locationSharing =
+            !user.locationSharing;
+
+
+        if (
+            user.locationSharing
+        ) {
+
+            requestLocation();
+
+        } else {
+
+            if (
+                watchId !== null
+            ) {
+
+                navigator.geolocation
+                    .clearWatch(
+                        watchId
+                    );
+
+                watchId = null;
+            }
+
+            toast(
+                "Геопозиция выключена"
+            );
+        }
+
+
+    } else if (
+        setting === "notifications"
+    ) {
+
+        user.notifications =
+            user.notifications ===
+            false;
+    }
+
+
+    saveDB();
+
+    updateSettingsUI();
+}
+
+
+/* =========================================================
+   CHATS
+========================================================= */
+
+function chatKey(
+    a,
+    b
+) {
+
+    return [
+        a,
+        b
+    ]
+    .sort()
+    .join("_");
+}
+
+
+function renderChats() {
+
+    const list =
+        document.getElementById(
+            "chatsList"
+        );
+
+    const friends =
+        getFriends();
+
+    const me =
+        currentUser();
 
 
     if (!friends.length) {
 
         list.innerHTML = `
-            <div class="muted"
-                 style="padding-top:15px">
+            <div class="empty">
 
-                Пока нет друзей.<br>
-                Добавь первого по коду.
+                <div class="empty-icon">
+                    ◌
+                </div>
+
+                <div>
+                    Чатов пока нет
+                </div>
+
+                <div
+                    style="
+                        margin-top:5px;
+                        font-size:12px;
+                    "
+                >
+                    Добавь друга
+                </div>
 
             </div>
         `;
 
         return;
-
     }
 
 
     list.innerHTML =
-        friends.map(
-            friend => `
+        friends
+            .map(
+                friend => {
 
-                <div class="friend">
+                    const key =
+                        chatKey(
+                            me.id,
+                            friend.id
+                        );
 
-                    <div class="avatar">
+                    const messages =
+                        db.chats[key] || [];
 
-                        ${escapeHTML(
-                            friend.name
-                                .charAt(0)
-                                .toUpperCase()
-                        )}
+                    const last =
+                        messages[
+                            messages.length - 1
+                        ];
 
-                    </div>
 
-                    <div class="friend-info">
+                    return `
 
-                        <div class="friend-name">
+                        <div
+                            class="chat-row"
+                            onclick="
+                                openChat(
+                                    '${friend.id}'
+                                )
+                            "
+                        >
 
-                            ${escapeHTML(
-                                friend.name
-                            )}
+                            <div
+                                class="avatar small"
+                            >
+                                ${escapeHTML(
+                                    friend.username
+                                        .charAt(0)
+                                        .toUpperCase()
+                                )}
+                            </div>
+
+                            <div
+                                class="chat-info"
+                            >
+
+                                <div
+                                    style="
+                                        font-weight:900;
+                                    "
+                                >
+                                    ${escapeHTML(
+                                        friend.username
+                                    )}
+                                </div>
+
+                                <div
+                                    class="chat-preview"
+                                >
+                                    ${
+                                        last
+                                        ? escapeHTML(
+                                            last.body
+                                        )
+                                        : "Начать чат"
+                                    }
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="chat-time"
+                            >
+                                ${
+                                    last
+                                    ? formatTime(
+                                        last.time
+                                    )
+                                    : ""
+                                }
+                            </div>
 
                         </div>
-
-                        <div class="muted">
-
-                            ID ${friend.code}
-
-                        </div>
-
-                    </div>
-
-                    <div class="online"></div>
-
-                </div>
-
-            `
-        ).join("");
-
+                    `;
+                }
+            )
+            .join("");
 }
 
 
-function escapeHTML(value) {
+function openChat(
+    friendId
+) {
 
-    return String(value)
-        .replace(
-            /[&<>"']/g,
-            character => {
-
-                const symbols = {
-
-                    "&": "&amp;",
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#039;"
-
-                };
-
-                return symbols[character];
-
-            }
+    const friend =
+        getUser(
+            friendId
         );
 
-}
+    if (!friend) {
+        return;
+    }
 
 
-/* =====================================
-   PROFILE SETTINGS
-===================================== */
-
-function toggleInvisible() {
-
-    const users =
-        getUsers();
-
-    const me =
-        getCurrentUser();
+    currentChatUser =
+        friendId;
 
 
-    me.invisible =
-        !me.invisible;
+    document
+        .getElementById(
+            "chatName"
+        )
+        .textContent =
+            friend.username;
 
 
-    saveUsers(users);
-
-    updateProfile();
-
-
-    showToast(
-        me.invisible
-            ? "Режим невидимки включён"
-            : "Режим невидимки выключен"
-    );
-
-}
+    document
+        .getElementById(
+            "chatAvatar"
+        )
+        .textContent =
+            friend.username
+                .charAt(0)
+                .toUpperCase();
 
 
-function toggleLocationSharing() {
-
-    const users =
-        getUsers();
-
-    const me =
-        getCurrentUser();
+    renderMessages();
 
 
-    me.shareLocation =
-        !me.shareLocation;
-
-
-    saveUsers(users);
-
-    updateProfile();
-
-
-    showToast(
-        me.shareLocation
-            ? "Геопозиция включена"
-            : "Геопозиция выключена"
-    );
-
-}
-
-
-function editProfile() {
-
-    const me =
-        getCurrentUser();
-
-
-    const newName =
-        prompt(
-            "Новое имя:",
-            me.name
+    document
+        .getElementById(
+            "chatWindow"
+        )
+        .classList.add(
+            "active"
         );
-
-
-    if (!newName) return;
-
-
-    const users =
-        getUsers();
-
-
-    const user =
-        users.find(
-            item =>
-                item.id === me.id
-        );
-
-
-    user.name =
-        newName.trim();
-
-
-    saveUsers(users);
-
-    updateProfile();
-
-    renderFriends();
-
-
-    showToast(
-        "Профиль обновлён"
-    );
-
-}
-
-
-/* =====================================
-   TOAST
-===================================== */
-
-function showToast(message) {
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
 
 
     setTimeout(
         () => {
 
-            toast.classList.remove(
-                "show"
-            );
+            document
+                .getElementById(
+                    "messageInput"
+                )
+                .focus();
 
         },
-        2200
+        200
     );
-
 }
 
 
-/* =====================================
-   STARTUP
-===================================== */
+function closeChat() {
 
-(function start() {
-
-    const session =
-        localStorage.getItem(
-            SESSION_KEY
+    document
+        .getElementById(
+            "chatWindow"
+        )
+        .classList.remove(
+            "active"
         );
 
+    currentChatUser =
+        null;
 
-    const user =
-        getCurrentUser();
+    renderChats();
+}
+
+
+function renderMessages() {
+
+    const box =
+        document.getElementById(
+            "messages"
+        );
+
+    const me =
+        currentUser();
 
 
     if (
-        session &&
-        user
+        !me ||
+        !currentChatUser
     ) {
 
-        openApplication();
-
+        return;
     }
 
-})();
+
+    const key =
+        chatKey(
+            me.id,
+            currentChatUser
+        );
+
+
+    const messages =
+        db.chats[key] || [];
+
+
+    if (!messages.length) {
+
+        box.innerHTML = `
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ♡
+                </div>
+
+                <div>
+                    Начните общение
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    box.innerHTML =
+        messages
+            .map(
+                message => {
+
+                    const mine =
+                        message.sender ===
+                        me.id;
+
+
+                    return `
+
+                        <div
+                            class="
+                                message
+                                ${
+                                    mine
+                                    ? "mine"
+                                    : "theirs"
+                                }
+                            "
+                        >
+
+                            ${escapeHTML(
+                                message.body
+                            )}
+
+                            <span
+                                class="message-time"
+                            >
+                                ${formatTime(
+                                    message.time
+                                )}
+                            </span>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+
+
+    box.scrollTop =
+        box.scrollHeight;
+}
+
+
+function sendMessage(
+    event
+) {
+
+    event.preventDefault();
+
+
+    if (
+        !currentChatUser
+    ) {
+
+        return;
+    }
+
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    const body =
+        input.value.trim();
+
+
+    if (!body) {
+        return;
+    }
+
+
+    const me =
+        currentUser();
+
+
+    const key =
+        chatKey(
+            me.id,
+            currentChatUser
+        );
+
+
+    if (!db.chats[key]) {
+
+        db.chats[key] = [];
+    }
+
+
+    db.chats[key].push({
+
+        id: Date.now(),
+
+        sender:
+            me.id,
+
+        body,
+
+        time:
+            Date.now()
+
+    });
+
+
+    saveDB();
+
+
+    input.value = "";
+
+    renderMessages();
+
+    renderChats();
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function renderNotifications() {
+
+    const notifications =
+        getNotifications();
+
+
+    const unread =
+        notifications.filter(
+            notification =>
+                !notification.read
+        ).length;
+
+
+    const badge =
+        document.getElementById(
+            "mapNotifBadge"
+        );
+
+
+    if (unread > 0) {
+
+        badge.style.display =
+            "flex";
+
+        badge.textContent =
+            unread > 9
+                ? "9+"
+                : unread;
+
+    } else {
+
+        badge.style.display =
+            "none";
+    }
+}
+
+
+function openNotifications() {
+
+    const notifications =
+        getNotifications();
+
+
+    notifications.forEach(
+        notification =>
+            notification.read =
+                true
+    );
+
+
+    saveDB();
+
+    renderNotifications();
+
+
+    if (!notifications.length) {
+
+        toast(
+            "Уведомлений нет ❤️"
+        );
+
+        return;
+    }
+
+
+    const last =
+        notifications
+            .slice(-3)
+            .reverse();
+
+
+    toast(
+        last
+            .map(
+                n =>
+                    n.title +
+                    ": " +
+                    n.body
+            )
+            .join(" • ")
+    );
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout() {
+
+    db.currentUser =
+        null;
+
+    saveDB();
+
+
+    if (
+        watchId !== null
+    ) {
+
+        navigator.geolocation
+            .clearWatch(
+                watchId
+            );
+
+        watchId = null;
+    }
+
+
+    if (myMarker && map) {
+
+        map.removeLayer(
+            myMarker
+        );
+
+        myMarker = null;
+    }
+
+
+    showAuth();
+
+
+    document
+        .getElementById(
+            "authForm"
+        )
+        .reset();
+
+
+    setAuthMode(
+        "login"
+    );
+
+
+    toast(
+        "Ты вышел из Blink"
+    );
+}
+
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function closeModalOutside(
+    event
+) {
+
+    if (
+        event.target ===
+        event.currentTarget
+    ) {
+
+        event.currentTarget
+            .classList
+            .remove("active");
+    }
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+
+function toast(
+    message
+) {
+
+    const element =
+        document.getElementById(
+            "toast"
+        );
+
+
+    element.textContent =
+        message;
+
+
+    element.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                element
+                    .classList
+                    .remove(
+                        "show"
+                    );
+
+            },
+            2800
+        );
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function formatTime(
+    time
+) {
+
+    return new Date(
+        time
+    ).toLocaleTimeString(
+        "ru-RU",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
+
+
+function escapeHTML(
+    text
+) {
+
+    return String(text)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".modal.active"
+                )
+                .forEach(
+                    modal =>
+                        modal
+                            .classList
+                            .remove(
+                                "active"
+                            )
+                );
+
+            closeChat();
+        }
+
+    }
+);
 
 </script>
 
