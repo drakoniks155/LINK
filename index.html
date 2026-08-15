@@ -2,936 +2,1334 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Blink</title>
 
-<link rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
-*{
-    box-sizing:border-box;
+
+* {
+  box-sizing: border-box;
 }
 
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    background:#050505;
-    color:white;
-    font-family:Arial,sans-serif;
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #080808;
+  color: #fff;
+  font-family: Arial, sans-serif;
 }
 
-button,input{
-    font:inherit;
+button,
+input {
+  font: inherit;
 }
 
-button{
-    cursor:pointer;
+button {
+  cursor: pointer;
 }
 
-.hidden{
-    display:none!important;
+/* =========================
+   MAP
+========================= */
+
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
-/* MAP */
 
-#map{
-    position:fixed;
-    inset:0;
-    z-index:1;
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+  position: absolute;
+
+  z-index: 1000;
+
+  top: 12px;
+  left: 12px;
+  right: 12px;
+
+  display: flex;
+  justify-content: space-between;
+
+  pointer-events: none;
 }
 
-/* TOP */
+.badge {
+  background: rgba(8, 8, 8, 0.92);
 
-.top{
-    position:fixed;
-    z-index:1000;
-    top:12px;
-    left:12px;
-    right:12px;
+  backdrop-filter: blur(15px);
 
-    display:flex;
-    justify-content:space-between;
-    pointer-events:none;
+  border: 1px solid #333;
+
+  border-radius: 18px;
+
+  padding: 10px 14px;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.5);
 }
 
-.pill{
-    background:rgba(8,8,8,.9);
-    border:1px solid #333;
-    border-radius:18px;
-    padding:10px 14px;
-    backdrop-filter:blur(14px);
-    box-shadow:0 10px 30px #0008;
+.brand {
+  font-weight: 900;
+  letter-spacing: 1px;
 }
 
-.brand{
-    font-weight:900;
-    letter-spacing:1px;
+.status {
+  font-size: 12px;
 }
 
-.status{
-    font-size:12px;
+.dot {
+  display: inline-block;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #777;
+
+  margin-right: 7px;
 }
 
-.dot{
-    display:inline-block;
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#666;
-    margin-right:6px;
+.dot.live {
+  background: #4cff8a;
+
+  box-shadow:
+    0 0 12px #4cff8a;
 }
 
-.dot.live{
-    background:#45ff88;
-    box-shadow:0 0 12px #45ff88;
+
+/* =========================
+   SPEED
+========================= */
+
+.speed-card {
+  position: absolute;
+
+  z-index: 1000;
+
+  top: 72px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  background: rgba(8,8,8,.92);
+
+  backdrop-filter: blur(15px);
+
+  border: 1px solid #333;
+
+  border-radius: 20px;
+
+  padding: 9px 20px;
+
+  text-align: center;
 }
 
-/* SPEED */
-
-.speed-box{
-    position:fixed;
-    z-index:1000;
-
-    top:70px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:#080808e8;
-    border:1px solid #333;
-    border-radius:20px;
-
-    padding:9px 18px;
-
-    text-align:center;
-    backdrop-filter:blur(15px);
+.speed-card b {
+  font-size: 24px;
 }
 
-.speed-number{
-    font-size:25px;
-    font-weight:900;
+.speed-card small {
+  display: block;
+
+  color: #999;
+
+  font-size: 9px;
 }
 
-.speed-caption{
-    color:#888;
-    font-size:9px;
+
+/* =========================
+   MAP STYLE BUTTON
+========================= */
+
+.map-style-box {
+  position: absolute;
+
+  z-index: 2000;
+
+  right: 14px;
+  top: 130px;
 }
 
-/* BOTTOM */
+.map-style-button {
+  width: 50px;
+  height: 50px;
 
-.bottom{
-    position:fixed;
-    z-index:1000;
+  border: 1px solid #333;
 
-    left:10px;
-    right:10px;
-    bottom:10px;
+  border-radius: 16px;
 
-    background:#080808ee;
-    border:1px solid #333;
-    border-radius:24px;
+  background: #050505;
 
-    padding:7px;
+  color: white;
 
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:5px;
+  font-size: 22px;
 
-    backdrop-filter:blur(15px);
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.55);
 }
 
-.nav{
-    border:0;
-    background:transparent;
-    color:#888;
-    border-radius:17px;
-    padding:8px 2px;
+.map-style-button:active {
+  transform: scale(.94);
 }
 
-.nav.active{
-    background:#fff;
-    color:#000;
+.map-styles {
+  position: absolute;
+
+  right: 58px;
+  top: 0;
+
+  width: 155px;
+
+  background: rgba(5,5,5,.97);
+
+  border: 1px solid #333;
+
+  border-radius: 16px;
+
+  padding: 6px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.6);
 }
 
-.nav-icon{
-    display:block;
-    font-size:18px;
+.map-styles button {
+  width: 100%;
+
+  border: 0;
+
+  background: transparent;
+
+  color: white;
+
+  text-align: left;
+
+  padding: 11px;
+
+  border-radius: 11px;
+
+  font-size: 13px;
+
+  font-weight: bold;
 }
 
-.nav-text{
-    display:block;
-    font-size:10px;
-    font-weight:bold;
+.map-styles button:active {
+  background: #333;
 }
 
-/* AUTH */
 
-#auth{
-    position:fixed;
-    z-index:5000;
-    inset:0;
+/* =========================
+   BOTTOM MENU
+========================= */
 
-    background:#070707;
+.bottom {
+  position: absolute;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  z-index: 1000;
 
-    padding:20px;
+  bottom: 10px;
+
+  left: 10px;
+  right: 10px;
+
+  background: rgba(8,8,8,.95);
+
+  border: 1px solid #333;
+
+  border-radius: 24px;
+
+  padding: 7px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap: 5px;
 }
 
-.auth-box{
-    width:min(430px,100%);
+.nav {
+  border: 0;
 
-    background:#111;
-    border:1px solid #292929;
+  background: transparent;
 
-    border-radius:28px;
+  color: #999;
 
-    padding:25px;
+  border-radius: 17px;
 
-    box-shadow:0 20px 80px #000;
+  padding: 8px 3px;
 }
 
-.logo{
-    font-size:48px;
-    font-weight:1000;
-    letter-spacing:-4px;
+.nav.active {
+  background: white;
+
+  color: black;
 }
 
-.subtitle{
-    margin:0 0 20px;
-    color:#999;
-    font-size:18px;
+.nav span {
+  display: block;
 }
 
-.auth-tabs{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-
-    background:#181818;
-    padding:4px;
-
-    border-radius:15px;
-    margin-bottom:15px;
+.nav .icon {
+  font-size: 19px;
 }
 
-.auth-tabs button{
-    border:0;
-    background:transparent;
-    color:#999;
+.nav .txt {
+  font-size: 10px;
 
-    padding:11px;
-
-    border-radius:11px;
-    font-weight:bold;
+  font-weight: bold;
 }
 
-.auth-tabs button.active{
-    background:#fff;
-    color:#000;
+
+/* =========================
+   PANELS
+========================= */
+
+.panel {
+  position: absolute;
+
+  z-index: 3000;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.62);
+
+  display: flex;
+
+  align-items: flex-end;
+
+  backdrop-filter: blur(3px);
 }
 
-.field{
-    margin:12px 0;
+.sheet {
+  width: 100%;
+
+  max-height: 88dvh;
+
+  overflow-y: auto;
+
+  background: #0d0d0d;
+
+  border:
+    1px solid #292929;
+
+  border-radius:
+    28px 28px 0 0;
+
+  padding:
+    18px 16px 30px;
 }
 
-.field label{
-    display:block;
-    color:#aaa;
-    font-size:12px;
-    margin-bottom:6px;
+.handle {
+  width: 42px;
+
+  height: 4px;
+
+  background: #444;
+
+  border-radius: 10px;
+
+  margin:
+    0 auto 16px;
 }
 
-input{
-    width:100%;
+.close {
+  float: right;
 
-    background:#171717;
-    color:#fff;
+  border: 0;
 
-    border:1px solid #333;
+  background: #222;
 
-    border-radius:14px;
+  color: white;
 
-    padding:13px;
+  width: 36px;
+  height: 36px;
 
-    outline:none;
+  border-radius: 50%;
+
+  font-size: 22px;
 }
 
-input:focus{
-    border-color:#777;
+
+/* =========================
+   INPUTS
+========================= */
+
+.field {
+  margin: 12px 0;
 }
 
-.main-button{
-    width:100%;
+.field label {
+  display: block;
 
-    border:0;
-    border-radius:15px;
+  color: #aaa;
 
-    padding:14px;
+  font-size: 12px;
 
-    background:#fff;
-    color:#000;
-
-    font-weight:900;
-
-    margin-top:8px;
+  margin-bottom: 6px;
 }
 
-.error{
-    min-height:20px;
+input {
+  width: 100%;
 
-    margin-top:9px;
+  background: #171717;
 
-    color:#ff7890;
+  color: white;
 
-    font-size:13px;
+  border:
+    1px solid #333;
+
+  border-radius: 14px;
+
+  padding: 12px;
+
+  outline: none;
 }
 
-/* PANEL */
 
-.panel{
-    position:fixed;
-    z-index:3000;
-    inset:0;
+/* =========================
+   BUTTONS
+========================= */
 
-    background:#0008;
+.btn {
+  width: 100%;
 
-    display:flex;
-    align-items:flex-end;
+  border: 0;
 
-    backdrop-filter:blur(3px);
+  border-radius: 15px;
+
+  padding: 13px;
+
+  background: white;
+
+  color: black;
+
+  font-weight: 900;
+
+  margin-top: 8px;
 }
 
-.sheet{
-    width:100%;
-    max-height:88vh;
-    overflow:auto;
+.btn.secondary {
+  background: #222;
 
-    background:#0d0d0d;
+  color: white;
 
-    border:1px solid #292929;
-    border-radius:28px 28px 0 0;
-
-    padding:16px 16px 30px;
+  border:
+    1px solid #333;
 }
 
-.handle{
-    width:45px;
-    height:4px;
+.row {
+  display: flex;
 
-    background:#444;
-    border-radius:20px;
+  gap: 8px;
 
-    margin:0 auto 15px;
+  align-items: center;
 }
 
-.close{
-    float:right;
-
-    width:36px;
-    height:36px;
-
-    border:0;
-    border-radius:50%;
-
-    background:#222;
-    color:#fff;
-
-    font-size:22px;
+.grow {
+  flex: 1;
 }
 
-.profile-head{
-    display:flex;
-    align-items:center;
-    gap:14px;
 
-    margin-bottom:18px;
+/* =========================
+   PROFILE
+========================= */
+
+.profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 15px 0;
 }
 
-.avatar{
-    width:70px;
-    height:70px;
+.avatar {
+  width: 70px;
+  height: 70px;
 
-    border-radius:50%;
+  border-radius: 50%;
 
-    object-fit:cover;
+  object-fit: cover;
 
-    background:#222;
+  background: #222;
 
-    border:2px solid white;
+  border:
+    2px solid white;
 }
 
-.avatar-small{
-    width:48px;
-    height:48px;
+.avatar.small {
+  width: 46px;
+  height: 46px;
 
-    border-radius:50%;
-
-    object-fit:cover;
-
-    background:#222;
+  border-width: 1px;
 }
 
-.profile-name{
-    font-size:20px;
-    font-weight:900;
+.code {
+  font-size: 12px;
+
+  color: #999;
 }
 
-.muted{
-    color:#888;
-    font-size:12px;
+
+/* =========================
+   FRIENDS
+========================= */
+
+.friend {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 0;
+
+  border-bottom:
+    1px solid #252525;
 }
 
-.friend-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.empty {
+  text-align: center;
 
-    padding:11px 0;
+  color: #888;
 
-    border-bottom:1px solid #242424;
+  padding: 25px;
 }
 
-.grow{
-    flex:1;
+.note {
+  color: #777;
+
+  font-size: 12px;
+
+  line-height: 1.5;
 }
 
-.secondary{
-    background:#222;
-    color:#fff;
 
-    border:1px solid #333;
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+  position: absolute;
+
+  z-index: 5000;
+
+  left: 50%;
+
+  bottom: 92px;
+
+  transform:
+    translateX(-50%);
+
+  background: white;
+
+  color: black;
+
+  padding:
+    11px 15px;
+
+  border-radius: 14px;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  max-width: 90%;
+
+  text-align: center;
 }
 
-.danger{
-    background:#2a1115;
-    color:#ff8295;
+
+/* =========================
+   USER MARKER
+========================= */
+
+.pin {
+  width: 46px;
+  height: 46px;
+
+  border:
+    3px solid white;
+
+  border-radius: 50%;
+
+  background: #222;
+
+  position: relative;
+
+  box-shadow:
+    0 5px 20px rgba(0,0,0,.6);
 }
 
-/* TOAST */
+.pin img {
+  width: 100%;
+  height: 100%;
 
-.toast{
-    position:fixed;
-    z-index:7000;
+  border-radius: 50%;
 
-    left:50%;
-    bottom:90px;
-
-    transform:translateX(-50%);
-
-    max-width:90%;
-
-    background:white;
-    color:black;
-
-    padding:11px 15px;
-
-    border-radius:14px;
-
-    font-weight:bold;
-    font-size:13px;
-
-    text-align:center;
+  object-fit: cover;
 }
 
-/* MAP MARKERS */
+.ring {
+  position: absolute;
 
-.blink-marker{
-    position:relative;
+  inset: -8px;
 
-    width:48px;
-    height:48px;
+  border:
+    2px solid white;
 
-    border-radius:50%;
+  border-radius: 50%;
 
-    background:#222;
-
-    border:3px solid #fff;
-
-    box-shadow:0 5px 20px #000b;
+  animation:
+    pulse 1.5s infinite;
 }
 
-.blink-marker img{
-    width:100%;
-    height:100%;
+@keyframes pulse {
 
-    border-radius:50%;
+  50% {
+    transform: scale(1.2);
 
-    object-fit:cover;
+    opacity: .15;
+  }
+
 }
 
-.marker-pulse{
-    position:absolute;
-    inset:-10px;
+.speed-label {
+  position: absolute;
 
-    border:2px solid white;
-    border-radius:50%;
+  top: 50px;
 
-    animation:pulse 1.6s infinite;
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  white-space: nowrap;
+
+  background: #000;
+
+  border:
+    1px solid #333;
+
+  border-radius: 8px;
+
+  padding:
+    3px 7px;
+
+  font-size: 10px;
+
+  font-weight: 900;
 }
 
-@keyframes pulse{
-    50%{
-        transform:scale(1.25);
-        opacity:.1;
-    }
+
+/* DIRECTION ARROW */
+
+.direction-arrow {
+  position: absolute;
+
+  left: 50%;
+
+  top: -27px;
+
+  transform:
+    translateX(-50%);
+
+  font-size: 18px;
+
+  text-shadow:
+    0 2px 5px #000;
 }
 
-.marker-speed{
-    position:absolute;
 
-    top:51px;
-    left:50%;
+/* =========================
+   DESKTOP
+========================= */
 
-    transform:translateX(-50%);
+@media (min-width:700px) {
 
-    white-space:nowrap;
+  .bottom {
+    width: 520px;
 
-    background:#050505;
+    left: 50%;
+    right: auto;
 
-    border:1px solid #333;
-    border-radius:8px;
+    transform:
+      translateX(-50%);
+  }
 
-    padding:3px 6px;
+  .panel {
+    align-items: center;
 
-    color:white;
+    justify-content: center;
+  }
 
-    font-size:10px;
-    font-weight:900;
+  .sheet {
+    width: 520px;
+
+    border-radius: 28px;
+
+    max-height: 80vh;
+  }
+
 }
 
-.leaflet-control-zoom{
-    margin-bottom:95px!important;
-}
-
-.leaflet-control-attribution{
-    font-size:8px!important;
-}
-
-@media(min-width:700px){
-
-    .bottom{
-        width:520px;
-
-        left:50%;
-        right:auto;
-
-        transform:translateX(-50%);
-    }
-
-    .panel{
-        align-items:center;
-        justify-content:center;
-    }
-
-    .sheet{
-        width:520px;
-        border-radius:28px;
-        max-height:80vh;
-    }
-}
 </style>
 </head>
 
+
 <body>
+
+
+<!-- MAP -->
 
 <div id="map"></div>
 
-<div class="top">
 
-    <div class="pill brand">
-        ⚡ BLINK
-    </div>
+<!-- TOP BAR -->
 
-    <div class="pill status">
+<div class="topbar">
 
-        <span id="statusDot" class="dot"></span>
+  <div class="badge brand">
+    ⚡ BLINK
+  </div>
 
-        <span id="statusText">
-            GPS
-        </span>
 
-    </div>
+  <div class="badge status">
+
+    <span
+      id="statusDot"
+      class="dot"
+    ></span>
+
+
+    <span id="statusText">
+      GPS не запущен
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- SPEED -->
+
+<div class="speed-card">
+
+  <b id="speed">
+    0.0 км/ч
+  </b>
+
+
+  <small>
+    МОЯ СКОРОСТЬ
+  </small>
 
 </div>
 
-<div class="speed-box">
 
-    <div id="mySpeed" class="speed-number">
-        0.0 км/ч
-    </div>
+<!-- MAP BUTTON -->
 
-    <div class="speed-caption">
-        МОЯ СКОРОСТЬ
-    </div>
+<div class="map-style-box">
+
+  <button
+    id="mapStyleButton"
+    class="map-style-button"
+    onclick="toggleMapStyles()"
+  >
+    🗺️
+  </button>
+
+
+  <div
+    id="mapStyles"
+    class="map-styles"
+    style="display:none"
+  >
+
+    <button
+      onclick="setMapStyle('light')"
+    >
+      ⚪ Белая
+    </button>
+
+
+    <button
+      onclick="setMapStyle('dark')"
+    >
+      ⚫ Тёмная
+    </button>
+
+
+    <button
+      onclick="setMapStyle('hybrid')"
+    >
+      🛰️ Гибрид
+    </button>
+
+  </div>
 
 </div>
+
+
+<!-- BOTTOM MENU -->
 
 <div class="bottom">
 
-    <button class="nav active" data-page="map">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-text">Карта</span>
-    </button>
+  <button
+    class="nav active"
+    data-page="map"
+  >
 
-    <button class="nav" data-page="friends">
-        <span class="nav-icon">👥</span>
-        <span class="nav-text">Друзья</span>
-    </button>
+    <span class="icon">
+      🗺️
+    </span>
 
-    <button class="nav" data-page="profile">
-        <span class="nav-icon">👤</span>
-        <span class="nav-text">Профиль</span>
-    </button>
+    <span class="txt">
+      Карта
+    </span>
 
-    <button class="nav" data-page="settings">
-        <span class="nav-icon">⚙️</span>
-        <span class="nav-text">Настройки</span>
-    </button>
-
-</div>
-
-<div id="panel" class="panel hidden">
-
-    <div id="sheet" class="sheet"></div>
-
-</div>
-
-<div id="toast" class="toast hidden"></div>
+  </button>
 
 
-<!-- AUTH -->
+  <button
+    class="nav"
+    data-page="friends"
+  >
 
-<div id="auth">
+    <span class="icon">
+      👥
+    </span>
 
-    <div class="auth-box">
+    <span class="txt">
+      Друзья
+    </span>
 
-        <div class="logo">
-            blink
-        </div>
+  </button>
 
-        <p class="subtitle">
-            Друзья рядом. В реальном времени.
-        </p>
 
-        <div class="auth-tabs">
+  <button
+    class="nav"
+    data-page="profile"
+  >
 
-            <button id="loginTab" class="active">
-                Войти
-            </button>
+    <span class="icon">
+      👤
+    </span>
 
-            <button id="registerTab">
-                Регистрация
-            </button>
+    <span class="txt">
+      Профиль
+    </span>
 
-        </div>
+  </button>
 
-        <div class="field">
 
-            <label>
-                Email
-            </label>
+  <button
+    class="nav"
+    data-page="settings"
+  >
 
-            <input
-                id="email"
-                type="email"
-                placeholder="you@example.com">
+    <span class="icon">
+      ⚙️
+    </span>
 
-        </div>
+    <span class="txt">
+      Настройки
+    </span>
 
-        <div class="field">
-
-            <label>
-                Пароль
-            </label>
-
-            <input
-                id="password"
-                type="password"
-                placeholder="••••••••">
-
-        </div>
-
-        <div id="usernameField" class="field hidden">
-
-            <label>
-                Имя
-            </label>
-
-            <input
-                id="username"
-                maxlength="30"
-                placeholder="Например: Никс">
-
-        </div>
-
-        <button
-            id="authButton"
-            class="main-button">
-
-            Войти
-
-        </button>
-
-        <div id="authError" class="error"></div>
-
-    </div>
+  </button>
 
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- PANEL -->
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div
+  id="panel"
+  class="panel"
+  style="display:none"
+>
+
+  <div
+    id="sheet"
+    class="sheet"
+  ></div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast"
+  style="display:none"
+></div>
+
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
 
 
 <script>
 
 /* =========================================================
-   SUPABASE
+   BLINK
+
+   БЕЗ БАЗЫ ДАННЫХ
+
+   GPS
+   СКОРОСТЬ
+   НАПРАВЛЕНИЕ
+   РАДУЖНЫЙ ШЛЕЙФ
+   ПРОФИЛЬ
+   ФОТО
+   ДРУЗЬЯ
+   СТИЛИ КАРТЫ
 ========================================================= */
-
-const SUPABASE_URL =
-    "https://ytmdvlqcrqqeblxbnzno.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_irhX2HtmV_Ygk6bV_LDKQA_yPuTi4op";
-
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentUser = null;
-
-let currentProfile = null;
-
-let map = null;
-
-let myMarker = null;
-
-let gpsWatch = null;
-
-let previousPosition = null;
-
-let myTrail = [];
-
-let friends = [];
-
-let friendMarkers = {};
-
-let friendTrails = {};
-
-let trailLayers = [];
-
-let authMode = "login";
-
-let realtimeChannel = null;
-
-let sharingLocation = true;
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function $(id){
-    return document.getElementById(id);
-}
-
-
-function escapeHTML(value){
-
-    return String(value || "")
-        .replace(/[&<>"']/g,function(char){
-
-            const map = {
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                '"':"&quot;",
-                "'":"&#039;"
-            };
-
-            return map[char];
-
-        });
-
-}
-
-
-function showToast(text){
-
-    const toast = $("toast");
-
-    toast.textContent = text;
-
-    toast.classList.remove("hidden");
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer =
-        setTimeout(function(){
-
-            toast.classList.add("hidden");
-
-        },3000);
-
-}
-
-
-function setStatus(text,online){
-
-    $("statusText").textContent = text;
-
-    $("statusDot").classList.toggle(
-        "live",
-        Boolean(online)
-    );
-
-}
-
-
-function closePanel(){
-
-    $("panel").classList.add("hidden");
-
-}
-
-
-function openPanel(html){
-
-    $("sheet").innerHTML =
-        '<div class="handle"></div>' +
-        html;
-
-    $("panel").classList.remove("hidden");
-
-}
-
-
-$("panel").addEventListener(
-    "click",
-    function(event){
-
-        if(event.target === $("panel")){
-            closePanel();
-        }
-
-    }
-);
 
 
 /* =========================================================
    MAP
 ========================================================= */
 
-function initializeMap(){
-
-    map =
-        L.map("map").setView(
-            [0,0],
-            2
-        );
-
-    L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            maxZoom:19,
-            attribution:"© OpenStreetMap"
-        }
-    ).addTo(map);
-
-}
+const map =
+  L.map("map")
+   .setView(
+     [0,0],
+     2
+   );
 
 
-/* =========================================================
-   AVATAR
-========================================================= */
+/* LIGHT */
 
-function getAvatar(url){
+const lightMap =
+  L.tileLayer(
 
-    if(url){
-        return url;
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+      maxZoom: 19,
+
+      attribution:
+        "© OpenStreetMap"
     }
 
-    return "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="200"
-                 height="200">
+  );
 
-                <rect width="200"
-                      height="200"
-                      fill="#222"/>
 
-                <text x="100"
-                      y="125"
-                      text-anchor="middle"
-                      font-size="80"
-                      fill="white">
-                    👤
-                </text>
+/* DARK */
 
-            </svg>
-        `);
+const darkMap =
+  L.tileLayer(
+
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
+    {
+      maxZoom: 20,
+
+      attribution:
+        "© OpenStreetMap © CARTO"
+    }
+
+  );
+
+
+/* SATELLITE */
+
+const satelliteMap =
+  L.tileLayer(
+
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
+    {
+      maxZoom: 19,
+
+      attribution:
+        "© Esri"
+    }
+
+  );
+
+
+/* SATELLITE LABELS */
+
+const labelsMap =
+  L.tileLayer(
+
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
+
+    {
+      maxZoom: 20,
+
+      attribution:
+        "© OpenStreetMap © CARTO"
+    }
+
+  );
+
+
+/* CURRENT STYLE */
+
+let currentMapStyle =
+  localStorage.getItem(
+    "blink_map_style"
+  ) || "light";
+
+
+function setMapStyle(
+  style
+) {
+
+  [
+    lightMap,
+    darkMap,
+    satelliteMap,
+    labelsMap
+
+  ].forEach(
+
+    function(layer) {
+
+      if (
+        map.hasLayer(layer)
+      ) {
+
+        map.removeLayer(
+          layer
+        );
+
+      }
+
+    }
+
+  );
+
+
+  if (
+    style === "light"
+  ) {
+
+    lightMap.addTo(
+      map
+    );
+
+  }
+
+
+  if (
+    style === "dark"
+  ) {
+
+    darkMap.addTo(
+      map
+    );
+
+  }
+
+
+  if (
+    style === "hybrid"
+  ) {
+
+    satelliteMap.addTo(
+      map
+    );
+
+    labelsMap.addTo(
+      map
+    );
+
+  }
+
+
+  currentMapStyle =
+    style;
+
+
+  localStorage.setItem(
+    "blink_map_style",
+    style
+  );
+
+
+  document.getElementById(
+    "mapStyles"
+  ).style.display =
+    "none";
 
 }
 
 
+function toggleMapStyles() {
+
+  const menu =
+    document.getElementById(
+      "mapStyles"
+    );
+
+
+  menu.style.display =
+    menu.style.display === "none"
+      ? "block"
+      : "none";
+
+}
+
+
+setMapStyle(
+  currentMapStyle
+);
+
+
 /* =========================================================
-   MARKER
+   DATA
 ========================================================= */
 
-function createMarkerIcon(
-    avatarURL,
-    speed,
-    isMe
-){
+let myName =
+  localStorage.getItem(
+    "blink_name"
+  ) || "Я";
 
-    return L.divIcon({
 
-        className:"blink-custom-icon",
+let myPhoto =
+  localStorage.getItem(
+    "blink_photo"
+  ) || "";
 
-        html:`
 
-            <div class="blink-marker">
+let myCode =
+  localStorage.getItem(
+    "blink_code"
+  );
 
-                ${
-                    isMe
-                    ? `<div class="marker-pulse"></div>`
-                    : ""
-                }
 
-                <img src="${getAvatar(avatarURL)}">
+if (
+  !myCode
+) {
 
-            </div>
+  myCode =
+    String(
+      Math.floor(
+        1000 +
+        Math.random() *
+        9000
+      )
+    );
 
-            <div class="marker-speed">
 
-                ${Number(speed || 0).toFixed(1)}
-                км/ч
+  localStorage.setItem(
+    "blink_code",
+    myCode
+  );
 
-            </div>
+}
 
-        `,
 
-        iconSize:[48,72],
+let friends =
+  JSON.parse(
+    localStorage.getItem(
+      "blink_friends"
+    ) || "[]"
+  );
 
-        iconAnchor:[24,24]
 
-    });
+let locationEnabled =
+  localStorage.getItem(
+    "blink_location"
+  ) !== "off";
+
+
+let watchId =
+  null;
+
+
+let marker =
+  null;
+
+
+let lastPosition =
+  null;
+
+
+let trail =
+  [];
+
+
+let trailLayers =
+  [];
+
+
+/* RAINBOW COLORS */
+
+const rainbow = [
+
+  "#ff0055",
+
+  "#ff7a00",
+
+  "#ffe600",
+
+  "#42ff00",
+
+  "#00e5ff",
+
+  "#2878ff",
+
+  "#9b4dff",
+
+  "#ff2bd6"
+
+];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function avatar(
+  src
+) {
+
+  if (
+    src
+  ) {
+
+    return src;
+
+  }
+
+
+  return (
+
+    "data:image/svg+xml;charset=UTF-8," +
+
+    encodeURIComponent(
+
+      '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
+
+      '<rect width="160" height="160" fill="#222"/>' +
+
+      '<text x="80" y="108" text-anchor="middle" font-size="70" fill="white">👤</text>' +
+
+      '</svg>'
+
+    )
+
+  );
+
+}
+
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+
+    function(c) {
+
+      return {
+
+        "&":
+          "&amp;",
+
+        "<":
+          "&lt;",
+
+        ">":
+          "&gt;",
+
+        '"':
+          "&quot;",
+
+        "'":
+          "&#039;"
+
+      }[c];
+
+    }
+  );
+
+}
+
+
+function toast(
+  text
+) {
+
+  const box =
+    document.getElementById(
+      "toast"
+    );
+
+
+  box.textContent =
+    text;
+
+
+  box.style.display =
+    "block";
+
+
+  clearTimeout(
+    window.blinkToast
+  );
+
+
+  window.blinkToast =
+    setTimeout(
+
+      function() {
+
+        box.style.display =
+          "none";
+
+      },
+
+      2500
+
+    );
+
+}
+
+
+function setStatus(
+  text,
+  live
+) {
+
+  document.getElementById(
+    "statusText"
+  ).textContent =
+    text;
+
+
+  document.getElementById(
+    "statusDot"
+  ).classList.toggle(
+    "live",
+    !!live
+  );
 
 }
 
@@ -940,119 +1338,284 @@ function createMarkerIcon(
    DISTANCE
 ========================================================= */
 
-function distanceMeters(
-    lat1,
-    lon1,
-    lat2,
-    lon2
-){
+function calculateDistance(
 
-    const R = 6371000;
+  lat1,
+  lon1,
 
-    const rad =
-        Math.PI / 180;
+  lat2,
+  lon2
 
-    const dLat =
-        (lat2-lat1)*rad;
+) {
 
-    const dLon =
-        (lon2-lon1)*rad;
+  const R =
+    6371000;
 
-    const a =
-        Math.sin(dLat/2) *
-        Math.sin(dLat/2) +
 
-        Math.cos(lat1*rad) *
-        Math.cos(lat2*rad) *
+  const rad =
+    Math.PI / 180;
 
-        Math.sin(dLon/2) *
-        Math.sin(dLon/2);
 
-    return 2 *
-        R *
-        Math.asin(
-            Math.sqrt(a)
-        );
+  const dLat =
+    (lat2 - lat1) *
+    rad;
+
+
+  const dLon =
+    (lon2 - lon1) *
+    rad;
+
+
+  const a =
+
+    Math.sin(
+      dLat / 2
+    ) ** 2
+
+    +
+
+    Math.cos(
+      lat1 * rad
+    )
+
+    *
+
+    Math.cos(
+      lat2 * rad
+    )
+
+    *
+
+    Math.sin(
+      dLon / 2
+    ) ** 2;
+
+
+  return (
+
+    2 *
+
+    R *
+
+    Math.asin(
+      Math.sqrt(a)
+    )
+
+  );
 
 }
 
 
 /* =========================================================
-   SPEED
+   BEARING / DIRECTION
 ========================================================= */
 
-function calculateSpeed(
-    position
-){
+function calculateBearing(
 
-    const coords =
-        position.coords;
+  lat1,
+  lon1,
 
-    let metersPerSecond =
-        Number(coords.speed);
+  lat2,
+  lon2
 
+) {
 
-    if(
-        !Number.isFinite(
-            metersPerSecond
-        ) ||
-        metersPerSecond < 0
-    ){
-
-        metersPerSecond = null;
-
-    }
+  const rad =
+    Math.PI / 180;
 
 
-    if(
-        metersPerSecond === null &&
-        previousPosition
-    ){
+  const y =
 
-        const meters =
-            distanceMeters(
+    Math.sin(
+      (lon2 - lon1) *
+      rad
+    )
 
-                previousPosition.latitude,
-                previousPosition.longitude,
+    *
 
-                coords.latitude,
-                coords.longitude
-
-            );
-
-
-        const seconds =
-            (
-                position.timestamp -
-                previousPosition.timestamp
-            ) / 1000;
-
-
-        if(seconds > 0){
-
-            metersPerSecond =
-                meters / seconds;
-
-        }else{
-
-            metersPerSecond = 0;
-
-        }
-
-    }
-
-
-    if(metersPerSecond === null){
-
-        metersPerSecond = 0;
-
-    }
-
-
-    return Math.max(
-        0,
-        metersPerSecond * 3.6
+    Math.cos(
+      lat2 * rad
     );
+
+
+  const x =
+
+    Math.cos(
+      lat1 * rad
+    )
+
+    *
+
+    Math.sin(
+      lat2 * rad
+    )
+
+    -
+
+    Math.sin(
+      lat1 * rad
+    )
+
+    *
+
+    Math.cos(
+      lat2 * rad
+    )
+
+    *
+
+    Math.cos(
+      (lon2 - lon1) *
+      rad
+    );
+
+
+  let bearing =
+
+    Math.atan2(
+      y,
+      x
+    )
+
+    *
+
+    180 /
+    Math.PI;
+
+
+  return (
+
+    bearing +
+    360
+  ) % 360;
+
+}
+
+
+/* COMPASS */
+
+function directionName(
+  degrees
+) {
+
+  const names = [
+
+    "С",
+
+    "СВ",
+
+    "В",
+
+    "ЮВ",
+
+    "Ю",
+
+    "ЮЗ",
+
+    "З",
+
+    "СЗ"
+
+  ];
+
+
+  return names[
+    Math.round(
+      degrees / 45
+    ) % 8
+  ];
+
+}
+
+
+/* =========================================================
+   USER ICON
+========================================================= */
+
+function userIcon(
+
+  speed,
+
+  direction
+
+) {
+
+  const moving =
+    speed > 0.5;
+
+
+  return L.divIcon({
+
+    className: "",
+
+
+    html:
+
+      '<div class="pin">' +
+
+        '<div class="ring"></div>' +
+
+        '<img src="' +
+
+          avatar(
+            myPhoto
+          ) +
+
+        '">' +
+
+
+        (
+
+          moving
+
+          ?
+
+          '<div class="direction-arrow" ' +
+
+          'style="transform:translateX(-50%) rotate(' +
+
+          direction +
+
+          'deg)">' +
+
+          '➤' +
+
+          '</div>'
+
+          :
+
+          ""
+
+        ) +
+
+      '</div>' +
+
+
+      '<div class="speed-label">' +
+
+        speed.toFixed(
+          1
+        ) +
+
+        ' км/ч' +
+
+      '</div>',
+
+
+    iconSize:
+      [
+        46,
+        70
+      ],
+
+
+    iconAnchor:
+      [
+        23,
+        23
+      ]
+
+  });
 
 }
 
@@ -1061,784 +1624,959 @@ function calculateSpeed(
    RAINBOW TRAIL
 ========================================================= */
 
-const rainbowColors = [
-    "#ff0055",
-    "#ff7700",
-    "#ffee00",
-    "#33ff00",
-    "#00e5ff",
-    "#1769ff",
-    "#8b38ff",
-    "#ff25d4"
-];
+function redrawTrail() {
 
+  trailLayers.forEach(
 
-function clearTrailLayers(){
+    function(layer) {
 
-    trailLayers.forEach(
-        function(layer){
-
-            map.removeLayer(
-                layer
-            );
-
-        }
-    );
-
-    trailLayers = [];
-
-}
-
-
-function drawRainbowTrail(
-    points,
-    width
-){
-
-    if(
-        !points ||
-        points.length < 2
-    ){
-        return;
-    }
-
-
-    const start =
-        Math.max(
-            0,
-            points.length - 35
-        );
-
-
-    for(
-        let i=start;
-        i<points.length-1;
-        i++
-    ){
-
-        const ratio =
-            (i-start) /
-            Math.max(
-                1,
-                points.length-2-start
-            );
-
-
-        const colorIndex =
-            Math.min(
-                rainbowColors.length-1,
-                Math.floor(
-                    ratio *
-                    rainbowColors.length
-                )
-            );
-
-
-        const line =
-            L.polyline(
-
-                [
-                    points[i],
-                    points[i+1]
-                ],
-
-                {
-                    color:
-                        rainbowColors[colorIndex],
-
-                    weight:width,
-
-                    opacity:
-                        .95 *
-                        (
-                            .35 +
-                            ratio*.65
-                        ),
-
-                    lineCap:"round",
-
-                    lineJoin:"round"
-                }
-
-            ).addTo(map);
-
-
-        trailLayers.push(
-            line
-        );
+      map.removeLayer(
+        layer
+      );
 
     }
 
-}
+  );
 
 
-function redrawAllTrails(){
+  trailLayers =
+    [];
 
-    clearTrailLayers();
 
-    drawRainbowTrail(
-        myTrail,
-        7
+  if (
+    trail.length < 2
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+    Белое свечение под радугой.
+  */
+
+  const glow =
+    L.polyline(
+
+      trail,
+
+      {
+
+        color:
+          "#ffffff",
+
+        weight:
+          18,
+
+        opacity:
+          .12,
+
+        lineCap:
+          "round",
+
+        lineJoin:
+          "round"
+
+      }
+
+    ).addTo(
+      map
     );
 
 
-    Object.keys(friendTrails)
-        .forEach(function(id){
-
-            drawRainbowTrail(
-                friendTrails[id],
-                6
-            );
-
-        });
-
-}
+  trailLayers.push(
+    glow
+  );
 
 
-/* =========================================================
-   PROFILE
-========================================================= */
+  /*
+    Каждая часть хвоста
+    получает свой цвет.
+  */
 
-async function loadMyProfile(){
+  for (
 
-    const result =
-        await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq(
-                "id",
-                currentUser.id
-            )
-            .maybeSingle();
+    let i = 1;
 
+    i < trail.length;
 
-    if(result.error){
-        throw result.error;
-    }
+    i++
 
+  ) {
 
-    if(result.data){
+    const progress =
 
-        return result.data;
+      (i - 1) /
 
-    }
+      Math.max(
 
+        1,
 
-    /*
-       Создаём профиль.
-       friend_code генерируем на клиенте,
-       если твоя таблица позволяет
-       задавать это поле.
-    */
+        trail.length - 2
 
-    const code =
-        String(
-            Math.floor(
-                1000 +
-                Math.random()*9000
-            )
-        );
+      );
 
 
-    const inserted =
-        await supabaseClient
-            .from("profiles")
-            .insert({
+    const color =
 
-                id:
-                    currentUser.id,
+      rainbow[
 
-                username:
-                    currentUser.user_metadata
-                        ?.username ||
-                    "Blink",
+        Math.floor(
 
-                friend_code:
-                    code,
+          progress *
 
-                location_sharing_enabled:
-                    true
+          (
+            rainbow.length -
+            1
+          )
 
-            })
-            .select()
-            .single();
+        )
+
+      ];
 
 
-    if(inserted.error){
+    const segment =
 
-        throw inserted.error;
+      L.polyline(
 
-    }
+        [
 
+          trail[i - 1],
 
-    return inserted.data;
+          trail[i]
 
-}
+        ],
 
+        {
 
-/* =========================================================
-   AUTH
-========================================================= */
+          color:
+            color,
 
-$("loginTab").onclick =
-function(){
+          weight:
+            8,
 
-    authMode = "login";
+          opacity:
+            .95,
 
-    $("loginTab")
-        .classList
-        .add("active");
+          lineCap:
+            "round",
 
-    $("registerTab")
-        .classList
-        .remove("active");
-
-    $("usernameField")
-        .classList
-        .add("hidden");
-
-    $("authButton")
-        .textContent =
-        "Войти";
-
-};
-
-
-$("registerTab").onclick =
-function(){
-
-    authMode = "register";
-
-    $("registerTab")
-        .classList
-        .add("active");
-
-    $("loginTab")
-        .classList
-        .remove("active");
-
-    $("usernameField")
-        .classList
-        .remove("hidden");
-
-    $("authButton")
-        .textContent =
-        "Создать аккаунт";
-
-};
-
-
-$("authButton").onclick =
-async function(){
-
-    const email =
-        $("email")
-            .value
-            .trim();
-
-    const password =
-        $("password")
-            .value;
-
-    const username =
-        $("username")
-            .value
-            .trim();
-
-
-    $("authError").textContent =
-        "";
-
-
-    try{
-
-        if(!email){
-
-            throw new Error(
-                "Введите email."
-            );
+          lineJoin:
+            "round"
 
         }
 
+      ).addTo(
+        map
+      );
 
-        if(password.length < 6){
 
-            throw new Error(
-                "Пароль должен быть минимум 6 символов."
-            );
-
-        }
-
-
-        if(
-            authMode ===
-            "register"
-        ){
-
-            if(!username){
-
-                throw new Error(
-                    "Введите имя."
-                );
-
-            }
-
-
-            const result =
-                await supabaseClient
-                    .auth
-                    .signUp({
-
-                        email:email,
-
-                        password:password,
-
-                        options:{
-
-                            data:{
-                                username:username
-                            }
-
-                        }
-
-                    });
-
-
-            if(result.error){
-
-                throw result.error;
-
-            }
-
-
-            /*
-               При выключенном Confirm email
-               Supabase должен вернуть session.
-            */
-
-            if(result.data.session){
-
-                await startApplication(
-                    result.data.session.user
-                );
-
-            }else{
-
-                $("authError")
-                    .textContent =
-                    "Регистрация создана. Проверь настройку Confirm email в Supabase.";
-
-            }
-
-        }else{
-
-            const result =
-                await supabaseClient
-                    .auth
-                    .signInWithPassword({
-
-                        email:email,
-
-                        password:password
-
-                    });
-
-
-            if(result.error){
-
-                throw result.error;
-
-            }
-
-
-            await startApplication(
-                result.data.user
-            );
-
-        }
-
-    }catch(error){
-
-        console.error(error);
-
-        $("authError")
-            .textContent =
-            error.message ||
-            "Произошла ошибка.";
-
-    }
-
-};
-
-
-/* =========================================================
-   START APPLICATION
-========================================================= */
-
-async function startApplication(user){
-
-    currentUser =
-        user;
-
-
-    try{
-
-        currentProfile =
-            await loadMyProfile();
-
-
-        sharingLocation =
-            currentProfile
-                .location_sharing_enabled !== false;
-
-
-        $("auth")
-            .classList
-            .add("hidden");
-
-
-        setStatus(
-            "Запуск GPS…",
-            true
-        );
-
-
-        startGPS();
-
-        await loadFriends();
-
-        startRealtime();
-
-    }catch(error){
-
-        console.error(error);
-
-        showToast(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   SESSION
-========================================================= */
-
-async function checkSession(){
-
-    const result =
-        await supabaseClient
-            .auth
-            .getSession();
-
-
-    if(result.data.session){
-
-        await startApplication(
-            result.data.session.user
-        );
-
-    }
-
-}
-
-
-supabaseClient
-    .auth
-    .onAuthStateChange(
-        function(event,session){
-
-            if(
-                event ===
-                "SIGNED_OUT"
-            ){
-
-                location.reload();
-
-            }
-
-        }
+    trailLayers.push(
+      segment
     );
+
+  }
+
+}
 
 
 /* =========================================================
    GPS
 ========================================================= */
 
-function startGPS(){
+function startGPS() {
 
-    if(
-        !navigator.geolocation
-    ){
+  if (
+    !locationEnabled
+  ) {
 
-        setStatus(
-            "GPS недоступен",
-            false
-        );
+    setStatus(
+      "Геолокация выключена",
+      false
+    );
 
-        return;
+    return;
 
-    }
-
-
-    if(!sharingLocation){
-
-        setStatus(
-            "Геолокация выключена",
-            false
-        );
-
-        return;
-
-    }
+  }
 
 
-    if(gpsWatch !== null){
+  if (
+    !navigator.geolocation
+  ) {
 
-        navigator.geolocation.clearWatch(
-            gpsWatch
-        );
+    setStatus(
+      "GPS не поддерживается",
+      false
+    );
 
-    }
+    return;
+
+  }
 
 
-    gpsWatch =
-        navigator.geolocation.watchPosition(
+  if (
+    watchId !== null
+  ) {
 
-            handlePosition,
+    navigator.geolocation
+      .clearWatch(
+        watchId
+      );
 
-            handleGPSError,
+  }
 
-            {
-                enableHighAccuracy:true,
 
-                maximumAge:1000,
+  setStatus(
+    "Получаем GPS…",
+    true
+  );
 
-                timeout:15000
-            }
 
-        );
+  watchId =
+
+    navigator.geolocation
+      .watchPosition(
+
+        onPosition,
+
+        onPositionError,
+
+        {
+
+          enableHighAccuracy:
+            true,
+
+          maximumAge:
+            1000,
+
+          timeout:
+            15000
+
+        }
+
+      );
 
 }
 
 
 /* =========================================================
-   POSITION
+   NEW GPS POSITION
 ========================================================= */
 
-async function handlePosition(
-    position
-){
+function onPosition(
+  position
+) {
 
-    const coords =
-        position.coords;
-
-
-    const latitude =
-        coords.latitude;
-
-    const longitude =
-        coords.longitude;
+  const c =
+    position.coords;
 
 
-    const speed =
-        calculateSpeed(
-            position
+  /*
+    Скорость GPS.
+  */
+
+  let speedMs =
+
+    Number.isFinite(
+      c.speed
+    )
+
+    ?
+
+    Math.max(
+      0,
+      c.speed
+    )
+
+    :
+
+    null;
+
+
+  /*
+    Последнее направление.
+  */
+
+  let direction =
+
+    lastPosition
+
+    ?
+
+    lastPosition.direction
+
+    :
+
+    0;
+
+
+  /*
+    Если уже есть предыдущая
+    координата — рассчитываем
+    расстояние и направление.
+  */
+
+  if (
+    lastPosition
+  ) {
+
+    const seconds =
+
+      (
+
+        position.timestamp -
+
+        lastPosition.time
+
+      ) / 1000;
+
+
+    if (
+      seconds > 0
+    ) {
+
+      const meters =
+
+        calculateDistance(
+
+          lastPosition.lat,
+
+          lastPosition.lng,
+
+          c.latitude,
+
+          c.longitude
+
         );
 
 
-    previousPosition = {
+      /*
+        Если GPS не сообщил
+        скорость напрямую.
+      */
 
-        latitude:latitude,
+      if (
+        speedMs === null
+      ) {
 
-        longitude:longitude,
+        speedMs =
+          meters /
+          seconds;
 
-        timestamp:
-            position.timestamp
-
-    };
-
-
-    $("mySpeed")
-        .textContent =
-        speed.toFixed(1) +
-        " км/ч";
+      }
 
 
-    setStatus(
-        "GPS в реальном времени",
-        true
+      /*
+        Не меняем направление,
+        если телефон практически
+        не сдвинулся.
+      */
+
+      if (
+        meters > 1
+      ) {
+
+        direction =
+
+          calculateBearing(
+
+            lastPosition.lat,
+
+            lastPosition.lng,
+
+            c.latitude,
+
+            c.longitude
+
+          );
+
+      }
+
+    }
+
+  }
+
+
+  /*
+    Перевод м/с → км/ч.
+  */
+
+  const speedKmh =
+
+    (speedMs || 0) *
+    3.6;
+
+
+  /*
+    Сохраняем текущую точку.
+  */
+
+  lastPosition = {
+
+    lat:
+      c.latitude,
+
+    lng:
+      c.longitude,
+
+    time:
+      position.timestamp,
+
+    direction:
+      direction,
+
+    speed:
+      speedKmh
+
+  };
+
+
+  /*
+    Скорость на экране.
+  */
+
+  document.getElementById(
+    "speed"
+  ).textContent =
+
+    speedKmh.toFixed(
+      1
+    ) +
+
+    " км/ч";
+
+
+  /*
+    Добавляем точку в хвост
+    только когда человек
+    действительно движется.
+  */
+
+  if (
+    speedKmh > 0.5
+  ) {
+
+    trail.push(
+
+      [
+
+        c.latitude,
+
+        c.longitude
+
+      ]
+
     );
 
+  }
 
-    /*
-       Добавляем точку
-       в мой радужный хвост.
-    */
 
-    myTrail.push(
+  /*
+    Ограничиваем длину хвоста.
+  */
+
+  if (
+    trail.length > 50
+  ) {
+
+    trail.shift();
+
+  }
+
+
+  /* =====================================================
+     MARKER
+  ===================================================== */
+
+  if (
+    !marker
+  ) {
+
+    marker =
+
+      L.marker(
+
         [
-            latitude,
-            longitude
-        ]
+
+          c.latitude,
+
+          c.longitude
+
+        ],
+
+        {
+
+          icon:
+            userIcon(
+
+              speedKmh,
+
+              direction
+
+            ),
+
+          zIndexOffset:
+            1000
+
+        }
+
+      ).addTo(
+        map
+      );
+
+
+    marker.bindPopup(
+
+      "<b>" +
+
+      escapeHtml(
+        myName
+      ) +
+
+      "</b>" +
+
+      "<br>🚀 " +
+
+      speedKmh.toFixed(
+        1
+      ) +
+
+      " км/ч" +
+
+      "<br>🧭 " +
+
+      directionName(
+        direction
+      )
+
     );
 
 
-    if(
-        myTrail.length > 45
-    ){
+    map.setView(
 
-        myTrail.shift();
+      [
 
-    }
+        c.latitude,
 
+        c.longitude
 
-    /* MARKER */
+      ],
 
-    if(!myMarker){
+      16
 
-        myMarker =
-            L.marker(
+    );
 
-                [
-                    latitude,
-                    longitude
-                ],
+  }
 
-                {
+  else {
 
-                    icon:
-                        createMarkerIcon(
+    /*
+      Перемещаем фотографию.
+    */
 
-                            currentProfile
-                                ?.avatar_url,
+    marker.setLatLng(
 
-                            speed,
+      [
 
-                            true
+        c.latitude,
 
-                        ),
+        c.longitude
 
-                    zIndexOffset:1000
+      ]
 
-                }
-
-            ).addTo(map);
-
-
-        map.setView(
-
-            [
-                latitude,
-                longitude
-            ],
-
-            16
-
-        );
-
-    }else{
-
-        myMarker.setLatLng(
-
-            [
-                latitude,
-                longitude
-            ]
-
-        );
-
-
-        myMarker.setIcon(
-
-            createMarkerIcon(
-
-                currentProfile
-                    ?.avatar_url,
-
-                speed,
-
-                true
-
-            )
-
-        );
-
-    }
-
-
-    redrawAllTrails();
+    );
 
 
     /*
-       Отправляем геопозицию
-       в Supabase.
+      Обновляем скорость
+      и направление стрелки.
     */
 
-    const result =
-        await supabaseClient
-            .from("locations")
-            .upsert({
+    marker.setIcon(
 
-                user_id:
-                    currentUser.id,
+      userIcon(
 
-                latitude:
-                    latitude,
+        speedKmh,
 
-                longitude:
-                    longitude,
+        direction
 
-                accuracy:
-                    coords.accuracy || 0,
+      )
 
-                speed:
-                    speed,
-
-                updated_at:
-                    new Date()
-                        .toISOString()
-
-            });
+    );
 
 
-    if(result.error){
+    marker
+      .getPopup()
+      .setContent(
 
-        console.error(
-            "Location error:",
-            result.error
-        );
+        "<b>" +
 
-    }
+        escapeHtml(
+          myName
+        ) +
+
+        "</b>" +
+
+        "<br>🚀 " +
+
+        speedKmh.toFixed(
+          1
+        ) +
+
+        " км/ч" +
+
+        "<br>🧭 " +
+
+        directionName(
+          direction
+        )
+
+      );
+
+  }
+
+
+  /*
+    Обновляем радужный хвост.
+  */
+
+  redrawTrail();
+
+
+  /*
+    Статус.
+  */
+
+  setStatus(
+
+    "GPS • " +
+
+    directionName(
+      direction
+    ),
+
+    true
+
+  );
 
 }
 
 
-function handleGPSError(error){
+/* =========================================================
+   GPS ERROR
+========================================================= */
 
-    console.error(error);
+function onPositionError(
+  error
+) {
 
-    if(error.code === 1){
+  if (
+    error.code === 1
+  ) {
 
-        setStatus(
-            "Разреши GPS",
-            false
-        );
+    setStatus(
+      "Разреши геолокацию",
+      false
+    );
 
-        showToast(
-            "Разреши браузеру доступ к геолокации."
-        );
 
-    }else{
+    toast(
+      "Разреши браузеру доступ к геолокации."
+    );
 
-        setStatus(
-            "Ошибка GPS",
-            false
-        );
+  }
+
+  else {
+
+    setStatus(
+      "Ошибка GPS",
+      false
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+function openPanel(
+  html
+) {
+
+  document.getElementById(
+    "sheet"
+  ).innerHTML =
+
+    '<div class="handle"></div>' +
+
+    html;
+
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closePanel() {
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "none";
+
+}
+
+
+document.getElementById(
+  "panel"
+).onclick =
+
+  function(e) {
+
+    if (
+      e.target.id ===
+      "panel"
+    ) {
+
+      closePanel();
 
     }
+
+  };
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function showProfile() {
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      Профиль
+    </h2>
+
+
+    <div class="profile">
+
+      <img
+        id="profilePreview"
+        class="avatar"
+        src="${avatar(myPhoto)}"
+      >
+
+
+      <div>
+
+        <b>
+          ${escapeHtml(myName)}
+        </b>
+
+
+        <div class="code">
+
+          Мой код:
+
+          <b>
+            ${myCode}
+          </b>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Одна фотография профиля
+      </label>
+
+
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/*"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Имя
+      </label>
+
+
+      <input
+        id="nameInput"
+        maxlength="30"
+        value="${escapeHtml(myName)}"
+      >
+
+    </div>
+
+
+    <button
+      class="btn"
+      onclick="saveProfile()"
+    >
+      Сохранить профиль
+    </button>
+
+
+    <p class="note">
+
+      Без базы данных фотография
+      хранится только в браузере
+      этого устройства.
+
+    </p>
+
+  `);
+
+
+  document.getElementById(
+    "photoInput"
+  ).onchange =
+
+    function(e) {
+
+      const file =
+        e.target.files[0];
+
+
+      if (
+        !file
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        file.size >
+        5 * 1024 * 1024
+      ) {
+
+        toast(
+          "Фото должно быть меньше 5 МБ."
+        );
+
+        return;
+
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function() {
+
+          myPhoto =
+            reader.result;
+
+
+          localStorage.setItem(
+            "blink_photo",
+            myPhoto
+          );
+
+
+          document.getElementById(
+            "profilePreview"
+          ).src =
+            myPhoto;
+
+
+          if (
+            marker
+          ) {
+
+            marker.setIcon(
+
+              userIcon(
+
+                lastPosition
+                  ? lastPosition.speed
+                  : 0,
+
+                lastPosition
+                  ? lastPosition.direction
+                  : 0
+
+              )
+
+            );
+
+          }
+
+
+          toast(
+            "Фотография сохранена."
+          );
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    };
+
+}
+
+
+/* SAVE PROFILE */
+
+function saveProfile() {
+
+  myName =
+
+    document.getElementById(
+      "nameInput"
+    ).value.trim()
+
+    ||
+
+    "Я";
+
+
+  localStorage.setItem(
+    "blink_name",
+    myName
+  );
+
+
+  toast(
+    "Профиль сохранён."
+  );
+
+
+  closePanel();
 
 }
 
@@ -1847,882 +2585,244 @@ function handleGPSError(error){
    FRIENDS
 ========================================================= */
 
-async function loadFriends(){
+function showFriends() {
 
-    const result =
-        await supabaseClient
-            .rpc(
-                "get_my_friends"
-            );
+  let list =
+    "";
 
 
-    if(result.error){
+  friends.forEach(
 
-        console.error(
-            "Friends:",
-            result.error
-        );
+    function(
+      friend,
+      index
+    ) {
 
-        return;
+      list += `
 
-    }
+        <div class="friend">
 
+          <img
+            class="avatar small"
+            src="${avatar(friend.photo)}"
+          >
 
-    friends =
-        result.data || [];
 
+          <div class="grow">
 
-    friends.forEach(
-        function(friend){
+            <b>
+              ${escapeHtml(friend.name)}
+            </b>
 
-            if(
-                !friendTrails[
-                    friend.id
-                ]
-            ){
 
-                friendTrails[
-                    friend.id
-                ] = [];
+            <div class="code">
 
-            }
+              Код:
 
-        }
-    );
+              ${escapeHtml(friend.code)}
 
+            </div>
 
-    const locations =
-        await supabaseClient
-            .rpc(
-                "get_friend_locations"
-            );
+          </div>
 
 
-    if(
-        !locations.error &&
-        locations.data
-    ){
-
-        locations.data.forEach(
-            updateFriendLocation
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   FRIEND LOCATION
-========================================================= */
-
-function updateFriendLocation(
-    location
-){
-
-    const id =
-        location.user_id;
-
-
-    if(
-        !id ||
-        id === currentUser.id
-    ){
-
-        return;
-
-    }
-
-
-    const latitude =
-        Number(
-            location.latitude
-        );
-
-    const longitude =
-        Number(
-            location.longitude
-        );
-
-
-    if(
-        !Number.isFinite(latitude) ||
-        !Number.isFinite(longitude)
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        !friendTrails[id]
-    ){
-
-        friendTrails[id] = [];
-
-    }
-
-
-    friendTrails[id].push(
-        [
-            latitude,
-            longitude
-        ]
-    );
-
-
-    if(
-        friendTrails[id].length > 40
-    ){
-
-        friendTrails[id].shift();
-
-    }
-
-
-    const friend =
-        friends.find(
-            function(item){
-
-                return item.id === id;
-
-            }
-        );
-
-
-    const name =
-        friend?.username ||
-        location.username ||
-        "Друг";
-
-
-    const avatarURL =
-        friend?.avatar_url ||
-        location.avatar_url ||
-        null;
-
-
-    const speed =
-        Number(
-            location.speed || 0
-        );
-
-
-    if(
-        !friendMarkers[id]
-    ){
-
-        const marker =
-            L.marker(
-
-                [
-                    latitude,
-                    longitude
-                ],
-
-                {
-
-                    icon:
-                        createMarkerIcon(
-
-                            avatarURL,
-
-                            speed,
-
-                            false
-
-                        )
-
-                }
-
-            ).addTo(map);
-
-
-        marker.bindPopup(
-
-            `<b>${escapeHTML(name)}</b>
-             <br>
-             🚀 ${speed.toFixed(1)} км/ч`
-
-        );
-
-
-        friendMarkers[id] =
-            marker;
-
-    }else{
-
-        const marker =
-            friendMarkers[id];
-
-
-        marker.setLatLng(
-
-            [
-                latitude,
-                longitude
-            ]
-
-        );
-
-
-        marker.setIcon(
-
-            createMarkerIcon(
-
-                avatarURL,
-
-                speed,
-
-                false
-
-            )
-
-        );
-
-
-        marker.setPopupContent(
-
-            `<b>${escapeHTML(name)}</b>
-             <br>
-             🚀 ${speed.toFixed(1)} км/ч`
-
-        );
-
-    }
-
-
-    redrawAllTrails();
-
-}
-
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-function startRealtime(){
-
-    if(realtimeChannel){
-
-        supabaseClient
-            .removeChannel(
-                realtimeChannel
-            );
-
-    }
-
-
-    realtimeChannel =
-        supabaseClient
-            .channel(
-                "blink-locations"
-            )
-
-
-            .on(
-
-                "postgres_changes",
-
-                {
-                    event:"INSERT",
-                    schema:"public",
-                    table:"locations"
-                },
-
-                function(payload){
-
-                    if(
-                        payload.new.user_id !==
-                        currentUser.id
-                    ){
-
-                        updateFriendLocation(
-                            payload.new
-                        );
-
-                    }
-
-                }
-
-            )
-
-
-            .on(
-
-                "postgres_changes",
-
-                {
-                    event:"UPDATE",
-                    schema:"public",
-                    table:"locations"
-                },
-
-                function(payload){
-
-                    if(
-                        payload.new.user_id !==
-                        currentUser.id
-                    ){
-
-                        updateFriendLocation(
-                            payload.new
-                        );
-
-                    }
-
-                }
-
-            )
-
-
-            .subscribe();
-
-}
-
-
-/* =========================================================
-   PROFILE UI
-========================================================= */
-
-async function showProfile(){
-
-    openPanel(`
-
-        <button
-            class="close"
-            onclick="closePanel()">
-
+          <button
+            class="btn secondary"
+            style="width:auto;margin:0"
+            onclick="removeFriend(${index})"
+          >
             ×
-
-        </button>
-
-        <h2>
-            Профиль
-        </h2>
-
-        <div class="profile-head">
-
-            <img
-                id="profileAvatar"
-                class="avatar"
-                src="${getAvatar(
-                    currentProfile.avatar_url
-                )}">
-
-            <div>
-
-                <div class="profile-name">
-
-                    ${escapeHTML(
-                        currentProfile.username
-                    )}
-
-                </div>
-
-                <div class="muted">
-
-                    Код друга:
-
-                    <b>
-                        ${escapeHTML(
-                            currentProfile.friend_code ||
-                            "не создан"
-                        )}
-                    </b>
-
-                </div>
-
-            </div>
+          </button>
 
         </div>
 
+      `;
 
-        <div class="field">
+    }
 
-            <label>
-                Одна фотография профиля
-            </label>
-
-            <input
-                id="avatarFile"
-                type="file"
-                accept="image/*">
-
-        </div>
+  );
 
 
-        <div class="field">
+  if (
+    !list
+  ) {
 
-            <label>
-                Имя
-            </label>
+    list =
 
-            <input
-                id="profileName"
-                maxlength="30"
-                value="${escapeHTML(
-                    currentProfile.username
-                )}">
+      '<div class="empty">' +
 
-        </div>
+      'Пока нет друзей.<br>' +
 
+      'Добавь друга по 4-значному коду.' +
 
-        <button
-            id="saveProfile"
-            class="main-button">
+      '</div>';
 
-            Сохранить профиль
-
-        </button>
+  }
 
 
-        <button
-            id="logoutButton"
-            class="main-button danger">
+  openPanel(`
 
-            Выйти
-
-        </button>
-
-    `);
-
-
-    $("avatarFile").onchange =
-        uploadAvatar;
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
 
 
-    $("saveProfile").onclick =
-        saveProfile;
+    <h2>
+      Друзья
+    </h2>
 
 
-    $("logoutButton").onclick =
-        async function(){
+    <div class="field">
 
-            await supabaseClient
-                .auth
-                .signOut();
+      <label>
+        Добавить друга
+      </label>
 
-        };
+
+      <div class="row">
+
+        <input
+          id="friendName"
+          placeholder="Имя"
+        >
+
+
+        <input
+          id="friendCode"
+          maxlength="4"
+          inputmode="numeric"
+          placeholder="1234"
+        >
+
+      </div>
+
+
+      <button
+        class="btn"
+        onclick="addFriend()"
+      >
+        Добавить друга
+      </button>
+
+    </div>
+
+
+    ${list}
+
+
+    <p class="note">
+
+      ⚠️ Это локальная версия.
+      Реальные координаты друзей
+      между телефонами появятся
+      после подключения базы данных.
+
+    </p>
+
+  `);
 
 }
 
 
-/* =========================================================
-   UPLOAD AVATAR
-========================================================= */
+/* ADD FRIEND */
 
-async function uploadAvatar(event){
+function addFriend() {
 
-    const file =
-        event.target.files?.[0];
+  const name =
 
+    document.getElementById(
+      "friendName"
+    ).value.trim()
 
-    if(!file){
-        return;
-    }
+    ||
 
-
-    if(
-        !file.type.startsWith(
-            "image/"
-        )
-    ){
-
-        showToast(
-            "Выбери фотографию."
-        );
-
-        return;
-
-    }
+    "Друг";
 
 
-    if(
-        file.size >
-        5 * 1024 * 1024
-    ){
+  const code =
 
-        showToast(
-            "Фото должно быть меньше 5 МБ."
-        );
-
-        return;
-
-    }
+    document.getElementById(
+      "friendCode"
+    ).value.trim();
 
 
-    showToast(
-        "Загружаю фотографию..."
+  if (
+    !/^\d{4}$/.test(
+      code
+    )
+  ) {
+
+    toast(
+      "Код должен состоять из 4 цифр."
     );
 
+    return;
 
-    /*
-       Имя файла одно и то же для
-       каждого пользователя.
-       Поэтому у пользователя
-       всегда одна фотография.
-    */
-
-    const path =
-        currentUser.id +
-        ".jpg";
+  }
 
 
-    const upload =
-        await supabaseClient
-            .storage
-            .from("avatars")
-            .upload(
+  friends.push({
 
-                path,
+    name:
+      name,
 
-                file,
+    code:
+      code,
 
-                {
-                    upsert:true,
+    photo:
+      ""
 
-                    contentType:
-                        file.type,
-
-                    cacheControl:
-                        "3600"
-
-                }
-
-            );
+  });
 
 
-    if(upload.error){
+  localStorage.setItem(
 
-        showToast(
-            upload.error.message
-        );
+    "blink_friends",
 
-        return;
+    JSON.stringify(
+      friends
+    )
 
-    }
-
-
-    const publicURL =
-        supabaseClient
-            .storage
-            .from("avatars")
-            .getPublicUrl(path)
-            .data
-            .publicUrl
-        +
-        "?v=" +
-        Date.now();
+  );
 
 
-    const update =
-        await supabaseClient
-            .from("profiles")
-            .update({
-
-                avatar_url:
-                    publicURL
-
-            })
-            .eq(
-                "id",
-                currentUser.id
-            );
+  toast(
+    "Друг добавлен."
+  );
 
 
-    if(update.error){
-
-        showToast(
-            update.error.message
-        );
-
-        return;
-
-    }
-
-
-    currentProfile.avatar_url =
-        publicURL;
-
-
-    $("profileAvatar").src =
-        publicURL;
-
-
-    if(myMarker){
-
-        myMarker.setIcon(
-
-            createMarkerIcon(
-
-                publicURL,
-
-                previousPosition
-                    ? calculateSpeed({
-                        coords:{
-                            speed:0
-                        },
-                        timestamp:
-                            Date.now()
-                    })
-                    : 0,
-
-                true
-
-            )
-
-        );
-
-    }
-
-
-    showToast(
-        "Фотография сохранена."
-    );
+  showFriends();
 
 }
 
 
-/* =========================================================
-   SAVE PROFILE
-========================================================= */
+/* REMOVE FRIEND */
 
-async function saveProfile(){
+function removeFriend(
+  index
+) {
 
-    const username =
-        $("profileName")
-            .value
-            .trim();
+  friends.splice(
+    index,
+    1
+  );
 
 
-    if(!username){
+  localStorage.setItem(
 
-        showToast(
-            "Введите имя."
-        );
+    "blink_friends",
 
-        return;
+    JSON.stringify(
+      friends
+    )
 
-    }
+  );
 
 
-    const result =
-        await supabaseClient
-            .from("profiles")
-            .update({
-
-                username:username
-
-            })
-            .eq(
-                "id",
-                currentUser.id
-            );
-
-
-    if(result.error){
-
-        showToast(
-            result.error.message
-        );
-
-        return;
-
-    }
-
-
-    currentProfile.username =
-        username;
-
-
-    showToast(
-        "Профиль сохранён."
-    );
-
-}
-
-
-/* =========================================================
-   FRIENDS UI
-========================================================= */
-
-async function showFriends(){
-
-    await loadFriends();
-
-
-    let html = "";
-
-
-    friends.forEach(
-        function(friend){
-
-            html += `
-
-                <div class="friend-row">
-
-                    <img
-                        class="avatar-small"
-                        src="${getAvatar(
-                            friend.avatar_url
-                        )}">
-
-                    <div class="grow">
-
-                        <b>
-                            ${escapeHTML(
-                                friend.username
-                            )}
-                        </b>
-
-                        <div class="muted">
-
-                            Код:
-                            ${escapeHTML(
-                                friend.friend_code
-                            )}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-    );
-
-
-    if(!html){
-
-        html = `
-
-            <div
-                style="
-                    text-align:center;
-                    padding:20px;
-                "
-                class="muted">
-
-                Пока нет друзей.
-
-            </div>
-
-        `;
-
-    }
-
-
-    openPanel(`
-
-        <button
-            class="close"
-            onclick="closePanel()">
-
-            ×
-
-        </button>
-
-        <h2>
-            Друзья
-        </h2>
-
-
-        <div class="field">
-
-            <label>
-                Код друга — 4 цифры
-            </label>
-
-            <div style="
-                display:flex;
-                gap:7px;
-            ">
-
-                <input
-                    id="friendCode"
-                    maxlength="4"
-                    inputmode="numeric"
-                    placeholder="1234">
-
-                <button
-                    id="addFriendButton"
-                    class="main-button"
-                    style="width:130px">
-
-                    Добавить
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        ${html}
-
-    `);
-
-
-    $("addFriendButton")
-        .onclick =
-        addFriend;
-
-}
-
-
-/* =========================================================
-   ADD FRIEND
-========================================================= */
-
-async function addFriend(){
-
-    const code =
-        $("friendCode")
-            .value
-            .trim();
-
-
-    if(
-        !/^[0-9]{4}$/.test(code)
-    ){
-
-        showToast(
-            "Код должен содержать 4 цифры."
-        );
-
-        return;
-
-    }
-
-
-    const result =
-        await supabaseClient
-            .rpc(
-                "send_friend_request_by_code",
-                {
-                    p_code:code
-                }
-            );
-
-
-    if(result.error){
-
-        showToast(
-            result.error.message
-        );
-
-        return;
-
-    }
-
-
-    showToast(
-        "Заявка отправлена."
-    );
+  showFriends();
 
 }
 
@@ -2731,222 +2831,178 @@ async function addFriend(){
    SETTINGS
 ========================================================= */
 
-function showSettings(){
+function showSettings() {
 
-    openPanel(`
+  openPanel(`
 
-        <button
-            class="close"
-            onclick="closePanel()">
-
-            ×
-
-        </button>
-
-        <h2>
-            Настройки
-        </h2>
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
 
 
-        <div class="friend-row">
+    <h2>
+      Настройки
+    </h2>
 
-            <div class="grow">
 
-                <b>
-                    📍 Геолокация
-                </b>
+    <div class="friend">
 
-                <div class="muted">
+      <div class="grow">
 
-                    Показывать мою позицию
-                    друзьям.
+        <b>
+          📍 Геолокация
+        </b>
 
-                </div>
 
-            </div>
+        <div class="code">
 
-            <button
-                id="locationToggle"
-                style="
-                    border:0;
-                    border-radius:20px;
-                    padding:8px 12px;
-                    background:${
-                        sharingLocation
-                        ? "#fff"
-                        : "#333"
-                    };
-                    color:${
-                        sharingLocation
-                        ? "#000"
-                        : "#fff"
-                    };
-                ">
-
-                ${
-                    sharingLocation
-                    ? "ВКЛ"
-                    : "ВЫКЛ"
-                }
-
-            </button>
+          Показывать твоё
+          местоположение и скорость.
 
         </div>
 
-
-        <button
-            id="centerMap"
-            class="main-button secondary">
-
-            🎯 Найти меня на карте
-
-        </button>
-
-    `);
+      </div>
 
 
-    $("locationToggle")
-        .onclick =
-        toggleLocation;
+      <button
+        class="btn secondary"
+        style="width:auto"
+        onclick="toggleLocation()"
+      >
+
+        ${
+          locationEnabled
+            ? "Выключить"
+            : "Включить"
+        }
+
+      </button>
+
+    </div>
 
 
-    $("centerMap")
-        .onclick =
-        function(){
+    <button
+      class="btn secondary"
+      onclick="centerMe()"
+    >
+      🎯 Показать меня
+    </button>
 
-            closePanel();
 
-            if(previousPosition){
+    <p class="note">
 
-                map.setView(
+      Blink определяет направление
+      движения по последним GPS
+      координатам.
 
-                    [
-                        previousPosition.latitude,
-                        previousPosition.longitude
-                    ],
+      Радужный хвост остаётся
+      позади движущегося пользователя.
 
-                    17
+      При повороте направление хвоста
+      меняется вместе с движением.
 
-                );
+    </p>
 
-            }else{
-
-                showToast(
-                    "GPS ещё не определил позицию."
-                );
-
-            }
-
-        };
+  `);
 
 }
 
 
-/* =========================================================
-   LOCATION TOGGLE
-========================================================= */
+/* TOGGLE GPS */
 
-async function toggleLocation(){
+function toggleLocation() {
 
-    sharingLocation =
-        !sharingLocation;
+  locationEnabled =
+    !locationEnabled;
 
 
-    const result =
-        await supabaseClient
-            .from("profiles")
-            .update({
+  localStorage.setItem(
 
-                location_sharing_enabled:
-                    sharingLocation
+    "blink_location",
 
-            })
-            .eq(
-                "id",
-                currentUser.id
-            );
+    locationEnabled
+      ? "on"
+      : "off"
+
+  );
 
 
-    if(result.error){
+  if (
+    locationEnabled
+  ) {
 
-        sharingLocation =
-            !sharingLocation;
+    startGPS();
 
-        showToast(
-            result.error.message
-        );
+  }
 
-        return;
+  else {
 
-    }
+    if (
+      watchId !== null
+    ) {
 
-
-    if(sharingLocation){
-
-        startGPS();
-
-        showToast(
-            "Геолокация включена."
-        );
-
-    }else{
-
-        if(
-            gpsWatch !== null
-        ){
-
-            navigator
-                .geolocation
-                .clearWatch(
-                    gpsWatch
-                );
-
-        }
-
-
-        gpsWatch =
-            null;
-
-
-        await supabaseClient
-            .from("locations")
-            .delete()
-            .eq(
-                "user_id",
-                currentUser.id
-            );
-
-
-        if(myMarker){
-
-            map.removeLayer(
-                myMarker
-            );
-
-            myMarker =
-                null;
-
-        }
-
-
-        myTrail = [];
-
-        redrawAllTrails();
-
-        $("mySpeed")
-            .textContent =
-            "0.0 км/ч";
-
-
-        setStatus(
-            "Геолокация выключена",
-            false
+      navigator.geolocation
+        .clearWatch(
+          watchId
         );
 
     }
 
 
-    showSettings();
+    watchId =
+      null;
+
+
+    setStatus(
+      "Геолокация выключена",
+      false
+    );
+
+  }
+
+
+  showSettings();
+
+}
+
+
+/* CENTER USER */
+
+function centerMe() {
+
+  closePanel();
+
+
+  if (
+    lastPosition
+  ) {
+
+    map.setView(
+
+      [
+
+        lastPosition.lat,
+
+        lastPosition.lng
+
+      ],
+
+      17
+
+    );
+
+  }
+
+  else {
+
+    toast(
+      "GPS ещё не получил координаты."
+    );
+
+  }
 
 }
 
@@ -2956,71 +3012,90 @@ async function toggleLocation(){
 ========================================================= */
 
 document
-    .querySelectorAll(".nav")
-    .forEach(
-        function(button){
+  .querySelectorAll(
+    ".nav"
+  )
+  .forEach(
 
-            button.onclick =
-            function(){
+    function(button) {
 
-                document
-                    .querySelectorAll(".nav")
-                    .forEach(
-                        function(item){
+      button.onclick =
 
-                            item.classList.toggle(
-                                "active",
-                                item === button
-                            );
+        function() {
 
-                        }
-                    );
+          document
+            .querySelectorAll(
+              ".nav"
+            )
+            .forEach(
 
+              function(b) {
 
-                const page =
-                    button.dataset.page;
+                b.classList.remove(
+                  "active"
+                );
 
+              }
 
-                if(page === "map"){
-
-                    closePanel();
-
-                }
+            );
 
 
-                if(page === "friends"){
-
-                    showFriends();
-
-                }
+          button.classList.add(
+            "active"
+          );
 
 
-                if(page === "profile"){
-
-                    showProfile();
-
-                }
+          const page =
+            button.dataset.page;
 
 
-                if(page === "settings"){
+          if (
+            page === "map"
+          ) {
 
-                    showSettings();
+            closePanel();
 
-                }
+          }
 
-            };
 
-        }
-    );
+          if (
+            page === "friends"
+          ) {
+
+            showFriends();
+
+          }
+
+
+          if (
+            page === "profile"
+          ) {
+
+            showProfile();
+
+          }
+
+
+          if (
+            page === "settings"
+          ) {
+
+            showSettings();
+
+          }
+
+        };
+
+    }
+
+  );
 
 
 /* =========================================================
-   START
+   START GPS
 ========================================================= */
 
-initializeMap();
-
-checkSession();
+startGPS();
 
 </script>
 
