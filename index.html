@@ -2,7 +2,11 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
 
 <title>Blink</title>
 
@@ -23,13 +27,16 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+
   background: #080808;
   color: #fff;
+
   font-family: Arial, sans-serif;
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -37,20 +44,23 @@ button {
   cursor: pointer;
 }
 
-/* =========================
+
+/* =========================================================
    MAP
-========================= */
+========================================================= */
 
 #map {
   position: absolute;
+
   inset: 0;
+
   z-index: 1;
 }
 
 
-/* =========================
+/* =========================================================
    TOP BAR
-========================= */
+========================================================= */
 
 .topbar {
   position: absolute;
@@ -62,21 +72,27 @@ button {
   right: 12px;
 
   display: flex;
+
   justify-content: space-between;
 
   pointer-events: none;
 }
 
 .badge {
-  background: rgba(8, 8, 8, 0.92);
+  background:
+    rgba(8, 8, 8, 0.92);
 
-  backdrop-filter: blur(15px);
+  backdrop-filter:
+    blur(15px);
 
-  border: 1px solid #333;
+  border:
+    1px solid #333;
 
-  border-radius: 18px;
+  border-radius:
+    18px;
 
-  padding: 10px 14px;
+  padding:
+    10px 14px;
 
   box-shadow:
     0 8px 30px rgba(0,0,0,.5);
@@ -84,245 +100,382 @@ button {
 
 .brand {
   font-weight: 900;
-  letter-spacing: 1px;
+
+  letter-spacing:
+    1px;
 }
 
 .status {
-  font-size: 12px;
+  font-size:
+    12px;
 }
 
 .dot {
-  display: inline-block;
+  display:
+    inline-block;
 
-  width: 8px;
-  height: 8px;
+  width:
+    8px;
 
-  border-radius: 50%;
+  height:
+    8px;
 
-  background: #777;
+  border-radius:
+    50%;
 
-  margin-right: 7px;
+  background:
+    #777;
+
+  margin-right:
+    7px;
 }
 
 .dot.live {
-  background: #4cff8a;
+  background:
+    #4cff8a;
 
   box-shadow:
     0 0 12px #4cff8a;
 }
 
 
-/* =========================
-   SPEED
-========================= */
+/* =========================================================
+   MAP CONTROLS
+========================================================= */
 
-.speed-card {
-  position: absolute;
-
-  z-index: 1000;
-
-  top: 72px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  background: rgba(8,8,8,.92);
-
-  backdrop-filter: blur(15px);
-
-  border: 1px solid #333;
-
-  border-radius: 20px;
-
-  padding: 9px 20px;
-
-  text-align: center;
-}
-
-.speed-card b {
-  font-size: 24px;
-}
-
-.speed-card small {
-  display: block;
-
-  color: #999;
-
-  font-size: 9px;
-}
-
-
-/* =========================
-   MAP STYLE BUTTON
-========================= */
-
-.map-style-box {
+.map-controls {
   position: absolute;
 
   z-index: 2000;
 
   right: 14px;
+
   top: 130px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+
+/* =========================================================
+   ZOOM
+========================================================= */
+
+.zoom-controls {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.zoom-button {
+  width: 50px;
+
+  height: 50px;
+
+  border:
+    1px solid #333;
+
+  border-radius:
+    16px;
+
+  background:
+    #050505;
+
+  color:
+    white;
+
+  font-size:
+    30px;
+
+  font-weight:
+    700;
+
+  line-height:
+    1;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.55);
+}
+
+.zoom-button:active {
+  transform:
+    scale(.94);
+
+  background:
+    #222;
+}
+
+
+/* =========================================================
+   MAP STYLE BUTTON
+========================================================= */
+
+.map-style-box {
+  position:
+    relative;
 }
 
 .map-style-button {
-  width: 50px;
-  height: 50px;
+  width:
+    50px;
 
-  border: 1px solid #333;
+  height:
+    50px;
 
-  border-radius: 16px;
+  border:
+    1px solid #333;
 
-  background: #050505;
+  border-radius:
+    16px;
 
-  color: white;
+  background:
+    #050505;
 
-  font-size: 22px;
+  color:
+    white;
+
+  font-size:
+    22px;
 
   box-shadow:
     0 8px 25px rgba(0,0,0,.55);
 }
 
 .map-style-button:active {
-  transform: scale(.94);
+  transform:
+    scale(.94);
 }
 
 .map-styles {
-  position: absolute;
+  position:
+    absolute;
 
-  right: 58px;
-  top: 0;
+  right:
+    58px;
 
-  width: 155px;
+  top:
+    0;
 
-  background: rgba(5,5,5,.97);
+  width:
+    155px;
 
-  border: 1px solid #333;
+  background:
+    rgba(5,5,5,.97);
 
-  border-radius: 16px;
+  border:
+    1px solid #333;
 
-  padding: 6px;
+  border-radius:
+    16px;
+
+  padding:
+    6px;
 
   box-shadow:
     0 10px 30px rgba(0,0,0,.6);
 }
 
 .map-styles button {
-  width: 100%;
+  width:
+    100%;
 
-  border: 0;
+  border:
+    0;
 
-  background: transparent;
+  background:
+    transparent;
 
-  color: white;
+  color:
+    white;
 
-  text-align: left;
+  text-align:
+    left;
 
-  padding: 11px;
+  padding:
+    11px;
 
-  border-radius: 11px;
+  border-radius:
+    11px;
 
-  font-size: 13px;
+  font-size:
+    13px;
 
-  font-weight: bold;
+  font-weight:
+    bold;
 }
 
 .map-styles button:active {
-  background: #333;
+  background:
+    #333;
 }
 
 
-/* =========================
+/* =========================================================
+   ADD PLACE MAP BUTTON
+========================================================= */
+
+.add-place-map-button {
+  width:
+    50px;
+
+  height:
+    50px;
+
+  border:
+    1px solid #333;
+
+  border-radius:
+    16px;
+
+  background:
+    #050505;
+
+  color:
+    white;
+
+  font-size:
+    22px;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.55);
+}
+
+.add-place-map-button:active {
+  transform:
+    scale(.94);
+}
+
+
+/* =========================================================
    BOTTOM MENU
-========================= */
+========================================================= */
 
 .bottom {
-  position: absolute;
+  position:
+    absolute;
 
-  z-index: 1000;
+  z-index:
+    1000;
 
-  bottom: 10px;
+  bottom:
+    10px;
 
-  left: 10px;
-  right: 10px;
+  left:
+    10px;
 
-  background: rgba(8,8,8,.95);
+  right:
+    10px;
 
-  border: 1px solid #333;
+  background:
+    rgba(8,8,8,.95);
 
-  border-radius: 24px;
+  border:
+    1px solid #333;
 
-  padding: 7px;
+  border-radius:
+    24px;
 
-  display: grid;
+  padding:
+    7px;
+
+  display:
+    grid;
 
   grid-template-columns:
     repeat(4,1fr);
 
-  gap: 5px;
+  gap:
+    5px;
 }
 
 .nav {
-  border: 0;
+  border:
+    0;
 
-  background: transparent;
+  background:
+    transparent;
 
-  color: #999;
+  color:
+    #999;
 
-  border-radius: 17px;
+  border-radius:
+    17px;
 
-  padding: 8px 3px;
+  padding:
+    8px 3px;
 }
 
 .nav.active {
-  background: white;
+  background:
+    white;
 
-  color: black;
+  color:
+    black;
 }
 
 .nav span {
-  display: block;
+  display:
+    block;
 }
 
 .nav .icon {
-  font-size: 19px;
+  font-size:
+    19px;
 }
 
 .nav .txt {
-  font-size: 10px;
+  font-size:
+    10px;
 
-  font-weight: bold;
+  font-weight:
+    bold;
 }
 
 
-/* =========================
+/* =========================================================
    PANELS
-========================= */
+========================================================= */
 
 .panel {
-  position: absolute;
+  position:
+    absolute;
 
-  z-index: 3000;
+  z-index:
+    3000;
 
-  inset: 0;
+  inset:
+    0;
 
-  background: rgba(0,0,0,.62);
+  background:
+    rgba(0,0,0,.62);
 
-  display: flex;
+  display:
+    flex;
 
-  align-items: flex-end;
+  align-items:
+    flex-end;
 
-  backdrop-filter: blur(3px);
+  backdrop-filter:
+    blur(3px);
 }
 
 .sheet {
-  width: 100%;
+  width:
+    100%;
 
-  max-height: 88dvh;
+  max-height:
+    88dvh;
 
-  overflow-y: auto;
+  overflow-y:
+    auto;
 
-  background: #0d0d0d;
+  background:
+    #0d0d0d;
 
   border:
     1px solid #292929;
@@ -335,266 +488,482 @@ button {
 }
 
 .handle {
-  width: 42px;
+  width:
+    42px;
 
-  height: 4px;
+  height:
+    4px;
 
-  background: #444;
+  background:
+    #444;
 
-  border-radius: 10px;
+  border-radius:
+    10px;
 
   margin:
     0 auto 16px;
 }
 
 .close {
-  float: right;
+  float:
+    right;
 
-  border: 0;
+  border:
+    0;
 
-  background: #222;
+  background:
+    #222;
 
-  color: white;
+  color:
+    white;
 
-  width: 36px;
-  height: 36px;
+  width:
+    36px;
 
-  border-radius: 50%;
+  height:
+    36px;
 
-  font-size: 22px;
+  border-radius:
+    50%;
+
+  font-size:
+    22px;
 }
 
 
-/* =========================
+/* =========================================================
    INPUTS
-========================= */
+========================================================= */
 
 .field {
-  margin: 12px 0;
+  margin:
+    12px 0;
 }
 
 .field label {
-  display: block;
+  display:
+    block;
 
-  color: #aaa;
+  color:
+    #aaa;
 
-  font-size: 12px;
+  font-size:
+    12px;
 
-  margin-bottom: 6px;
+  margin-bottom:
+    6px;
 }
 
-input {
-  width: 100%;
+input,
+select {
+  width:
+    100%;
 
-  background: #171717;
+  background:
+    #171717;
 
-  color: white;
+  color:
+    white;
 
   border:
     1px solid #333;
 
-  border-radius: 14px;
+  border-radius:
+    14px;
 
-  padding: 12px;
+  padding:
+    12px;
 
-  outline: none;
+  outline:
+    none;
+}
+
+select {
+  appearance:
+    none;
 }
 
 
-/* =========================
+/* =========================================================
    BUTTONS
-========================= */
+========================================================= */
 
 .btn {
-  width: 100%;
+  width:
+    100%;
 
-  border: 0;
+  border:
+    0;
 
-  border-radius: 15px;
+  border-radius:
+    15px;
 
-  padding: 13px;
+  padding:
+    13px;
 
-  background: white;
+  background:
+    white;
 
-  color: black;
+  color:
+    black;
 
-  font-weight: 900;
+  font-weight:
+    900;
 
-  margin-top: 8px;
+  margin-top:
+    8px;
 }
 
 .btn.secondary {
-  background: #222;
+  background:
+    #222;
 
-  color: white;
+  color:
+    white;
 
   border:
     1px solid #333;
 }
 
+.btn.danger {
+  background:
+    #351515;
+
+  color:
+    #ff8b8b;
+
+  border:
+    1px solid #552222;
+}
+
 .row {
-  display: flex;
+  display:
+    flex;
 
-  gap: 8px;
+  gap:
+    8px;
 
-  align-items: center;
+  align-items:
+    center;
 }
 
 .grow {
-  flex: 1;
+  flex:
+    1;
 }
 
 
-/* =========================
+/* =========================================================
    PROFILE
-========================= */
+========================================================= */
 
 .profile {
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 14px;
+  gap:
+    14px;
 
-  margin: 15px 0;
+  margin:
+    15px 0;
 }
 
 .avatar {
-  width: 70px;
-  height: 70px;
+  width:
+    70px;
 
-  border-radius: 50%;
+  height:
+    70px;
 
-  object-fit: cover;
+  border-radius:
+    50%;
 
-  background: #222;
+  object-fit:
+    cover;
+
+  background:
+    #222;
 
   border:
     2px solid white;
 }
 
 .avatar.small {
-  width: 46px;
-  height: 46px;
+  width:
+    46px;
 
-  border-width: 1px;
+  height:
+    46px;
+
+  border-width:
+    1px;
 }
 
 .code {
-  font-size: 12px;
+  font-size:
+    12px;
 
-  color: #999;
+  color:
+    #999;
 }
 
 
-/* =========================
+/* =========================================================
    FRIENDS
-========================= */
+========================================================= */
 
 .friend {
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 10px;
+  gap:
+    10px;
 
-  padding: 11px 0;
+  padding:
+    11px 0;
 
   border-bottom:
     1px solid #252525;
 }
 
 .empty {
-  text-align: center;
+  text-align:
+    center;
 
-  color: #888;
+  color:
+    #888;
 
-  padding: 25px;
+  padding:
+    25px;
 }
 
 .note {
-  color: #777;
+  color:
+    #777;
 
-  font-size: 12px;
+  font-size:
+    12px;
 
-  line-height: 1.5;
+  line-height:
+    1.5;
 }
 
 
-/* =========================
+/* =========================================================
+   PLACE LIST
+========================================================= */
+
+.place-item {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    12px;
+
+  padding:
+    13px 0;
+
+  border-bottom:
+    1px solid #252525;
+}
+
+.place-icon {
+  width:
+    46px;
+
+  height:
+    46px;
+
+  min-width:
+    46px;
+
+  border:
+    1px solid #333;
+
+  border-radius:
+    14px;
+
+  background:
+    #171717;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  font-size:
+    22px;
+}
+
+.place-name {
+  font-weight:
+    900;
+
+  font-size:
+    15px;
+}
+
+.place-type {
+  color:
+    #888;
+
+  font-size:
+    11px;
+
+  margin-top:
+    3px;
+}
+
+
+/* =========================================================
+   PLACE MARKER
+========================================================= */
+
+.place-marker {
+  width:
+    44px;
+
+  height:
+    44px;
+
+  border:
+    2px solid white;
+
+  border-radius:
+    50%;
+
+  background:
+    #080808;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  font-size:
+    21px;
+
+  box-shadow:
+    0 5px 20px rgba(0,0,0,.65);
+}
+
+
+/* =========================================================
    TOAST
-========================= */
+========================================================= */
 
 .toast {
-  position: absolute;
+  position:
+    absolute;
 
-  z-index: 5000;
+  z-index:
+    5000;
 
-  left: 50%;
+  left:
+    50%;
 
-  bottom: 92px;
+  bottom:
+    92px;
 
   transform:
     translateX(-50%);
 
-  background: white;
+  background:
+    white;
 
-  color: black;
+  color:
+    black;
 
   padding:
     11px 15px;
 
-  border-radius: 14px;
+  border-radius:
+    14px;
 
-  font-size: 13px;
+  font-size:
+    13px;
 
-  font-weight: 800;
+  font-weight:
+    800;
 
-  max-width: 90%;
+  max-width:
+    90%;
 
-  text-align: center;
+  text-align:
+    center;
 }
 
 
-/* =========================
+/* =========================================================
    USER MARKER
-========================= */
+========================================================= */
 
 .pin {
-  width: 46px;
-  height: 46px;
+  width:
+    46px;
+
+  height:
+    46px;
 
   border:
     3px solid white;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
-  background: #222;
+  background:
+    #222;
 
-  position: relative;
+  position:
+    relative;
 
   box-shadow:
     0 5px 20px rgba(0,0,0,.6);
 }
 
 .pin img {
-  width: 100%;
-  height: 100%;
+  width:
+    100%;
 
-  border-radius: 50%;
+  height:
+    100%;
 
-  object-fit: cover;
+  border-radius:
+    50%;
+
+  object-fit:
+    cover;
 }
 
 .ring {
-  position: absolute;
+  position:
+    absolute;
 
-  inset: -8px;
+  inset:
+    -8px;
 
   border:
     2px solid white;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
   animation:
     pulse 1.5s infinite;
@@ -603,88 +972,162 @@ input {
 @keyframes pulse {
 
   50% {
-    transform: scale(1.2);
+    transform:
+      scale(1.2);
 
-    opacity: .15;
+    opacity:
+      .15;
   }
 
 }
 
 .speed-label {
-  position: absolute;
+  position:
+    absolute;
 
-  top: 50px;
+  top:
+    50px;
 
-  left: 50%;
+  left:
+    50%;
 
   transform:
     translateX(-50%);
 
-  white-space: nowrap;
+  white-space:
+    nowrap;
 
-  background: #000;
+  background:
+    #000;
 
   border:
     1px solid #333;
 
-  border-radius: 8px;
+  border-radius:
+    8px;
 
   padding:
     3px 7px;
 
-  font-size: 10px;
+  font-size:
+    10px;
 
-  font-weight: 900;
+  font-weight:
+    900;
 }
 
 
-/* DIRECTION ARROW */
+/* =========================================================
+   DIRECTION ARROW
+========================================================= */
 
 .direction-arrow {
-  position: absolute;
+  position:
+    absolute;
 
-  left: 50%;
+  left:
+    50%;
 
-  top: -27px;
+  top:
+    -27px;
 
   transform:
     translateX(-50%);
 
-  font-size: 18px;
+  font-size:
+    18px;
 
   text-shadow:
     0 2px 5px #000;
 }
 
 
-/* =========================
+/* =========================================================
+   LEAFLET POPUP
+========================================================= */
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background:
+    #0d0d0d;
+
+  color:
+    white;
+}
+
+.leaflet-popup-content {
+  font-family:
+    Arial,
+    sans-serif;
+
+  font-size:
+    13px;
+}
+
+.popup-delete {
+  width:
+    100%;
+
+  margin-top:
+    8px;
+
+  border:
+    1px solid #444;
+
+  border-radius:
+    9px;
+
+  padding:
+    7px 10px;
+
+  background:
+    #222;
+
+  color:
+    white;
+
+  font-weight:
+    bold;
+}
+
+
+/* =========================================================
    DESKTOP
-========================= */
+========================================================= */
 
 @media (min-width:700px) {
 
   .bottom {
-    width: 520px;
+    width:
+      520px;
 
-    left: 50%;
-    right: auto;
+    left:
+      50%;
+
+    right:
+      auto;
 
     transform:
       translateX(-50%);
   }
 
   .panel {
-    align-items: center;
+    align-items:
+      center;
 
-    justify-content: center;
+    justify-content:
+      center;
   }
 
   .sheet {
-    width: 520px;
+    width:
+      520px;
 
-    border-radius: 28px;
+    border-radius:
+      28px;
 
-    max-height: 80vh;
+    max-height:
+      80vh;
   }
 
 }
@@ -696,12 +1139,16 @@ input {
 <body>
 
 
-<!-- MAP -->
+<!-- =======================================================
+     MAP
+======================================================== -->
 
 <div id="map"></div>
 
 
-<!-- TOP BAR -->
+<!-- =======================================================
+     TOP BAR
+======================================================== -->
 
 <div class="topbar">
 
@@ -709,14 +1156,12 @@ input {
     ⚡ BLINK
   </div>
 
-
   <div class="badge status">
 
     <span
       id="statusDot"
       class="dot"
     ></span>
-
 
     <span id="statusText">
       GPS не запущен
@@ -727,67 +1172,93 @@ input {
 </div>
 
 
-<!-- SPEED -->
+<!-- =======================================================
+     MAP CONTROLS
+======================================================== -->
 
-<div class="speed-card">
-
-  <b id="speed">
-    0.0 км/ч
-  </b>
+<div class="map-controls">
 
 
-  <small>
-    МОЯ СКОРОСТЬ
-  </small>
+  <!-- ZOOM -->
 
-</div>
+  <div class="zoom-controls">
+
+    <button
+      class="zoom-button"
+      onclick="zoomIn()"
+      aria-label="Приблизить"
+    >
+      +
+    </button>
+
+    <button
+      class="zoom-button"
+      onclick="zoomOut()"
+      aria-label="Отдалить"
+    >
+      −
+    </button>
+
+  </div>
 
 
-<!-- MAP BUTTON -->
-
-<div class="map-style-box">
+  <!-- ADD PLACE -->
 
   <button
-    id="mapStyleButton"
-    class="map-style-button"
-    onclick="toggleMapStyles()"
+    class="add-place-map-button"
+    onclick="startAddingPlace()"
+    title="Добавить место"
   >
-    🗺️
+    📍
   </button>
 
 
-  <div
-    id="mapStyles"
-    class="map-styles"
-    style="display:none"
-  >
+  <!-- MAP STYLE -->
+
+  <div class="map-style-box">
 
     <button
-      onclick="setMapStyle('light')"
+      id="mapStyleButton"
+      class="map-style-button"
+      onclick="toggleMapStyles()"
     >
-      ⚪ Белая
+      🗺️
     </button>
 
-
-    <button
-      onclick="setMapStyle('dark')"
+    <div
+      id="mapStyles"
+      class="map-styles"
+      style="display:none"
     >
-      ⚫ Тёмная
-    </button>
 
+      <button
+        onclick="setMapStyle('light')"
+      >
+        ⚪ Белая
+      </button>
 
-    <button
-      onclick="setMapStyle('hybrid')"
-    >
-      🛰️ Гибрид
-    </button>
+      <button
+        onclick="setMapStyle('dark')"
+      >
+        ⚫ Тёмная
+      </button>
+
+      <button
+        onclick="setMapStyle('hybrid')"
+      >
+        🛰️ Гибрид
+      </button>
+
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- BOTTOM MENU -->
+<!-- =======================================================
+     BOTTOM MENU
+======================================================== -->
 
 <div class="bottom">
 
@@ -857,7 +1328,9 @@ input {
 </div>
 
 
-<!-- PANEL -->
+<!-- =======================================================
+     PANEL
+======================================================== -->
 
 <div
   id="panel"
@@ -873,7 +1346,9 @@ input {
 </div>
 
 
-<!-- TOAST -->
+<!-- =======================================================
+     TOAST
+======================================================== -->
 
 <div
   id="toast"
@@ -891,17 +1366,18 @@ input {
 
 /* =========================================================
    BLINK
-
-   БЕЗ БАЗЫ ДАННЫХ
+   ЛОКАЛЬНАЯ ВЕРСИЯ
 
    GPS
    СКОРОСТЬ
    НАПРАВЛЕНИЕ
-   РАДУЖНЫЙ ШЛЕЙФ
    ПРОФИЛЬ
    ФОТО
    ДРУЗЬЯ
+   МЕСТА
    СТИЛИ КАРТЫ
+
+   РАДУЖНОГО ШЛЕЙФА НЕТ
 ========================================================= */
 
 
@@ -912,9 +1388,14 @@ input {
 const map =
   L.map("map")
    .setView(
-     [0,0],
+     [0, 0],
      2
    );
+
+
+/* =========================================================
+   MAP LAYERS
+========================================================= */
 
 
 /* LIGHT */
@@ -925,7 +1406,8 @@ const lightMap =
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 
     {
-      maxZoom: 19,
+      maxZoom:
+        19,
 
       attribution:
         "© OpenStreetMap"
@@ -942,7 +1424,8 @@ const darkMap =
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
     {
-      maxZoom: 20,
+      maxZoom:
+        20,
 
       attribution:
         "© OpenStreetMap © CARTO"
@@ -959,7 +1442,8 @@ const satelliteMap =
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
 
     {
-      maxZoom: 19,
+      maxZoom:
+        19,
 
       attribution:
         "© Esri"
@@ -976,7 +1460,8 @@ const labelsMap =
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
 
     {
-      maxZoom: 20,
+      maxZoom:
+        20,
 
       attribution:
         "© OpenStreetMap © CARTO"
@@ -985,7 +1470,9 @@ const labelsMap =
   );
 
 
-/* CURRENT STYLE */
+/* =========================================================
+   MAP STYLE
+========================================================= */
 
 let currentMapStyle =
   localStorage.getItem(
@@ -1093,6 +1580,28 @@ function toggleMapStyles() {
 }
 
 
+/* =========================================================
+   ZOOM
+========================================================= */
+
+function zoomIn() {
+
+  map.zoomIn();
+
+}
+
+
+function zoomOut() {
+
+  map.zoomOut();
+
+}
+
+
+/* =========================================================
+   START MAP
+========================================================= */
+
 setMapStyle(
   currentMapStyle
 );
@@ -1142,6 +1651,8 @@ if (
 }
 
 
+/* FRIENDS */
+
 let friends =
   JSON.parse(
     localStorage.getItem(
@@ -1150,53 +1661,89 @@ let friends =
   );
 
 
+/* LOCATION */
+
 let locationEnabled =
   localStorage.getItem(
     "blink_location"
   ) !== "off";
 
 
+/* GPS */
+
 let watchId =
   null;
 
+
+/* USER MARKER */
 
 let marker =
   null;
 
 
+/* LAST POSITION */
+
 let lastPosition =
   null;
 
 
-let trail =
-  [];
+/* =========================================================
+   SAVED PLACES
+========================================================= */
+
+let savedPlaces =
+  JSON.parse(
+    localStorage.getItem(
+      "blink_places"
+    ) || "[]"
+  );
 
 
-let trailLayers =
-  [];
+/* LEAFLET PLACE MARKERS */
+
+let placeMarkers =
+  {};
 
 
-/* RAINBOW COLORS */
+/* =========================================================
+   PLACE TYPES
+========================================================= */
 
-const rainbow = [
+const placeTypes = {
 
-  "#ff0055",
+  home: {
+    name:
+      "Дом",
 
-  "#ff7a00",
+    icon:
+      "🏠"
+  },
 
-  "#ffe600",
+  work: {
+    name:
+      "Работа",
 
-  "#42ff00",
+    icon:
+      "💼"
+  },
 
-  "#00e5ff",
+  school: {
+    name:
+      "Школа",
 
-  "#2878ff",
+    icon:
+      "🎓"
+  },
 
-  "#9b4dff",
+  other: {
+    name:
+      "Другое",
 
-  "#ff2bd6"
+    icon:
+      "📍"
+  }
 
-];
+};
 
 
 /* =========================================================
@@ -1351,20 +1898,16 @@ function calculateDistance(
   const R =
     6371000;
 
-
   const rad =
     Math.PI / 180;
-
 
   const dLat =
     (lat2 - lat1) *
     rad;
 
-
   const dLon =
     (lon2 - lon1) *
     rad;
-
 
   const a =
 
@@ -1407,7 +1950,7 @@ function calculateDistance(
 
 
 /* =========================================================
-   BEARING / DIRECTION
+   BEARING
 ========================================================= */
 
 function calculateBearing(
@@ -1487,12 +2030,15 @@ function calculateBearing(
 
     bearing +
     360
+
   ) % 360;
 
 }
 
 
-/* COMPASS */
+/* =========================================================
+   COMPASS
+========================================================= */
 
 function directionName(
   degrees
@@ -1501,19 +2047,12 @@ function directionName(
   const names = [
 
     "С",
-
     "СВ",
-
     "В",
-
     "ЮВ",
-
     "Ю",
-
     "ЮЗ",
-
     "З",
-
     "СЗ"
 
   ];
@@ -1546,7 +2085,8 @@ function userIcon(
 
   return L.divIcon({
 
-    className: "",
+    className:
+      "",
 
 
     html:
@@ -1562,7 +2102,6 @@ function userIcon(
           ) +
 
         '">' +
-
 
         (
 
@@ -1621,30 +2160,365 @@ function userIcon(
 
 
 /* =========================================================
-   RAINBOW TRAIL
+   PLACE ICON
 ========================================================= */
 
-function redrawTrail() {
+function placeIcon(
+  type
+) {
 
-  trailLayers.forEach(
+  const data =
+    placeTypes[type]
+    ||
+    placeTypes.other;
 
-    function(layer) {
 
-      map.removeLayer(
-        layer
-      );
+  return L.divIcon({
+
+    className:
+      "",
+
+    html:
+
+      '<div class="place-marker">' +
+
+        data.icon +
+
+      '</div>',
+
+
+    iconSize:
+      [
+        44,
+        44
+      ],
+
+
+    iconAnchor:
+      [
+        22,
+        22
+      ]
+
+  });
+
+}
+
+
+/* =========================================================
+   RENDER SAVED PLACES
+========================================================= */
+
+function renderSavedPlaces() {
+
+  Object.keys(
+    placeMarkers
+  ).forEach(
+
+    function(id) {
+
+      const existing =
+        placeMarkers[id];
+
+      if (
+        existing &&
+        map.hasLayer(existing)
+      ) {
+
+        map.removeLayer(
+          existing
+        );
+
+      }
 
     }
 
   );
 
 
-  trailLayers =
-    [];
+  placeMarkers =
+    {};
+
+
+  savedPlaces.forEach(
+
+    function(place) {
+
+      const data =
+        placeTypes[
+          place.type
+        ] ||
+        placeTypes.other;
+
+
+      const leafletMarker =
+        L.marker(
+
+          [
+            place.lat,
+            place.lng
+          ],
+
+          {
+            icon:
+              placeIcon(
+                place.type
+              ),
+
+            zIndexOffset:
+              500
+          }
+
+        ).addTo(
+          map
+        );
+
+
+      leafletMarker.bindPopup(
+
+        '<div>' +
+
+          '<b>' +
+
+            escapeHtml(
+              place.name
+            ) +
+
+          '</b>' +
+
+          '<br>' +
+
+          data.icon +
+
+          ' ' +
+
+          data.name +
+
+          '<br><br>' +
+
+          '<button ' +
+
+            'class="popup-delete" ' +
+
+            'onclick="deletePlace(\'' +
+
+              place.id +
+
+            '\')" ' +
+
+          '>' +
+
+            'Удалить место' +
+
+          '</button>' +
+
+        '</div>'
+
+      );
+
+
+      placeMarkers[
+        place.id
+      ] =
+        leafletMarker;
+
+    }
+
+  );
+
+}
+
+
+/* =========================================================
+   SAVE PLACES
+========================================================= */
+
+function persistPlaces() {
+
+  localStorage.setItem(
+
+    "blink_places",
+
+    JSON.stringify(
+      savedPlaces
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+   START ADDING PLACE
+========================================================= */
+
+function startAddingPlace() {
+
+  closePanel();
+
+
+  toast(
+    "Нажми на карте точку, где находится место."
+  );
+
+
+  map.once(
+    "click",
+    handlePlaceMapClick
+  );
+
+}
+
+
+/* =========================================================
+   MAP CLICK
+========================================================= */
+
+function handlePlaceMapClick(
+  event
+) {
+
+  showAddPlaceForm(
+
+    event.latlng.lat,
+
+    event.latlng.lng
+
+  );
+
+}
+
+
+/* =========================================================
+   ADD PLACE FORM
+========================================================= */
+
+function showAddPlaceForm(
+  lat,
+  lng
+) {
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      Добавить место
+    </h2>
+
+
+    <p class="note">
+
+      Координаты выбраны на карте.
+
+      Теперь дай месту название
+      и выбери его тип.
+
+    </p>
+
+
+    <div class="field">
+
+      <label>
+        Название места
+      </label>
+
+      <input
+        id="placeName"
+        maxlength="40"
+        placeholder="Например: Мой дом"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Тип места
+      </label>
+
+      <select
+        id="placeType"
+      >
+
+        <option value="home">
+          🏠 Дом
+        </option>
+
+        <option value="work">
+          💼 Работа
+        </option>
+
+        <option value="school">
+          🎓 Школа
+        </option>
+
+        <option value="other">
+          📍 Другое
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      class="btn"
+      onclick="
+        confirmNewPlace(
+          ${lat},
+          ${lng}
+        )
+      "
+    >
+      Сохранить место
+    </button>
+
+
+    <button
+      class="btn secondary"
+      onclick="closePanel()"
+    >
+      Отмена
+    </button>
+
+  `);
+
+}
+
+
+/* =========================================================
+   CONFIRM NEW PLACE
+========================================================= */
+
+function confirmNewPlace(
+  lat,
+  lng
+) {
+
+  const nameInput =
+    document.getElementById(
+      "placeName"
+    );
+
+
+  const typeInput =
+    document.getElementById(
+      "placeType"
+    );
 
 
   if (
-    trail.length < 2
+    !nameInput ||
+    !typeInput
   ) {
 
     return;
@@ -1652,131 +2526,365 @@ function redrawTrail() {
   }
 
 
-  /*
-    Белое свечение под радугой.
-  */
+  const name =
+    nameInput.value.trim();
 
-  const glow =
-    L.polyline(
 
-      trail,
+  const type =
+    typeInput.value;
 
-      {
 
-        color:
-          "#ffffff",
+  if (
+    !name
+  ) {
 
-        weight:
-          18,
-
-        opacity:
-          .12,
-
-        lineCap:
-          "round",
-
-        lineJoin:
-          "round"
-
-      }
-
-    ).addTo(
-      map
+    toast(
+      "Введи название места."
     );
 
+    nameInput.focus();
 
-  trailLayers.push(
-    glow
+    return;
+
+  }
+
+
+  const data =
+    placeTypes[type]
+    ||
+    placeTypes.other;
+
+
+  const place = {
+
+    id:
+      Date.now().toString(),
+
+    name:
+      name,
+
+    type:
+      type,
+
+    lat:
+      lat,
+
+    lng:
+      lng
+
+  };
+
+
+  savedPlaces.push(
+    place
   );
 
 
-  /*
-    Каждая часть хвоста
-    получает свой цвет.
-  */
-
-  for (
-
-    let i = 1;
-
-    i < trail.length;
-
-    i++
-
-  ) {
-
-    const progress =
-
-      (i - 1) /
-
-      Math.max(
-
-        1,
-
-        trail.length - 2
-
-      );
+  persistPlaces();
 
 
-    const color =
-
-      rainbow[
-
-        Math.floor(
-
-          progress *
-
-          (
-            rainbow.length -
-            1
-          )
-
-        )
-
-      ];
+  renderSavedPlaces();
 
 
-    const segment =
-
-      L.polyline(
-
-        [
-
-          trail[i - 1],
-
-          trail[i]
-
-        ],
-
-        {
-
-          color:
-            color,
-
-          weight:
-            8,
-
-          opacity:
-            .95,
-
-          lineCap:
-            "round",
-
-          lineJoin:
-            "round"
-
-        }
-
-      ).addTo(
-        map
-      );
+  closePanel();
 
 
-    trailLayers.push(
-      segment
+  toast(
+    "Место сохранено."
+  );
+
+
+  map.setView(
+
+    [
+      lat,
+      lng
+    ],
+
+    Math.max(
+      map.getZoom(),
+      16
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+   DELETE PLACE
+========================================================= */
+
+function deletePlace(
+  id
+) {
+
+  const place =
+    savedPlaces.find(
+
+      function(item) {
+
+        return item.id === id;
+
+      }
+
     );
 
+
+  savedPlaces =
+    savedPlaces.filter(
+
+      function(item) {
+
+        return item.id !== id;
+
+      }
+
+    );
+
+
+  persistPlaces();
+
+
+  if (
+    placeMarkers[id]
+  ) {
+
+    map.removeLayer(
+      placeMarkers[id]
+    );
+
+    delete placeMarkers[id];
+
   }
+
+
+  toast(
+    "Место удалено."
+  );
+
+}
+
+
+/* =========================================================
+   MY PLACES
+========================================================= */
+
+function showPlaces() {
+
+  let list =
+    "";
+
+
+  savedPlaces.forEach(
+
+    function(place) {
+
+      const data =
+        placeTypes[
+          place.type
+        ] ||
+        placeTypes.other;
+
+
+      list += `
+
+        <div class="place-item">
+
+          <div class="place-icon">
+
+            ${data.icon}
+
+          </div>
+
+
+          <div class="grow">
+
+            <div class="place-name">
+
+              ${escapeHtml(
+                place.name
+              )}
+
+            </div>
+
+
+            <div class="place-type">
+
+              ${data.name}
+
+            </div>
+
+          </div>
+
+
+          <button
+            class="btn secondary"
+            style="
+              width:auto;
+              margin:0;
+              padding:9px 12px;
+            "
+            onclick="
+              focusPlace('${place.id}')
+            "
+          >
+            👁️
+          </button>
+
+
+          <button
+            class="btn danger"
+            style="
+              width:auto;
+              margin:0;
+              padding:9px 12px;
+            "
+            onclick="
+              deletePlace('${place.id}');
+              showPlaces();
+            "
+          >
+            ×
+          </button>
+
+        </div>
+
+      `;
+
+    }
+
+  );
+
+
+  if (
+    !list
+  ) {
+
+    list = `
+
+      <div class="empty">
+
+        Пока нет сохранённых мест.
+
+        <br><br>
+
+        Нажми кнопку ниже,
+        затем выбери точку
+        на карте.
+
+      </div>
+
+    `;
+
+  }
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      📍 Мои места
+    </h2>
+
+
+    <button
+      class="btn"
+      onclick="startAddingPlace()"
+    >
+      ＋ Добавить место на карте
+    </button>
+
+
+    <div
+      style="margin-top:12px"
+    >
+
+      ${list}
+
+    </div>
+
+
+    <p class="note">
+
+      Места сохраняются только
+      в этом браузере на этом устройстве.
+
+    </p>
+
+  `);
+
+}
+
+
+/* =========================================================
+   FOCUS PLACE
+========================================================= */
+
+function focusPlace(
+  id
+) {
+
+  const place =
+    savedPlaces.find(
+
+      function(item) {
+
+        return item.id === id;
+
+      }
+
+    );
+
+
+  if (
+    !place
+  ) {
+
+    return;
+
+  }
+
+
+  closePanel();
+
+
+  map.setView(
+
+    [
+      place.lat,
+      place.lng
+    ],
+
+    17
+
+  );
+
+
+  setTimeout(
+
+    function() {
+
+      if (
+        placeMarkers[id]
+      ) {
+
+        placeMarkers[id].openPopup();
+
+      }
+
+    },
+
+    300
+
+  );
 
 }
 
@@ -1872,10 +2980,6 @@ function onPosition(
     position.coords;
 
 
-  /*
-    Скорость GPS.
-  */
-
   let speedMs =
 
     Number.isFinite(
@@ -1894,10 +2998,6 @@ function onPosition(
     null;
 
 
-  /*
-    Последнее направление.
-  */
-
   let direction =
 
     lastPosition
@@ -1910,12 +3010,6 @@ function onPosition(
 
     0;
 
-
-  /*
-    Если уже есть предыдущая
-    координата — рассчитываем
-    расстояние и направление.
-  */
 
   if (
     lastPosition
@@ -1951,11 +3045,6 @@ function onPosition(
         );
 
 
-      /*
-        Если GPS не сообщил
-        скорость напрямую.
-      */
-
       if (
         speedMs === null
       ) {
@@ -1966,12 +3055,6 @@ function onPosition(
 
       }
 
-
-      /*
-        Не меняем направление,
-        если телефон практически
-        не сдвинулся.
-      */
 
       if (
         meters > 1
@@ -1998,19 +3081,11 @@ function onPosition(
   }
 
 
-  /*
-    Перевод м/с → км/ч.
-  */
-
   const speedKmh =
 
     (speedMs || 0) *
     3.6;
 
-
-  /*
-    Сохраняем текущую точку.
-  */
 
   lastPosition = {
 
@@ -2032,61 +3107,8 @@ function onPosition(
   };
 
 
-  /*
-    Скорость на экране.
-  */
-
-  document.getElementById(
-    "speed"
-  ).textContent =
-
-    speedKmh.toFixed(
-      1
-    ) +
-
-    " км/ч";
-
-
-  /*
-    Добавляем точку в хвост
-    только когда человек
-    действительно движется.
-  */
-
-  if (
-    speedKmh > 0.5
-  ) {
-
-    trail.push(
-
-      [
-
-        c.latitude,
-
-        c.longitude
-
-      ]
-
-    );
-
-  }
-
-
-  /*
-    Ограничиваем длину хвоста.
-  */
-
-  if (
-    trail.length > 50
-  ) {
-
-    trail.shift();
-
-  }
-
-
   /* =====================================================
-     MARKER
+     USER MARKER
   ===================================================== */
 
   if (
@@ -2098,11 +3120,8 @@ function onPosition(
       L.marker(
 
         [
-
           c.latitude,
-
           c.longitude
-
         ],
 
         {
@@ -2156,11 +3175,8 @@ function onPosition(
     map.setView(
 
       [
-
         c.latitude,
-
         c.longitude
-
       ],
 
       16
@@ -2171,27 +3187,15 @@ function onPosition(
 
   else {
 
-    /*
-      Перемещаем фотографию.
-    */
-
     marker.setLatLng(
 
       [
-
         c.latitude,
-
         c.longitude
-
       ]
 
     );
 
-
-    /*
-      Обновляем скорость
-      и направление стрелки.
-    */
 
     marker.setIcon(
 
@@ -2237,17 +3241,6 @@ function onPosition(
   }
 
 
-  /*
-    Обновляем радужный хвост.
-  */
-
-  redrawTrail();
-
-
-  /*
-    Статус.
-  */
-
   setStatus(
 
     "GPS • " +
@@ -2283,6 +3276,28 @@ function onPositionError(
 
     toast(
       "Разреши браузеру доступ к геолокации."
+    );
+
+  }
+
+  else if (
+    error.code === 2
+  ) {
+
+    setStatus(
+      "GPS недоступен",
+      false
+    );
+
+  }
+
+  else if (
+    error.code === 3
+  ) {
+
+    setStatus(
+      "GPS не отвечает",
+      false
     );
 
   }
@@ -2444,6 +3459,14 @@ function showProfile() {
     </button>
 
 
+    <button
+      class="btn secondary"
+      onclick="showPlaces()"
+    >
+      📍 Мои места
+    </button>
+
+
     <p class="note">
 
       Без базы данных фотография
@@ -2505,10 +3528,20 @@ function showProfile() {
           );
 
 
-          document.getElementById(
-            "profilePreview"
-          ).src =
-            myPhoto;
+          const preview =
+            document.getElementById(
+              "profilePreview"
+            );
+
+
+          if (
+            preview
+          ) {
+
+            preview.src =
+              myPhoto;
+
+          }
 
 
           if (
@@ -2550,18 +3583,30 @@ function showProfile() {
 }
 
 
-/* SAVE PROFILE */
+/* =========================================================
+   SAVE PROFILE
+========================================================= */
 
 function saveProfile() {
 
-  myName =
-
+  const input =
     document.getElementById(
       "nameInput"
-    ).value.trim()
+    );
 
+
+  if (
+    !input
+  ) {
+
+    return;
+
+  }
+
+
+  myName =
+    input.value.trim()
     ||
-
     "Я";
 
 
@@ -2569,6 +3614,34 @@ function saveProfile() {
     "blink_name",
     myName
   );
+
+
+  if (
+    marker
+  ) {
+
+    const speed =
+      lastPosition
+        ? lastPosition.speed
+        : 0;
+
+
+    const direction =
+      lastPosition
+        ? lastPosition.direction
+        : 0;
+
+
+    marker.setIcon(
+
+      userIcon(
+        speed,
+        direction
+      )
+
+    );
+
+  }
 
 
   toast(
@@ -2727,7 +3800,9 @@ function showFriends() {
 }
 
 
-/* ADD FRIEND */
+/* =========================================================
+   ADD FRIEND
+========================================================= */
 
 function addFriend() {
 
@@ -2757,6 +3832,44 @@ function addFriend() {
 
     toast(
       "Код должен состоять из 4 цифр."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    code === myCode
+  ) {
+
+    toast(
+      "Нельзя добавить самого себя."
+    );
+
+    return;
+
+  }
+
+
+  const exists =
+    friends.some(
+
+      function(friend) {
+
+        return friend.code === code;
+
+      }
+
+    );
+
+
+  if (
+    exists
+  ) {
+
+    toast(
+      "Этот друг уже добавлен."
     );
 
     return;
@@ -2799,7 +3912,9 @@ function addFriend() {
 }
 
 
-/* REMOVE FRIEND */
+/* =========================================================
+   REMOVE FRIEND
+========================================================= */
 
 function removeFriend(
   index
@@ -2892,17 +4007,25 @@ function showSettings() {
     </button>
 
 
+    <button
+      class="btn secondary"
+      onclick="showPlaces()"
+    >
+      📍 Мои места
+    </button>
+
+
     <p class="note">
 
       Blink определяет направление
       движения по последним GPS
       координатам.
 
-      Радужный хвост остаётся
-      позади движущегося пользователя.
+      Скорость отображается
+      непосредственно под твоей
+      геопозицией.
 
-      При повороте направление хвоста
-      меняется вместе с движением.
+      Радужный шлейф отключён.
 
     </p>
 
@@ -2911,7 +4034,9 @@ function showSettings() {
 }
 
 
-/* TOGGLE GPS */
+/* =========================================================
+   TOGGLE GPS
+========================================================= */
 
 function toggleLocation() {
 
@@ -2969,7 +4094,9 @@ function toggleLocation() {
 }
 
 
-/* CENTER USER */
+/* =========================================================
+   CENTER USER
+========================================================= */
 
 function centerMe() {
 
@@ -2983,11 +4110,8 @@ function centerMe() {
     map.setView(
 
       [
-
         lastPosition.lat,
-
         lastPosition.lng
-
       ],
 
       17
@@ -3089,6 +4213,13 @@ document
     }
 
   );
+
+
+/* =========================================================
+   INITIALIZE SAVED PLACES
+========================================================= */
+
+renderSavedPlaces();
 
 
 /* =========================================================
