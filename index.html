@@ -2,767 +2,976 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#080a14">
-<title>Рядом — пространство поддержки</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070914">
+<title>Рядом — ночное пространство</title>
 
 <style>
-:root{
-  --bg:#070914;
-  --card:#111526dd;
-  --card2:#181d31;
-  --text:#f5f6ff;
-  --muted:#969cb2;
-  --line:#2b314b;
-  --purple:#8d82ff;
-  --pink:#e985b5;
-  --green:#78d9ad;
-  --danger:#ed687f;
-}
-
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
 
+:root{
+ --bg:#060813;
+ --card:#111526dd;
+ --card2:#191e32;
+ --line:#2c334d;
+ --text:#f5f6ff;
+ --muted:#999fb5;
+ --purple:#8d82ff;
+ --pink:#df82b1;
+ --green:#71d2a6;
+ --danger:#e9637d;
+}
+
 body{
-  margin:0;
-  color:var(--text);
-  font-family:Arial,sans-serif;
-  background:
-    radial-gradient(circle at 10% 0%,#766cff35,transparent 28%),
-    radial-gradient(circle at 90% 40%,#df75a522,transparent 30%),
-    radial-gradient(circle at 50% 100%,#5ebeff18,transparent 35%),
-    var(--bg);
-  overflow-x:hidden;
+ margin:0;
+ color:var(--text);
+ font-family:Arial,sans-serif;
+ background:
+ radial-gradient(circle at 20% 0%,#766cff35,transparent 30%),
+ radial-gradient(circle at 90% 40%,#dc76a526,transparent 30%),
+ radial-gradient(circle at 40% 100%,#4c8dff1c,transparent 35%),
+ var(--bg);
+ min-height:100vh;
+ overflow-x:hidden;
 }
 
 button,input,textarea{font-family:inherit}
-
 button{cursor:pointer}
 
-.stars{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-3;
-  overflow:hidden;
+#stars{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:-5;
 }
 
 .star{
-  position:absolute;
-  width:2px;
-  height:2px;
-  background:white;
-  border-radius:50%;
-  animation:twinkle 3s infinite alternate;
+ position:absolute;
+ width:2px;
+ height:2px;
+ border-radius:50%;
+ background:white;
+ animation:twinkle 3s infinite alternate;
 }
 
 @keyframes twinkle{
-  from{opacity:.1}
-  to{opacity:.9;transform:scale(1.5)}
+ from{opacity:.1}
+ to{opacity:1;transform:scale(1.7)}
 }
 
-.orb{
-  position:fixed;
-  width:300px;
-  height:300px;
-  border-radius:50%;
-  filter:blur(100px);
-  opacity:.2;
-  z-index:-2;
+.shooting{
+ position:fixed;
+ width:100px;
+ height:2px;
+ background:linear-gradient(90deg,transparent,#fff,transparent);
+ transform:rotate(-30deg);
+ animation:shoot 1.5s linear forwards;
+ z-index:-1;
 }
 
-.orb.a{
-  background:#756aff;
-  left:-180px;
-  top:200px;
-  animation:orb 14s infinite alternate;
+@keyframes shoot{
+ from{opacity:0;transform:translate(0,0) rotate(-30deg)}
+ 20%{opacity:1}
+ to{opacity:0;transform:translate(-500px,300px) rotate(-30deg)}
 }
 
-.orb.b{
-  background:#e66f9d;
-  right:-180px;
-  bottom:100px;
-  animation:orb2 16s infinite alternate;
+.bubble{
+ position:fixed;
+ width:90px;
+ height:90px;
+ border-radius:50%;
+ background:#8277ff12;
+ filter:blur(2px);
+ pointer-events:none;
+ z-index:-2;
+ animation:bubble 15s linear infinite;
 }
 
-@keyframes orb{
-  to{transform:translate(180px,130px)}
-}
-
-@keyframes orb2{
-  to{transform:translate(-150px,-120px)}
+@keyframes bubble{
+ from{transform:translateY(110vh)}
+ to{transform:translateY(-120vh) translateX(100px)}
 }
 
 .app{
-  width:min(900px,100%);
-  margin:auto;
-  padding:18px 15px 120px;
+ width:min(920px,100%);
+ margin:auto;
+ padding:18px 14px 110px;
 }
 
 header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
 }
 
 .logo{
-  font-size:30px;
-  font-weight:900;
+ font-size:30px;
+ font-weight:900;
+ letter-spacing:-1px;
 }
 
 .logo span{color:var(--purple)}
 
 .status{
-  padding:9px 12px;
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:var(--card);
-  color:var(--muted);
-  font-size:11px;
+ font-size:10px;
+ color:#aeb3c5;
+ border:1px solid var(--line);
+ background:#111526bb;
+ padding:9px 12px;
+ border-radius:20px;
+}
+
+.profile{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ margin-bottom:15px;
+ padding:13px;
+ border-radius:22px;
+ background:var(--card);
+ border:1px solid var(--line);
+ backdrop-filter:blur(15px);
+}
+
+.avatar{
+ width:58px;
+ height:58px;
+ border-radius:20px;
+ object-fit:cover;
+ background:#242a43;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:27px;
+}
+
+.profile-info{
+ flex:1;
+}
+
+.profile-info b{
+ display:block;
+ font-size:17px;
+}
+
+.profile-info small{
+ color:var(--muted);
 }
 
 .hero{
-  position:relative;
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:32px;
-  padding:28px;
-  background:linear-gradient(145deg,#191c39ee,#0d1120ee);
-  box-shadow:0 25px 70px #0008;
+ position:relative;
+ overflow:hidden;
+ padding:30px 25px;
+ border-radius:32px;
+ background:
+ radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
+ linear-gradient(145deg,#181c38ee,#0c1020ee);
+ border:1px solid var(--line);
+ box-shadow:0 25px 80px #0008;
 }
 
-.hero:after{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  right:-70px;
-  top:-70px;
-  border:1px solid #ffffff12;
-  box-shadow:0 0 0 35px #ffffff04,0 0 0 70px #ffffff03;
+.hero:before{
+ content:"";
+ position:absolute;
+ width:180px;
+ height:180px;
+ border-radius:50%;
+ border:1px solid #fff2;
+ right:-70px;
+ top:-70px;
+ box-shadow:0 0 0 35px #fff1,0 0 0 70px #fff08;
+ animation:moon 8s ease-in-out infinite alternate;
+}
+
+@keyframes moon{
+ to{transform:rotate(30deg) scale(1.15)}
 }
 
 .hero h1{
-  font-size:clamp(32px,8vw,52px);
-  line-height:1;
-  margin:0 0 13px;
-  letter-spacing:-2px;
+ font-size:clamp(31px,8vw,53px);
+ line-height:1;
+ margin:0 0 15px;
+ letter-spacing:-2px;
+ max-width:700px;
 }
 
 .hero p{
-  color:#b7bbcb;
-  line-height:1.7;
-  margin:0;
+ color:#b8bdce;
+ line-height:1.7;
+ max-width:650px;
 }
 
-.hero-buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:22px;
+.buttons{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+ margin-top:22px;
 }
 
 .btn{
-  border:0;
-  border-radius:17px;
-  padding:15px;
-  color:white;
-  font-weight:bold;
-  transition:.25s;
+ border:0;
+ color:white;
+ border-radius:17px;
+ padding:14px;
+ font-weight:bold;
+ transition:.25s;
 }
 
 .btn:hover{
-  transform:translateY(-3px);
-  filter:brightness(1.1);
+ transform:translateY(-3px);
+ filter:brightness(1.1);
 }
 
-.btn:active{transform:scale(.97)}
-
-.primary{background:linear-gradient(110deg,#8178ff,#bd79ff)}
+.primary{background:linear-gradient(110deg,#7b71ff,#bd79ff)}
 .secondary{background:#20253a;border:1px solid #363c58}
-.green{background:linear-gradient(110deg,#48b98e,#79d7ac)}
-.danger{background:linear-gradient(110deg,#e95771,#bc629e)}
+.green{background:linear-gradient(110deg,#4dbb91,#79d8ac)}
+.danger{background:linear-gradient(110deg,#e95771,#bd619c)}
 .full{width:100%}
 
 .title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:26px 2px 12px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:26px 2px 12px;
 }
 
 .title h2{margin:0;font-size:19px}
 .title small{color:var(--muted)}
 
 .card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:23px;
-  padding:18px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 15px 40px #0003;
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:23px;
+ padding:18px;
+ backdrop-filter:blur(18px);
+ box-shadow:0 15px 45px #0003;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
 }
 
-.click{cursor:pointer;transition:.25s}
+.click{
+ cursor:pointer;
+ transition:.25s;
+}
 
 .click:hover{
-  transform:translateY(-5px);
-  border-color:var(--purple);
+ transform:translateY(-5px);
+ border-color:var(--purple);
 }
 
 .icon{font-size:30px}
 
-.card b{display:block;margin-top:8px}
+.card b{
+ display:block;
+ margin-top:7px;
+}
 
 .card p{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.55;
+ color:var(--muted);
+ line-height:1.6;
+ font-size:13px;
 }
 
 .moods{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:7px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ gap:7px;
 }
 
 .mood{
-  border:1px solid var(--line);
-  background:var(--card2);
-  color:white;
-  border-radius:18px;
-  padding:10px 3px;
-  transition:.2s;
-}
-
-.mood:hover,.mood.active{
-  transform:translateY(-4px);
-  border-color:var(--purple);
-  background:#2a2850;
+ color:white;
+ background:var(--card2);
+ border:1px solid var(--line);
+ border-radius:17px;
+ padding:10px 2px;
+ transition:.2s;
 }
 
 .mood span{
-  display:block;
-  font-size:25px;
+ display:block;
+ font-size:25px;
 }
 
 .mood small{
-  color:var(--muted);
-  font-size:9px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+.mood:hover,.mood.active{
+ transform:translateY(-4px);
+ background:#2b2851;
+ border-color:var(--purple);
 }
 
 .posts{
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
+ display:flex;
+ gap:10px;
+ overflow-x:auto;
+ scrollbar-width:none;
 }
 
 .post{
-  min-width:245px;
-  border:1px solid var(--line);
-  background:var(--card);
-  border-radius:23px;
-  padding:18px;
+ min-width:245px;
+ padding:18px;
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:23px;
 }
 
 .post .emoji{font-size:30px}
-.post h3{margin:10px 0 6px}
-.post p{color:var(--muted);font-size:13px;line-height:1.5}
+.post p{color:var(--muted);line-height:1.5;font-size:13px}
 
 .pet{text-align:center}
 
 .pet-stage{
-  height:220px;
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  border-radius:20px;
-  background:radial-gradient(circle,#8178ff1d,transparent 60%);
+ height:210px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ background:radial-gradient(circle,#8277ff1d,transparent 60%);
+ border-radius:20px;
 }
 
 .pet-body{
-  width:125px;
-  height:105px;
-  border-radius:55%;
-  background:linear-gradient(145deg,#9388ff,#655bd2);
-  position:relative;
-  box-shadow:0 20px 45px #756bff55;
-  animation:float 3s infinite ease-in-out;
+ width:125px;
+ height:105px;
+ background:linear-gradient(145deg,#958aff,#6459d1);
+ border-radius:55%;
+ position:relative;
+ box-shadow:0 20px 45px #756bff55;
+ animation:petfloat 3s infinite ease-in-out;
 }
 
-@keyframes float{
-  50%{transform:translateY(-12px)}
+@keyframes petfloat{
+ 50%{transform:translateY(-12px)}
 }
 
 .ear{
-  position:absolute;
-  top:-18px;
-  width:45px;
-  height:45px;
-  background:#786ee0;
-  border-radius:15px 35px 10px 35px;
+ position:absolute;
+ top:-18px;
+ width:45px;
+ height:45px;
+ background:#766bdd;
+ border-radius:15px 35px 10px 35px;
 }
 
 .ear.l{left:5px;transform:rotate(-20deg)}
 .ear.r{right:5px;transform:rotate(20deg) scaleX(-1)}
 
 .eye{
-  position:absolute;
-  top:38px;
-  width:12px;
-  height:16px;
-  border-radius:50%;
-  background:white;
+ position:absolute;
+ top:38px;
+ width:12px;
+ height:16px;
+ background:white;
+ border-radius:50%;
 }
 
 .eye:after{
-  content:"";
-  position:absolute;
-  width:5px;
-  height:7px;
-  background:#181a2b;
-  border-radius:50%;
-  left:4px;
-  top:5px;
+ content:"";
+ position:absolute;
+ width:5px;
+ height:7px;
+ background:#16182a;
+ border-radius:50%;
+ left:4px;
+ top:5px;
 }
 
 .eye.l{left:32px}
 .eye.r{right:32px}
 
 .mouth{
-  position:absolute;
-  top:63px;
-  left:50%;
-  transform:translateX(-50%);
-  width:22px;
-  height:11px;
-  border-bottom:3px solid white;
-  border-radius:50%;
+ position:absolute;
+ top:64px;
+ left:50%;
+ transform:translateX(-50%);
+ width:22px;
+ height:11px;
+ border-bottom:3px solid white;
+ border-radius:50%;
 }
 
 .heart{
-  position:absolute;
-  right:-15px;
-  top:20px;
-  animation:pulse 2s infinite;
+ position:absolute;
+ right:-16px;
+ top:15px;
+ animation:heartbeat 1.8s infinite;
 }
 
-@keyframes pulse{
-  50%{transform:scale(1.25)}
+@keyframes heartbeat{
+ 50%{transform:scale(1.3)}
 }
 
 .xp{
-  height:8px;
-  background:#292e46;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:10px;
+ height:8px;
+ background:#292e46;
+ border-radius:20px;
+ overflow:hidden;
+ margin-top:10px;
 }
 
 .xp i{
-  display:block;
-  height:100%;
-  background:linear-gradient(90deg,#7d73ff,#e58db9);
-  width:30%;
+ display:block;
+ height:100%;
+ width:30%;
+ background:linear-gradient(90deg,#7d73ff,#e58db9);
+ transition:.5s;
 }
 
 .breath{text-align:center}
 
 .breath-circle{
-  width:155px;
-  height:155px;
-  margin:25px auto;
-  border-radius:50%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
-  box-shadow:0 0 70px #8177ff55;
-  transition:transform 4s ease-in-out;
+ width:155px;
+ height:155px;
+ margin:25px auto;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
+ box-shadow:0 0 70px #8177ff55;
+ transition:transform 4s ease-in-out;
 }
 
 .breath-circle.expand{transform:scale(1.3)}
 
-.canvas-wrap{
-  background:#080b14;
-  padding:8px;
-  border-radius:20px;
-}
-
-canvas{
-  display:block;
-  width:100%;
-  height:300px;
-  background:white;
-  border-radius:14px;
-  touch-action:none;
-}
-
-.draw-tools{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-  margin-top:8px;
-}
-
-.draw-tools button{
-  padding:10px 3px;
-  color:white;
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:13px;
-}
-
-textarea{
-  width:100%;
-  min-height:150px;
-  resize:vertical;
-  background:#090c15;
-  color:white;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:14px;
-  outline:none;
-}
-
 .tree{
-  position:relative;
-  height:270px;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-  background:radial-gradient(circle,#8178ff12,transparent 60%);
-  border-radius:20px;
+ height:280px;
+ position:relative;
+ overflow:hidden;
+ display:flex;
+ justify-content:center;
+ align-items:flex-end;
+ border-radius:20px;
+ background:radial-gradient(circle,#8277ff15,transparent 60%);
 }
 
 .trunk{
-  width:25px;
-  height:130px;
-  background:linear-gradient(90deg,#674b42,#a87a5f);
-  border-radius:20px;
-  position:absolute;
-  bottom:20px;
+ position:absolute;
+ bottom:15px;
+ width:25px;
+ height:135px;
+ border-radius:20px;
+ background:linear-gradient(90deg,#654a3e,#a8785d);
 }
 
 .crown{
-  position:absolute;
-  bottom:130px;
-  width:190px;
-  height:120px;
-  border-radius:50%;
-  background:#527e68;
-  box-shadow:-55px 20px 0 #426b58,55px 22px 0 #628d73,0 -25px 0 #639678;
+ position:absolute;
+ bottom:130px;
+ width:190px;
+ height:120px;
+ border-radius:50%;
+ background:#507b65;
+ box-shadow:-55px 20px 0 #426b58,55px 22px 0 #628d73,0 -25px 0 #639678;
 }
 
 .leaf{
-  position:absolute;
-  font-size:22px;
-  animation:leaf 3s infinite alternate ease-in-out;
+ position:absolute;
+ font-size:22px;
+ animation:leaf 3s infinite alternate ease-in-out;
 }
 
 @keyframes leaf{
-  to{transform:translateY(-7px) rotate(8deg)}
+ to{transform:translateY(-7px) rotate(8deg)}
 }
 
-.task{text-align:center}
-.task-icon{font-size:50px}
+textarea{
+ width:100%;
+ min-height:150px;
+ resize:vertical;
+ border-radius:18px;
+ padding:14px;
+ color:white;
+ background:#090c15;
+ border:1px solid var(--line);
+ outline:none;
+}
+
+.canvas-wrap{
+ background:#080b14;
+ padding:8px;
+ border-radius:20px;
+}
+
+canvas{
+ width:100%;
+ height:300px;
+ background:white;
+ border-radius:14px;
+ display:block;
+ touch-action:none;
+}
+
+.draw-tools{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:7px;
+ margin-top:8px;
+}
+
+.draw-tools button,
+.filter-btn{
+ padding:10px 3px;
+ color:white;
+ background:var(--card2);
+ border:1px solid var(--line);
+ border-radius:13px;
+}
 
 .message{
-  padding:15px;
-  border:1px solid var(--line);
-  border-radius:17px;
-  background:var(--card2);
-  margin-bottom:8px;
-  cursor:pointer;
-  transition:.2s;
+ padding:16px;
+ background:var(--card2);
+ border:1px solid var(--line);
+ border-radius:18px;
+ margin-bottom:8px;
+ cursor:pointer;
+ transition:.2s;
 }
 
 .message:hover{
-  transform:translateX(5px);
-  border-color:var(--purple);
+ transform:translateX(5px);
+ border-color:var(--purple);
 }
 
 .resource{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  text-decoration:none;
-  color:white;
-  border:1px solid var(--line);
-  background:var(--card);
-  padding:16px;
-  border-radius:19px;
-  margin-bottom:9px;
+ display:flex;
+ gap:13px;
+ align-items:center;
+ color:white;
+ text-decoration:none;
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:19px;
+ padding:16px;
+ margin-bottom:9px;
+ transition:.2s;
 }
 
-.resource-icon{font-size:28px}
-.resource small{display:block;color:var(--muted);margin-top:4px}
+.resource:hover{
+ transform:translateX(5px);
+ border-color:var(--purple);
+}
+
+.resource-icon{font-size:29px}
+
+.resource small{
+ display:block;
+ color:var(--muted);
+ margin-top:4px;
+}
+
+.music{
+ display:grid;
+ gap:9px;
+}
+
+.music a{
+ display:block;
+ padding:14px;
+ color:white;
+ text-decoration:none;
+ border-radius:16px;
+ background:#20253a;
+ border:1px solid var(--line);
+}
+
+.music a:hover{border-color:var(--purple)}
+
+.candle{
+ width:70px;
+ height:100px;
+ margin:20px auto;
+ background:linear-gradient(90deg,#e9e1c4,#fff4ce,#cfc69f);
+ border-radius:10px 10px 7px 7px;
+ position:relative;
+ box-shadow:0 0 25px #ffe7a644;
+}
+
+.flame{
+ width:27px;
+ height:42px;
+ position:absolute;
+ left:22px;
+ top:-39px;
+ background:linear-gradient(#fff,#ffb13b,#ff6d36);
+ border-radius:50% 50% 45% 45%;
+ filter:blur(.3px);
+ box-shadow:0 0 35px #ffae3d;
+ animation:flame .7s infinite alternate;
+}
+
+@keyframes flame{
+ to{transform:scale(.85) rotate(4deg)}
+}
+
+.envelope{
+ text-align:center;
+ padding:28px;
+ border-radius:22px;
+ background:linear-gradient(145deg,#25294b,#171b30);
+ border:1px solid var(--line);
+ cursor:pointer;
+ transition:.3s;
+}
+
+.envelope:hover{transform:scale(1.02)}
+
+.envelope-icon{
+ font-size:65px;
+ animation:env 2s infinite ease-in-out;
+}
+
+@keyframes env{
+ 50%{transform:translateY(-7px) rotate(2deg)}
+}
+
+.timer{
+ font-size:60px;
+ text-align:center;
+ font-weight:900;
+ margin:15px;
+}
 
 .faq{
-  display:grid;
-  gap:8px;
+ display:grid;
+ gap:8px;
 }
 
 .faq-item{
-  border:1px solid var(--line);
-  border-radius:18px;
-  overflow:hidden;
-  background:var(--card);
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:18px;
+ overflow:hidden;
 }
 
 .faq-q{
-  width:100%;
-  border:0;
-  background:none;
-  color:white;
-  text-align:left;
-  padding:17px;
-  font-weight:bold;
+ width:100%;
+ text-align:left;
+ color:white;
+ background:none;
+ border:0;
+ padding:17px;
+ font-weight:bold;
 }
 
 .faq-a{
-  display:none;
-  padding:0 17px 17px;
-  color:var(--muted);
-  line-height:1.6;
+ display:none;
+ padding:0 17px 17px;
+ color:var(--muted);
+ line-height:1.6;
 }
 
 .faq-item.open .faq-a{display:block}
 
 .alert{
-  background:#2c171e;
-  border:1px solid #63303c;
-  border-radius:18px;
-  padding:16px;
-  line-height:1.6;
-}
-
-.nav{
-  position:fixed;
-  left:50%;
-  bottom:10px;
-  transform:translateX(-50%);
-  width:min(880px,calc(100% - 20px));
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:4px;
-  padding:7px;
-  background:#0d1120ee;
-  border:1px solid #303650;
-  border-radius:23px;
-  backdrop-filter:blur(20px);
-  z-index:50;
-}
-
-.nav button{
-  border:0;
-  background:none;
-  color:#777d94;
-  border-radius:16px;
-  padding:7px 2px;
-  font-size:10px;
-}
-
-.nav button span{
-  display:block;
-  font-size:19px;
-}
-
-.nav button.active{
-  background:#29264e;
-  color:white;
+ background:#301820;
+ border:1px solid #63303c;
+ padding:16px;
+ border-radius:18px;
+ line-height:1.6;
 }
 
 .modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  padding:10px;
-  background:#000d;
-  z-index:100;
+ position:fixed;
+ inset:0;
+ display:none;
+ align-items:flex-end;
+ justify-content:center;
+ padding:10px;
+ background:#000d;
+ z-index:100;
 }
 
 .modal.show{display:flex}
 
 .sheet{
-  width:min(850px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:#101423;
-  border:1px solid #3b415d;
-  border-radius:29px;
-  padding:23px;
-  animation:sheet .3s ease;
+ width:min(850px,100%);
+ max-height:92vh;
+ overflow:auto;
+ padding:23px;
+ border-radius:29px;
+ background:#101423;
+ border:1px solid #3b415d;
+ animation:sheet .3s ease;
 }
 
 @keyframes sheet{
-  from{opacity:0;transform:translateY(50px)}
-  to{opacity:1;transform:none}
+ from{opacity:0;transform:translateY(50px)}
+ to{opacity:1;transform:none}
 }
 
 .close{
-  float:right;
-  background:#252a40;
-  border:0;
-  color:white;
-  padding:9px 12px;
-  border-radius:12px;
+ float:right;
+ color:white;
+ background:#252a40;
+ border:0;
+ border-radius:12px;
+ padding:9px 12px;
 }
 
 .sheet p{
-  color:#bdc2d1;
-  line-height:1.65;
+ color:#bdc2d1;
+ line-height:1.65;
+}
+
+.nav{
+ position:fixed;
+ bottom:10px;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(900px,calc(100% - 20px));
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ padding:7px;
+ gap:4px;
+ background:#0d1120ee;
+ border:1px solid #303650;
+ border-radius:23px;
+ backdrop-filter:blur(20px);
+ z-index:50;
+}
+
+.nav button{
+ border:0;
+ background:none;
+ color:#777d94;
+ padding:7px 2px;
+ border-radius:16px;
+ font-size:10px;
+}
+
+.nav button span{
+ display:block;
+ font-size:19px;
+}
+
+.nav button.active{
+ color:white;
+ background:#29264e;
 }
 
 .toast{
-  position:fixed;
-  bottom:105px;
-  left:50%;
-  transform:translate(-50%,20px);
-  opacity:0;
-  background:#252a40;
-  border:1px solid #444b69;
-  padding:12px 18px;
-  border-radius:16px;
-  z-index:200;
-  transition:.25s;
+ position:fixed;
+ left:50%;
+ bottom:105px;
+ transform:translate(-50%,20px);
+ opacity:0;
+ background:#252a40;
+ border:1px solid #444b69;
+ padding:12px 18px;
+ border-radius:16px;
+ z-index:200;
+ transition:.25s;
 }
 
 .toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+ opacity:1;
+ transform:translate(-50%,0);
 }
 
 .secret-button{
-  position:fixed;
-  right:14px;
-  top:14px;
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  border:1px solid #343952;
-  background:#111526aa;
-  color:#8d82ff;
-  opacity:.2;
-  z-index:80;
-  transition:.4s;
+ position:fixed;
+ right:13px;
+ top:13px;
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ border:1px solid #343952;
+ background:#111526cc;
+ color:#8d82ff;
+ opacity:.2;
+ z-index:80;
+ transition:.4s;
 }
 
 .secret-button:hover{
-  opacity:1;
-  transform:rotate(20deg) scale(1.1);
+ opacity:1;
+ transform:rotate(20deg) scale(1.1);
 }
 
 .secret-story{
-  position:fixed;
-  inset:0;
-  background:#03040bcc;
-  backdrop-filter:blur(15px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:500;
+ position:fixed;
+ inset:0;
+ background:#03040bcc;
+ backdrop-filter:blur(15px);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ z-index:500;
 }
 
 .secret-story.show{display:flex}
 
 .secret-card{
-  position:relative;
-  width:min(520px,100%);
-  background:radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),#111525;
-  border:1px solid #343a59;
-  border-radius:30px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 30px 100px #000c;
-  animation:secretIn .5s ease;
+ position:relative;
+ width:min(520px,100%);
+ background:radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),#111525;
+ border:1px solid #343a59;
+ border-radius:30px;
+ padding:30px;
+ text-align:center;
+ box-shadow:0 30px 100px #000c;
+ animation:secretIn .5s ease;
 }
 
 @keyframes secretIn{
-  from{opacity:0;transform:scale(.8) translateY(30px)}
-  to{opacity:1;transform:none}
+ from{opacity:0;transform:scale(.8) translateY(30px)}
+ to{opacity:1;transform:none}
 }
 
-.secret-card h2{margin-top:5px}
-
-.secret-card p{
-  color:#b5bacb;
-  line-height:1.7;
+.profile-form{
+ display:grid;
+ gap:10px;
 }
 
-.secret-quote{
-  margin:22px 0;
-  padding:18px;
-  border-radius:20px;
-  background:#7169ff14;
-  border:1px solid #7169ff35;
-  color:#dddafe;
-  font-weight:bold;
+.profile-form input{
+ width:100%;
+ padding:14px;
+ border-radius:15px;
+ border:1px solid var(--line);
+ background:#090c15;
+ color:white;
+ outline:none;
 }
 
-.secret-icon{
-  font-size:55px;
-  animation:pulse 2s infinite;
+.photo-preview{
+ width:100px;
+ height:100px;
+ border-radius:30px;
+ object-fit:cover;
+ background:#242a43;
+ display:block;
+ margin:5px auto 10px;
 }
 
-.secret-card small{color:#737a91}
+.section{display:none}
+.section.active{display:block}
+
+.small-note{
+ color:#73798c;
+ font-size:11px;
+ line-height:1.6;
+}
+
+body.silent *{
+ animation:none!important;
+ transition:none!important;
+}
+
+body.light{
+ --bg:#e9eaff;
+ --text:#202235;
+ --card:#ffffffdd;
+ --card2:#f2f2ff;
+ --line:#d4d5e7;
+ --muted:#666a80;
+ background:
+ radial-gradient(circle at 20% 0%,#8e85ff55,transparent 30%),
+ #e9eaff;
+}
+
+body.light .hero{
+ background:#ffffffdd;
+}
+
+body.light .status,
+body.light .nav{
+ background:#ffffffdd;
+}
 
 @media(max-width:520px){
-  .hero{padding:23px}
-  .hero-buttons{grid-template-columns:1fr}
+ .buttons{grid-template-columns:1fr}
+ .grid{grid-template-columns:1fr 1fr}
+ .hero{padding:23px}
+ .moods{gap:4px}
+ .mood small{font-size:8px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="stars" id="stars"></div>
-<div class="orb a"></div>
-<div class="orb b"></div>
+<div id="stars"></div>
 
-<main class="app">
+<div class="bubble" style="left:10%;animation-delay:-2s"></div>
+<div class="bubble" style="left:40%;animation-delay:-8s"></div>
+<div class="bubble" style="left:75%;animation-delay:-5s"></div>
+
+<div class="app">
 
 <header>
-  <div class="logo">рядом<span>.</span></div>
-  <div class="status">🌙 спокойное пространство</div>
+<div class="logo">рядом<span>.</span></div>
+<div class="status">🌙 безопасное пространство</div>
 </header>
+
+
+<!-- ПРОФИЛЬ -->
+
+<div class="profile">
+
+<img id="avatar"
+class="avatar"
+alt=""
+style="display:none">
+
+<div id="avatarEmoji" class="avatar">🌙</div>
+
+<div class="profile-info">
+
+<b id="userName">Привет, незнакомец 💜</b>
+
+<small id="profileMood">
+Здесь можно просто побыть собой.
+</small>
+
+</div>
+
+<button class="btn secondary"
+onclick="openProfile()">
+⚙️
+</button>
+
+</div>
+
 
 <!-- ГЛАВНАЯ -->
 
-<section id="home">
+<section id="home" class="section active">
 
 <div class="hero">
+
 <h1>Ты не обязан справляться со всем один.</h1>
 
 <p>
-Здесь можно выдохнуть, разобраться в своих эмоциях,
-найти поддержку и сделать маленький безопасный шаг.
+Это место для подростков, где можно выдохнуть,
+разобраться в своих чувствах, найти поддержку
+и сделать маленький шаг.
 </p>
 
-<div class="hero-buttons">
-<button class="btn primary" onclick="showSection('tools')">
+<div class="buttons">
+
+<button class="btn primary"
+onclick="showSection('tools')">
 ✨ Мне сейчас тяжело
 </button>
 
-<button class="btn danger" onclick="emergency()">
+<button class="btn danger"
+onclick="emergency()">
 🆘 Мне небезопасно
 </button>
+
 </div>
+
 </div>
+
 
 <div class="title">
 <h2>Как ты сейчас?</h2>
@@ -770,6 +979,7 @@ textarea{
 </div>
 
 <div class="card">
+
 <div class="moods">
 
 <button class="mood" onclick="setMood(this,'очень тяжело','😞')">
@@ -793,15 +1003,22 @@ textarea{
 </button>
 
 </div>
+
 </div>
 
-<div class="title"><h2>💌 Напоминание</h2></div>
+
+<div class="title">
+<h2>💌 Напоминание</h2>
+</div>
 
 <div class="card" id="supportBox">
 Ты имеешь право на плохой день.
 </div>
 
-<div class="title"><h2>Что тебе сейчас нужно?</h2></div>
+
+<div class="title">
+<h2>Что тебе сейчас нужно?</h2>
+</div>
 
 <div class="grid">
 
@@ -831,7 +1048,10 @@ textarea{
 
 </div>
 
-<div class="title"><h2>🌱 Посты</h2></div>
+
+<div class="title">
+<h2>🌱 Посты</h2>
+</div>
 
 <div class="posts">
 
@@ -856,13 +1076,13 @@ textarea{
 <div class="post">
 <div class="emoji">🌈</div>
 <h3>Ты больше своего настроения</h3>
-<p>Одна эмоция не определяет тебя целиком.</p>
+<p>Одна эмоция не определяет тебя.</p>
 </div>
 
 <div class="post">
 <div class="emoji">🪴</div>
 <h3>Маленькие шаги считаются</h3>
-<p>Сегодня достаточно сделать хотя бы один.</p>
+<p>Сегодня достаточно одного.</p>
 </div>
 
 </div>
@@ -870,114 +1090,157 @@ textarea{
 </section>
 
 
-<!-- ИНСТРУМЕНТЫ -->
+<!-- ПОМОЩЬ -->
 
-<section id="tools">
+<section id="tools" class="section">
 
-<div class="title"><h2>✨ Инструменты</h2></div>
+<div class="hero">
 
-<div class="title"><h2>🧸 Твой маленький друг</h2></div>
-
-<div class="card pet">
-
-<div class="pet-stage">
-
-<div class="pet-body">
-<div class="ear l"></div>
-<div class="ear r"></div>
-<div class="eye l"></div>
-<div class="eye r"></div>
-<div class="mouth"></div>
-<div class="heart">💜</div>
-</div>
-
-</div>
-
-<h2>Луми</h2>
+<h1>✨ Маленькая комната спокойствия</h1>
 
 <p>
-Луми тоже иногда устаёт.
-Позаботься о нём — и немного о себе.
+Не нужно ничего доказывать.
+Можно просто немного побыть здесь.
 </p>
 
-<div class="xp">
-<i id="petXp"></i>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
 
-<button class="btn primary" onclick="petAction('❤️ Луми рад, что ты рядом!')">
-❤️ Погладить
+<div class="title">
+<h2>🫂 Побудь со мной</h2>
+</div>
+
+<div class="card" style="text-align:center">
+
+<p>
+60 секунд ничего не решай.
+Просто посиди и подыши.
+</p>
+
+<div class="timer" id="timer">60</div>
+
+<button class="btn primary full"
+onclick="startStay()">
+Побыть здесь
 </button>
 
-<button class="btn secondary" onclick="petAction('🍪 Луми получил вкусняшку!')">
-🍪 Покормить
-</button>
-
-</div>
-
 </div>
 
 
-<div class="title"><h2>🌬️ Дышим вместе</h2></div>
+<div class="title">
+<h2>🌬️ Дышим вместе</h2>
+</div>
 
 <div class="card breath">
 
 <p>
-Спокойно следуй кругу. Не нужно делать вдох максимально глубоким.
+Следуй за кругом. Не нужно делать слишком глубокий вдох.
 </p>
 
 <div class="breath-circle" id="breathCircle">
 <span id="breathText">готов?</span>
 </div>
 
-<button class="btn primary full" onclick="startBreathing()">
+<button class="btn primary full"
+onclick="startBreathing()">
 Начать
 </button>
 
 </div>
 
 
-<div class="title"><h2>🌍 Если мысли слишком громкие</h2></div>
+<div class="title">
+<h2>💌 Конверт поддержки</h2>
+</div>
 
 <div class="card">
 
+<div class="envelope" onclick="openEnvelope()">
+
+<div class="envelope-icon">✉️</div>
+
+<h3>Открой письмо</h3>
+
+<p>Внутри может быть именно то,
+что тебе сейчас нужно.</p>
+
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>🕯️ Виртуальная свеча</h2>
+</div>
+
+<div class="card" style="text-align:center">
+
+<div class="candle">
+<div class="flame" id="flame"></div>
+</div>
+
 <p>
-Попробуй технику 5–4–3–2–1 и переключи внимание
-на окружающий мир.
+Можно просто посмотреть на огонь
+и сделать несколько спокойных вдохов.
 </p>
 
-<button class="btn secondary full" onclick="grounding()">
-Начать упражнение
+<button class="btn secondary"
+onclick="toggleCandle()">
+🕯️ Задуть / зажечь
 </button>
 
 </div>
 
 
-<div class="title"><h2>🧩 Маленькое задание</h2></div>
+<div class="title">
+<h2>🌧️ Сегодня можно просто поплакать</h2>
+</div>
 
-<div class="card task">
+<div class="card">
 
-<div class="task-icon" id="taskIcon">🌱</div>
+<p>
+Не каждую эмоцию нужно немедленно исправлять.
+Иногда можно просто признать:
+«Мне сейчас больно».
+</p>
+
+<button class="btn secondary full"
+onclick="cryMode()">
+🌧️ Открыть спокойный режим
+</button>
+
+</div>
+
+
+<div class="title">
+<h2>🧩 Маленькое задание</h2>
+</div>
+
+<div class="card" style="text-align:center">
+
+<div style="font-size:50px" id="taskIcon">🌱</div>
 
 <h3 id="taskText">
 Сделай сегодня что-нибудь маленькое для себя.
 </h3>
 
-<button class="btn green full" onclick="newTask()">
+<button class="btn green full"
+onclick="newTask()">
 ✨ Другое
 </button>
 
 </div>
 
 
-<div class="title"><h2>🎨 Рисовалка эмоций</h2></div>
+<div class="title">
+<h2>🎨 Рисовалка эмоций</h2>
+</div>
 
 <div class="card">
 
 <p>
-Не нужно уметь рисовать. Просто нарисуй то,
-что сейчас чувствуешь.
+Не нужно уметь рисовать.
+Просто нарисуй то, что чувствуешь.
 </p>
 
 <div class="canvas-wrap">
@@ -985,29 +1248,37 @@ textarea{
 <canvas id="canvas"></canvas>
 
 <div class="draw-tools">
+
 <button onclick="setBrush(3)">тонко</button>
 <button onclick="setBrush(8)">средне</button>
 <button onclick="setBrush(16)">толсто</button>
 <button onclick="clearCanvas()">очистить</button>
-</div>
 
 </div>
 
 </div>
 
+</div>
 
-<div class="title"><h2>📔 Дневник</h2></div>
+
+<div class="title">
+<h2>📔 Дневник</h2>
+</div>
 
 <div class="card">
 
 <textarea id="journal"
-placeholder="Напиши всё, что сейчас хочется сказать..."></textarea>
+placeholder="Напиши то, что сейчас хочется сказать..."></textarea>
 
 <button class="btn primary full"
 style="margin-top:9px"
 onclick="saveJournal()">
-💾 Сохранить на устройстве
+💾 Сохранить
 </button>
+
+<p class="small-note">
+Запись хранится только в этом браузере.
+</p>
 
 </div>
 
@@ -1016,20 +1287,26 @@ onclick="saveJournal()">
 
 <!-- ДЕРЕВО -->
 
-<section id="tree">
+<section id="tree" class="section">
 
 <div class="hero">
+
 <h1>🌳 Дерево настроения</h1>
 
 <p>
-Каждая маленькая отметка о себе добавляет листик.
-Постепенно появляется твоё собственное дерево.
+Каждая отметка о себе добавляет новый листик.
 </p>
+
 </div>
 
 <div class="title">
+
 <h2>Твоё дерево</h2>
-<small id="treeCount">0 листиков</small>
+
+<small id="treeCount">
+0 листиков
+</small>
+
 </div>
 
 <div class="card" style="text-align:center">
@@ -1041,13 +1318,27 @@ onclick="saveJournal()">
 
 </div>
 
-<p>
-Сегодня тоже можно добавить маленький листик 🌿
-</p>
-
-<button class="btn green full" onclick="addTreeLeaf()">
+<button class="btn green full"
+onclick="addTreeLeaf()">
 🌿 Добавить листик
 </button>
+
+</div>
+
+
+<div class="title">
+<h2>🎁 Сундук маленьких достижений</h2>
+</div>
+
+<div class="card">
+
+<h3 id="achievementTitle">
+🔒 Первый шаг
+</h3>
+
+<p id="achievementText">
+Выбери настроение, чтобы открыть достижение.
+</p>
 
 </div>
 
@@ -1056,29 +1347,32 @@ onclick="saveJournal()">
 
 <!-- БЕЗОПАСНОСТЬ -->
 
-<section id="help">
+<section id="help" class="section">
 
 <div class="hero">
+
 <h1>🛟 Ты заслуживаешь помощи.</h1>
 
 <p>
-Если тебе прямо сейчас небезопасно,
+Если прямо сейчас тебе небезопасно,
 не оставайся один/одна.
-Найди взрослого или другого безопасного человека рядом.
+Найди безопасного взрослого или другого человека рядом.
 </p>
+
 </div>
 
 <div class="title">
-<h2>🆘 Если есть непосредственная опасность</h2>
+<h2>🆘 Непосредственная опасность</h2>
 </div>
 
 <div class="card">
 
 <div class="alert">
-Перейди туда, где есть безопасные люди,
+
+Если есть непосредственная угроза твоей безопасности,
+перейди туда, где есть люди, которым ты доверяешь,
 и скажи, что тебе нужна помощь.
-Если существует непосредственная угроза,
-обратись в местную экстренную службу.
+
 </div>
 
 <a href="tel:112"
@@ -1089,7 +1383,10 @@ style="display:block;text-align:center;text-decoration:none;margin-top:12px">
 
 </div>
 
-<div class="title"><h2>💬 Не знаешь, что сказать?</h2></div>
+
+<div class="title">
+<h2>💬 Что можно сказать?</h2>
+</div>
 
 <div class="card">
 
@@ -1105,13 +1402,12 @@ style="display:block;text-align:center;text-decoration:none;margin-top:12px">
 «Я боюсь оставаться один/одна. Побудь рядом.»
 </div>
 
-<div class="message" onclick="copyMessage(this)">
-«Мне нужно поговорить с тобой о чём-то важном.»
 </div>
 
-</div>
 
-<div class="title"><h2>🛡️ Если тебя травят</h2></div>
+<div class="title">
+<h2>🛡️ Буллинг</h2>
+</div>
 
 <div class="grid">
 
@@ -1124,7 +1420,7 @@ style="display:block;text-align:center;text-decoration:none;margin-top:12px">
 <div class="card click" onclick="topic('cyber')">
 <div class="icon">📱</div>
 <b>Кибербуллинг</b>
-<p>Угрозы и травля в интернете.</p>
+<p>Что делать при травле онлайн.</p>
 </div>
 
 </div>
@@ -1134,18 +1430,48 @@ style="display:block;text-align:center;text-decoration:none;margin-top:12px">
 
 <!-- ПОЛЕЗНОЕ -->
 
-<section id="useful">
+<section id="useful" class="section">
 
 <div class="hero">
+
 <h1>📱 Забота о себе</h1>
 
 <p>
-Приложения и инструменты для сна,
-настроения, активности и самопомощи.
+Музыка, сон, настроение и другие инструменты.
 </p>
+
 </div>
 
-<div class="title"><h2>🍎 iPhone</h2></div>
+
+<div class="title">
+<h2>🎧 Спокойная музыка</h2>
+</div>
+
+<div class="card music">
+
+<a href="https://t.me/muzrelaxsation" target="_blank">
+🌧️ Музыка для релакса и сна
+</a>
+
+<a href="https://t.me/relax_meditation" target="_blank">
+🌙 Relax & Meditation
+</a>
+
+<a href="https://music.yandex.ru/" target="_blank">
+🎵 Открыть Яндекс Музыку
+</a>
+
+<p class="small-note">
+Ссылки открывают внешние сервисы.
+Музыка не загружается на этот сайт.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>🍎 iPhone</h2>
+</div>
 
 <a class="resource"
 href="https://www.apple.com/health/"
@@ -1154,13 +1480,16 @@ target="_blank">
 <div class="resource-icon">❤️</div>
 
 <div>
-<b>Apple «Здоровье»</b>
+<b>Apple Health</b>
 <small>Сон, активность и самочувствие</small>
 </div>
 
 </a>
 
-<div class="title"><h2>🤖 Android</h2></div>
+
+<div class="title">
+<h2>🤖 Android</h2>
+</div>
 
 <a class="resource"
 href="https://play.google.com/store/"
@@ -1175,42 +1504,87 @@ target="_blank">
 
 </a>
 
-<div class="title"><h2>🎧 Звуковой уголок</h2></div>
 
-<div class="grid">
-
-<div class="card click" onclick="playSound('rain')">
-<div class="icon">🌧️</div>
-<b>Дождь</b>
-<p>мягкий шум</p>
+<div class="title">
+<h2>🔇 Режим тишины</h2>
 </div>
-
-<div class="card click" onclick="playSound('ocean')">
-<div class="icon">🌊</div>
-<b>Море</b>
-<p>волны</p>
-</div>
-
-<div class="card click" onclick="playSound('wind')">
-<div class="icon">🍃</div>
-<b>Ветер</b>
-<p>спокойный фон</p>
-</div>
-
-<div class="card click" onclick="stopSound()">
-<div class="icon">⏹️</div>
-<b>Стоп</b>
-<p>выключить звук</p>
-</div>
-
-</div>
-
-<div class="title"><h2>🌙 Режим</h2></div>
 
 <div class="card">
-<button class="btn secondary full" onclick="toggleNight()">
-🌙 Переключить режим
+
+<p>
+Выключает анимации и делает интерфейс спокойнее.
+</p>
+
+<button class="btn secondary full"
+onclick="toggleSilent()">
+🔇 Включить / выключить
 </button>
+
+</div>
+
+
+<div class="title">
+<h2>🌗 Светлый режим</h2>
+</div>
+
+<div class="card">
+
+<button class="btn secondary full"
+onclick="toggleLight()">
+🌗 Переключить тему
+</button>
+
+</div>
+
+</section>
+
+
+<!-- МОЙ ДЕНЬ -->
+
+<section id="day" class="section">
+
+<div class="hero">
+
+<h1>📅 Мой день</h1>
+
+<p>
+Три маленьких вопроса вместо огромного списка дел.
+</p>
+
+</div>
+
+<div class="title">
+<h2>1. Что я чувствую?</h2>
+</div>
+
+<div class="card">
+<textarea id="dayFeel"
+placeholder="Например: тревогу, усталость, спокойствие..."></textarea>
+</div>
+
+<div class="title">
+<h2>2. Что мне сейчас нужно?</h2>
+</div>
+
+<div class="card">
+<textarea id="dayNeed"
+placeholder="Отдых? Разговор? Тишина? Поддержка?"></textarea>
+</div>
+
+<div class="title">
+<h2>3. Что я могу сделать сегодня?</h2>
+</div>
+
+<div class="card">
+<textarea id="dayDo"
+placeholder="Один маленький шаг..."></textarea>
+
+<button class="btn green full"
+style="margin-top:9px"
+onclick="saveDay()">
+💾 Сохранить мой день
+</button>
+
 </div>
 
 </section>
@@ -1218,17 +1592,22 @@ target="_blank">
 
 <!-- ЕЩЁ -->
 
-<section id="more">
+<section id="more" class="section">
 
 <div class="hero">
+
 <h1>🫶 Ещё немного поддержки.</h1>
 
 <p>
 Здесь не нужно быть идеальным.
 </p>
+
 </div>
 
-<div class="title"><h2>💌 Случайная поддержка</h2></div>
+
+<div class="title">
+<h2>💌 Случайная поддержка</h2>
+</div>
 
 <div class="card" style="text-align:center">
 
@@ -1238,91 +1617,69 @@ target="_blank">
 Ты можешь идти маленькими шагами.
 </h3>
 
-<button class="btn primary" onclick="randomSupport()">
+<button class="btn primary"
+onclick="randomSupport()">
 ✨ Ещё одну
 </button>
 
 </div>
 
-<div class="title"><h2>🧠 Что со мной происходит?</h2></div>
 
-<div class="grid">
-
-<div class="card click" onclick="topic('anxiety')">
-<div class="icon">😰</div>
-<b>Тревога</b>
-<p>Почему тело так реагирует?</p>
+<div class="title">
+<h2>❓ Частые вопросы</h2>
 </div>
-
-<div class="card click" onclick="topic('anger')">
-<div class="icon">🔥</div>
-<b>Злость</b>
-<p>Как пережить сильную эмоцию?</p>
-</div>
-
-<div class="card click" onclick="topic('empty')">
-<div class="icon">🧊</div>
-<b>Онемение</b>
-<p>Когда внутри будто пусто.</p>
-</div>
-
-<div class="card click" onclick="topic('compare')">
-<div class="icon">🪞</div>
-<b>Сравнение</b>
-<p>Почему все кажутся лучше?</p>
-</div>
-
-</div>
-
-<div class="title"><h2>❓ Частые вопросы</h2></div>
 
 <div class="faq">
 
 <div class="faq-item">
+
 <button class="faq-q" onclick="faq(this)">
 Почему я тревожусь? ＋
 </button>
+
 <div class="faq-a">
 Тревога может появляться из-за стресса,
 усталости, конфликтов, изменений или неопределённости.
 Это не означает, что с тобой что-то не так.
 </div>
+
 </div>
 
+
 <div class="faq-item">
+
 <button class="faq-q" onclick="faq(this)">
 Нормально ли плакать? ＋
 </button>
+
 <div class="faq-a">
 Да. Плач может быть естественной реакцией
 на сильные эмоции и напряжение.
 </div>
+
 </div>
 
+
 <div class="faq-item">
+
 <button class="faq-q" onclick="faq(this)">
 Как попросить помощи? ＋
 </button>
+
 <div class="faq-a">
 Можно начать очень просто:
 «Мне сейчас тяжело, и мне нужна помощь».
 Не обязательно сразу всё объяснять.
 </div>
-</div>
 
-<div class="faq-item">
-<button class="faq-q" onclick="faq(this)">
-Почему я сравниваю себя с другими? ＋
-</button>
-<div class="faq-a">
-В интернете мы часто видим чужие лучшие моменты,
-а не всю реальную жизнь человека.
-</div>
 </div>
 
 </div>
 
-<div class="title"><h2>🌱 Маленькое правило</h2></div>
+
+<div class="title">
+<h2>🌱 Маленькое правило</h2>
+</div>
 
 <div class="card">
 
@@ -1340,13 +1697,16 @@ target="_blank">
 
 </div>
 
-<div class="title"><h2>👨‍👩‍👧 Для взрослых рядом</h2></div>
+
+<div class="title">
+<h2>👨‍👩‍👧 Для взрослых рядом</h2>
+</div>
 
 <div class="card">
 
 <p>
 Если рядом с вами подросток, которому тяжело,
-попробуйте сначала выслушать его без осуждения.
+сначала попробуйте выслушать его без осуждения.
 </p>
 
 <p>
@@ -1358,21 +1718,16 @@ target="_blank">
 
 </div>
 
-<div style="margin-top:30px;color:#73798c;font-size:11px;line-height:1.6">
 
+<p class="small-note" style="margin-top:30px">
 «Рядом» — информационный проект поддержки.
 Он не ставит диагнозы и не заменяет врача,
 психолога или экстренную помощь.
-
-При непосредственной угрозе безопасности
-обратись к безопасному взрослому рядом
-и в местную экстренную службу.
-
-</div>
+</p>
 
 </section>
 
-</main>
+</div>
 
 
 <!-- НАВИГАЦИЯ -->
@@ -1392,7 +1747,7 @@ target="_blank">
 </button>
 
 <button onclick="showSection('help',this)">
-<span>🛟</span>Безопасность
+<span>🛟</span>Помощь
 </button>
 
 <button onclick="showSection('useful',this)">
@@ -1402,7 +1757,7 @@ target="_blank">
 </nav>
 
 
-<!-- СЕКРЕТНАЯ ИСТОРИЯ -->
+<!-- СЕКРЕТ -->
 
 <button class="secret-button" onclick="openSecret()">🌙</button>
 
@@ -1410,13 +1765,12 @@ target="_blank">
 
 <div class="secret-card">
 
-<button
-onclick="closeSecret()"
-style="position:absolute;right:15px;top:15px;background:#252a40;color:white;border:0;border-radius:50%;width:35px;height:35px;font-size:20px">
+<button class="close"
+onclick="closeSecret()">
 ×
 </button>
 
-<div class="secret-icon">🌙</div>
+<div style="font-size:55px">🌙</div>
 
 <h2>Небольшая секретная история</h2>
 
@@ -1430,7 +1784,13 @@ style="position:absolute;right:15px;top:15px;background:#252a40;color:white;bord
 очень хочется услышать простое:
 </p>
 
-<div class="secret-quote">
+<div style="
+padding:18px;
+border-radius:20px;
+background:#7169ff14;
+border:1px solid #7169ff35;
+font-weight:bold;
+">
 «Ты не один. Давай попробуем справиться
 с этим вместе.»
 </div>
@@ -1442,15 +1802,14 @@ style="position:absolute;right:15px;top:15px;background:#252a40;color:white;bord
 что всё хорошо.
 </p>
 
-<div style="font-size:30px;margin:18px">
-💜
-</div>
+<div style="font-size:30px">💜</div>
 
 <small>
 Сделано подростком для подростков.
 </small>
 
 </div>
+
 </div>
 
 
@@ -1460,7 +1819,8 @@ style="position:absolute;right:15px;top:15px;background:#252a40;color:white;bord
 
 <div class="sheet">
 
-<button class="close" onclick="closeModal()">
+<button class="close"
+onclick="closeModal()">
 Закрыть
 </button>
 
@@ -1480,28 +1840,46 @@ style="position:absolute;right:15px;top:15px;background:#252a40;color:white;bord
 
 const stars=document.getElementById("stars");
 
-for(let i=0;i<100;i++){
+for(let i=0;i<120;i++){
 
-const s=document.createElement("i");
+let s=document.createElement("i");
 
 s.className="star";
 s.style.left=Math.random()*100+"%";
 s.style.top=Math.random()*100+"%";
-s.style.animationDelay=Math.random()*4+"s";
+s.style.animationDelay=Math.random()*5+"s";
 
 stars.appendChild(s);
 
 }
+
+setInterval(()=>{
+
+if(document.body.classList.contains("silent"))return;
+
+const x=document.createElement("div");
+
+x.className="shooting";
+
+x.style.left=(50+Math.random()*50)+"%";
+x.style.top=Math.random()*45+"%";
+
+document.body.appendChild(x);
+
+setTimeout(()=>x.remove(),1600);
+
+},7000);
 
 
 /* НАВИГАЦИЯ */
 
 function showSection(id,button){
 
-document.querySelectorAll("main section")
-.forEach(x=>x.style.display="none");
+document.querySelectorAll(".section")
+.forEach(x=>x.classList.remove("active"));
 
-document.getElementById(id).style.display="block";
+document.getElementById(id)
+.classList.add("active");
 
 document.querySelectorAll(".nav button")
 .forEach(x=>x.classList.remove("active"));
@@ -1511,6 +1889,125 @@ if(button)button.classList.add("active");
 window.scrollTo({top:0,behavior:"smooth"});
 
 }
+
+
+/* ПРОФИЛЬ */
+
+function openProfile(){
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>👤 Мой профиль</h2>
+
+<img
+id="preview"
+class="photo-preview"
+src="${localStorage.getItem("avatar")||""}"
+style="${localStorage.getItem("avatar")?"":"display:none"}">
+
+<div class="profile-form">
+
+<input
+id="nameInput"
+placeholder="Как тебя называть?"
+value="${localStorage.getItem("name")||""}">
+
+<input
+id="photoInput"
+type="file"
+accept="image/*"
+onchange="previewPhoto(event)">
+
+<button
+class="btn primary"
+onclick="saveProfile()">
+💾 Сохранить
+</button>
+
+</div>
+
+<p class="small-note">
+Имя и фотография сохраняются только
+в этом браузере и никуда не отправляются.
+</p>
+`;
+
+document.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function previewPhoto(e){
+
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=()=>{
+
+document.getElementById("preview").src=reader.result;
+
+document.getElementById("preview").style.display="block";
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+
+function saveProfile(){
+
+const name=document.getElementById("nameInput").value.trim();
+
+if(name)localStorage.setItem("name",name);
+
+const preview=document.getElementById("preview");
+
+if(preview.src &&
+   preview.style.display!=="none" &&
+   preview.src.startsWith("data:")){
+
+localStorage.setItem("avatar",preview.src);
+
+}
+
+loadProfile();
+
+closeModal();
+
+toast("Профиль сохранён 💜");
+
+}
+
+
+function loadProfile(){
+
+const name=localStorage.getItem("name");
+
+if(name){
+
+document.getElementById("userName")
+.textContent="Привет, "+name+" 💜";
+
+}
+
+const avatar=localStorage.getItem("avatar");
+
+if(avatar){
+
+document.getElementById("avatar").src=avatar;
+document.getElementById("avatar").style.display="block";
+document.getElementById("avatarEmoji").style.display="none";
+
+}
+
+}
+
+loadProfile();
 
 
 /* НАСТРОЕНИЕ */
@@ -1547,7 +2044,16 @@ document.getElementById("moodLabel")
 document.getElementById("supportBox")
 .textContent=moodMessages[text];
 
+document.getElementById("profileMood")
+.textContent="Сегодня: "+emoji+" "+text;
+
+localStorage.setItem("mood",text);
+
 addTreeLeaf(emoji);
+
+localStorage.setItem("firstMood","yes");
+
+updateAchievement();
 
 toast("Настроение сохранено ❤️");
 
@@ -1558,62 +2064,44 @@ toast("Настроение сохранено ❤️");
 
 const topics={
 
-anxiety:{
-title:"😰 Тревога",
-text:"Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
-},
+anxiety:[
+"😰 Тревога",
+"Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
+],
 
-emotions:{
-title:"💭 Эмоции",
-text:"Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
-},
+emotions:[
+"💭 Эмоции",
+"Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
+],
 
-lonely:{
-title:"🫂 Одиночество",
-text:"Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
-},
+lonely:[
+"🫂 Одиночество",
+"Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
+],
 
-sleep:{
-title:"🌙 Сон",
-text:"Если мысли не дают уснуть, не заставляй себя моментально отключиться. Приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
-},
+sleep:[
+"🌙 Сон",
+"Если мысли не дают уснуть, приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
+],
 
-anger:{
-title:"🔥 Злость",
-text:"Злость — это эмоция, а не поступок. Можно злиться и при этом не причинять вреда себе или другим. Сделай паузу и отойди от конфликта."
-},
+bullying:[
+"🛡️ Буллинг",
+"Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
+],
 
-empty:{
-title:"🧊 Пустота",
-text:"После сильного напряжения иногда появляется ощущение пустоты. Попробуй воду, душ, музыку, прогулку или разговор с безопасным человеком."
-},
-
-compare:{
-title:"🪞 Сравнение",
-text:"В интернете ты часто видишь чужую витрину, а не всю жизнь человека. Сравнивать свою реальность с чужими лучшими моментами нечестно по отношению к себе."
-},
-
-bullying:{
-title:"🛡️ Буллинг",
-text:"Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
-},
-
-cyber:{
-title:"📱 Кибербуллинг",
-text:"При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
-}
+cyber:[
+"📱 Кибербуллинг",
+"При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
+]
 
 };
 
 function topic(id){
 
-const t=topics[id];
-
 document.getElementById("modalContent").innerHTML=`
 
-<h2>${t.title}</h2>
-
-<p>${t.text}</p>
+<h2>${topics[id][0]}</h2>
+<p>${topics[id][1]}</p>
 
 <button class="btn primary full"
 onclick="closeModal()">
@@ -1621,8 +2109,7 @@ onclick="closeModal()">
 </button>
 `;
 
-document.getElementById("modal")
-.classList.add("show");
+document.getElementById("modal").classList.add("show");
 
 }
 
@@ -1654,18 +2141,42 @@ class="btn danger full"
 style="display:block;text-align:center;text-decoration:none">
 📞 Позвонить 112
 </a>
-
 `;
 
-document.getElementById("modal")
-.classList.add("show");
+document.getElementById("modal").classList.add("show");
 
 }
 
-function closeModal(){
 
-document.getElementById("modal")
-.classList.remove("show");
+/* ПОБЫТЬ РЯДОМ */
+
+let stayInterval;
+
+function startStay(){
+
+clearInterval(stayInterval);
+
+let n=60;
+
+document.getElementById("timer").textContent=n;
+
+stayInterval=setInterval(()=>{
+
+n--;
+
+document.getElementById("timer").textContent=n;
+
+if(n<=0){
+
+clearInterval(stayInterval);
+
+document.getElementById("timer").textContent="❤️";
+
+toast("Ты сделал маленькую паузу.");
+
+}
+
+},1000);
 
 }
 
@@ -1720,35 +2231,109 @@ cycle();
 }
 
 
-/* ЗАЗЕМЛЕНИЕ */
+/* КОНВЕРТ */
 
-function grounding(){
+const letters=[
+
+"Ты не обязан быть сильным каждую минуту.",
+
+"Попросить помощи — это тоже способ позаботиться о себе.",
+
+"Один плохой день не определяет всю твою жизнь.",
+
+"Ты заслуживаешь того, чтобы к тебе относились бережно.",
+
+"Можно остановиться. Можно отдохнуть.",
+
+"Ты можешь идти очень медленно. Главное — не требовать от себя невозможного.",
+
+"Даже если сейчас трудно это представить, чувства могут измениться."
+
+];
+
+function openEnvelope(){
+
+const text=letters[Math.floor(Math.random()*letters.length)];
 
 document.getElementById("modalContent").innerHTML=`
 
-<h2>🌍 5–4–3–2–1</h2>
+<div style="text-align:center">
 
-<p>
-Назови:
-</p>
+<div style="font-size:65px">💌</div>
 
-<p>
-<b>5</b> вещей, которые видишь.<br>
-<b>4</b> вещи, которых можешь коснуться.<br>
-<b>3</b> звука, которые слышишь.<br>
-<b>2</b> запаха.<br>
-<b>1</b> вкус или ощущение.
-</p>
+<h2>Для тебя</h2>
 
-<p>
-Не нужно делать упражнение идеально.
-Просто попробуй обратить внимание
-на окружающий мир.
-</p>
+<p>${text}</p>
+
+<button class="btn primary"
+onclick="openEnvelope()">
+💌 Другое письмо
+</button>
+
+</div>
 `;
 
-document.getElementById("modal")
-.classList.add("show");
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+/* СВЕЧА */
+
+function toggleCandle(){
+
+const flame=document.getElementById("flame");
+
+if(flame.style.display==="none"){
+
+flame.style.display="block";
+toast("🕯️ Свеча зажжена");
+
+}else{
+
+flame.style.display="none";
+toast("🌙 Стало тише");
+
+}
+
+}
+
+
+/* РЕЖИМ ДОЖДЯ */
+
+function cryMode(){
+
+document.getElementById("modalContent").innerHTML=`
+
+<div style="text-align:center">
+
+<div style="font-size:60px">🌧️</div>
+
+<h2>Сегодня можно просто поплакать</h2>
+
+<p>
+Тебе не обязательно сейчас что-то исправлять.
+Можно просто признать, что тебе тяжело.
+</p>
+
+<p>
+Сделай спокойный выдох.
+Положи руку на грудь.
+И скажи себе:
+</p>
+
+<div style="
+padding:18px;
+border-radius:20px;
+background:#20253a;
+">
+«Мне сейчас трудно, и я имею право это чувствовать».
+</div>
+
+</div>
+`;
+
+document.getElementById("modal").classList.add("show");
 
 }
 
@@ -1807,18 +2392,14 @@ toast(message);
 
 let leaves=Number(localStorage.getItem("leaves")||0);
 
-function leafWord(n){
-
-if(n===1)return"листик";
-if(n>1&&n<5)return"листика";
-return"листиков";
-
-}
-
 function updateTree(){
 
+const word=
+leaves===1?"листик":
+leaves>1&&leaves<5?"листика":"листиков";
+
 document.getElementById("treeCount")
-.textContent=leaves+" "+leafWord(leaves);
+.textContent=leaves+" "+word;
 
 }
 
@@ -1833,46 +2414,102 @@ const tree=document.getElementById("treeVisual");
 const leaf=document.createElement("div");
 
 leaf.className="leaf";
-leaf.textContent=emoji==="🌿"?"🌿":emoji;
+leaf.textContent=emoji;
 
-leaf.style.left=(30+Math.random()*40)+"%";
-leaf.style.bottom=(130+Math.random()*85)+"px";
-leaf.style.animationDelay=Math.random()*2+"s";
+leaf.style.left=(28+Math.random()*44)+"%";
+leaf.style.bottom=(130+Math.random()*90)+"px";
 
 tree.appendChild(leaf);
 
 updateTree();
+updateAchievement();
 
 }
 
 updateTree();
 
 
+/* ДОСТИЖЕНИЯ */
+
+function updateAchievement(){
+
+const title=document.getElementById("achievementTitle");
+const text=document.getElementById("achievementText");
+
+if(localStorage.getItem("firstMood")){
+
+title.textContent="🌱 Первый шаг открыт";
+text.textContent="Ты уже уделил немного внимания своему состоянию.";
+
+}
+
+if(leaves>=5){
+
+title.textContent="🌳 Маленький сад";
+text.textContent="На твоём дереве уже 5 листиков.";
+
+}
+
+if(leaves>=15){
+
+title.textContent="🌲 Тихий лес";
+text.textContent="15 листиков. Ты продолжаешь заботиться о себе.";
+
+}
+
+}
+
+updateAchievement();
+
+
 /* ДНЕВНИК */
 
-const saved=localStorage.getItem("journal");
-
-if(saved){
-document.getElementById("journal").value=saved;
-}
+if(localStorage.getItem("journal"))
+document.getElementById("journal").value=
+localStorage.getItem("journal");
 
 function saveJournal(){
 
-const text=document.getElementById("journal").value.trim();
-
-if(!text){
-
-toast("Напиши что-нибудь");
-
-return;
-
-}
+const text=document.getElementById("journal").value;
 
 localStorage.setItem("journal",text);
 
-toast("Запись сохранена на устройстве ❤️");
+toast("Запись сохранена 💜");
 
 }
+
+
+/* МОЙ ДЕНЬ */
+
+function saveDay(){
+
+localStorage.setItem(
+"dayFeel",
+document.getElementById("dayFeel").value
+);
+
+localStorage.setItem(
+"dayNeed",
+document.getElementById("dayNeed").value
+);
+
+localStorage.setItem(
+"dayDo",
+document.getElementById("dayDo").value
+);
+
+toast("Мой день сохранён 🌱");
+
+}
+
+document.getElementById("dayFeel").value=
+localStorage.getItem("dayFeel")||"";
+
+document.getElementById("dayNeed").value=
+localStorage.getItem("dayNeed")||"";
+
+document.getElementById("dayDo").value=
+localStorage.getItem("dayDo")||"";
 
 
 /* РИСОВАЛКА */
@@ -1901,22 +2538,15 @@ resizeCanvas();
 
 window.addEventListener("resize",resizeCanvas);
 
-function pos(e){
+function position(e){
 
 const r=canvas.getBoundingClientRect();
 
-if(e.touches){
+const point=e.touches?e.touches[0]:e;
 
 return{
-x:e.touches[0].clientX-r.left,
-y:e.touches[0].clientY-r.top
-};
-
-}
-
-return{
-x:e.clientX-r.left,
-y:e.clientY-r.top
+x:point.clientX-r.left,
+y:point.clientY-r.top
 };
 
 }
@@ -1927,7 +2557,7 @@ e.preventDefault();
 
 drawing=true;
 
-const p=pos(e);
+const p=position(e);
 
 ctx.beginPath();
 ctx.moveTo(p.x,p.y);
@@ -1940,7 +2570,7 @@ if(!drawing)return;
 
 e.preventDefault();
 
-const p=pos(e);
+const p=position(e);
 
 ctx.lineWidth=brush;
 ctx.strokeStyle="#766cff";
@@ -1952,6 +2582,7 @@ ctx.stroke();
 
 canvas.addEventListener("mousedown",startDraw);
 canvas.addEventListener("mousemove",draw);
+
 window.addEventListener("mouseup",()=>drawing=false);
 
 canvas.addEventListener("touchstart",startDraw,{passive:false});
@@ -1962,20 +2593,16 @@ function setBrush(n){
 
 brush=n;
 
-toast("Кисть: "+n);
-
 }
 
 function clearCanvas(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-toast("Рисунок очищен");
-
 }
 
 
-/* СООБЩЕНИЯ */
+/* КОПИРОВАНИЕ */
 
 function copyMessage(el){
 
@@ -1996,7 +2623,7 @@ toast(text);
 }
 
 
-/* RANDOM */
+/* RANDOM SUPPORT */
 
 const supports=[
 
@@ -2015,9 +2642,9 @@ const supports=[
 
 function randomSupport(){
 
-const x=supports[Math.floor(Math.random()*supports.length)];
-
-document.getElementById("randomText").textContent=x;
+document.getElementById("randomText")
+.textContent=
+supports[Math.floor(Math.random()*supports.length)];
 
 }
 
@@ -2031,103 +2658,36 @@ button.parentElement.classList.toggle("open");
 }
 
 
-/* ЗВУКИ */
+/* ТИШИНА */
 
-let audio=null;
-let source=null;
+function toggleSilent(){
 
-function playSound(type){
-
-if(audio)stopSound();
-
-audio=new(window.AudioContext||window.webkitAudioContext)();
-
-const buffer=audio.createBuffer(
-1,
-audio.sampleRate*2,
-audio.sampleRate
-);
-
-const data=buffer.getChannelData(0);
-
-for(let i=0;i<data.length;i++){
-
-let v=Math.random()*2-1;
-
-if(type==="rain")v*=.35;
-if(type==="ocean")v*=.18;
-if(type==="wind")v*=.12;
-
-data[i]=v;
-
-}
-
-source=audio.createBufferSource();
-
-source.buffer=buffer;
-source.loop=true;
-
-source.connect(audio.destination);
-
-source.start();
+document.body.classList.toggle("silent");
 
 toast(
-type==="rain"?"🌧️ Дождь":
-type==="ocean"?"🌊 Море":
-"🍃 Ветер"
+document.body.classList.contains("silent")
+?"🔇 Тишина включена"
+:"✨ Анимации включены"
 );
 
 }
 
-function stopSound(){
 
-if(source){
+/* СВЕТЛАЯ ТЕМА */
 
-try{source.stop()}catch(e){}
-
-source.disconnect();
-source=null;
-
-}
-
-if(audio){
-
-audio.close();
-audio=null;
-
-}
-
-toast("Звук остановлен");
-
-}
-
-
-/* РЕЖИМ */
-
-function toggleNight(){
+function toggleLight(){
 
 document.body.classList.toggle("light");
 
 }
 
 
-/* TOAST */
+/* МОДАЛКА */
 
-function toast(text){
+function closeModal(){
 
-const t=document.getElementById("toast");
-
-t.textContent=text;
-
-t.classList.add("show");
-
-clearTimeout(window.tt);
-
-window.tt=setTimeout(()=>{
-
-t.classList.remove("show");
-
-},2200);
+document.getElementById("modal")
+.classList.remove("show");
 
 }
 
@@ -2148,12 +2708,25 @@ document.getElementById("secretStory")
 
 }
 
-document.getElementById("secretStory")
-.addEventListener("click",function(e){
 
-if(e.target===this)closeSecret();
+/* TOAST */
 
-});
+function toast(text){
+
+const t=document.getElementById("toast");
+
+t.textContent=text;
+t.classList.add("show");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(()=>{
+
+t.classList.remove("show");
+
+},2200);
+
+}
 
 
 /* ESC */
