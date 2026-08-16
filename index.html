@@ -2,8 +2,9 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0b0710">
+<meta name="description" content="Рядом — пространство, где можно быть собой.">
 <title>Рядом — пространство для тебя</title>
 
 <style>
@@ -19,14 +20,20 @@ html{
 }
 
 body{
-    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     background:#09070c;
     color:#fff;
     min-height:100vh;
     overflow-x:hidden;
 }
 
-button,input{
+button,
+input{
     font:inherit;
 }
 
@@ -66,10 +73,12 @@ body::after{
 .app{
     width:100%;
     max-width:720px;
-    margin:auto;
+    margin:0 auto;
     min-height:100vh;
-    padding-bottom:100px;
+    padding-bottom:105px;
 }
+
+/* HEADER */
 
 .header{
     padding:24px 20px 12px;
@@ -94,9 +103,13 @@ body::after{
 }
 
 @keyframes pulseDot{
+    0%,100%{
+        transform:scale(1);
+        opacity:1;
+    }
     50%{
         transform:scale(1.25);
-        opacity:.65;
+        opacity:.7;
     }
 }
 
@@ -119,6 +132,8 @@ body::after{
     font-size:19px;
 }
 
+/* SCREENS */
+
 .screen{
     display:none;
     padding:10px 18px 30px;
@@ -140,6 +155,8 @@ body::after{
     }
 }
 
+/* HERO */
+
 .hero{
     padding:24px 4px 22px;
 }
@@ -154,6 +171,7 @@ body::after{
 .hero h1 span{
     background:linear-gradient(90deg,#fff,#b77cff,#ff8a32);
     -webkit-background-clip:text;
+    background-clip:text;
     color:transparent;
 }
 
@@ -162,6 +180,8 @@ body::after{
     line-height:1.5;
     font-size:15px;
 }
+
+/* CARDS */
 
 .card{
     background:linear-gradient(
@@ -176,6 +196,20 @@ body::after{
     box-shadow:0 15px 50px rgba(0,0,0,.16);
     position:relative;
     overflow:hidden;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:#9b5cff;
+    opacity:.035;
+    filter:blur(35px);
+    top:-80px;
+    right:-50px;
+    pointer-events:none;
 }
 
 .card-title{
@@ -194,6 +228,8 @@ body::after{
     font-size:13px;
 }
 
+/* MOOD */
+
 .mood-card{
     background:
         radial-gradient(circle at 90% 0%,rgba(255,125,38,.12),transparent 35%),
@@ -204,6 +240,7 @@ body::after{
     text-align:center;
     font-size:54px;
     margin:8px 0 4px;
+    transition:.35s;
 }
 
 .mood-name{
@@ -226,7 +263,12 @@ body::after{
     height:8px;
     border-radius:20px;
     outline:none;
-    background:linear-gradient(90deg,#693cff,#a451ff,#ff7b21);
+    background:linear-gradient(
+        90deg,
+        #693cff,
+        #a451ff,
+        #ff7b21
+    );
 }
 
 .mood-range::-webkit-slider-thumb{
@@ -239,6 +281,14 @@ body::after{
     box-shadow:0 3px 15px rgba(0,0,0,.4);
 }
 
+.mood-range::-moz-range-thumb{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:white;
+    border:5px solid #9a5cff;
+}
+
 .mood-labels{
     display:flex;
     justify-content:space-between;
@@ -246,6 +296,8 @@ body::after{
     font-size:11px;
     margin-top:9px;
 }
+
+/* PET */
 
 .pet-card{
     min-height:260px;
@@ -263,8 +315,34 @@ body::after{
     background:linear-gradient(145deg,#a96cff,#6931b8);
     position:relative;
     margin:15px 0;
-    box-shadow:0 15px 40px rgba(120,45,255,.3);
+    box-shadow:
+        0 15px 40px rgba(120,45,255,.3),
+        inset 0 -10px 20px rgba(0,0,0,.15);
     animation:petFloat 3s ease-in-out infinite;
+    transition:.4s;
+}
+
+.pet::before,
+.pet::after{
+    content:"";
+    position:absolute;
+    top:-22px;
+    width:43px;
+    height:48px;
+    background:#8d50d8;
+    z-index:-1;
+}
+
+.pet::before{
+    left:8px;
+    transform:rotate(-24deg);
+    border-radius:70% 20% 50% 20%;
+}
+
+.pet::after{
+    right:8px;
+    transform:rotate(24deg);
+    border-radius:20% 70% 20% 50%;
 }
 
 .pet-eye{
@@ -295,15 +373,6 @@ body::after{
     top:70px;
 }
 
-@keyframes petFloat{
-    0%,100%{
-        transform:translateY(0);
-    }
-    50%{
-        transform:translateY(-9px);
-    }
-}
-
 .pet-name{
     font-size:21px;
     font-weight:800;
@@ -327,7 +396,23 @@ body::after{
     color:white;
     background:#21182a;
     border:1px solid rgba(255,255,255,.08);
+    transition:.2s;
 }
+
+.pet-btn:active{
+    transform:scale(.94);
+}
+
+@keyframes petFloat{
+    0%,100%{
+        transform:translateY(0) rotate(0);
+    }
+    50%{
+        transform:translateY(-9px) rotate(1deg);
+    }
+}
+
+/* ACTIONS */
 
 .actions{
     display:grid;
@@ -343,6 +428,7 @@ body::after{
     text-align:left;
     background:#151119;
     border:1px solid rgba(255,255,255,.07);
+    transition:.25s;
 }
 
 .action:active{
@@ -365,6 +451,8 @@ body::after{
     margin-top:4px;
 }
 
+/* PROFILE */
+
 .profile-top{
     text-align:center;
     padding:20px 0 25px;
@@ -380,6 +468,17 @@ body::after{
     align-items:center;
     justify-content:center;
     font-size:43px;
+    box-shadow:0 15px 40px rgba(123,51,255,.25);
+    animation:avatarFloat 4s ease-in-out infinite;
+}
+
+@keyframes avatarFloat{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-6px);
+    }
 }
 
 .profile-top h1{
@@ -395,6 +494,7 @@ body::after{
 .profile-row{
     display:flex;
     justify-content:space-between;
+    gap:15px;
     padding:16px 0;
     border-bottom:1px solid rgba(255,255,255,.06);
 }
@@ -406,6 +506,8 @@ body::after{
 .profile-row span{
     color:#8e8793;
 }
+
+/* CATEGORIES */
 
 .category-tabs{
     display:flex;
@@ -426,12 +528,14 @@ body::after{
     border:1px solid rgba(255,255,255,.06);
     color:#918a97;
     border-radius:14px;
+    transition:.3s;
 }
 
 .category.active{
     background:#8b4cff;
     color:white;
     border-color:#8b4cff;
+    box-shadow:0 8px 25px rgba(139,76,255,.25);
 }
 
 .content-item{
@@ -440,6 +544,12 @@ body::after{
     background:#151118;
     border:1px solid rgba(255,255,255,.07);
     margin-bottom:10px;
+    transition:.25s;
+    animation:contentIn .35s ease both;
+}
+
+.content-item:active{
+    transform:scale(.98);
 }
 
 .content-item .emoji{
@@ -456,6 +566,19 @@ body::after{
     font-size:13px;
     line-height:1.5;
 }
+
+@keyframes contentIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* HELP */
 
 .help-box{
     text-align:center;
@@ -488,6 +611,7 @@ body::after{
     margin-top:17px;
     font-size:20px;
     font-weight:800;
+    box-shadow:0 10px 30px rgba(108,50,220,.25);
 }
 
 .telegram{
@@ -502,6 +626,8 @@ body::after{
     font-weight:700;
 }
 
+/* BOTTOM NAV */
+
 .bottom-nav{
     position:fixed;
     z-index:9000;
@@ -513,7 +639,7 @@ body::after{
     padding:7px;
     display:flex;
     justify-content:space-around;
-    background:rgba(18,14,22,.94);
+    background:rgba(18,14,22,.92);
     backdrop-filter:blur(25px);
     -webkit-backdrop-filter:blur(25px);
     border:1px solid rgba(255,255,255,.09);
@@ -532,10 +658,12 @@ body::after{
     align-items:center;
     justify-content:center;
     gap:3px;
+    transition:.35s cubic-bezier(.2,.8,.2,1);
 }
 
 .nav-btn .nav-icon{
     font-size:21px;
+    transition:.35s;
 }
 
 .nav-btn span:last-child{
@@ -551,6 +679,10 @@ body::after{
     );
 }
 
+.nav-btn.active .nav-icon{
+    transform:translateY(-2px) scale(1.08);
+}
+
 .nav-indicator{
     position:absolute;
     bottom:4px;
@@ -559,6 +691,8 @@ body::after{
     border-radius:50%;
     background:#ff791f;
 }
+
+/* AI BUTTON */
 
 .ai-button{
     position:fixed;
@@ -572,197 +706,41 @@ body::after{
     color:white;
     font-weight:900;
     font-size:18px;
-    box-shadow:0 10px 35px rgba(121,60,255,.4);
+    box-shadow:
+        0 10px 35px rgba(121,60,255,.4),
+        0 0 0 0 rgba(150,80,255,.4);
     animation:aiPulse 2.4s infinite;
+}
+
+.ai-button:active{
+    transform:scale(.9);
 }
 
 @keyframes aiPulse{
     0%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),0 0 0 0 rgba(150,80,255,.4);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 0 rgba(150,80,255,.4);
     }
     70%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),0 0 0 13px rgba(150,80,255,0);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 13px rgba(150,80,255,0);
     }
     100%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),0 0 0 0 rgba(150,80,255,0);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 0 rgba(150,80,255,0);
     }
 }
 
-/* AI WINDOW */
+/* AI WINDOW - ОТКЛЮЧЕНО */
 
 .ai-window{
-    position:fixed;
-    z-index:10000;
-    right:max(15px,calc((100vw - 720px)/2 + 15px));
-    bottom:165px;
-    width:min(400px,calc(100vw - 30px));
-    height:min(620px,calc(100vh - 190px));
-    background:#0f0c12;
-    border:1px solid rgba(255,255,255,.1);
-    border-radius:26px;
-    display:none;
-    flex-direction:column;
-    overflow:hidden;
-    box-shadow:0 25px 100px rgba(0,0,0,.65);
+    display:none !important;
 }
 
-.ai-window.open{
-    display:flex;
-}
-
-.ai-head{
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:linear-gradient(135deg,#281340,#17101d);
-    border-bottom:1px solid rgba(255,255,255,.07);
-}
-
-.ai-title{
-    display:flex;
-    align-items:center;
-    gap:11px;
-}
-
-.ai-logo{
-    width:42px;
-    height:42px;
-    border-radius:14px;
-    background:linear-gradient(135deg,#8c4fff,#b861ff);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:900;
-}
-
-.ai-title strong{
-    display:block;
-}
-
-.ai-title small{
-    color:#948a9d;
-    display:block;
-    margin-top:2px;
-}
-
-/* ONLINE */
-
-.ai-status{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    color:#8f8795;
-    font-size:11px;
-    margin-top:3px;
-}
-
-.online-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#ffb020;
-    box-shadow:0 0 8px rgba(255,176,32,.5);
-}
-
-.online-dot.online{
-    background:#35e77b;
-    box-shadow:0 0 10px rgba(53,231,123,.7);
-    animation:onlinePulse 1.7s infinite;
-}
-
-.online-dot.offline{
-    background:#ff4b65;
-    box-shadow:0 0 8px rgba(255,75,101,.5);
-}
-
-@keyframes onlinePulse{
-    50%{
-        opacity:.45;
-    }
-}
-
-.ai-close{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    background:#ffffff0d;
-    color:white;
-    font-size:22px;
-}
-
-.ai-messages{
-    flex:1;
-    padding:16px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:9px;
-}
-
-.ai-message{
-    max-width:84%;
-    padding:12px 14px;
-    border-radius:17px;
-    font-size:14px;
-    line-height:1.5;
-    white-space:pre-wrap;
-}
-
-.ai-message.bot{
-    align-self:flex-start;
-    background:#211b27;
-    color:#f3eef6;
-    border-bottom-left-radius:5px;
-}
-
-.ai-message.user{
-    align-self:flex-end;
-    background:linear-gradient(135deg,#773cff,#984cff);
-    border-bottom-right-radius:5px;
-}
-
-.ai-typing{
-    display:none;
-    padding:0 17px 8px;
-    color:#817688;
-    font-size:12px;
-}
-
-.ai-input{
-    padding:11px;
-    display:flex;
-    gap:8px;
-    background:#151118;
-    border-top:1px solid rgba(255,255,255,.07);
-}
-
-.ai-input input{
-    flex:1;
-    min-width:0;
-    border:0;
-    outline:0;
-    color:white;
-    background:#242026;
-    border-radius:15px;
-    padding:13px;
-}
-
-.ai-input input::placeholder{
-    color:#77717c;
-}
-
-.ai-input button{
-    width:48px;
-    border-radius:15px;
-    color:white;
-    background:#8b4cff;
-    font-size:19px;
-}
-
-.ai-input button:disabled{
-    opacity:.5;
-}
+/* MODAL */
 
 .modal{
     position:fixed;
@@ -770,6 +748,7 @@ body::after{
     inset:0;
     background:rgba(0,0,0,.72);
     backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
     display:none;
     align-items:center;
     justify-content:center;
@@ -787,10 +766,12 @@ body::after{
     border-radius:26px;
     padding:25px;
     text-align:center;
+    animation:modalIn .3s ease;
+    box-shadow:0 25px 90px rgba(0,0,0,.6);
 }
 
 .modal-box .big{
-    font-size:45px;
+    font-size:48px;
     margin-bottom:10px;
 }
 
@@ -814,6 +795,49 @@ body::after{
     background:#8a4cff;
     font-weight:750;
 }
+
+.modal-secondary{
+    width:100%;
+    margin-top:8px;
+    padding:11px;
+    color:#888;
+    background:transparent;
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:scale(.9) translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+/* AI OFFLINE BADGE */
+
+.ai-status{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:10px;
+    padding:7px 11px;
+    border-radius:20px;
+    background:rgba(255,117,24,.08);
+    color:#ff9b5a;
+    font-size:11px;
+}
+
+.ai-status-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#ff7518;
+    box-shadow:0 0 8px rgba(255,117,24,.6);
+}
+
+/* TOAST */
 
 .toast{
     position:fixed;
@@ -839,6 +863,8 @@ body::after{
     transform:translate(-50%,0);
 }
 
+/* RESPONSIVE */
+
 @media(max-width:480px){
 
     .hero h1{
@@ -854,16 +880,16 @@ body::after{
         border-radius:22px;
     }
 
-    .ai-window{
-        right:10px;
-        left:10px;
-        bottom:155px;
-        width:auto;
-        height:calc(100vh - 180px);
+    .ai-button{
+        right:18px;
     }
 
-    .ai-button{
-        right:20px;
+    .actions{
+        gap:8px;
+    }
+
+    .action{
+        padding:14px;
     }
 }
 </style>
@@ -873,385 +899,604 @@ body::after{
 
 <div class="app">
 
-<header class="header">
-    <div class="logo">
-        <div class="logo-dot"></div>
-        <div class="logo-text">Рядом</div>
-    </div>
+    <!-- HEADER -->
+    <header class="header">
 
-    <button class="header-icon"
-            onclick="showToast('Здесь ты можешь быть собой 💜')">
-        ✦
-    </button>
-</header>
+        <div class="logo">
+            <div class="logo-dot"></div>
+            <div class="logo-text">Рядом</div>
+        </div>
 
+        <button
+            class="header-icon"
+            onclick="showToast('Здесь ты можешь быть собой 💜')"
+        >
+            ✦
+        </button>
 
-<!-- HOME -->
-
-<main id="home" class="screen active">
-
-<section class="hero">
-    <h1>
-        Ты не один.<br>
-        Ты всегда <span>рядом.</span>
-    </h1>
-
-    <p>
-        Место, где можно отдохнуть, поговорить,
-        разобраться в своих чувствах и просто побыть собой.
-    </p>
-</section>
+    </header>
 
 
-<section class="card mood-card">
+    <!-- ГЛАВНАЯ -->
+    <main id="home" class="screen active">
 
-    <div class="card-title">
-        <h2>Как ты сегодня?</h2>
-        <span>настроение</span>
-    </div>
+        <section class="hero">
 
-    <div class="mood-face" id="moodFace">🙂</div>
+            <h1>
+                Ты не один.<br>
+                Ты всегда <span>рядом.</span>
+            </h1>
 
-    <div class="mood-name" id="moodName">
-        Нормально
-    </div>
+            <p>
+                Место, где можно отдохнуть, поговорить,
+                разобраться в своих чувствах и просто побыть собой.
+            </p>
 
-    <div class="mood-description" id="moodDescription">
-        Можно сделать сегодняшний день немного лучше.
-    </div>
+        </section>
 
-    <input
-        id="moodRange"
-        class="mood-range"
-        type="range"
-        min="0"
-        max="100"
-        value="50"
-        oninput="changeMood(this.value)"
+
+        <!-- НАСТРОЕНИЕ -->
+
+        <section class="card mood-card">
+
+            <div class="card-title">
+                <h2>Как ты сегодня?</h2>
+                <span>трекер настроения</span>
+            </div>
+
+            <div
+                class="mood-face"
+                id="moodFace"
+            >
+                🙂
+            </div>
+
+            <div
+                class="mood-name"
+                id="moodName"
+            >
+                Нормально
+            </div>
+
+            <div
+                class="mood-description"
+                id="moodDescription"
+            >
+                Можно сделать сегодняшний день немного лучше.
+            </div>
+
+            <input
+                id="moodRange"
+                class="mood-range"
+                type="range"
+                min="0"
+                max="100"
+                value="50"
+            >
+
+            <div class="mood-labels">
+                <span>плохо</span>
+                <span>нормально</span>
+                <span>отлично</span>
+            </div>
+
+        </section>
+
+
+        <!-- ПИТОМЕЦ -->
+
+        <section class="card pet-card">
+
+            <div
+                class="card-title"
+                style="width:100%"
+            >
+                <h2>Твой питомец</h2>
+                <span id="petTime">сейчас</span>
+            </div>
+
+            <div
+                class="pet"
+                id="pet"
+            >
+
+                <div class="pet-eye left"></div>
+                <div class="pet-eye right"></div>
+
+                <div
+                    class="pet-mouth"
+                    id="petMouth"
+                ></div>
+
+            </div>
+
+            <div class="pet-name">
+                Луми
+            </div>
+
+            <div
+                class="pet-status"
+                id="petStatus"
+            >
+                Луми рад тебя видеть 💜
+            </div>
+
+            <div class="pet-buttons">
+
+                <button
+                    class="pet-btn"
+                    onclick="playPet()"
+                >
+                    🎮 Поиграть
+                </button>
+
+                <button
+                    class="pet-btn"
+                    onclick="feedPet()"
+                >
+                    🍎 Покормить
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Что тебе сейчас нужно?</h2>
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="action"
+                    onclick="openAIUnavailable()"
+                >
+                    <div class="action-icon">
+                        🤖
+                    </div>
+
+                    <strong>
+                        Рядом AI
+                    </strong>
+
+                    <small>
+                        скоро будет доступен
+                    </small>
+                </button>
+
+
+                <button
+                    class="action"
+                    onclick="openScreen('help')"
+                >
+                    <div class="action-icon">
+                        🫶
+                    </div>
+
+                    <strong>
+                        Мне нужна помощь
+                    </strong>
+
+                    <small>
+                        полезные контакты
+                    </small>
+                </button>
+
+
+                <button
+                    class="action"
+                    onclick="openScreen('categories')"
+                >
+                    <div class="action-icon">
+                        🌙
+                    </div>
+
+                    <strong>
+                        Успокоиться
+                    </strong>
+
+                    <small>
+                        идеи и упражнения
+                    </small>
+                </button>
+
+
+                <button
+                    class="action"
+                    onclick="showToast('Ты уже сделал что-то хорошее — открыл Рядом 💜')"
+                >
+                    <div class="action-icon">
+                        ✨
+                    </div>
+
+                    <strong>
+                        Поддержка
+                    </strong>
+
+                    <small>
+                        маленькие напоминания
+                    </small>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- AI INFO -->
+
+        <section class="card">
+
+            <div class="card-title">
+
+                <h2>
+                    Рядом AI
+                </h2>
+
+                <span>
+                    скоро
+                </span>
+
+            </div>
+
+            <p style="
+                color:#9b939f;
+                font-size:14px;
+                line-height:1.6;
+            ">
+                Мы готовим виртуального помощника,
+                который сможет выслушать тебя,
+                помочь разобраться в переживаниях
+                и просто побыть рядом, когда захочется поговорить.
+            </p>
+
+            <div class="ai-status">
+                <div class="ai-status-dot"></div>
+                Сейчас находится в разработке
+            </div>
+
+            <button
+                class="telegram"
+                style="width:100%;margin-top:14px"
+                onclick="openAIUnavailable()"
+            >
+                Подробнее 🤖
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- КАТЕГОРИИ -->
+
+    <main
+        id="categories"
+        class="screen"
     >
 
-    <div class="mood-labels">
-        <span>плохо</span>
-        <span>нормально</span>
-        <span>отлично</span>
-    </div>
+        <section class="hero">
 
-</section>
+            <h1>
+                Для тебя <span>💜</span>
+            </h1>
+
+            <p>
+                Выбери то, что подходит тебе прямо сейчас.
+            </p>
+
+        </section>
 
 
-<section class="card pet-card">
+        <div class="category-tabs">
 
-    <div class="card-title" style="width:100%">
-        <h2>Твой питомец</h2>
-        <span>сейчас</span>
-    </div>
+            <button
+                class="category active"
+                onclick="selectCategory(this,'all')"
+            >
+                Всё
+            </button>
 
-    <div class="pet" id="pet">
+            <button
+                class="category"
+                onclick="selectCategory(this,'calm')"
+            >
+                😌 Спокойствие
+            </button>
 
-        <div class="pet-eye left"></div>
-        <div class="pet-eye right"></div>
-        <div class="pet-mouth" id="petMouth"></div>
+            <button
+                class="category"
+                onclick="selectCategory(this,'motivation')"
+            >
+                ⚡ Мотивация
+            </button>
 
-    </div>
+            <button
+                class="category"
+                onclick="selectCategory(this,'sleep')"
+            >
+                🌙 Сон
+            </button>
 
-    <div class="pet-name">Луми</div>
+            <button
+                class="category"
+                onclick="selectCategory(this,'friends')"
+            >
+                🫂 Друзья
+            </button>
 
-    <div class="pet-status" id="petStatus">
-        Луми рад тебя видеть 💜
-    </div>
+        </div>
 
-    <div class="pet-buttons">
+        <div id="contentList"></div>
 
-        <button class="pet-btn" onclick="playPet()">
-            🎮 Поиграть
+    </main>
+
+
+    <!-- ПРОФИЛЬ -->
+
+    <main
+        id="profile"
+        class="screen"
+    >
+
+        <section class="profile-top">
+
+            <div class="avatar">
+                🐉
+            </div>
+
+            <h1>
+                Мой профиль
+            </h1>
+
+            <p>
+                Это твоё личное пространство
+            </p>
+
+        </section>
+
+
+        <section class="card">
+
+            <div class="profile-row">
+
+                <span>
+                    Настроение сегодня
+                </span>
+
+                <strong id="profileMood">
+                    🙂 Нормально
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Питомец
+                </span>
+
+                <strong>
+                    Луми 💜
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Дней в Рядом
+                </span>
+
+                <strong id="daysCount">
+                    1
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Добрые поступки
+                </span>
+
+                <strong id="goodCount">
+                    0 ✨
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <section class="card">
+
+            <div class="card-title">
+
+                <h2>
+                    Маленькое напоминание
+                </h2>
+
+            </div>
+
+            <p style="
+                color:#a099a5;
+                line-height:1.6;
+                font-size:14px
+            ">
+                Тебе не обязательно всегда быть сильным.
+                Иногда нормально устать, погрустить или попросить помощи.
+                💜
+            </p>
+
+        </section>
+
+
+        <button
+            class="telegram"
+            style="width:100%"
+            onclick="openTelegram()"
+        >
+            ✈️ Telegram-канал «Рядом»
         </button>
 
-        <button class="pet-btn" onclick="feedPet()">
-            🍎 Покормить
+    </main>
+
+
+    <!-- ПОМОЩЬ -->
+
+    <main
+        id="help"
+        class="screen"
+    >
+
+        <section class="hero">
+
+            <h1>
+                Ты можешь попросить
+                <span>помощи.</span>
+            </h1>
+
+            <p>
+                Если тебе очень тяжело,
+                не обязательно справляться
+                со всем одному.
+            </p>
+
+        </section>
+
+
+        <section class="card help-box">
+
+            <div class="help-icon">
+                🫶
+            </div>
+
+            <h2>
+                Детский телефон доверия
+            </h2>
+
+            <p>
+                В России можно бесплатно и анонимно
+                обратиться за психологической поддержкой.
+            </p>
+
+            <a
+                class="phone"
+                href="tel:88002000122"
+            >
+                ☎ 8-800-2000-122
+            </a>
+
+            <p style="
+                margin-top:12px;
+                font-size:12px
+            ">
+                Если ты находишься в другой стране,
+                используй местные экстренные или кризисные службы
+                либо обратись к взрослому, которому доверяешь.
+            </p>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2 style="margin-bottom:10px">
+                Если прямо сейчас опасно
+            </h2>
+
+            <p style="
+                color:#918994;
+                line-height:1.5;
+                font-size:14px
+            ">
+                Постарайся не оставаться одному.
+                Позови родителя, родственника, учителя
+                или другого взрослого, которому доверяешь.
+                При непосредственной опасности обратись
+                в местную экстренную службу.
+            </p>
+
+        </section>
+
+
+        <button
+            class="telegram"
+            style="width:100%"
+            onclick="openTelegram()"
+        >
+            ✈️ Перейти в Telegram «Рядом»
         </button>
 
-    </div>
-
-</section>
-
-
-<section class="card">
-
-    <div class="card-title">
-        <h2>Что тебе сейчас нужно?</h2>
-    </div>
-
-    <div class="actions">
-
-        <button class="action" onclick="openAI()">
-            <div class="action-icon">🤖</div>
-            <strong>Поговорить</strong>
-            <small>с Рядом AI</small>
-        </button>
-
-        <button class="action" onclick="openScreen('help')">
-            <div class="action-icon">🫶</div>
-            <strong>Мне нужна помощь</strong>
-            <small>полезные контакты</small>
-        </button>
-
-        <button class="action" onclick="openScreen('categories')">
-            <div class="action-icon">🌙</div>
-            <strong>Успокоиться</strong>
-            <small>идеи и упражнения</small>
-        </button>
-
-        <button class="action"
-                onclick="addGoodAction();showToast('Ты сделал что-то хорошее для себя ✨')">
-            <div class="action-icon">✨</div>
-            <strong>Поддержка</strong>
-            <small>маленькое напоминание</small>
-        </button>
-
-    </div>
-
-</section>
-
-</main>
-
-
-<!-- FOR YOU -->
-
-<main id="categories" class="screen">
-
-<section class="hero">
-
-    <h1>
-        Для тебя <span>💜</span>
-    </h1>
-
-    <p>
-        Выбери то, что подходит тебе прямо сейчас.
-    </p>
-
-</section>
-
-<div class="category-tabs">
-
-    <button class="category active"
-            onclick="selectCategory(this,'all')">
-        Всё
-    </button>
-
-    <button class="category"
-            onclick="selectCategory(this,'calm')">
-        😌 Спокойствие
-    </button>
-
-    <button class="category"
-            onclick="selectCategory(this,'motivation')">
-        ⚡ Мотивация
-    </button>
-
-    <button class="category"
-            onclick="selectCategory(this,'sleep')">
-        🌙 Сон
-    </button>
-
-    <button class="category"
-            onclick="selectCategory(this,'friends')">
-        🫂 Друзья
-    </button>
+    </main>
 
 </div>
 
-<div id="contentList"></div>
 
-</main>
-
-
-<!-- PROFILE -->
-
-<main id="profile" class="screen">
-
-<section class="profile-top">
-
-    <div class="avatar">
-        🐉
-    </div>
-
-    <h1>Мой профиль</h1>
-
-    <p>
-        Это твоё личное пространство
-    </p>
-
-</section>
-
-<section class="card">
-
-    <div class="profile-row">
-        <span>Настроение сегодня</span>
-        <strong id="profileMood">🙂 Нормально</strong>
-    </div>
-
-    <div class="profile-row">
-        <span>Питомец</span>
-        <strong>Луми 💜</strong>
-    </div>
-
-    <div class="profile-row">
-        <span>Дней в Рядом</span>
-        <strong>1</strong>
-    </div>
-
-    <div class="profile-row">
-        <span>Добрые поступки</span>
-        <strong id="goodCount">0 ✨</strong>
-    </div>
-
-</section>
-
-<section class="card">
-
-    <div class="card-title">
-        <h2>Маленькое напоминание</h2>
-    </div>
-
-    <p style="color:#a099a5;line-height:1.6;font-size:14px">
-        Тебе не обязательно всегда быть сильным.
-        Иногда нормально устать, погрустить или попросить помощи. 💜
-    </p>
-
-</section>
+<!-- КНОПКА AI -->
 
 <button
-    class="telegram"
-    style="width:100%"
-    onclick="window.open('https://t.me/ryadom_online','_blank')"
+    class="ai-button"
+    onclick="openAIUnavailable()"
 >
-    ✈️ Telegram-канал «Рядом»
-</button>
-
-</main>
-
-
-<!-- HELP -->
-
-<main id="help" class="screen">
-
-<section class="hero">
-
-    <h1>
-        Ты можешь попросить <span>помощи.</span>
-    </h1>
-
-    <p>
-        Если тебе очень тяжело, не обязательно справляться со всем одному.
-    </p>
-
-</section>
-
-<section class="card help-box">
-
-    <div class="help-icon">🫶</div>
-
-    <h2>Нужна поддержка?</h2>
-
-    <p>
-        Постарайся поговорить с человеком,
-        которому доверяешь.
-    </p>
-
-    <a class="phone" href="tel:112">
-        ☎ Экстренная помощь
-    </a>
-
-    <p style="margin-top:12px;font-size:12px">
-        Если прямо сейчас существует непосредственная опасность,
-        обратись к местной экстренной службе или взрослому,
-        которому доверяешь.
-    </p>
-
-</section>
-
-<button
-    class="telegram"
-    style="width:100%"
-    onclick="window.open('https://t.me/ryadom_online','_blank')"
->
-    ✈️ Telegram «Рядом»
-</button>
-
-</main>
-
-</div>
-
-
-<!-- AI BUTTON -->
-
-<button class="ai-button" onclick="openAI()">
     AI
 </button>
 
 
-<!-- AI WINDOW -->
+<!-- МОДАЛКА AI -->
 
-<div class="ai-window" id="aiWindow">
+<div
+    class="modal"
+    id="aiUnavailableModal"
+>
 
-    <div class="ai-head">
+    <div class="modal-box">
 
-        <div class="ai-title">
-
-            <div class="ai-logo">
-                ✦
-            </div>
-
-            <div>
-
-                <strong>Рядом AI</strong>
-
-                <div class="ai-status">
-                    <span class="online-dot" id="onlineDot"></span>
-                    <span id="onlineText">
-                        проверяем...
-                    </span>
-                </div>
-
-            </div>
-
+        <div class="big">
+            🤖💜
         </div>
 
-        <button class="ai-close" onclick="closeAI()">
-            ×
-        </button>
+        <h2>
+            Рядом AI скоро появится
+        </h2>
 
-    </div>
+        <p>
+            Мы готовим Рядом AI —
+            виртуального помощника, который сможет
+            выслушать тебя, помочь разобраться
+            в переживаниях и просто побыть рядом,
+            когда захочется поговорить.
+        </p>
 
+        <p style="
+            margin-top:12px;
+            color:#8f8796;
+            font-size:13px;
+        ">
+            Сейчас функция находится в разработке.
+            Мы хотим сделать её действительно полезной,
+            безопасной и удобной.
+        </p>
 
-    <div class="ai-messages" id="aiMessages">
-
-        <div class="ai-message bot">
-            Привет 💜
-
-            Я Рядом AI. Можешь написать мне, что тебя беспокоит, что произошло сегодня или просто поговорить.
+        <div class="ai-status">
+            <div class="ai-status-dot"></div>
+            В разработке
         </div>
 
-    </div>
-
-
-    <div class="ai-typing" id="aiTyping">
-        Рядом AI печатает...
-    </div>
-
-
-    <div class="ai-input">
-
-        <input
-            id="aiInput"
-            type="text"
-            maxlength="1000"
-            placeholder="Напиши что-нибудь..."
-            autocomplete="off"
+        <button
+            class="modal-close"
+            onclick="closeAIUnavailable()"
         >
-
-        <button id="sendButton" onclick="sendAI()">
-            ➤
+            Понятно 💜
         </button>
 
     </div>
@@ -1259,33 +1504,38 @@ body::after{
 </div>
 
 
-<!-- MODAL -->
+<!-- МОДАЛКА НАСТРОЕНИЯ -->
 
-<div class="modal" id="moodModal">
+<div
+    class="modal"
+    id="moodModal"
+>
 
     <div class="modal-box">
 
-        <div class="big">💜</div>
+        <div class="big">
+            💜
+        </div>
 
         <h2>
-            Хочешь поговорить?
+            Всё настолько плохо?
         </h2>
 
         <p>
-            Можешь рассказать Рядом AI о том,
-            что сейчас происходит.
+            Поделись своими переживаниями и мыслями,
+            постараюсь помочь.
         </p>
 
         <button
             class="modal-close"
-            onclick="closeMoodModal();openAI()"
+            onclick="closeMoodModal()"
         >
-            Поговорить с Рядом AI
+            Узнать, что можно сделать
         </button>
 
         <button
+            class="modal-secondary"
             onclick="closeMoodModal()"
-            style="margin-top:8px;background:transparent;color:#888;padding:10px"
         >
             Пока не хочу
         </button>
@@ -1295,57 +1545,61 @@ body::after{
 </div>
 
 
-<div class="toast" id="toast"></div>
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
 
 
-<!-- NAV -->
+<!-- НИЖНЕЕ МЕНЮ -->
 
 <nav class="bottom-nav">
 
-    <button class="nav-btn active"
-            onclick="openScreen('home',this)">
-
+    <button
+        class="nav-btn active"
+        onclick="openScreen('home',this)"
+    >
         <div class="nav-icon">⌂</div>
         <span>Главная</span>
-
         <div class="nav-indicator"></div>
-
     </button>
 
 
-    <button class="nav-btn"
-            onclick="openScreen('categories',this)">
-
+    <button
+        class="nav-btn"
+        onclick="openScreen('categories',this)"
+    >
         <div class="nav-icon">✦</div>
         <span>Для тебя</span>
-
     </button>
 
 
-    <button class="nav-btn"
-            onclick="openAI()">
-
+    <button
+        class="nav-btn"
+        onclick="openAIUnavailable()"
+    >
         <div class="nav-icon">💬</div>
         <span>AI</span>
-
     </button>
 
 
-    <button class="nav-btn"
-            onclick="openScreen('help',this)">
-
+    <button
+        class="nav-btn"
+        onclick="openScreen('help',this)"
+    >
         <div class="nav-icon">🫶</div>
         <span>Помощь</span>
-
     </button>
 
 
-    <button class="nav-btn"
-            onclick="openScreen('profile',this)">
-
+    <button
+        class="nav-btn"
+        onclick="openScreen('profile',this)"
+    >
         <div class="nav-icon">◉</div>
         <span>Профиль</span>
-
     </button>
 
 </nav>
@@ -1353,97 +1607,9 @@ body::after{
 
 <script>
 
-/* =========================================
-   НАСТРОЙКИ AI
-========================================= */
-
-const AI_SERVER = "https://link-vwlw.onrender.com";
-
-let aiHistory = [];
-
-let aiOnline = false;
-
-let goodActions = Number(
-    localStorage.getItem("ryadom_good_actions") || 0
-);
-
-
-/* =========================================
-   ПРОВЕРКА ОНЛАЙН
-========================================= */
-
-async function checkAIStatus(){
-
-    const dot =
-        document.getElementById("onlineDot");
-
-    const text =
-        document.getElementById("onlineText");
-
-    try{
-
-        const controller =
-            new AbortController();
-
-        const timeout =
-            setTimeout(
-                ()=>controller.abort(),
-                7000
-            );
-
-        const response =
-            await fetch(
-                AI_SERVER + "/",
-                {
-                    method:"GET",
-                    cache:"no-store",
-                    signal:controller.signal
-                }
-            );
-
-        clearTimeout(timeout);
-
-        if(!response.ok){
-            throw new Error("Server offline");
-        }
-
-        aiOnline = true;
-
-        dot.className =
-            "online-dot online";
-
-        text.textContent =
-            "онлайн";
-
-    }catch(error){
-
-        aiOnline = false;
-
-        dot.className =
-            "online-dot offline";
-
-        text.textContent =
-            "не в сети";
-    }
-}
-
-
-/* Проверяем сразу */
-
-checkAIStatus();
-
-
-/* И затем периодически */
-
-setInterval(
-    checkAIStatus,
-    30000
-);
-
-
-/* =========================================
-   ЭКРАНЫ
-========================================= */
+/* =========================
+   ПЕРЕХОДЫ
+========================= */
 
 function openScreen(id,button){
 
@@ -1491,14 +1657,84 @@ function openScreen(id,button){
 }
 
 
-/* =========================================
+/* =========================
+   AI — ВРЕМЕННО НЕДОСТУПЕН
+========================= */
+
+function openAIUnavailable(){
+
+    const modal =
+        document.getElementById(
+            "aiUnavailableModal"
+        );
+
+    if(modal){
+        modal.classList.add("show");
+    }
+}
+
+
+function closeAIUnavailable(){
+
+    const modal =
+        document.getElementById(
+            "aiUnavailableModal"
+        );
+
+    if(modal){
+        modal.classList.remove("show");
+    }
+}
+
+
+document
+    .getElementById("aiUnavailableModal")
+    .addEventListener("click",function(e){
+
+        if(e.target === this){
+            closeAIUnavailable();
+        }
+
+    });
+
+
+/* =========================
+   TELEGRAM
+========================= */
+
+function openTelegram(){
+
+    window.open(
+        "https://t.me/ryadom_online",
+        "_blank"
+    );
+
+}
+
+
+/* =========================
    НАСТРОЕНИЕ
-========================================= */
+========================= */
+
+const moodRange =
+    document.getElementById("moodRange");
+
+moodRange.addEventListener(
+    "input",
+    function(){
+
+        changeMood(this.value);
+
+    }
+);
+
+
+let moodWarningShown = false;
+
 
 function changeMood(value){
 
-    value =
-        Number(value);
+    value = Number(value);
 
     let face;
     let name;
@@ -1507,54 +1743,92 @@ function changeMood(value){
     if(value <= 20){
 
         face = "😢";
+
         name = "Очень плохо";
+
         description =
             "Похоже, сегодня тебе действительно тяжело.";
 
-        document
-            .getElementById("moodModal")
-            .classList.add("show");
+        if(!moodWarningShown){
 
-    }else if(value <= 40){
+            moodWarningShown = true;
+
+            document
+                .getElementById("moodModal")
+                .classList.add("show");
+        }
+
+    }
+
+    else if(value <= 40){
 
         face = "😕";
+
         name = "Грустно";
+
         description =
             "Иногда плохой день — просто плохой день.";
 
-    }else if(value <= 60){
+        moodWarningShown = false;
+
+    }
+
+    else if(value <= 60){
 
         face = "🙂";
+
         name = "Нормально";
+
         description =
             "Можно сделать сегодняшний день немного лучше.";
 
-    }else if(value <= 80){
+        moodWarningShown = false;
+
+    }
+
+    else if(value <= 80){
 
         face = "😊";
+
         name = "Хорошо";
+
         description =
             "Кажется, сегодня неплохой день!";
 
-    }else{
+        moodWarningShown = false;
 
-        face = "🤩";
-        name = "Отлично!";
-        description =
-            "Вот это настроение! Сохрани его ✨";
     }
 
-    document.getElementById("moodFace")
-        .textContent = face;
+    else{
 
-    document.getElementById("moodName")
-        .textContent = name;
+        face = "🤩";
 
-    document.getElementById("moodDescription")
-        .textContent = description;
+        name = "Отлично!";
 
-    document.getElementById("profileMood")
-        .textContent = face + " " + name;
+        description =
+            "Вот это настроение! Сохрани его ✨";
+
+        moodWarningShown = false;
+
+    }
+
+
+    document.getElementById(
+        "moodFace"
+    ).textContent = face;
+
+    document.getElementById(
+        "moodName"
+    ).textContent = name;
+
+    document.getElementById(
+        "moodDescription"
+    ).textContent = description;
+
+    document.getElementById(
+        "profileMood"
+    ).textContent =
+        face + " " + name;
 
     localStorage.setItem(
         "ryadom_mood",
@@ -1563,45 +1837,48 @@ function changeMood(value){
 }
 
 
+/* =========================
+   МОДАЛКА НАСТРОЕНИЯ
+========================= */
+
 function closeMoodModal(){
 
     document
         .getElementById("moodModal")
         .classList.remove("show");
+
 }
 
 
-document
-    .getElementById("moodModal")
-    .addEventListener("click",function(e){
-
-        if(e.target === this){
-            closeMoodModal();
-        }
-
-    });
-
-
-/* =========================================
+/* =========================
    ПИТОМЕЦ
-========================================= */
+========================= */
 
 let petHappiness =
     Number(
-        localStorage.getItem("ryadom_pet") || 70
+        localStorage.getItem(
+            "ryadom_pet"
+        ) || 70
     );
 
 
 function updatePet(){
 
     const status =
-        document.getElementById("petStatus");
+        document.getElementById(
+            "petStatus"
+        );
 
     const mouth =
-        document.getElementById("petMouth");
+        document.getElementById(
+            "petMouth"
+        );
 
     const pet =
-        document.getElementById("pet");
+        document.getElementById(
+            "pet"
+        );
+
 
     if(petHappiness >= 80){
 
@@ -1614,7 +1891,9 @@ function updatePet(){
         pet.style.filter =
             "brightness(1.1)";
 
-    }else if(petHappiness >= 45){
+    }
+
+    else if(petHappiness >= 45){
 
         status.textContent =
             "Луми немного скучает по тебе.";
@@ -1625,7 +1904,9 @@ function updatePet(){
         pet.style.filter =
             "brightness(.95)";
 
-    }else{
+    }
+
+    else{
 
         status.textContent =
             "Луми грустит... Поиграй с ним 🥺";
@@ -1636,6 +1917,7 @@ function updatePet(){
         pet.style.filter =
             "brightness(.75)";
     }
+
 
     localStorage.setItem(
         "ryadom_pet",
@@ -1680,6 +1962,8 @@ function feedPet(){
 }
 
 
+/* Питомец скучает со временем */
+
 setInterval(()=>{
 
     petHappiness =
@@ -1693,9 +1977,17 @@ setInterval(()=>{
 },60000);
 
 
-/* =========================================
+/* =========================
    ДОБРЫЕ ДЕЙСТВИЯ
-========================================= */
+========================= */
+
+let goodActions =
+    Number(
+        localStorage.getItem(
+            "ryadom_good_actions"
+        ) || 0
+    );
+
 
 function addGoodAction(){
 
@@ -1706,120 +1998,127 @@ function addGoodAction(){
         goodActions
     );
 
-    document.getElementById(
-        "goodCount"
-    ).textContent =
-        goodActions + " ✨";
+    const element =
+        document.getElementById(
+            "goodCount"
+        );
+
+    if(element){
+
+        element.textContent =
+            goodActions + " ✨";
+    }
 }
 
 
-/* =========================================
+/* =========================
    КАТЕГОРИИ
-========================================= */
+========================= */
 
 const content = {
 
-all:[
-[
-"🌿",
-"Сделай паузу",
-"Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."
-],
-[
-"💭",
-"Запиши мысли",
-"Иногда становится легче, если выписать всё, что сейчас происходит внутри."
-],
-[
-"🫶",
-"Поговори с кем-нибудь",
-"Выбери человека, которому доверяешь, и просто напиши ему."
-],
-[
-"✨",
-"Маленькая победа",
-"Даже если сегодня ты просто встал с кровати — это уже что-то."
-]
-],
+    all:[
+        [
+            "🌿",
+            "Сделай паузу",
+            "Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."
+        ],
+        [
+            "💭",
+            "Запиши мысли",
+            "Иногда становится легче, если выписать всё, что сейчас происходит внутри."
+        ],
+        [
+            "🫶",
+            "Поговори с кем-нибудь",
+            "Выбери человека, которому доверяешь, и просто напиши ему."
+        ],
+        [
+            "✨",
+            "Маленькая победа",
+            "Даже если сегодня ты просто встал с кровати — это уже что-то."
+        ]
+    ],
 
-calm:[
-[
-"🌬️",
-"Дыхание 4–4",
-"Вдохни на 4 секунды и медленно выдохни."
-],
-[
-"🌧️",
-"Представь спокойное место",
-"Закрой глаза и представь место, где тебе спокойно и безопасно."
-],
-[
-"🧘",
-"Заземление",
-"Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."
-]
-],
+    calm:[
+        [
+            "🌬️",
+            "Дыхание 4–4",
+            "Вдохни на 4 секунды, задержи дыхание на 4 и медленно выдохни."
+        ],
+        [
+            "🌧️",
+            "Звуки дождя",
+            "Закрой глаза и представь место, где тебе спокойно и безопасно."
+        ],
+        [
+            "🧘",
+            "Заземление",
+            "Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."
+        ]
+    ],
 
-motivation:[
-[
-"⚡",
-"Один маленький шаг",
-"Не обязательно решить всё сразу. Выбери только одну маленькую задачу."
-],
-[
-"🚀",
-"Ты способен",
-"Ошибки не делают тебя хуже. Они просто означают, что ты учишься."
-],
-[
-"🏆",
-"Вспомни победу",
-"Вспомни ситуацию, когда ты справился с чем-то сложным."
-]
-],
+    motivation:[
+        [
+            "⚡",
+            "Один маленький шаг",
+            "Не обязательно решить всё сразу. Выбери только одну маленькую задачу."
+        ],
+        [
+            "🚀",
+            "Ты способен",
+            "Ошибки не делают тебя хуже. Они просто означают, что ты учишься."
+        ],
+        [
+            "🏆",
+            "Вспомни победу",
+            "Вспомни ситуацию, когда ты справился с тем, что казалось сложным."
+        ]
+    ],
 
-sleep:[
-[
-"🌙",
-"Уменьши яркость",
-"Перед сном попробуй немного уменьшить яркость телефона."
-],
-[
-"☁️",
-"Спокойная мысль",
-"Представь место, где тебе максимально спокойно."
-],
-[
-"🛏️",
-"Не торопись уснуть",
-"Просто удобно устройся и дай телу расслабиться."
-]
-],
+    sleep:[
+        [
+            "🌙",
+            "Выключи яркий экран",
+            "Перед сном попробуй немного уменьшить яркость телефона."
+        ],
+        [
+            "☁️",
+            "Спокойная мысль",
+            "Представь место, где тебе максимально спокойно."
+        ],
+        [
+            "🛏️",
+            "Не торопись уснуть",
+            "Не заставляй себя уснуть. Просто удобно устройся и дай телу расслабиться."
+        ]
+    ],
 
-friends:[
-[
-"🫂",
-"Напиши другу",
-"Иногда простое «как ты?» может сильно изменить чей-то день."
-],
-[
-"💬",
-"Будь рядом",
-"Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."
-],
-[
-"❤️",
-"Скажи что-нибудь хорошее",
-"Отправь человеку сообщение, которое ему будет приятно получить."
-]
-]
+    friends:[
+        [
+            "🫂",
+            "Напиши другу",
+            "Иногда простое «как ты?» может сильно изменить чей-то день."
+        ],
+        [
+            "💬",
+            "Будь рядом",
+            "Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."
+        ],
+        [
+            "❤️",
+            "Скажи что-нибудь хорошее",
+            "Отправь человеку сообщение, которое ему будет приятно получить."
+        ]
+    ]
 
 };
 
 
 function selectCategory(button,type){
 
-    document.querySelectorAll(".category")
+    document
+        .querySelectorAll(".category")
         .forEach(btn=>{
             btn.classList.remove("active");
         });
@@ -1833,341 +2132,96 @@ function selectCategory(button,type){
 function renderContent(type){
 
     const list =
-        document.getElementById("contentList");
+        document.getElementById(
+            "contentList"
+        );
 
     list.innerHTML = "";
 
-    content[type].forEach(item=>{
+    content[type].forEach(
+        (item,index)=>{
 
-        const div =
-            document.createElement("div");
+            const div =
+                document.createElement(
+                    "div"
+                );
 
-        div.className =
-            "content-item";
+            div.className =
+                "content-item";
 
-        div.innerHTML = `
-            <div class="emoji">${item[0]}</div>
-            <h3>${item[1]}</h3>
-            <p>${item[2]}</p>
-        `;
+            div.style.animationDelay =
+                (index * 0.06) + "s";
 
-        div.onclick = ()=>{
+            div.innerHTML = `
+                <div class="emoji">
+                    ${item[0]}
+                </div>
 
-            addGoodAction();
+                <h3>
+                    ${item[1]}
+                </h3>
 
-            showToast(
-                "Ты сделал что-то хорошее для себя ✨"
-            );
-        };
+                <p>
+                    ${item[2]}
+                </p>
+            `;
 
-        list.appendChild(div);
-    });
-}
+            div.onclick = ()=>{
 
+                addGoodAction();
 
-/* =========================================
-   AI
-========================================= */
+                showToast(
+                    "Ты сделал что-то хорошее для себя ✨"
+                );
 
-function openAI(){
+            };
 
-    document
-        .getElementById("aiWindow")
-        .classList.add("open");
-
-    checkAIStatus();
-
-    setTimeout(()=>{
-
-        document
-            .getElementById("aiInput")
-            .focus();
-
-    },150);
-}
-
-
-function closeAI(){
-
-    document
-        .getElementById("aiWindow")
-        .classList.remove("open");
-}
-
-
-function addAIMessage(text,type){
-
-    const messages =
-        document.getElementById("aiMessages");
-
-    const div =
-        document.createElement("div");
-
-    div.className =
-        "ai-message " + type;
-
-    div.textContent =
-        text;
-
-    messages.appendChild(div);
-
-    messages.scrollTop =
-        messages.scrollHeight;
-}
-
-
-/* =========================================
-   ОТПРАВКА AI
-========================================= */
-
-async function sendAI(){
-
-    const input =
-        document.getElementById("aiInput");
-
-    const sendButton =
-        document.getElementById("sendButton");
-
-    const typing =
-        document.getElementById("aiTyping");
-
-    const message =
-        input.value.trim();
-
-    if(!message){
-        return;
-    }
-
-    if(message.length > 1000){
-        showToast("Сообщение слишком длинное");
-        return;
-    }
-
-    input.value = "";
-
-    addAIMessage(
-        message,
-        "user"
-    );
-
-    /* ВАЖНО:
-       сообщение сохраняем только после ответа,
-       чтобы сервер не получил его дважды.
-    */
-
-    typing.style.display =
-        "block";
-
-    sendButton.disabled =
-        true;
-
-    input.disabled =
-        true;
-
-    try{
-
-        const controller =
-            new AbortController();
-
-        const timeout =
-            setTimeout(
-                ()=>controller.abort(),
-                30000
-            );
-
-        const response =
-            await fetch(
-                AI_SERVER + "/chat",
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:JSON.stringify({
-
-                        message:message,
-
-                        history:
-                            aiHistory.slice(-10)
-
-                    }),
-
-                    signal:controller.signal
-                }
-            );
-
-        clearTimeout(timeout);
-
-        let data = {};
-
-        try{
-
-            data =
-                await response.json();
-
-        }catch{
-
-            data = {};
-        }
-
-        if(!response.ok){
-
-            throw new Error(
-                data.error ||
-                "Сервер вернул ошибку " +
-                response.status
-            );
-        }
-
-        const answer =
-            data.answer ||
-            "Я пока не смог придумать ответ 😔";
-
-        /* Теперь сохраняем оба сообщения */
-
-        aiHistory.push({
-            role:"user",
-            content:message
-        });
-
-        aiHistory.push({
-            role:"assistant",
-            content:answer
-        });
-
-        /* Ограничиваем историю */
-
-        if(aiHistory.length > 20){
-
-            aiHistory =
-                aiHistory.slice(-20);
-        }
-
-        addAIMessage(
-            answer,
-            "bot"
-        );
-
-        aiOnline = true;
-
-        document
-            .getElementById("onlineDot")
-            .className =
-            "online-dot online";
-
-        document
-            .getElementById("onlineText")
-            .textContent =
-            "онлайн";
-
-    }catch(error){
-
-        console.error(
-            "AI ERROR:",
-            error
-        );
-
-        let errorText =
-            "Не получилось подключиться к Рядом AI 😔";
-
-        if(error.name === "AbortError"){
-
-            errorText =
-                "Рядом AI слишком долго отвечает 😔\n\nПопробуй отправить сообщение ещё раз.";
-
-        }else if(
-            error.message &&
-            error.message.includes("Failed to fetch")
-        ){
-
-            errorText =
-                "Не удалось связаться с сервером Рядом AI 😔\n\nПроверь интернет-соединение и попробуй ещё раз.";
-
-        }else if(error.message){
-
-            errorText =
-                "Рядом AI сейчас не отвечает 😔\n\n" +
-                error.message;
-        }
-
-        addAIMessage(
-            errorText,
-            "bot"
-        );
-
-        checkAIStatus();
-
-    }finally{
-
-        typing.style.display =
-            "none";
-
-        sendButton.disabled =
-            false;
-
-        input.disabled =
-            false;
-
-        input.focus();
-    }
-}
-
-
-/* Enter */
-
-document
-    .getElementById("aiInput")
-    .addEventListener(
-        "keydown",
-        function(event){
-
-            if(
-                event.key === "Enter" &&
-                !event.shiftKey
-            ){
-
-                event.preventDefault();
-
-                sendAI();
-            }
+            list.appendChild(div);
 
         }
     );
+}
 
 
-/* =========================================
+/* =========================
    TOAST
-========================================= */
+========================= */
 
 let toastTimer;
+
 
 function showToast(text){
 
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
 
     toast.textContent =
         text;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
-    clearTimeout(toastTimer);
+    clearTimeout(
+        toastTimer
+    );
 
     toastTimer =
         setTimeout(()=>{
 
-            toast.classList.remove("show");
+            toast.classList.remove(
+                "show"
+            );
 
         },2600);
 }
 
 
-/* =========================================
+/* =========================
    ПРОФИЛЬ
-========================================= */
+========================= */
 
 function loadProfile(){
 
@@ -2183,8 +2237,18 @@ function loadProfile(){
         ).value =
             savedMood;
 
-        changeMood(savedMood);
+        /*
+         * Здесь не вызываем changeMood(),
+         * чтобы при открытии сайта
+         * сразу не появлялось окно
+         * «Всё настолько плохо?».
+         */
+
+        updateMoodWithoutWarning(
+            savedMood
+        );
     }
+
 
     document.getElementById(
         "goodCount"
@@ -2193,9 +2257,101 @@ function loadProfile(){
 }
 
 
-/* =========================================
-   START
-========================================= */
+function updateMoodWithoutWarning(value){
+
+    value = Number(value);
+
+    let face;
+    let name;
+    let description;
+
+
+    if(value <= 20){
+
+        face = "😢";
+        name = "Очень плохо";
+        description =
+            "Похоже, сегодня тебе действительно тяжело.";
+
+    }
+
+    else if(value <= 40){
+
+        face = "😕";
+        name = "Грустно";
+        description =
+            "Иногда плохой день — просто плохой день.";
+
+    }
+
+    else if(value <= 60){
+
+        face = "🙂";
+        name = "Нормально";
+        description =
+            "Можно сделать сегодняшний день немного лучше.";
+
+    }
+
+    else if(value <= 80){
+
+        face = "😊";
+        name = "Хорошо";
+        description =
+            "Кажется, сегодня неплохой день!";
+
+    }
+
+    else{
+
+        face = "🤩";
+        name = "Отлично!";
+        description =
+            "Вот это настроение! Сохрани его ✨";
+
+    }
+
+
+    document.getElementById(
+        "moodFace"
+    ).textContent = face;
+
+    document.getElementById(
+        "moodName"
+    ).textContent = name;
+
+    document.getElementById(
+        "moodDescription"
+    ).textContent = description;
+
+    document.getElementById(
+        "profileMood"
+    ).textContent =
+        face + " " + name;
+}
+
+
+/* =========================
+   КЛИК ПО МОДАЛКАМ
+========================= */
+
+document
+    .getElementById("moodModal")
+    .addEventListener(
+        "click",
+        function(e){
+
+            if(e.target === this){
+                closeMoodModal();
+            }
+
+        }
+    );
+
+
+/* =========================
+   СТАРТ
+========================= */
 
 renderContent("all");
 
