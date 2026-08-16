@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
 <meta charset="UTF-8">
 
 <meta
@@ -16,15 +15,12 @@
   href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
 
-<style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-/* =========================================================
-   RESET
-========================================================= */
+<style>
 
 * {
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -33,19 +29,13 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-
   background: #080808;
-  color: white;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+  color: #fff;
+  font-family: Arial, sans-serif;
 }
 
 button,
 input,
-textarea,
 select {
   font: inherit;
 }
@@ -54,107 +44,64 @@ button {
   cursor: pointer;
 }
 
-button:active {
-  transform: scale(.97);
-}
-
-
 /* =========================================================
-   MAP
-========================================================= */
-
-#map {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
-
-
-/* =========================================================
-   AUTH SCREEN
+   AUTH
 ========================================================= */
 
 #authScreen {
   position: fixed;
   inset: 0;
-  z-index: 10000;
-
+  z-index: 99999;
+  background:
+    radial-gradient(circle at top, #222 0%, #080808 45%, #000 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      #242424 0%,
-      #090909 50%,
-      #000 100%
-    );
 }
 
-.auth-card {
+.auth-box {
   width: 100%;
   max-width: 430px;
-
-  padding: 28px 22px;
-
-  background:
-    rgba(15,15,15,.96);
-
-  border:
-    1px solid #333;
-
+  background: rgba(15,15,15,.96);
+  border: 1px solid #333;
   border-radius: 30px;
-
-  box-shadow:
-    0 30px 100px rgba(0,0,0,.7);
+  padding: 28px 22px;
+  box-shadow: 0 25px 80px rgba(0,0,0,.7);
 }
 
 .logo {
-  font-size: 34px;
+  text-align: center;
+  font-size: 38px;
   font-weight: 1000;
   letter-spacing: 3px;
-  text-align: center;
-
   margin-bottom: 5px;
 }
 
 .logo-sub {
   text-align: center;
   color: #777;
-  font-size: 12px;
-  margin-bottom: 25px;
+  font-size: 13px;
+  margin-bottom: 28px;
 }
 
 .auth-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   gap: 6px;
-
+  background: #080808;
   padding: 5px;
-
-  background: #111;
-
-  border-radius: 15px;
-
-  margin-bottom: 18px;
+  border-radius: 16px;
+  margin-bottom: 20px;
 }
 
 .auth-tab {
   border: 0;
-
-  padding: 11px;
-
-  border-radius: 11px;
-
   background: transparent;
-
   color: #777;
-
-  font-weight: 800;
+  padding: 11px;
+  border-radius: 12px;
+  font-weight: 900;
 }
 
 .auth-tab.active {
@@ -163,65 +110,64 @@ button:active {
 }
 
 .auth-error {
-  display: none;
-
+  background: #321414;
+  border: 1px solid #612525;
+  color: #ff9a9a;
   padding: 11px;
-
-  margin-bottom: 12px;
-
   border-radius: 12px;
-
-  background: #321313;
-
-  border: 1px solid #642525;
-
-  color: #ff9b9b;
-
   font-size: 13px;
+  margin-bottom: 12px;
 }
 
+.auth-loading {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   MAP
+========================================================= */
+
+#app {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
 
 /* =========================================================
    TOP BAR
 ========================================================= */
 
 .topbar {
-  position: fixed;
-
-  z-index: 2000;
-
+  position: absolute;
+  z-index: 1000;
   top: 12px;
   left: 12px;
   right: 12px;
-
   display: flex;
   justify-content: space-between;
-
   pointer-events: none;
 }
 
 .badge {
-  background:
-    rgba(7,7,7,.91);
-
-  backdrop-filter:
-    blur(16px);
-
-  border:
-    1px solid #333;
-
-  border-radius:
-    18px;
-
-  padding:
-    10px 14px;
-
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.5);
+  background: rgba(8,8,8,.92);
+  backdrop-filter: blur(15px);
+  border: 1px solid #333;
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
 }
 
 .brand {
-  font-weight: 1000;
+  font-weight: 900;
   letter-spacing: 1px;
 }
 
@@ -231,71 +177,68 @@ button:active {
 
 .dot {
   display: inline-block;
-
   width: 8px;
   height: 8px;
-
   border-radius: 50%;
-
-  background: #666;
-
+  background: #777;
   margin-right: 7px;
 }
 
 .dot.live {
   background: #4cff8a;
-
-  box-shadow:
-    0 0 12px #4cff8a;
+  box-shadow: 0 0 12px #4cff8a;
 }
 
-
 /* =========================================================
-   MAP CONTROLS
+   CONTROLS
 ========================================================= */
 
 .map-controls {
-  position: fixed;
-
+  position: absolute;
   z-index: 2000;
-
-  right: 13px;
+  right: 14px;
   top: 125px;
-
   display: flex;
   flex-direction: column;
-
   gap: 8px;
 }
 
-.map-control {
+.zoom-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-button,
+.map-style-button,
+.add-place-map-button,
+.location-button {
   width: 50px;
   height: 50px;
-
-  border:
-    1px solid #333;
-
+  border: 1px solid #333;
   border-radius: 16px;
-
   background: #050505;
-
   color: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,.55);
+}
 
+.zoom-button {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.map-style-button,
+.add-place-map-button,
+.location-button {
   font-size: 21px;
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,.55);
 }
 
-.map-control.big {
-  font-size: 28px;
-  font-weight: 900;
+.zoom-button:active,
+.map-style-button:active,
+.add-place-map-button:active,
+.location-button:active {
+  transform: scale(.94);
 }
-
-
-/* =========================================================
-   MAP STYLE MENU
-========================================================= */
 
 .map-style-box {
   position: relative;
@@ -303,96 +246,53 @@ button:active {
 
 .map-styles {
   position: absolute;
-
   right: 58px;
   top: 0;
-
-  width: 165px;
-
-  padding: 6px;
-
-  background:
-    rgba(5,5,5,.97);
-
-  border:
-    1px solid #333;
-
+  width: 155px;
+  background: rgba(5,5,5,.97);
+  border: 1px solid #333;
   border-radius: 16px;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.7);
+  padding: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.6);
 }
 
 .map-styles button {
   width: 100%;
-
   border: 0;
-
   background: transparent;
-
   color: white;
-
   text-align: left;
-
   padding: 11px;
-
-  border-radius: 10px;
-
-  font-weight: 700;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: bold;
 }
-
-.map-styles button:hover {
-  background: #222;
-}
-
 
 /* =========================================================
-   BOTTOM NAV
+   BOTTOM
 ========================================================= */
 
 .bottom {
-  position: fixed;
-
-  z-index: 2500;
-
+  position: absolute;
+  z-index: 1000;
+  bottom: 10px;
   left: 10px;
   right: 10px;
-  bottom: 10px;
-
-  padding: 7px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(5, 1fr);
-
-  gap: 5px;
-
-  background:
-    rgba(8,8,8,.96);
-
-  border:
-    1px solid #333;
-
+  background: rgba(8,8,8,.95);
+  border: 1px solid #333;
   border-radius: 24px;
-
-  backdrop-filter:
-    blur(18px);
-
-  box-shadow:
-    0 10px 40px rgba(0,0,0,.7);
+  padding: 7px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 5px;
 }
 
 .nav {
   border: 0;
-
   background: transparent;
-
-  color: #777;
-
+  color: #999;
   border-radius: 17px;
-
-  padding: 7px 2px;
+  padding: 8px 3px;
 }
 
 .nav.active {
@@ -400,91 +300,61 @@ button:active {
   color: black;
 }
 
-.nav .icon {
+.nav span {
   display: block;
-  font-size: 18px;
+}
+
+.nav .icon {
+  font-size: 19px;
 }
 
 .nav .txt {
-  display: block;
-
-  margin-top: 2px;
-
-  font-size: 9px;
-
-  font-weight: 900;
+  font-size: 10px;
+  font-weight: bold;
 }
 
-
 /* =========================================================
-   PANEL
+   PANELS
 ========================================================= */
 
 .panel {
-  position: fixed;
-
-  z-index: 5000;
-
+  position: absolute;
+  z-index: 3000;
   inset: 0;
-
+  background: rgba(0,0,0,.62);
   display: flex;
-
   align-items: flex-end;
-
-  background:
-    rgba(0,0,0,.62);
-
-  backdrop-filter:
-    blur(5px);
+  backdrop-filter: blur(3px);
 }
 
 .sheet {
   width: 100%;
-
   max-height: 88dvh;
-
   overflow-y: auto;
-
-  padding: 18px 16px 35px;
-
   background: #0d0d0d;
-
-  border:
-    1px solid #292929;
-
-  border-radius:
-    28px 28px 0 0;
+  border: 1px solid #292929;
+  border-radius: 28px 28px 0 0;
+  padding: 18px 16px 30px;
 }
 
 .handle {
   width: 42px;
   height: 4px;
-
   background: #444;
-
   border-radius: 10px;
-
-  margin:
-    0 auto 17px;
+  margin: 0 auto 16px;
 }
 
 .close {
   float: right;
-
+  border: 0;
+  background: #222;
+  color: white;
   width: 36px;
   height: 36px;
-
-  border: 0;
-
   border-radius: 50%;
-
-  background: #222;
-
-  color: white;
-
   font-size: 22px;
 }
-
 
 /* =========================================================
    INPUTS
@@ -496,44 +366,26 @@ button:active {
 
 .field label {
   display: block;
-
   color: #aaa;
-
   font-size: 12px;
-
   margin-bottom: 6px;
 }
 
 input,
-textarea,
 select {
   width: 100%;
-
-  padding: 13px;
-
-  outline: none;
-
   background: #171717;
-
   color: white;
-
-  border:
-    1px solid #333;
-
+  border: 1px solid #333;
   border-radius: 14px;
-}
-
-textarea {
-  min-height: 90px;
-  resize: none;
+  padding: 12px;
+  outline: none;
 }
 
 input:focus,
-textarea:focus,
 select:focus {
   border-color: #777;
 }
-
 
 /* =========================================================
    BUTTONS
@@ -541,58 +393,36 @@ select:focus {
 
 .btn {
   width: 100%;
-
   border: 0;
-
   border-radius: 15px;
-
   padding: 13px;
-
   background: white;
-
   color: black;
-
   font-weight: 900;
-
   margin-top: 8px;
 }
 
 .btn.secondary {
   background: #222;
-
   color: white;
-
-  border:
-    1px solid #333;
+  border: 1px solid #333;
 }
 
 .btn.danger {
   background: #351515;
-
-  color: #ff9292;
-
-  border:
-    1px solid #552222;
-}
-
-.btn.small {
-  width: auto;
-
-  padding: 9px 12px;
-
-  margin: 0;
+  color: #ff8b8b;
+  border: 1px solid #552222;
 }
 
 .row {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
 .grow {
   flex: 1;
 }
-
 
 /* =========================================================
    PROFILE
@@ -600,114 +430,55 @@ select:focus {
 
 .profile {
   display: flex;
-
   align-items: center;
-
   gap: 14px;
-
   margin: 15px 0;
 }
 
 .avatar {
   width: 70px;
   height: 70px;
-
-  min-width: 70px;
-
-  object-fit: cover;
-
   border-radius: 50%;
-
+  object-fit: cover;
   background: #222;
-
-  border:
-    2px solid white;
+  border: 2px solid white;
 }
 
 .avatar.small {
   width: 46px;
   height: 46px;
-
-  min-width: 46px;
-
   border-width: 1px;
 }
 
 .code {
-  color: #888;
-
   font-size: 12px;
-
+  color: #999;
   margin-top: 4px;
 }
 
-.note {
-  color: #777;
-
-  font-size: 12px;
-
-  line-height: 1.5;
-
-  margin-top: 15px;
-}
-
-
 /* =========================================================
-   FRIEND
+   FRIENDS
 ========================================================= */
 
 .friend {
   display: flex;
-
   align-items: center;
-
   gap: 10px;
-
-  padding: 12px 0;
-
-  border-bottom:
-    1px solid #252525;
+  padding: 11px 0;
+  border-bottom: 1px solid #252525;
 }
-
-.friend-name {
-  font-weight: 900;
-}
-
-.online-dot {
-  display: inline-block;
-
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: #555;
-
-  margin-left: 4px;
-}
-
-.online-dot.online {
-  background: #4cff8a;
-
-  box-shadow:
-    0 0 8px #4cff8a;
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
 
 .empty {
   text-align: center;
-
-  color: #777;
-
-  padding: 30px 15px;
-
-  line-height: 1.6;
+  color: #888;
+  padding: 25px;
 }
 
+.note {
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
 
 /* =========================================================
    PLACES
@@ -715,345 +486,173 @@ select:focus {
 
 .place-item {
   display: flex;
-
   align-items: center;
-
-  gap: 11px;
-
-  padding: 12px 0;
-
-  border-bottom:
-    1px solid #252525;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #252525;
 }
 
 .place-icon {
   width: 46px;
   height: 46px;
-
   min-width: 46px;
-
+  border: 1px solid #333;
+  border-radius: 14px;
+  background: #171717;
   display: flex;
-
   align-items: center;
   justify-content: center;
-
-  background: #171717;
-
-  border:
-    1px solid #333;
-
-  border-radius: 14px;
-
-  font-size: 21px;
+  font-size: 22px;
 }
 
 .place-name {
-  font-size: 15px;
   font-weight: 900;
+  font-size: 15px;
 }
 
 .place-type {
-  margin-top: 3px;
-
-  color: #777;
-
+  color: #888;
   font-size: 11px;
+  margin-top: 3px;
 }
 
-
 /* =========================================================
-   PLACE MARKER
+   MARKERS
 ========================================================= */
 
 .place-marker {
   width: 44px;
   height: 44px;
-
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #080808;
   display: flex;
-
   align-items: center;
   justify-content: center;
-
-  border:
-    2px solid white;
-
-  border-radius: 50%;
-
-  background: #080808;
-
   font-size: 21px;
-
-  box-shadow:
-    0 5px 20px rgba(0,0,0,.65);
+  box-shadow: 0 5px 20px rgba(0,0,0,.65);
 }
 
-
-/* =========================================================
-   USER MARKER
-========================================================= */
-
 .pin {
-  position: relative;
-
-  width: 48px;
-  height: 48px;
-
-  border:
-    3px solid white;
-
+  width: 46px;
+  height: 46px;
+  border: 3px solid white;
   border-radius: 50%;
-
   background: #222;
-
-  box-shadow:
-    0 5px 20px rgba(0,0,0,.65);
+  position: relative;
+  box-shadow: 0 5px 20px rgba(0,0,0,.6);
 }
 
 .pin img {
   width: 100%;
   height: 100%;
-
   border-radius: 50%;
-
   object-fit: cover;
 }
 
 .ring {
   position: absolute;
-
   inset: -8px;
-
-  border:
-    2px solid white;
-
+  border: 2px solid white;
   border-radius: 50%;
-
-  animation:
-    pulse 1.5s infinite;
+  animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-
   50% {
     transform: scale(1.2);
     opacity: .15;
   }
-
 }
 
 .speed-label {
   position: absolute;
-
-  top: 53px;
-
+  top: 50px;
   left: 50%;
-
-  transform:
-    translateX(-50%);
-
+  transform: translateX(-50%);
   white-space: nowrap;
-
-  padding:
-    3px 7px;
-
   background: #000;
-
-  border:
-    1px solid #333;
-
+  border: 1px solid #333;
   border-radius: 8px;
-
+  padding: 3px 7px;
   font-size: 10px;
-
   font-weight: 900;
+}
+
+.friend-pin {
+  width: 42px;
+  height: 42px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #111;
+  box-shadow: 0 5px 20px rgba(0,0,0,.7);
+  overflow: hidden;
+}
+
+.friend-pin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .direction-arrow {
   position: absolute;
-
   left: 50%;
   top: -27px;
-
-  transform:
-    translateX(-50%);
-
+  transform: translateX(-50%);
   font-size: 18px;
-
-  text-shadow:
-    0 2px 5px #000;
+  text-shadow: 0 2px 5px #000;
 }
-
-
-/* =========================================================
-   CHAT
-========================================================= */
-
-.chat-list {
-  margin-top: 5px;
-}
-
-.chat-item {
-  display: flex;
-
-  align-items: center;
-
-  gap: 11px;
-
-  padding: 13px 0;
-
-  border-bottom:
-    1px solid #252525;
-
-  cursor: pointer;
-}
-
-.chat-last {
-  color: #777;
-
-  font-size: 11px;
-
-  margin-top: 4px;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-.messages {
-  max-height: 48dvh;
-
-  overflow-y: auto;
-
-  padding: 5px 0;
-}
-
-.message {
-  display: flex;
-
-  margin: 7px 0;
-}
-
-.message.mine {
-  justify-content: flex-end;
-}
-
-.message-bubble {
-  max-width: 78%;
-
-  padding: 10px 12px;
-
-  border-radius: 16px;
-
-  background: #222;
-
-  font-size: 13px;
-
-  line-height: 1.35;
-}
-
-.message.mine .message-bubble {
-  background: white;
-  color: black;
-}
-
-.message-time {
-  margin-top: 3px;
-
-  font-size: 9px;
-
-  opacity: .5;
-}
-
-
-/* =========================================================
-   NOTIFICATIONS
-========================================================= */
-
-.notification {
-  padding: 13px 0;
-
-  border-bottom:
-    1px solid #252525;
-}
-
-.notification.unread {
-  border-left:
-    3px solid white;
-
-  padding-left: 10px;
-}
-
-.notification-title {
-  font-weight: 900;
-}
-
-.notification-body {
-  color: #999;
-
-  font-size: 12px;
-
-  margin-top: 4px;
-}
-
 
 /* =========================================================
    TOAST
 ========================================================= */
 
 .toast {
-  position: fixed;
-
-  z-index: 9000;
-
+  position: absolute;
+  z-index: 5000;
   left: 50%;
-
   bottom: 92px;
-
-  transform:
-    translateX(-50%);
-
-  max-width: 90%;
-
-  padding: 11px 15px;
-
+  transform: translateX(-50%);
   background: white;
-
   color: black;
-
+  padding: 11px 15px;
   border-radius: 14px;
-
   font-size: 13px;
-
-  font-weight: 900;
-
+  font-weight: 800;
+  max-width: 90%;
   text-align: center;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.5);
 }
 
-
 /* =========================================================
-   LOADER
+   LOADING
 ========================================================= */
 
-.loader {
-  width: 22px;
-  height: 22px;
+#loadingScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 
-  border:
-    3px solid #333;
+.loading-logo {
+  font-size: 38px;
+  font-weight: 1000;
+  letter-spacing: 4px;
+}
 
+.spinner {
+  margin-top: 20px;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #333;
   border-top-color: white;
-
   border-radius: 50%;
-
-  animation:
-    spin .7s linear infinite;
-
-  margin: 15px auto;
+  animation: spin .8s linear infinite;
 }
 
 @keyframes spin {
@@ -1062,21 +661,17 @@ select:focus {
   }
 }
 
-
 /* =========================================================
    DESKTOP
 ========================================================= */
 
-@media (min-width: 700px) {
+@media (min-width:700px) {
 
   .bottom {
-    width: 560px;
-
+    width: 520px;
     left: 50%;
     right: auto;
-
-    transform:
-      translateX(-50%);
+    transform: translateX(-50%);
   }
 
   .panel {
@@ -1085,29 +680,40 @@ select:focus {
   }
 
   .sheet {
-    width: 540px;
-
-    max-height: 82vh;
-
+    width: 520px;
     border-radius: 28px;
+    max-height: 80vh;
   }
 
 }
 
 </style>
-
 </head>
 
 <body>
 
+<!-- =======================================================
+     LOADING
+======================================================= -->
+
+<div id="loadingScreen">
+
+  <div class="loading-logo">
+    ⚡ BLINK
+  </div>
+
+  <div class="spinner"></div>
+
+</div>
+
 
 <!-- =======================================================
      AUTH
-======================================================== -->
+======================================================= -->
 
-<div id="authScreen">
+<div id="authScreen" style="display:none">
 
-  <div class="auth-card">
+  <div class="auth-box">
 
     <div class="logo">
       ⚡ BLINK
@@ -1122,27 +728,26 @@ select:focus {
       <button
         id="loginTab"
         class="auth-tab active"
-        onclick="showAuthMode('login')"
+        onclick="switchAuth('login')"
       >
-        Войти
+        Вход
       </button>
 
       <button
         id="registerTab"
         class="auth-tab"
-        onclick="showAuthMode('register')"
+        onclick="switchAuth('register')"
       >
         Регистрация
       </button>
 
     </div>
 
-
     <div
       id="authError"
       class="auth-error"
+      style="display:none"
     ></div>
-
 
     <div
       id="registerNameField"
@@ -1158,10 +763,10 @@ select:focus {
         id="authName"
         maxlength="30"
         placeholder="Твоё имя"
+        autocomplete="name"
       >
 
     </div>
-
 
     <div class="field">
 
@@ -1172,12 +777,11 @@ select:focus {
       <input
         id="authEmail"
         type="email"
+        placeholder="example@mail.com"
         autocomplete="email"
-        placeholder="you@example.com"
       >
 
     </div>
-
 
     <div class="field">
 
@@ -1188,12 +792,11 @@ select:focus {
       <input
         id="authPassword"
         type="password"
-        autocomplete="current-password"
         placeholder="Минимум 6 символов"
+        autocomplete="current-password"
       >
 
     </div>
-
 
     <button
       id="authButton"
@@ -1203,112 +806,12 @@ select:focus {
       Войти
     </button>
 
-  </div>
-
-</div>
-
-
-<!-- =======================================================
-     MAP
-======================================================== -->
-
-<div id="map"></div>
-
-
-<!-- =======================================================
-     TOP BAR
-======================================================== -->
-
-<div class="topbar">
-
-  <div class="badge brand">
-    ⚡ BLINK
-  </div>
-
-  <div class="badge status">
-
-    <span
-      id="statusDot"
-      class="dot"
-    ></span>
-
-    <span id="statusText">
-      GPS не запущен
-    </span>
-
-  </div>
-
-</div>
-
-
-<!-- =======================================================
-     MAP CONTROLS
-======================================================== -->
-
-<div
-  id="mapControls"
-  class="map-controls"
-  style="display:none"
->
-
-  <button
-    class="map-control big"
-    onclick="zoomIn()"
-  >
-    +
-  </button>
-
-  <button
-    class="map-control big"
-    onclick="zoomOut()"
-  >
-    −
-  </button>
-
-
-  <button
-    class="map-control"
-    onclick="centerMe()"
-  >
-    🎯
-  </button>
-
-
-  <button
-    class="map-control"
-    onclick="startAddingPlace()"
-  >
-    📍
-  </button>
-
-
-  <div class="map-style-box">
-
-    <button
-      class="map-control"
-      onclick="toggleMapStyles()"
-    >
-      🗺️
-    </button>
-
     <div
-      id="mapStyles"
-      class="map-styles"
+      id="authLoading"
+      class="auth-loading"
       style="display:none"
     >
-
-      <button onclick="setMapStyle('light')">
-        ⚪ Светлая
-      </button>
-
-      <button onclick="setMapStyle('dark')">
-        ⚫ Тёмная
-      </button>
-
-      <button onclick="setMapStyle('hybrid')">
-        🛰️ Спутник
-      </button>
-
+      Подождите...
     </div>
 
   </div>
@@ -1317,137 +820,172 @@ select:focus {
 
 
 <!-- =======================================================
-     BOTTOM NAV
+     APP
 ======================================================== -->
 
-<div
-  id="bottomNav"
-  class="bottom"
-  style="display:none"
->
+<div id="app">
 
-  <button
-    class="nav active"
-    data-page="map"
-  >
-
-    <span class="icon">
-      🗺️
-    </span>
-
-    <span class="txt">
-      Карта
-    </span>
-
-  </button>
+  <div id="map"></div>
 
 
-  <button
-    class="nav"
-    data-page="friends"
-  >
+  <!-- TOP BAR -->
 
-    <span class="icon">
-      👥
-    </span>
+  <div class="topbar">
 
-    <span class="txt">
-      Друзья
-    </span>
+    <div class="badge brand">
+      ⚡ BLINK
+    </div>
 
-  </button>
+    <div class="badge status">
 
+      <span
+        id="statusDot"
+        class="dot"
+      ></span>
 
-  <button
-    class="nav"
-    data-page="chats"
-  >
+      <span id="statusText">
+        GPS не запущен
+      </span>
 
-    <span class="icon">
-      💬
-    </span>
+    </div>
 
-    <span class="txt">
-      Чаты
-    </span>
-
-  </button>
+  </div>
 
 
-  <button
-    class="nav"
-    data-page="profile"
-  >
+  <!-- MAP CONTROLS -->
 
-    <span class="icon">
-      👤
-    </span>
+  <div class="map-controls">
 
-    <span class="txt">
-      Профиль
-    </span>
+    <div class="zoom-controls">
 
-  </button>
+      <button
+        class="zoom-button"
+        onclick="zoomIn()"
+      >
+        +
+      </button>
+
+      <button
+        class="zoom-button"
+        onclick="zoomOut()"
+      >
+        −
+      </button>
+
+    </div>
+
+    <button
+      class="location-button"
+      onclick="centerMe()"
+      title="Показать меня"
+    >
+      🎯
+    </button>
+
+    <button
+      class="add-place-map-button"
+      onclick="startAddingPlace()"
+    >
+      📍
+    </button>
+
+    <div class="map-style-box">
+
+      <button
+        class="map-style-button"
+        onclick="toggleMapStyles()"
+      >
+        🗺️
+      </button>
+
+      <div
+        id="mapStyles"
+        class="map-styles"
+        style="display:none"
+      >
+
+        <button onclick="setMapStyle('light')">
+          ⚪ Белая
+        </button>
+
+        <button onclick="setMapStyle('dark')">
+          ⚫ Тёмная
+        </button>
+
+        <button onclick="setMapStyle('hybrid')">
+          🛰️ Гибрид
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
 
-  <button
-    class="nav"
-    data-page="settings"
-  >
+  <!-- BOTTOM -->
 
-    <span class="icon">
-      ⚙️
-    </span>
+  <div class="bottom">
 
-    <span class="txt">
-      Ещё
-    </span>
+    <button class="nav active" data-page="map">
 
-  </button>
+      <span class="icon">🗺️</span>
+      <span class="txt">Карта</span>
 
-</div>
+    </button>
+
+    <button class="nav" data-page="friends">
+
+      <span class="icon">👥</span>
+      <span class="txt">Друзья</span>
+
+    </button>
+
+    <button class="nav" data-page="profile">
+
+      <span class="icon">👤</span>
+      <span class="txt">Профиль</span>
+
+    </button>
+
+    <button class="nav" data-page="settings">
+
+      <span class="icon">⚙️</span>
+      <span class="txt">Настройки</span>
+
+    </button>
+
+  </div>
 
 
-<!-- =======================================================
-     PANEL
-======================================================== -->
-
-<div
-  id="panel"
-  class="panel"
-  style="display:none"
->
+  <!-- PANEL -->
 
   <div
-    id="sheet"
-    class="sheet"
+    id="panel"
+    class="panel"
+    style="display:none"
+  >
+
+    <div
+      id="sheet"
+      class="sheet"
+    ></div>
+
+  </div>
+
+
+  <!-- TOAST -->
+
+  <div
+    id="toast"
+    class="toast"
+    style="display:none"
   ></div>
 
 </div>
 
 
-<!-- =======================================================
-     TOAST
-======================================================== -->
-
-<div
-  id="toast"
-  class="toast"
-  style="display:none"
-></div>
-
-
-<!-- =======================================================
-     SUPABASE
-======================================================== -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
@@ -1458,10 +996,8 @@ select:focus {
 const SUPABASE_URL =
   "https://ytmdvlqcrqqeblxbnzno.supabase.co";
 
-
 const SUPABASE_KEY =
   "sb_publishable_irhX2HtmV_Ygk6bV_LDKQA_yPuTi4op";
-
 
 const supabaseClient =
   window.supabase.createClient(
@@ -1474,114 +1010,35 @@ const supabaseClient =
    GLOBAL DATA
 ========================================================= */
 
-let currentUser =
-  null;
+let currentUser = null;
 
-let myProfile =
-  null;
+let profile = null;
 
-let friends =
-  [];
+let myName = "Я";
 
-let friendLocations =
-  [];
+let myPhoto = "";
 
-let notifications =
-  [];
+let myCode = "";
 
-let chats =
-  [];
+let friends = [];
 
-let messages =
-  [];
+let friendLocations = [];
 
-let currentChatId =
-  null;
+let locationEnabled = true;
 
-let realtimeChannels =
-  [];
+let watchId = null;
 
+let marker = null;
 
-/* =========================================================
-   LOCAL UI DATA
-========================================================= */
+let lastPosition = null;
 
-let locationEnabled =
-  localStorage.getItem(
-    "blink_location"
-  ) !== "off";
+let friendMarkers = {};
 
-let watchId =
-  null;
+let savedPlaces = [];
 
-let marker =
-  null;
+let placeMarkers = {};
 
-let lastPosition =
-  null;
-
-let placeMarkers =
-  {};
-
-let savedPlaces =
-  JSON.parse(
-    localStorage.getItem(
-      "blink_places"
-    ) || "[]"
-  );
-
-
-/* =========================================================
-   MAP
-========================================================= */
-
-const map =
-  L.map("map")
-   .setView(
-     [0,0],
-     2
-   );
-
-
-const lightMap =
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution: "© OpenStreetMap"
-    }
-  );
-
-
-const darkMap =
-  L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    {
-      maxZoom: 20,
-      attribution: "© OpenStreetMap © CARTO"
-    }
-  );
-
-
-const satelliteMap =
-  L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom: 19,
-      attribution: "© Esri"
-    }
-  );
-
-
-const labelsMap =
-  L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
-    {
-      maxZoom: 20,
-      attribution: "© OpenStreetMap © CARTO"
-    }
-  );
-
+let authMode = "login";
 
 let currentMapStyle =
   localStorage.getItem(
@@ -1589,117 +1046,96 @@ let currentMapStyle =
   ) || "dark";
 
 
-function setMapStyle(style) {
+/* =========================================================
+   HELPERS
+========================================================= */
 
-  [
-    lightMap,
-    darkMap,
-    satelliteMap,
-    labelsMap
-  ].forEach(layer => {
+function escapeHtml(value) {
 
-    if (
-      map.hasLayer(layer)
-    ) {
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    function(c) {
 
-      map.removeLayer(layer);
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+
+      }[c];
 
     }
-
-  });
-
-
-  if (
-    style === "light"
-  ) {
-
-    lightMap.addTo(map);
-
-  }
-
-
-  if (
-    style === "dark"
-  ) {
-
-    darkMap.addTo(map);
-
-  }
-
-
-  if (
-    style === "hybrid"
-  ) {
-
-    satelliteMap.addTo(map);
-
-    labelsMap.addTo(map);
-
-  }
-
-
-  currentMapStyle =
-    style;
-
-
-  localStorage.setItem(
-    "blink_map_style",
-    style
   );
 
+}
+
+
+function avatar(src) {
+
+  if (src) {
+    return src;
+  }
+
+  return (
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
+      '<rect width="160" height="160" fill="#222"/>' +
+      '<text x="80" y="108" text-anchor="middle" font-size="70" fill="white">👤</text>' +
+      '</svg>'
+    )
+  );
+
+}
+
+
+function toast(text) {
+
+  const box =
+    document.getElementById("toast");
+
+  box.textContent = text;
+
+  box.style.display = "block";
+
+  clearTimeout(window.blinkToast);
+
+  window.blinkToast =
+    setTimeout(function() {
+
+      box.style.display = "none";
+
+    }, 2800);
+
+}
+
+
+function setStatus(text, live) {
 
   document.getElementById(
-    "mapStyles"
-  ).style.display =
-    "none";
+    "statusText"
+  ).textContent = text;
 
-}
+  document.getElementById(
+    "statusDot"
+  ).classList.toggle(
+    "live",
+    !!live
+  );
 
-
-setMapStyle(
-  currentMapStyle
-);
-
-
-function toggleMapStyles() {
-
-  const menu =
-    document.getElementById(
-      "mapStyles"
-    );
-
-
-  menu.style.display =
-    menu.style.display === "none"
-      ? "block"
-      : "none";
-
-}
-
-
-function zoomIn() {
-  map.zoomIn();
-}
-
-
-function zoomOut() {
-  map.zoomOut();
 }
 
 
 /* =========================================================
-   AUTH MODE
+   AUTH UI
 ========================================================= */
 
-let authMode =
-  "login";
+function switchAuth(mode) {
 
-
-function showAuthMode(mode) {
-
-  authMode =
-    mode;
-
+  authMode = mode;
 
   document
     .getElementById("loginTab")
@@ -1708,14 +1144,12 @@ function showAuthMode(mode) {
       mode === "login"
     );
 
-
   document
     .getElementById("registerTab")
     .classList.toggle(
       "active",
       mode === "register"
     );
-
 
   document.getElementById(
     "registerNameField"
@@ -1724,36 +1158,35 @@ function showAuthMode(mode) {
       ? "block"
       : "none";
 
-
   document.getElementById(
     "authButton"
   ).textContent =
-    mode === "register"
-      ? "Создать аккаунт"
-      : "Войти";
+    mode === "login"
+      ? "Войти"
+      : "Создать аккаунт";
 
+  document.getElementById(
+    "authPassword"
+  ).autocomplete =
+    mode === "login"
+      ? "current-password"
+      : "new-password";
 
   hideAuthError();
 
 }
 
 
-function showAuthError(
-  text
-) {
+function showAuthError(text) {
 
   const box =
     document.getElementById(
       "authError"
     );
 
+  box.textContent = text;
 
-  box.textContent =
-    text;
-
-
-  box.style.display =
-    "block";
+  box.style.display = "block";
 
 }
 
@@ -1762,8 +1195,24 @@ function hideAuthError() {
 
   document.getElementById(
     "authError"
+  ).style.display = "none";
+
+}
+
+
+function setAuthLoading(value) {
+
+  document.getElementById(
+    "authLoading"
   ).style.display =
-    "none";
+    value
+      ? "block"
+      : "none";
+
+  document.getElementById(
+    "authButton"
+  ).disabled =
+    value;
 
 }
 
@@ -1776,70 +1225,85 @@ async function submitAuth() {
 
   hideAuthError();
 
-
   const email =
     document.getElementById(
       "authEmail"
     ).value.trim();
-
 
   const password =
     document.getElementById(
       "authPassword"
     ).value;
 
+  const name =
+    document.getElementById(
+      "authName"
+    ).value.trim();
 
-  if (
-    !email ||
-    !password
-  ) {
+  if (!email) {
 
     showAuthError(
-      "Заполни email и пароль."
+      "Введи email."
     );
 
     return;
 
   }
 
+  if (!password || password.length < 6) {
 
-  const button =
-    document.getElementById(
-      "authButton"
+    showAuthError(
+      "Пароль должен содержать минимум 6 символов."
     );
 
+    return;
 
-  button.disabled =
-    true;
+  }
 
+  if (
+    authMode === "register" &&
+    !name
+  ) {
 
-  button.textContent =
-    "Подождите…";
+    showAuthError(
+      "Введи имя."
+    );
 
+    return;
+
+  }
+
+  setAuthLoading(true);
 
   try {
 
     if (
-      authMode === "register"
+      authMode === "login"
     ) {
 
-      const name =
-        document.getElementById(
-          "authName"
-        ).value.trim()
-        || "Пользователь";
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
 
+          email,
+          password
 
-      if (
-        password.length < 6
-      ) {
+        });
 
-        throw new Error(
-          "Пароль должен содержать минимум 6 символов."
-        );
-
+      if (error) {
+        throw error;
       }
 
+      currentUser =
+        data.user;
+
+      await enterApp();
+
+    }
+
+    else {
 
       const {
         data,
@@ -1860,84 +1324,50 @@ async function submitAuth() {
 
         });
 
-
-      if (
-        error
-      ) {
-
+      if (error) {
         throw error;
+      }
+
+      if (!data.user) {
+
+        throw new Error(
+          "Supabase не создал пользователя."
+        );
 
       }
 
+      currentUser =
+        data.user;
 
-      if (
-        data.user
-      ) {
+      /*
+       * Если в Supabase включено подтверждение email,
+       * session может отсутствовать.
+       */
 
-        currentUser =
-          data.user;
-
-      }
-
-
-      toast(
-        "Аккаунт создан."
-      );
-
-
-      if (
-        !data.session
-      ) {
+      if (!data.session) {
 
         showAuthError(
-          "Проверь почту и подтверди регистрацию."
+          "Аккаунт создан. Проверь почту и подтверди email, затем войди."
         );
+
+        setAuthLoading(false);
 
         return;
 
       }
 
-    }
+      await createProfileIfNeeded(
+        name
+      );
 
-    else {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.signInWithPassword({
-
-          email,
-          password
-
-        });
-
-
-      if (
-        error
-      ) {
-
-        throw error;
-
-      }
-
-
-      currentUser =
-        data.user;
+      await enterApp();
 
     }
-
-
-    await initializeApp();
 
   }
-
   catch(error) {
 
-    console.error(
-      error
-    );
-
+    console.error(error);
 
     showAuthError(
       translateAuthError(
@@ -1946,29 +1376,23 @@ async function submitAuth() {
     );
 
   }
-
   finally {
 
-    button.disabled =
-      false;
-
-    button.textContent =
-      authMode === "register"
-        ? "Создать аккаунт"
-        : "Войти";
+    setAuthLoading(false);
 
   }
 
 }
 
 
-function translateAuthError(
-  message
-) {
+function translateAuthError(message) {
+
+  const text =
+    String(message || "");
 
   if (
-    message.includes(
-      "Invalid login credentials"
+    text.toLowerCase().includes(
+      "invalid login credentials"
     )
   ) {
 
@@ -1976,10 +1400,9 @@ function translateAuthError(
 
   }
 
-
   if (
-    message.includes(
-      "already registered"
+    text.toLowerCase().includes(
+      "user already registered"
     )
   ) {
 
@@ -1987,90 +1410,30 @@ function translateAuthError(
 
   }
 
+  if (
+    text.toLowerCase().includes(
+      "email not confirmed"
+    )
+  ) {
 
-  return message;
-
-}
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-async function checkSession() {
-
-  try {
-
-    const {
-      data
-    } =
-      await supabaseClient.auth.getSession();
-
-
-    if (
-      data.session
-    ) {
-
-      currentUser =
-        data.session.user;
-
-      await initializeApp();
-
-    }
+    return "Сначала подтверди email.";
 
   }
 
-  catch(error) {
+  if (
+    text.toLowerCase().includes(
+      "password"
+    ) &&
+    text.toLowerCase().includes(
+      "6"
+    )
+  ) {
 
-    console.error(
-      error
-    );
+    return "Пароль должен содержать минимум 6 символов.";
 
   }
 
-}
-
-
-async function initializeApp() {
-
-  document.getElementById(
-    "authScreen"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "mapControls"
-  ).style.display =
-    "flex";
-
-
-  document.getElementById(
-    "bottomNav"
-  ).style.display =
-    "grid";
-
-
-  await loadProfile();
-
-  await loadFriends();
-
-  await loadNotifications();
-
-  await loadChats();
-
-  await loadFriendLocations();
-
-  renderSavedPlaces();
-
-  startRealtime();
-
-  startGPS();
-
-  setTimeout(
-    () => map.invalidateSize(),
-    300
-  );
+  return text || "Произошла ошибка.";
 
 }
 
@@ -2079,16 +1442,13 @@ async function initializeApp() {
    PROFILE
 ========================================================= */
 
-async function loadProfile() {
+async function createProfileIfNeeded(
+  username
+) {
 
-  if (
-    !currentUser
-  ) {
-
+  if (!currentUser) {
     return;
-
   }
-
 
   const {
     data,
@@ -2103,44 +1463,69 @@ async function loadProfile() {
       )
       .maybeSingle();
 
+  if (error) {
+    throw error;
+  }
 
-  if (
-    error
+  if (data) {
+
+    profile = data;
+
+    return;
+
+  }
+
+  let code = null;
+
+  for (
+    let i = 0;
+    i < 30;
+    i++
   ) {
 
-    console.error(
-      error
+    const candidate =
+      String(
+        Math.floor(
+          1000 +
+          Math.random() *
+          9000
+        )
+      );
+
+    const {
+      data: existing
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("id")
+        .eq(
+          "friend_code",
+          candidate
+        )
+        .maybeSingle();
+
+    if (!existing) {
+
+      code =
+        candidate;
+
+      break;
+
+    }
+
+  }
+
+  if (!code) {
+
+    throw new Error(
+      "Не удалось создать код пользователя."
     );
 
-    return;
-
   }
-
-
-  if (
-    data
-  ) {
-
-    myProfile =
-      data;
-
-    return;
-
-  }
-
-
-  const username =
-    currentUser.user_metadata?.username
-    || "Пользователь";
-
-
-  const code =
-    await generateUniqueCode();
-
 
   const {
-    data: created,
-    error: createError
+    data: inserted,
+    error: insertError
   } =
     await supabaseClient
       .from("profiles")
@@ -2150,7 +1535,7 @@ async function loadProfile() {
           currentUser.id,
 
         username:
-          username,
+          username || "Пользователь",
 
         friend_code:
           code,
@@ -2171,616 +1556,315 @@ async function loadProfile() {
       .select()
       .single();
 
+  if (insertError) {
+    throw insertError;
+  }
 
-  if (
-    createError
-  ) {
+  profile =
+    inserted;
 
-    console.error(
-      createError
+}
+
+
+async function loadProfile() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq(
+        "id",
+        currentUser.id
+      )
+      .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+
+    await createProfileIfNeeded(
+      currentUser.user_metadata?.username ||
+      "Пользователь"
     );
 
     return;
 
   }
 
+  profile =
+    data;
 
-  myProfile =
-    created;
+  myName =
+    data.username ||
+    "Я";
+
+  myCode =
+    data.friend_code ||
+    "";
+
+  myPhoto =
+    data.avatar_url ||
+    "";
+
+  locationEnabled =
+    data.location_sharing_enabled !== false;
 
 }
 
 
-async function generateUniqueCode() {
+/* =========================================================
+   ENTER APP
+========================================================= */
 
-  for (
-    let i = 0;
-    i < 20;
-    i++
-  ) {
+async function enterApp() {
 
-    const code =
-      String(
-        Math.floor(
-          1000 +
-          Math.random() * 9000
-        )
-      );
+  document.getElementById(
+    "authScreen"
+  ).style.display = "none";
 
+  document.getElementById(
+    "loadingScreen"
+  ).style.display = "flex";
 
-    const {
-      data
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select("id")
-        .eq(
-          "friend_code",
-          code
-        )
-        .maybeSingle();
+  document.getElementById(
+    "app"
+  ).style.display = "block";
 
+  try {
 
-    if (
-      !data
-    ) {
+    await loadProfile();
 
-      return code;
+    await loadFriends();
 
-    }
+    await loadSavedPlaces();
+
+    initMap();
+
+    renderSavedPlaces();
+
+    startGPS();
+
+    subscribeRealtime();
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+    toast(
+      "Не удалось загрузить данные: " +
+      error.message
+    );
 
   }
 
+  document.getElementById(
+    "loadingScreen"
+  ).style.display = "none";
 
-  throw new Error(
-    "Не удалось создать код."
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+  if (
+    watchId !== null &&
+    navigator.geolocation
+  ) {
+
+    navigator.geolocation.clearWatch(
+      watchId
+    );
+
+    watchId = null;
+
+  }
+
+  await supabaseClient.auth.signOut();
+
+  currentUser = null;
+  profile = null;
+
+  location.reload();
+
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+let map = null;
+
+let lightMap = null;
+
+let darkMap = null;
+
+let satelliteMap = null;
+
+let labelsMap = null;
+
+
+function initMap() {
+
+  if (map) {
+    return;
+  }
+
+  map =
+    L.map("map")
+      .setView(
+        [0,0],
+        2
+      );
+
+  lightMap =
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap"
+      }
+    );
+
+  darkMap =
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+        maxZoom: 20,
+        attribution: "© OpenStreetMap © CARTO"
+      }
+    );
+
+  satelliteMap =
+    L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        maxZoom: 19,
+        attribution: "© Esri"
+      }
+    );
+
+  labelsMap =
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
+      {
+        maxZoom: 20,
+        attribution: "© OpenStreetMap © CARTO"
+      }
+    );
+
+  setMapStyle(
+    currentMapStyle
   );
 
 }
 
 
 /* =========================================================
-   FRIENDS
+   MAP STYLE
 ========================================================= */
 
-async function loadFriends() {
+function setMapStyle(style) {
 
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.rpc(
-        "get_my_friends"
-      );
-
-
-    if (
-      error
-    ) {
-
-      console.error(
-        error
-      );
-
-      return;
-
-    }
-
-
-    friends =
-      data || [];
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-  }
-
-}
-
-
-async function addFriend() {
-
-  const input =
-    document.getElementById(
-      "friendCode"
-    );
-
-
-  if (
-    !input
-  ) {
-
+  if (!map) {
     return;
-
   }
 
-
-  const code =
-    input.value.trim();
-
-
-  if (
-    !/^\d{4}$/.test(code)
-  ) {
-
-    toast(
-      "Код должен состоять из 4 цифр."
-    );
-
-    return;
-
-  }
-
-
-  if (
-    code === myProfile?.friend_code
-  ) {
-
-    toast(
-      "Нельзя добавить самого себя."
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.rpc(
-        "send_friend_request_by_code",
-        {
-          p_friend_code:
-            code
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    toast(
-      "Заявка отправлена."
-    );
-
-
-    showFriends();
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-    toast(
-      error.message ||
-      "Не удалось отправить заявку."
-    );
-
-  }
-
-}
-
-
-async function acceptFriend(
-  requestId
-) {
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.rpc(
-        "accept_friend_request",
-        {
-          p_request_id:
-            requestId
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    toast(
-      "Друг добавлен."
-    );
-
-
-    await loadFriends();
-
-    showFriends();
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-    toast(
-      error.message ||
-      "Ошибка."
-    );
-
-  }
-
-}
-
-
-async function rejectFriend(
-  requestId
-) {
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.rpc(
-        "reject_friend_request",
-        {
-          p_request_id:
-            requestId
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    toast(
-      "Заявка отклонена."
-    );
-
-
-    showFriends();
-
-  }
-
-  catch(error) {
-
-    toast(
-      error.message ||
-      "Ошибка."
-    );
-
-  }
-
-}
-
-
-async function removeFriend(
-  friendId
-) {
-
-  if (
-    !confirm(
-      "Удалить этого друга?"
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.rpc(
-        "remove_friend",
-        {
-          p_friend_id:
-            friendId
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    await loadFriends();
-
-    showFriends();
-
-    toast(
-      "Друг удалён."
-    );
-
-  }
-
-  catch(error) {
-
-    toast(
-      error.message ||
-      "Ошибка."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   FRIEND REQUESTS
-========================================================= */
-
-async function loadIncomingRequests() {
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.rpc(
-        "get_incoming_requests"
-      );
-
-
-    if (
-      error
-    ) {
-
-      console.error(
-        error
-      );
-
-      return [];
-
-    }
-
-
-    return data || [];
-
-  }
-
-  catch(error) {
-
-    return [];
-
-  }
-
-}
-
-
-/* =========================================================
-   FRIEND LOCATIONS
-========================================================= */
-
-async function loadFriendLocations() {
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.rpc(
-        "get_friend_locations"
-      );
-
-
-    if (
-      error
-    ) {
-
-      console.error(
-        error
-      );
-
-      return;
-
-    }
-
-
-    friendLocations =
-      data || [];
-
-
-    renderFriendLocations();
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   FRIEND MARKERS
-========================================================= */
-
-let friendMarkers =
-  {};
-
-
-function friendIcon(
-  photo
-) {
-
-  return L.divIcon({
-
-    className: "",
-
-    html:
-
-      '<div style="' +
-
-        'width:44px;' +
-        'height:44px;' +
-        'border:2px solid white;' +
-        'border-radius:50%;' +
-        'overflow:hidden;' +
-        'background:#222;' +
-        'box-shadow:0 5px 20px rgba(0,0,0,.6);' +
-
-      '">' +
-
-        '<img src="' +
-
-          avatar(
-            photo
-          ) +
-
-        '" style="' +
-
-          'width:100%;' +
-          'height:100%;' +
-          'object-fit:cover;' +
-
-        '">' +
-
-      '</div>',
-
-    iconSize:
-      [44,44],
-
-    iconAnchor:
-      [22,22]
-
-  });
-
-}
-
-
-function renderFriendLocations() {
-
-  Object.keys(
-    friendMarkers
-  ).forEach(id => {
-
-    if (
-      map.hasLayer(
-        friendMarkers[id]
-      )
-    ) {
-
-      map.removeLayer(
-        friendMarkers[id]
-      );
-
-    }
-
-  });
-
-
-  friendMarkers =
-    {};
-
-
-  friendLocations.forEach(
-    friend => {
+  [
+    lightMap,
+    darkMap,
+    satelliteMap,
+    labelsMap
+
+  ].forEach(
+    layer => {
 
       if (
-        !friend.latitude ||
-        !friend.longitude
+        layer &&
+        map.hasLayer(layer)
       ) {
 
-        return;
+        map.removeLayer(layer);
 
       }
 
-
-      const marker =
-        L.marker(
-
-          [
-            Number(
-              friend.latitude
-            ),
-
-            Number(
-              friend.longitude
-            )
-
-          ],
-
-          {
-            icon:
-              friendIcon(
-                friend.avatar_url
-              ),
-
-            zIndexOffset:
-              800
-          }
-
-        ).addTo(map);
-
-
-      marker.bindPopup(`
-
-        <b>
-          ${escapeHtml(
-            friend.username
-          )}
-        </b>
-
-        <br>
-
-        🚀 ${Number(
-          friend.speed || 0
-        ).toFixed(1)} км/ч
-
-      `);
-
-
-      friendMarkers[
-        friend.user_id
-      ] =
-        marker;
-
     }
-
   );
+
+  if (style === "light") {
+    lightMap.addTo(map);
+  }
+
+  if (style === "dark") {
+    darkMap.addTo(map);
+  }
+
+  if (style === "hybrid") {
+
+    satelliteMap.addTo(map);
+    labelsMap.addTo(map);
+
+  }
+
+  currentMapStyle =
+    style;
+
+  localStorage.setItem(
+    "blink_map_style",
+    style
+  );
+
+  const styles =
+    document.getElementById(
+      "mapStyles"
+    );
+
+  if (styles) {
+    styles.style.display = "none";
+  }
+
+}
+
+
+function toggleMapStyles() {
+
+  const menu =
+    document.getElementById(
+      "mapStyles"
+    );
+
+  menu.style.display =
+    menu.style.display === "none"
+      ? "block"
+      : "none";
+
+}
+
+
+function zoomIn() {
+
+  if (map) {
+    map.zoomIn();
+  }
+
+}
+
+
+function zoomOut() {
+
+  if (map) {
+    map.zoomOut();
+  }
 
 }
 
@@ -2791,9 +1875,7 @@ function renderFriendLocations() {
 
 function startGPS() {
 
-  if (
-    !locationEnabled
-  ) {
+  if (!locationEnabled) {
 
     setStatus(
       "Геолокация выключена",
@@ -2804,10 +1886,7 @@ function startGPS() {
 
   }
 
-
-  if (
-    !navigator.geolocation
-  ) {
+  if (!navigator.geolocation) {
 
     setStatus(
       "GPS не поддерживается",
@@ -2817,7 +1896,6 @@ function startGPS() {
     return;
 
   }
-
 
   if (
     watchId !== null
@@ -2829,465 +1907,21 @@ function startGPS() {
 
   }
 
-
   setStatus(
     "Получаем GPS…",
     true
   );
 
-
   watchId =
     navigator.geolocation.watchPosition(
-
       onPosition,
-
       onPositionError,
-
       {
         enableHighAccuracy: true,
         maximumAge: 1000,
         timeout: 15000
       }
-
     );
-
-}
-
-
-async function onPosition(
-  position
-) {
-
-  const c =
-    position.coords;
-
-
-  let speedMs =
-    Number.isFinite(c.speed)
-      ? Math.max(
-          0,
-          c.speed
-        )
-      : null;
-
-
-  let direction =
-    lastPosition
-      ? lastPosition.direction
-      : 0;
-
-
-  if (
-    lastPosition
-  ) {
-
-    const seconds =
-      (
-        position.timestamp -
-        lastPosition.time
-      ) / 1000;
-
-
-    if (
-      seconds > 0
-    ) {
-
-      const meters =
-        calculateDistance(
-
-          lastPosition.lat,
-          lastPosition.lng,
-
-          c.latitude,
-          c.longitude
-
-        );
-
-
-      if (
-        speedMs === null
-      ) {
-
-        speedMs =
-          meters /
-          seconds;
-
-      }
-
-
-      if (
-        meters > 1
-      ) {
-
-        direction =
-          calculateBearing(
-
-            lastPosition.lat,
-            lastPosition.lng,
-
-            c.latitude,
-            c.longitude
-
-          );
-
-      }
-
-    }
-
-  }
-
-
-  const speedKmh =
-    (speedMs || 0) * 3.6;
-
-
-  lastPosition = {
-
-    lat:
-      c.latitude,
-
-    lng:
-      c.longitude,
-
-    time:
-      position.timestamp,
-
-    direction:
-      direction,
-
-    speed:
-      speedKmh
-
-  };
-
-
-  updateUserMarker(
-    c.latitude,
-    c.longitude,
-    speedKmh,
-    direction
-  );
-
-
-  setStatus(
-    "GPS • " +
-    directionName(direction),
-    true
-  );
-
-
-  await saveMyLocation(
-
-    c.latitude,
-    c.longitude,
-
-    c.accuracy,
-
-    speedKmh,
-
-    direction
-
-  );
-
-}
-
-
-function updateUserMarker(
-  lat,
-  lng,
-  speed,
-  direction
-) {
-
-  if (
-    !marker
-  ) {
-
-    marker =
-      L.marker(
-
-        [
-          lat,
-          lng
-        ],
-
-        {
-          icon:
-            userIcon(
-              speed,
-              direction
-            ),
-
-          zIndexOffset:
-            1000
-        }
-
-      ).addTo(map);
-
-
-    marker.bindPopup(
-      userPopup(
-        speed,
-        direction
-      )
-    );
-
-
-    map.setView(
-      [lat,lng],
-      16
-    );
-
-  }
-
-  else {
-
-    marker.setLatLng(
-      [lat,lng]
-    );
-
-
-    marker.setIcon(
-      userIcon(
-        speed,
-        direction
-      )
-    );
-
-
-    marker
-      .getPopup()
-      .setContent(
-        userPopup(
-          speed,
-          direction
-        )
-      );
-
-  }
-
-}
-
-
-async function saveMyLocation(
-  lat,
-  lng,
-  accuracy,
-  speed,
-  direction
-) {
-
-  if (
-    !currentUser ||
-    !locationEnabled
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("locations")
-        .upsert(
-
-          {
-
-            user_id:
-              currentUser.id,
-
-            latitude:
-              lat,
-
-            longitude:
-              lng,
-
-            accuracy:
-              accuracy,
-
-            speed:
-              speed,
-
-            direction:
-              direction,
-
-            updated_at:
-              new Date().toISOString()
-
-          },
-
-          {
-            onConflict:
-              "user_id"
-          }
-
-        );
-
-
-    if (
-      error
-    ) {
-
-      console.error(
-        "LOCATION:",
-        error
-      );
-
-    }
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-  }
-
-}
-
-
-function userIcon(
-  speed,
-  direction
-) {
-
-  const photo =
-    myProfile?.avatar_url
-    || "";
-
-
-  return L.divIcon({
-
-    className: "",
-
-    html:
-
-      '<div class="pin">' +
-
-        '<div class="ring"></div>' +
-
-        '<img src="' +
-
-          avatar(photo) +
-
-        '">' +
-
-        (
-
-          speed > 0.5
-
-          ?
-
-          '<div class="direction-arrow" ' +
-
-          'style="transform:translateX(-50%) rotate(' +
-
-          direction +
-
-          'deg)">' +
-
-          '➤' +
-
-          '</div>'
-
-          :
-
-          ""
-
-        ) +
-
-      '</div>' +
-
-      '<div class="speed-label">' +
-
-        speed.toFixed(1) +
-
-        ' км/ч' +
-
-      '</div>',
-
-    iconSize:
-      [48,72],
-
-    iconAnchor:
-      [24,24]
-
-  });
-
-}
-
-
-function userPopup(
-  speed,
-  direction
-) {
-
-  return `
-
-    <b>
-      ${escapeHtml(
-        myProfile?.username || "Я"
-      )}
-    </b>
-
-    <br>
-
-    🚀 ${speed.toFixed(1)} км/ч
-
-    <br>
-
-    🧭 ${directionName(direction)}
-
-  `;
-
-}
-
-
-function onPositionError(
-  error
-) {
-
-  if (
-    error.code === 1
-  ) {
-
-    setStatus(
-      "Разреши геолокацию",
-      false
-    );
-
-    toast(
-      "Разреши браузеру доступ к GPS."
-    );
-
-  }
-
-  else if (
-    error.code === 2
-  ) {
-
-    setStatus(
-      "GPS недоступен",
-      false
-    );
-
-  }
-
-  else {
-
-    setStatus(
-      "GPS не отвечает",
-      false
-    );
-
-  }
 
 }
 
@@ -3303,29 +1937,22 @@ function calculateDistance(
   lon2
 ) {
 
-  const R =
-    6371000;
+  const R = 6371000;
 
   const rad =
     Math.PI / 180;
 
   const dLat =
-    (lat2-lat1)*rad;
+    (lat2-lat1) * rad;
 
   const dLon =
-    (lon2-lon1)*rad;
-
+    (lon2-lon1) * rad;
 
   const a =
-
-    Math.sin(dLat/2)**2
-
-    +
-
+    Math.sin(dLat/2) ** 2 +
     Math.cos(lat1*rad) *
     Math.cos(lat2*rad) *
-    Math.sin(dLon/2)**2;
-
+    Math.sin(dLon/2) ** 2;
 
   return (
     2 *
@@ -3352,47 +1979,36 @@ function calculateBearing(
   const rad =
     Math.PI / 180;
 
-
   const y =
     Math.sin(
       (lon2-lon1)*rad
-    )
-    *
+    ) *
     Math.cos(
       lat2*rad
     );
 
-
   const x =
-
     Math.cos(
       lat1*rad
-    )
-    *
+    ) *
     Math.sin(
       lat2*rad
-    )
-
-    -
-
+    ) -
     Math.sin(
       lat1*rad
-    )
-    *
+    ) *
     Math.cos(
       lat2*rad
-    )
-    *
+    ) *
     Math.cos(
       (lon2-lon1)*rad
     );
 
-
   return (
-    Math.atan2(y,x)
-    * 180 /
-    Math.PI
-    + 360
+    Math.atan2(y,x) *
+    180 /
+    Math.PI +
+    360
   ) % 360;
 
 }
@@ -3413,7 +2029,6 @@ function directionName(
     "СЗ"
   ];
 
-
   return names[
     Math.round(
       degrees / 45
@@ -3424,381 +2039,343 @@ function directionName(
 
 
 /* =========================================================
-   PROFILE UI
+   USER ICON
 ========================================================= */
 
-function showProfile() {
+function userIcon(
+  speed,
+  direction
+) {
 
-  openPanel(`
+  const moving =
+    speed > .5;
 
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
+  return L.divIcon({
 
+    className: "",
 
-    <h2>
-      👤 Профиль
-    </h2>
+    html:
 
+      '<div class="pin">' +
 
-    <div class="profile">
+        '<div class="ring"></div>' +
 
-      <img
-        id="profilePreview"
-        class="avatar"
-        src="${avatar(
-          myProfile?.avatar_url
-        )}"
-      >
+        '<img src="' +
+          avatar(myPhoto) +
+        '">' +
 
+        (
+          moving
+          ?
+          '<div class="direction-arrow" ' +
+          'style="transform:translateX(-50%) rotate(' +
+          direction +
+          'deg)">➤</div>'
+          :
+          ""
+        ) +
 
-      <div>
+      '</div>' +
 
-        <b>
-          ${escapeHtml(
-            myProfile?.username ||
-            "Пользователь"
-          )}
-        </b>
+      '<div class="speed-label">' +
+        speed.toFixed(1) +
+        ' км/ч' +
+      '</div>',
 
+    iconSize: [
+      46,
+      70
+    ],
 
-        <div class="code">
+    iconAnchor: [
+      23,
+      23
+    ]
 
-          Код:
-
-          <b>
-            ${escapeHtml(
-              myProfile?.friend_code ||
-              "----"
-            )}
-          </b>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Имя
-      </label>
-
-      <input
-        id="nameInput"
-        maxlength="30"
-        value="${escapeHtml(
-          myProfile?.username || ""
-        )}"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        О себе
-      </label>
-
-      <textarea
-        id="bioInput"
-        maxlength="160"
-        placeholder="Расскажи немного о себе"
-      >${escapeHtml(
-        myProfile?.bio || ""
-      )}</textarea>
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Фото профиля
-      </label>
-
-      <input
-        id="photoInput"
-        type="file"
-        accept="image/*"
-      >
-
-    </div>
-
-
-    <button
-      class="btn"
-      onclick="saveProfile()"
-    >
-      Сохранить профиль
-    </button>
-
-
-    <button
-      class="btn secondary"
-      onclick="showPlaces()"
-    >
-      📍 Мои места
-    </button>
-
-
-    <p class="note">
-      Твой 4-значный код нужен друзьям,
-      чтобы отправить тебе заявку.
-    </p>
-
-  `);
-
-
-  document.getElementById(
-    "photoInput"
-  ).onchange =
-    handlePhotoChange;
+  });
 
 }
 
 
-async function handlePhotoChange(
-  event
+/* =========================================================
+   FRIEND ICON
+========================================================= */
+
+function friendIcon(
+  photo
 ) {
 
-  const file =
-    event.target.files[0];
+  return L.divIcon({
+
+    className: "",
+
+    html:
+      '<div class="friend-pin">' +
+        '<img src="' +
+          avatar(photo) +
+        '">' +
+      '</div>',
+
+    iconSize: [
+      42,
+      42
+    ],
+
+    iconAnchor: [
+      21,
+      21
+    ]
+
+  });
+
+}
 
 
-  if (
-    !file
-  ) {
+/* =========================================================
+   GPS POSITION
+========================================================= */
 
-    return;
+async function onPosition(
+  position
+) {
+
+  const c =
+    position.coords;
+
+  let speedMs =
+    Number.isFinite(c.speed)
+      ? Math.max(0,c.speed)
+      : null;
+
+  let direction =
+    lastPosition
+      ? lastPosition.direction
+      : 0;
+
+  if (lastPosition) {
+
+    const seconds =
+      (
+        position.timestamp -
+        lastPosition.time
+      ) / 1000;
+
+    if (seconds > 0) {
+
+      const meters =
+        calculateDistance(
+          lastPosition.lat,
+          lastPosition.lng,
+          c.latitude,
+          c.longitude
+        );
+
+      if (speedMs === null) {
+
+        speedMs =
+          meters / seconds;
+
+      }
+
+      if (meters > 1) {
+
+        direction =
+          calculateBearing(
+            lastPosition.lat,
+            lastPosition.lng,
+            c.latitude,
+            c.longitude
+          );
+
+      }
+
+    }
 
   }
 
+  const speedKmh =
+    (speedMs || 0) * 3.6;
 
-  if (
-    file.size >
-    5 * 1024 * 1024
-  ) {
+  lastPosition = {
 
-    toast(
-      "Фото должно быть меньше 5 МБ."
+    lat: c.latitude,
+
+    lng: c.longitude,
+
+    time: position.timestamp,
+
+    direction,
+
+    speed: speedKmh
+
+  };
+
+  if (!marker) {
+
+    marker =
+      L.marker(
+        [
+          c.latitude,
+          c.longitude
+        ],
+        {
+          icon:
+            userIcon(
+              speedKmh,
+              direction
+            ),
+          zIndexOffset: 1000
+        }
+      ).addTo(map);
+
+    marker.bindPopup(
+      createMyPopup(
+        speedKmh,
+        direction
+      )
     );
 
-    return;
+    map.setView(
+      [
+        c.latitude,
+        c.longitude
+      ],
+      16
+    );
+
+  }
+  else {
+
+    marker.setLatLng(
+      [
+        c.latitude,
+        c.longitude
+      ]
+    );
+
+    marker.setIcon(
+      userIcon(
+        speedKmh,
+        direction
+      )
+    );
+
+    marker
+      .getPopup()
+      .setContent(
+        createMyPopup(
+          speedKmh,
+          direction
+        )
+      );
 
   }
 
+  setStatus(
+    "GPS • " +
+    directionName(direction),
+    true
+  );
 
-  const reader =
-    new FileReader();
-
-
-  reader.onload =
-    async function() {
-
-      try {
-
-        const dataUrl =
-          reader.result;
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("profiles")
-            .update({
-
-              avatar_url:
-                dataUrl
-
-            })
-            .eq(
-              "id",
-              currentUser.id
-            );
-
-
-        if (
-          error
-        ) {
-
-          throw error;
-
-        }
-
-
-        myProfile.avatar_url =
-          dataUrl;
-
-
-        const preview =
-          document.getElementById(
-            "profilePreview"
-          );
-
-
-        if (
-          preview
-        ) {
-
-          preview.src =
-            dataUrl;
-
-        }
-
-
-        if (
-          marker
-        ) {
-
-          marker.setIcon(
-
-            userIcon(
-
-              lastPosition
-                ? lastPosition.speed
-                : 0,
-
-              lastPosition
-                ? lastPosition.direction
-                : 0
-
-            )
-
-          );
-
-        }
-
-
-        toast(
-          "Фотография сохранена."
-        );
-
-      }
-
-      catch(error) {
-
-        console.error(
-          error
-        );
-
-        toast(
-          "Не удалось сохранить фото."
-        );
-
-      }
-
-    };
-
-
-  reader.readAsDataURL(
-    file
+  await saveMyLocation(
+    c.latitude,
+    c.longitude,
+    c.accuracy
   );
 
 }
 
 
-async function saveProfile() {
+function createMyPopup(
+  speed,
+  direction
+) {
 
-  const name =
-    document.getElementById(
-      "nameInput"
-    ).value.trim()
-    || "Пользователь";
+  return (
 
+    "<b>" +
+    escapeHtml(myName) +
+    "</b>" +
 
-  const bio =
-    document.getElementById(
-      "bioInput"
-    ).value.trim();
+    "<br>🚀 " +
+    speed.toFixed(1) +
+    " км/ч" +
 
+    "<br>🧭 " +
+    directionName(direction)
 
-  try {
+  );
 
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .update({
-
-          username:
-            name,
-
-          bio:
-            bio
-
-        })
-        .eq(
-          "id",
-          currentUser.id
-        )
-        .select()
-        .single();
+}
 
 
-    if (
-      error
-    ) {
+/* =========================================================
+   SAVE LOCATION
+========================================================= */
 
-      throw error;
+let lastLocationSave = 0;
 
-    }
+async function saveMyLocation(
+  lat,
+  lng,
+  accuracy
+) {
 
-
-    myProfile =
-      data;
-
-
-    if (
-      marker
-    ) {
-
-      marker.setIcon(
-
-        userIcon(
-
-          lastPosition
-            ? lastPosition.speed
-            : 0,
-
-          lastPosition
-            ? lastPosition.direction
-            : 0
-
-        )
-
-      );
-
-    }
-
-
-    toast(
-      "Профиль сохранён."
-    );
-
-
-    closePanel();
-
+  if (!currentUser) {
+    return;
   }
 
-  catch(error) {
+  if (!locationEnabled) {
+    return;
+  }
+
+  const now =
+    Date.now();
+
+  if (
+    now - lastLocationSave <
+    5000
+  ) {
+    return;
+  }
+
+  lastLocationSave =
+    now;
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("locations")
+      .upsert(
+        {
+          user_id:
+            currentUser.id,
+
+          latitude:
+            lat,
+
+          longitude:
+            lng,
+
+          accuracy:
+            accuracy || null,
+
+          updated_at:
+            new Date().toISOString()
+
+        },
+        {
+          onConflict:
+            "user_id"
+        }
+      );
+
+  if (error) {
 
     console.error(
+      "LOCATION ERROR:",
       error
-    );
-
-    toast(
-      error.message ||
-      "Ошибка сохранения."
     );
 
   }
@@ -3807,174 +2384,375 @@ async function saveProfile() {
 
 
 /* =========================================================
-   FRIENDS UI
+   GPS ERROR
+========================================================= */
+
+function onPositionError(
+  error
+) {
+
+  if (error.code === 1) {
+
+    setStatus(
+      "Разреши геолокацию",
+      false
+    );
+
+    toast(
+      "Разреши браузеру доступ к геолокации."
+    );
+
+  }
+  else if (error.code === 2) {
+
+    setStatus(
+      "GPS недоступен",
+      false
+    );
+
+  }
+  else if (error.code === 3) {
+
+    setStatus(
+      "GPS не отвечает",
+      false
+    );
+
+  }
+  else {
+
+    setStatus(
+      "Ошибка GPS",
+      false
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FRIENDS
+========================================================= */
+
+async function loadFriends() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_my_friends"
+      );
+
+    if (error) {
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
+
+    friends =
+      data || [];
+
+    await loadFriendLocations();
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+  }
+
+}
+
+
+async function loadFriendLocations() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_friend_locations"
+      );
+
+    if (error) {
+
+      console.error(
+        "FRIEND LOCATION:",
+        error
+      );
+
+      return;
+
+    }
+
+    friendLocations =
+      data || [];
+
+    renderFriendMarkers();
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   FRIEND MARKERS
+========================================================= */
+
+function renderFriendMarkers() {
+
+  if (!map) {
+    return;
+  }
+
+  Object.keys(
+    friendMarkers
+  ).forEach(
+    id => {
+
+      if (
+        map.hasLayer(
+          friendMarkers[id]
+        )
+      ) {
+
+        map.removeLayer(
+          friendMarkers[id]
+        );
+
+      }
+
+    }
+  );
+
+  friendMarkers = {};
+
+  friendLocations.forEach(
+    friend => {
+
+      if (
+        !friend.latitude ||
+        !friend.longitude
+      ) {
+
+        return;
+
+      }
+
+      const m =
+        L.marker(
+          [
+            friend.latitude,
+            friend.longitude
+          ],
+          {
+            icon:
+              friendIcon(
+                friend.avatar_url
+              ),
+            zIndexOffset:
+              800
+          }
+        ).addTo(map);
+
+      m.bindPopup(
+        "<b>" +
+        escapeHtml(
+          friend.username ||
+          "Друг"
+        ) +
+        "</b>" +
+
+        "<br>🔢 Код: " +
+        escapeHtml(
+          friend.friend_code ||
+          ""
+        )
+      );
+
+      friendMarkers[
+        friend.user_id
+      ] = m;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ADD FRIEND
+========================================================= */
+
+async function addFriend() {
+
+  const input =
+    document.getElementById(
+      "friendCode"
+    );
+
+  const code =
+    input.value.trim();
+
+  if (
+    !/^\d{4}$/.test(code)
+  ) {
+
+    toast(
+      "Код должен состоять из 4 цифр."
+    );
+
+    return;
+
+  }
+
+  if (
+    code === myCode
+  ) {
+
+    toast(
+      "Нельзя добавить самого себя."
+    );
+
+    return;
+
+  }
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "send_friend_request_by_code",
+        {
+          target_code:
+            code
+        }
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    toast(
+      "Заявка отправлена."
+    );
+
+    input.value = "";
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+    toast(
+      error.message ||
+      "Не удалось отправить заявку."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FRIENDS PANEL
 ========================================================= */
 
 async function showFriends() {
 
-  const requests =
-    await loadIncomingRequests();
+  await loadFriends();
 
+  let list = "";
 
-  let requestHtml =
-    "";
+  friends.forEach(
+    friend => {
 
+      list += `
 
-  if (
-    requests.length
-  ) {
+        <div class="friend">
 
-    requestHtml = `
+          <img
+            class="avatar small"
+            src="${avatar(
+              friend.avatar_url
+            )}"
+          >
 
-      <h3>
-        📨 Заявки
-      </h3>
+          <div class="grow">
 
-    `;
+            <b>
+              ${escapeHtml(
+                friend.username ||
+                friend.name ||
+                "Друг"
+              )}
+            </b>
 
-
-    requests.forEach(
-      request => {
-
-        requestHtml += `
-
-          <div class="friend">
-
-            <img
-              class="avatar small"
-              src="${avatar(
-                request.avatar_url
-              )}"
-            >
-
-            <div class="grow">
-
-              <div class="friend-name">
-                ${escapeHtml(
-                  request.username
-                )}
-              </div>
-
-              <div class="code">
-                Код:
-                ${escapeHtml(
-                  request.friend_code
-                )}
-              </div>
-
+            <div class="code">
+              Код:
+              ${escapeHtml(
+                friend.friend_code ||
+                friend.code ||
+                ""
+              )}
             </div>
-
-            <button
-              class="btn small"
-              onclick="acceptFriend('${request.id}')"
-            >
-              ✓
-            </button>
-
-            <button
-              class="btn danger small"
-              onclick="rejectFriend('${request.id}')"
-            >
-              ×
-            </button>
 
           </div>
 
-        `;
+          <button
+            class="btn danger"
+            style="width:auto;margin:0"
+            onclick="
+              removeFriendFromDb(
+                '${friend.id || friend.user_id}'
+              )
+            "
+          >
+            ×
+          </button>
 
-      }
+        </div>
 
-    );
+      `;
 
-  }
+    }
+  );
 
+  if (!list) {
 
-  let friendHtml =
-    "";
-
-
-  if (
-    friends.length
-  ) {
-
-    friends.forEach(
-      friend => {
-
-        friendHtml += `
-
-          <div class="friend">
-
-            <img
-              class="avatar small"
-              src="${avatar(
-                friend.avatar_url
-              )}"
-            >
-
-            <div class="grow">
-
-              <div class="friend-name">
-
-                ${escapeHtml(
-                  friend.username
-                )}
-
-              </div>
-
-              <div class="code">
-
-                Код:
-                ${escapeHtml(
-                  friend.friend_code
-                )}
-
-              </div>
-
-            </div>
-
-            <button
-              class="btn secondary small"
-              onclick="openChatForFriend('${friend.id}')"
-            >
-              💬
-            </button>
-
-            <button
-              class="btn danger small"
-              onclick="removeFriend('${friend.id}')"
-            >
-              ×
-            </button>
-
-          </div>
-
-        `;
-
-      }
-
-    );
+    list =
+      '<div class="empty">' +
+      'Пока нет друзей.<br><br>' +
+      'Добавь друга по 4-значному коду.' +
+      '</div>';
 
   }
-
-  else {
-
-    friendHtml = `
-
-      <div class="empty">
-
-        Пока нет друзей.
-
-        <br>
-
-        Добавь первого друга
-        по его 4-значному коду.
-
-      </div>
-
-    `;
-
-  }
-
 
   openPanel(`
 
@@ -3985,11 +2763,9 @@ async function showFriends() {
       ×
     </button>
 
-
     <h2>
       👥 Друзья
     </h2>
-
 
     <div class="field">
 
@@ -4007,7 +2783,8 @@ async function showFriends() {
         >
 
         <button
-          class="btn small"
+          class="btn"
+          style="width:auto;margin:0"
           onclick="addFriend()"
         >
           Добавить
@@ -4017,16 +2794,12 @@ async function showFriends() {
 
     </div>
 
+    ${list}
 
-    ${requestHtml}
-
-
-    <h3>
-      Мои друзья
-    </h3>
-
-
-    ${friendHtml}
+    <p class="note">
+      Твой код:
+      <b>${escapeHtml(myCode)}</b>
+    </p>
 
   `);
 
@@ -4034,44 +2807,50 @@ async function showFriends() {
 
 
 /* =========================================================
-   CHATS
+   REMOVE FRIEND
 ========================================================= */
 
-async function loadChats() {
+async function removeFriendFromDb(
+  id
+) {
+
+  if (!confirm(
+    "Удалить этого друга?"
+  )) {
+    return;
+  }
 
   try {
 
     const {
-      data,
       error
     } =
       await supabaseClient.rpc(
-        "get_my_chats"
+        "remove_friend",
+        {
+          friend_id:
+            id
+        }
       );
 
-
-    if (
-      error
-    ) {
-
-      console.error(
-        error
-      );
-
-      return;
-
+    if (error) {
+      throw error;
     }
 
+    toast(
+      "Друг удалён."
+    );
 
-    chats =
-      data || [];
+    await loadFriends();
+
+    showFriends();
 
   }
-
   catch(error) {
 
-    console.error(
-      error
+    toast(
+      error.message ||
+      "Ошибка удаления."
     );
 
   }
@@ -4079,85 +2858,11 @@ async function loadChats() {
 }
 
 
-function showChats() {
+/* =========================================================
+   PROFILE PANEL
+========================================================= */
 
-  let html =
-    "";
-
-
-  if (
-    !chats.length
-  ) {
-
-    html = `
-
-      <div class="empty">
-
-        💬
-
-        <br>
-
-        Пока нет чатов.
-
-        <br>
-
-        Открой профиль друга
-        и нажми 💬.
-
-      </div>
-
-    `;
-
-  }
-
-  else {
-
-    chats.forEach(
-      chat => {
-
-        html += `
-
-          <div
-            class="chat-item"
-            onclick="openChat('${chat.chat_id}')"
-          >
-
-            <img
-              class="avatar small"
-              src="${avatar(
-                chat.avatar_url
-              )}"
-            >
-
-            <div class="grow">
-
-              <b>
-                ${escapeHtml(
-                  chat.other_username
-                )}
-              </b>
-
-              <div class="chat-last">
-
-                ${escapeHtml(
-                  chat.last_message ||
-                  "Нет сообщений"
-                )}
-
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-
-    );
-
-  }
-
+function showProfile() {
 
   openPanel(`
 
@@ -4169,355 +2874,161 @@ function showChats() {
     </button>
 
     <h2>
-      💬 Чаты
+      👤 Профиль
     </h2>
 
-    <div class="chat-list">
-      ${html}
-    </div>
+    <div class="profile">
 
-  `);
+      <img
+        id="profilePreview"
+        class="avatar"
+        src="${avatar(myPhoto)}"
+      >
 
-}
+      <div>
 
+        <b>
+          ${escapeHtml(myName)}
+        </b>
 
-async function openChatForFriend(
-  friendId
-) {
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.rpc(
-        "create_direct_chat",
-        {
-          p_other_user_id:
-            friendId
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    currentChatId =
-      data;
-
-
-    await loadChats();
-
-    await openChat(
-      data
-    );
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-    toast(
-      error.message ||
-      "Не удалось открыть чат."
-    );
-
-  }
-
-}
-
-
-async function loadMessages(
-  chatId
-) {
-
-  try {
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient.rpc(
-        "get_chat_messages",
-        {
-          p_chat_id:
-            chatId
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    messages =
-      data || [];
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-    messages =
-      [];
-
-  }
-
-}
-
-
-async function openChat(
-  chatId
-) {
-
-  currentChatId =
-    chatId;
-
-
-  await loadMessages(
-    chatId
-  );
-
-
-  renderChat();
-
-}
-
-
-function renderChat() {
-
-  let html =
-    "";
-
-
-  messages.forEach(
-    message => {
-
-      const mine =
-        message.sender_id ===
-        currentUser.id;
-
-
-      html += `
-
-        <div class="message ${
-          mine ? "mine" : ""
-        }">
-
-          <div class="message-bubble">
-
-            ${escapeHtml(
-              message.body
-            )}
-
-            <div class="message-time">
-
-              ${formatTime(
-                message.created_at
-              )}
-
-            </div>
-
-          </div>
-
+        <div class="code">
+          Мой код:
+          <b>
+            ${escapeHtml(myCode)}
+          </b>
         </div>
 
-      `;
-
-    }
-
-  );
-
-
-  if (
-    !html
-  ) {
-
-    html = `
-
-      <div class="empty">
-        Начните общение 👋
       </div>
 
-    `;
-
-  }
-
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="showChats()"
-    >
-      ×
-    </button>
-
-
-    <h2>
-      💬 Чат
-    </h2>
-
-
-    <div
-      id="messages"
-      class="messages"
-    >
-      ${html}
     </div>
 
+    <div class="field">
 
-    <div class="row">
+      <label>
+        Имя
+      </label>
 
       <input
-        id="messageInput"
-        maxlength="1000"
-        placeholder="Написать сообщение…"
-        onkeydown="
-          if(event.key === 'Enter')
-            sendMessage();
-        "
+        id="nameInput"
+        maxlength="30"
+        value="${escapeHtml(myName)}"
       >
-
-      <button
-        class="btn small"
-        onclick="sendMessage()"
-      >
-        ➤
-      </button>
 
     </div>
+
+    <div class="field">
+
+      <label>
+        Фото профиля
+      </label>
+
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/*"
+      >
+
+    </div>
+
+    <button
+      class="btn"
+      onclick="saveProfile()"
+    >
+      Сохранить профиль
+    </button>
+
+    <button
+      class="btn secondary"
+      onclick="showPlaces()"
+    >
+      📍 Мои места
+    </button>
+
+    <button
+      class="btn danger"
+      onclick="logout()"
+    >
+      🚪 Выйти из аккаунта
+    </button>
 
   `);
 
-
-  const box =
+  const photoInput =
     document.getElementById(
-      "messages"
+      "photoInput"
     );
 
+  photoInput.onchange =
+    async function(event) {
 
-  if (
-    box
-  ) {
+      const file =
+        event.target.files[0];
 
-    box.scrollTop =
-      box.scrollHeight;
+      if (!file) {
+        return;
+      }
 
-  }
+      if (
+        file.size >
+        5 * 1024 * 1024
+      ) {
 
-}
+        toast(
+          "Фото должно быть меньше 5 МБ."
+        );
 
+        return;
 
-async function sendMessage() {
+      }
 
-  const input =
-    document.getElementById(
-      "messageInput"
-    );
+      /*
+       * Для простоты используем DataURL.
+       * Позже можно перенести фотографии
+       * в Supabase Storage.
+       */
 
+      const reader =
+        new FileReader();
 
-  if (
-    !input
-  ) {
+      reader.onload =
+        function() {
 
-    return;
+          myPhoto =
+            reader.result;
 
-  }
+          const preview =
+            document.getElementById(
+              "profilePreview"
+            );
 
+          if (preview) {
+            preview.src =
+              myPhoto;
+          }
 
-  const body =
-    input.value.trim();
+        };
 
+      reader.readAsDataURL(file);
 
-  if (
-    !body ||
-    !currentChatId
-  ) {
-
-    return;
-
-  }
-
-
-  input.value =
-    "";
-
-
-  try {
-
-    const {
-      error
-    } =
-      await supabaseClient.rpc(
-        "send_message",
-        {
-          p_chat_id:
-            currentChatId,
-
-          p_body:
-            body
-        }
-      );
-
-
-    if (
-      error
-    ) {
-
-      throw error;
-
-    }
-
-
-    await loadMessages(
-      currentChatId
-    );
-
-
-    renderChat();
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-    toast(
-      error.message ||
-      "Не удалось отправить."
-    );
-
-  }
+    };
 
 }
 
 
 /* =========================================================
-   NOTIFICATIONS
+   SAVE PROFILE
 ========================================================= */
 
-async function loadNotifications() {
+async function saveProfile() {
+
+  const input =
+    document.getElementById(
+      "nameInput"
+    );
+
+  const name =
+    input.value.trim() ||
+    "Пользователь";
 
   try {
 
@@ -4526,43 +3037,65 @@ async function loadNotifications() {
       error
     } =
       await supabaseClient
-        .from("notifications")
-        .select("*")
+        .from("profiles")
+        .update({
+
+          username:
+            name,
+
+          avatar_url:
+            myPhoto
+
+        })
         .eq(
-          "user_id",
+          "id",
           currentUser.id
         )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
+        .select()
+        .single();
+
+    if (error) {
+      throw error;
+    }
+
+    profile =
+      data;
+
+    myName =
+      data.username;
+
+    myPhoto =
+      data.avatar_url || "";
+
+    if (marker) {
+
+      marker.setIcon(
+        userIcon(
+          lastPosition
+            ? lastPosition.speed
+            : 0,
+          lastPosition
+            ? lastPosition.direction
+            : 0
         )
-        .limit(50);
-
-
-    if (
-      error
-    ) {
-
-      console.error(
-        error
       );
-
-      return;
 
     }
 
+    toast(
+      "Профиль сохранён."
+    );
 
-    notifications =
-      data || [];
+    closePanel();
 
   }
-
   catch(error) {
 
-    console.error(
-      error
+    console.error(error);
+
+    toast(
+      error.message ||
+      "Не удалось сохранить профиль."
     );
 
   }
@@ -4570,76 +3103,11 @@ async function loadNotifications() {
 }
 
 
-async function showNotifications() {
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-  await loadNotifications();
-
-
-  let html =
-    "";
-
-
-  if (
-    !notifications.length
-  ) {
-
-    html = `
-
-      <div class="empty">
-
-        🔔
-
-        <br>
-
-        Пока уведомлений нет.
-
-      </div>
-
-    `;
-
-  }
-
-  else {
-
-    notifications.forEach(
-      notification => {
-
-        html += `
-
-          <div class="notification ${
-            notification.read
-              ? ""
-              : "unread"
-          }">
-
-            <div class="notification-title">
-
-              ${escapeHtml(
-                notification.title ||
-                "Уведомление"
-              )}
-
-            </div>
-
-            <div class="notification-body">
-
-              ${escapeHtml(
-                notification.body ||
-                ""
-              )}
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-
-    );
-
-  }
-
+function showSettings() {
 
   openPanel(`
 
@@ -4650,32 +3118,214 @@ async function showNotifications() {
       ×
     </button>
 
-
     <h2>
-      🔔 Уведомления
+      ⚙️ Настройки
     </h2>
 
+    <div class="friend">
 
-    ${html}
+      <div class="grow">
+
+        <b>
+          📍 Геолокация
+        </b>
+
+        <div class="code">
+          Показывать твоё местоположение друзьям.
+        </div>
+
+      </div>
+
+      <button
+        class="btn secondary"
+        style="width:auto"
+        onclick="toggleLocation()"
+      >
+        ${
+          locationEnabled
+            ? "Выключить"
+            : "Включить"
+        }
+      </button>
+
+    </div>
+
+    <button
+      class="btn secondary"
+      onclick="centerMe()"
+    >
+      🎯 Показать меня
+    </button>
+
+    <button
+      class="btn secondary"
+      onclick="showPlaces()"
+    >
+      📍 Мои места
+    </button>
+
+    <button
+      class="btn danger"
+      onclick="logout()"
+    >
+      🚪 Выйти
+    </button>
+
+    <p class="note">
+
+      Когда геолокация включена,
+      Blink периодически сохраняет
+      твою позицию в Supabase.
+
+    </p>
 
   `);
 
+}
 
-  await supabaseClient
-    .from("notifications")
-    .update({
-      read: true
-    })
-    .eq(
-      "user_id",
-      currentUser.id
-    )
-    .eq(
-      "read",
+
+/* =========================================================
+   LOCATION TOGGLE
+========================================================= */
+
+async function toggleLocation() {
+
+  locationEnabled =
+    !locationEnabled;
+
+  try {
+
+    await supabaseClient
+      .from("profiles")
+      .update({
+
+        location_sharing_enabled:
+          locationEnabled
+
+      })
+      .eq(
+        "id",
+        currentUser.id
+      );
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+  }
+
+  if (locationEnabled) {
+
+    startGPS();
+
+  }
+  else {
+
+    if (
+      watchId !== null
+    ) {
+
+      navigator.geolocation.clearWatch(
+        watchId
+      );
+
+    }
+
+    watchId = null;
+
+    setStatus(
+      "Геолокация выключена",
       false
     );
 
+  }
+
+  showSettings();
+
 }
+
+
+/* =========================================================
+   CENTER
+========================================================= */
+
+function centerMe() {
+
+  closePanel();
+
+  if (!map) {
+    return;
+  }
+
+  if (lastPosition) {
+
+    map.setView(
+      [
+        lastPosition.lat,
+        lastPosition.lng
+      ],
+      17
+    );
+
+  }
+  else {
+
+    toast(
+      "GPS ещё не получил координаты."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+function openPanel(
+  html
+) {
+
+  document.getElementById(
+    "sheet"
+  ).innerHTML =
+    '<div class="handle"></div>' +
+    html;
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closePanel() {
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "none";
+
+}
+
+
+document.getElementById(
+  "panel"
+).onclick =
+function(event) {
+
+  if (
+    event.target.id === "panel"
+  ) {
+
+    closePanel();
+
+  }
+
+};
 
 
 /* =========================================================
@@ -4707,31 +3357,214 @@ const placeTypes = {
 };
 
 
-function startAddingPlace() {
+async function loadSavedPlaces() {
 
-  closePanel();
+  /*
+   * Если таблица places есть,
+   * используем её.
+   *
+   * Если её ещё нет — приложение
+   * не ломается и использует localStorage.
+   */
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("places")
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+    if (!error && data) {
+
+      savedPlaces =
+        data;
+
+      return;
+
+    }
+
+  }
+  catch(error) {
+
+    console.log(
+      "places table unavailable"
+    );
+
+  }
+
+  savedPlaces =
+    JSON.parse(
+      localStorage.getItem(
+        "blink_places"
+      ) || "[]"
+    );
+
+}
 
 
-  toast(
-    "Нажми на карту, чтобы выбрать место."
+function placeIcon(
+  type
+) {
+
+  const data =
+    placeTypes[type] ||
+    placeTypes.other;
+
+  return L.divIcon({
+
+    className: "",
+
+    html:
+      '<div class="place-marker">' +
+      data.icon +
+      '</div>',
+
+    iconSize: [
+      44,
+      44
+    ],
+
+    iconAnchor: [
+      22,
+      22
+    ]
+
+  });
+
+}
+
+
+function renderSavedPlaces() {
+
+  if (!map) {
+    return;
+  }
+
+  Object.values(
+    placeMarkers
+  ).forEach(
+    marker => {
+
+      if (
+        map.hasLayer(marker)
+      ) {
+
+        map.removeLayer(marker);
+
+      }
+
+    }
   );
 
+  placeMarkers = {};
 
-  map.once(
-    "click",
-    handlePlaceMapClick
+  savedPlaces.forEach(
+    place => {
+
+      const marker =
+        L.marker(
+          [
+            place.lat,
+            place.lng
+          ],
+          {
+            icon:
+              placeIcon(
+                place.type
+              ),
+            zIndexOffset:
+              500
+          }
+        ).addTo(map);
+
+      const type =
+        placeTypes[
+          place.type
+        ] ||
+        placeTypes.other;
+
+      marker.bindPopup(
+
+        "<b>" +
+        escapeHtml(
+          place.name
+        ) +
+        "</b>" +
+
+        "<br>" +
+        type.icon +
+        " " +
+        type.name +
+
+        "<br><br>" +
+
+        '<button class="popup-delete" ' +
+        'onclick="deletePlace(\'' +
+        place.id +
+        '\')">' +
+        "Удалить" +
+        "</button>"
+
+      );
+
+      placeMarkers[
+        place.id
+      ] =
+        marker;
+
+    }
   );
 
 }
 
 
-function handlePlaceMapClick(
-  event
-) {
+function persistPlacesLocal() {
 
-  showAddPlaceForm(
-    event.latlng.lat,
-    event.latlng.lng
+  localStorage.setItem(
+    "blink_places",
+    JSON.stringify(
+      savedPlaces
+    )
+  );
+
+}
+
+
+/* =========================================================
+   ADD PLACE
+========================================================= */
+
+function startAddingPlace() {
+
+  closePanel();
+
+  toast(
+    "Нажми на карте точку для нового места."
+  );
+
+  map.once(
+    "click",
+    event => {
+
+      showAddPlaceForm(
+        event.latlng.lat,
+        event.latlng.lng
+      );
+
+    }
   );
 
 }
@@ -4751,11 +3584,9 @@ function showAddPlaceForm(
       ×
     </button>
 
-
     <h2>
       📍 Добавить место
     </h2>
-
 
     <div class="field">
 
@@ -4770,7 +3601,6 @@ function showAddPlaceForm(
       >
 
     </div>
-
 
     <div class="field">
 
@@ -4800,7 +3630,6 @@ function showAddPlaceForm(
 
     </div>
 
-
     <button
       class="btn"
       onclick="
@@ -4818,7 +3647,7 @@ function showAddPlaceForm(
 }
 
 
-function confirmNewPlace(
+async function confirmNewPlace(
   lat,
   lng
 ) {
@@ -4828,16 +3657,12 @@ function confirmNewPlace(
       "placeName"
     ).value.trim();
 
-
   const type =
     document.getElementById(
       "placeType"
     ).value;
 
-
-  if (
-    !name
-  ) {
+  if (!name) {
 
     toast(
       "Введи название."
@@ -4847,190 +3672,119 @@ function confirmNewPlace(
 
   }
 
-
   const place = {
 
     id:
-      Date.now().toString(),
+      crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now().toString(),
 
-    name:
-      name,
+    user_id:
+      currentUser.id,
 
-    type:
-      type,
+    name,
 
-    lat:
-      lat,
+    type,
 
-    lng:
-      lng
+    lat,
+
+    lng
 
   };
 
+  /*
+   * Сначала пытаемся записать в Supabase.
+   */
 
-  savedPlaces.push(
-    place
-  );
+  try {
 
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("places")
+        .insert({
 
-  localStorage.setItem(
+          user_id:
+            currentUser.id,
 
-    "blink_places",
+          name,
 
-    JSON.stringify(
-      savedPlaces
-    )
+          type,
 
-  );
+          lat,
 
+          lng
+
+        })
+        .select()
+        .single();
+
+    if (!error && data) {
+
+      savedPlaces.unshift(
+        data
+      );
+
+    }
+    else {
+
+      throw error;
+
+    }
+
+  }
+  catch(error) {
+
+    /*
+     * Если таблицы places пока нет,
+     * сохраняем локально.
+     */
+
+    savedPlaces.unshift(
+      place
+    );
+
+    persistPlacesLocal();
+
+  }
 
   renderSavedPlaces();
 
   closePanel();
 
-
   toast(
     "Место сохранено."
   );
 
-
-  map.setView(
-    [lat,lng],
-    17
-  );
-
 }
 
 
-function renderSavedPlaces() {
-
-  Object.values(
-    placeMarkers
-  ).forEach(
-    marker => {
-
-      if (
-        map.hasLayer(marker)
-      ) {
-
-        map.removeLayer(marker);
-
-      }
-
-    }
-  );
-
-
-  placeMarkers =
-    {};
-
-
-  savedPlaces.forEach(
-    place => {
-
-      const data =
-        placeTypes[
-          place.type
-        ] ||
-        placeTypes.other;
-
-
-      const marker =
-        L.marker(
-
-          [
-            place.lat,
-            place.lng
-          ],
-
-          {
-            icon:
-              placeIcon(
-                place.type
-              ),
-
-            zIndexOffset:
-              500
-          }
-
-        ).addTo(map);
-
-
-      marker.bindPopup(`
-
-        <b>
-          ${escapeHtml(
-            place.name
-          )}
-        </b>
-
-        <br>
-
-        ${data.icon}
-        ${data.name}
-
-        <br><br>
-
-        <button
-          class="popup-delete"
-          onclick="
-            deletePlace('${place.id}')
-          "
-        >
-          Удалить
-        </button>
-
-      `);
-
-
-      placeMarkers[
-        place.id
-      ] =
-        marker;
-
-    }
-  );
-
-}
-
-
-function placeIcon(
-  type
-) {
-
-  const data =
-    placeTypes[
-      type
-    ] ||
-    placeTypes.other;
-
-
-  return L.divIcon({
-
-    className: "",
-
-    html:
-
-      '<div class="place-marker">' +
-
-        data.icon +
-
-      '</div>',
-
-    iconSize:
-      [44,44],
-
-    iconAnchor:
-      [22,22]
-
-  });
-
-}
-
-
-function deletePlace(
+async function deletePlace(
   id
 ) {
+
+  try {
+
+    await supabaseClient
+      .from("places")
+      .delete()
+      .eq(
+        "id",
+        id
+      )
+      .eq(
+        "user_id",
+        currentUser.id
+      );
+
+  }
+  catch(error) {
+
+    console.error(error);
+
+  }
 
   savedPlaces =
     savedPlaces.filter(
@@ -5038,17 +3792,7 @@ function deletePlace(
         place.id !== id
     );
 
-
-  localStorage.setItem(
-
-    "blink_places",
-
-    JSON.stringify(
-      savedPlaces
-    )
-
-  );
-
+  persistPlacesLocal();
 
   if (
     placeMarkers[id]
@@ -5062,7 +3806,6 @@ function deletePlace(
 
   }
 
-
   toast(
     "Место удалено."
   );
@@ -5072,9 +3815,7 @@ function deletePlace(
 
 function showPlaces() {
 
-  let html =
-    "";
-
+  let list = "";
 
   savedPlaces.forEach(
     place => {
@@ -5085,8 +3826,7 @@ function showPlaces() {
         ] ||
         placeTypes.other;
 
-
-      html += `
+      list += `
 
         <div class="place-item">
 
@@ -5097,34 +3837,36 @@ function showPlaces() {
           <div class="grow">
 
             <div class="place-name">
-
               ${escapeHtml(
                 place.name
               )}
-
             </div>
 
             <div class="place-type">
-
               ${data.name}
-
             </div>
 
           </div>
 
           <button
-            class="btn secondary small"
+            class="btn secondary"
+            style="width:auto;margin:0"
             onclick="
-              focusPlace('${place.id}')
+              focusPlace(
+                '${place.id}'
+              )
             "
           >
             👁️
           </button>
 
           <button
-            class="btn danger small"
+            class="btn danger"
+            style="width:auto;margin:0"
             onclick="
-              deletePlace('${place.id}');
+              deletePlace(
+                '${place.id}'
+              );
               showPlaces();
             "
           >
@@ -5138,28 +3880,14 @@ function showPlaces() {
     }
   );
 
+  if (!list) {
 
-  if (
-    !html
-  ) {
-
-    html = `
-
-      <div class="empty">
-
-        Пока нет сохранённых мест.
-
-        <br><br>
-
-        Нажми «Добавить место»,
-        затем выбери точку на карте.
-
-      </div>
-
-    `;
+    list =
+      '<div class="empty">' +
+      'Пока нет сохранённых мест.' +
+      '</div>';
 
   }
-
 
   openPanel(`
 
@@ -5170,11 +3898,9 @@ function showPlaces() {
       ×
     </button>
 
-
     <h2>
       📍 Мои места
     </h2>
-
 
     <button
       class="btn"
@@ -5183,8 +3909,9 @@ function showPlaces() {
       ＋ Добавить место
     </button>
 
-
-    ${html}
+    <div style="margin-top:12px">
+      ${list}
+    </div>
 
   `);
 
@@ -5197,22 +3924,15 @@ function focusPlace(
 
   const place =
     savedPlaces.find(
-      p =>
-        p.id === id
+      item =>
+        item.id === id
     );
 
-
-  if (
-    !place
-  ) {
-
+  if (!place) {
     return;
-
   }
 
-
   closePanel();
-
 
   map.setView(
     [
@@ -5222,7 +3942,6 @@ function focusPlace(
     17
   );
 
-
   setTimeout(
     () => {
 
@@ -5230,7 +3949,8 @@ function focusPlace(
         placeMarkers[id]
       ) {
 
-        placeMarkers[id].openPopup();
+        placeMarkers[id]
+          .openPopup();
 
       }
 
@@ -5242,494 +3962,60 @@ function focusPlace(
 
 
 /* =========================================================
-   SETTINGS
-========================================================= */
-
-function showSettings() {
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-
-    <h2>
-      ⚙️ Настройки
-    </h2>
-
-
-    <div class="friend">
-
-      <div class="grow">
-
-        <b>
-          📍 Геолокация
-        </b>
-
-        <div class="code">
-
-          ${
-            locationEnabled
-              ? "Сейчас включена"
-              : "Сейчас выключена"
-          }
-
-        </div>
-
-      </div>
-
-
-      <button
-        class="btn secondary small"
-        onclick="toggleLocation()"
-      >
-
-        ${
-          locationEnabled
-            ? "Выключить"
-            : "Включить"
-        }
-
-      </button>
-
-    </div>
-
-
-    <button
-      class="btn secondary"
-      onclick="centerMe()"
-    >
-      🎯 Показать меня
-    </button>
-
-
-    <button
-      class="btn secondary"
-      onclick="showPlaces()"
-    >
-      📍 Мои места
-    </button>
-
-
-    <button
-      class="btn secondary"
-      onclick="showNotifications()"
-    >
-      🔔 Уведомления
-    </button>
-
-
-    <button
-      class="btn danger"
-      onclick="logout()"
-    >
-      Выйти из аккаунта
-    </button>
-
-
-    <p class="note">
-
-      Blink хранит аккаунт,
-      профиль, друзей,
-      координаты и сообщения
-      в Supabase.
-
-    </p>
-
-  `);
-
-}
-
-
-function toggleLocation() {
-
-  locationEnabled =
-    !locationEnabled;
-
-
-  localStorage.setItem(
-
-    "blink_location",
-
-    locationEnabled
-      ? "on"
-      : "off"
-
-  );
-
-
-  if (
-    locationEnabled
-  ) {
-
-    startGPS();
-
-  }
-
-  else {
-
-    if (
-      watchId !== null
-    ) {
-
-      navigator.geolocation
-        .clearWatch(
-          watchId
-        );
-
-    }
-
-
-    watchId =
-      null;
-
-
-    setStatus(
-      "Геолокация выключена",
-      false
-    );
-
-  }
-
-
-  showSettings();
-
-}
-
-
-function centerMe() {
-
-  closePanel();
-
-
-  if (
-    lastPosition
-  ) {
-
-    map.setView(
-
-      [
-        lastPosition.lat,
-        lastPosition.lng
-      ],
-
-      17
-
-    );
-
-  }
-
-  else {
-
-    toast(
-      "GPS ещё не получил координаты."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-  try {
-
-    if (
-      watchId !== null
-    ) {
-
-      navigator.geolocation
-        .clearWatch(
-          watchId
-        );
-
-    }
-
-
-    realtimeChannels.forEach(
-      channel => {
-
-        supabaseClient
-          .removeChannel(
-            channel
-          );
-
-      }
-    );
-
-
-    await supabaseClient.auth.signOut();
-
-
-    location.reload();
-
-  }
-
-  catch(error) {
-
-    console.error(
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
    REALTIME
 ========================================================= */
 
-function startRealtime() {
-
-  if (
-    !currentUser
-  ) {
-
-    return;
-
-  }
-
-
-  realtimeChannels.forEach(
-    channel => {
-
-      supabaseClient
-        .removeChannel(
-          channel
-        );
-
-    }
-  );
-
-
-  realtimeChannels =
-    [];
-
-
-  const notificationsChannel =
-    supabaseClient
-      .channel(
-        "blink-notifications-" +
-        currentUser.id
-      )
-      .on(
-
-        "postgres_changes",
-
-        {
-
-          event: "INSERT",
-
-          schema: "public",
-
-          table: "notifications",
-
-          filter:
-            "user_id=eq." +
-            currentUser.id
-
-        },
-
-        payload => {
-
-          notifications.unshift(
-            payload.new
-          );
-
-
-          toast(
-            payload.new.title ||
-            "Новое уведомление"
-          );
-
-        }
-
-      )
-      .subscribe();
-
-
-  realtimeChannels.push(
-    notificationsChannel
-  );
-
-
-  const locationChannel =
-    supabaseClient
-      .channel(
-        "blink-locations"
-      )
-      .on(
-
-        "postgres_changes",
-
-        {
-
-          event: "*",
-
-          schema: "public",
-
-          table: "locations"
-
-        },
-
-        async () => {
-
-          await loadFriendLocations();
-
-        }
-
-      )
-      .subscribe();
-
-
-  realtimeChannels.push(
-    locationChannel
-  );
-
-
-  const messagesChannel =
-    supabaseClient
-      .channel(
-        "blink-messages"
-      )
-      .on(
-
-        "postgres_changes",
-
-        {
-
-          event: "INSERT",
-
-          schema: "public",
-
-          table: "messages"
-
-        },
-
-        async payload => {
-
-          if (
-            currentChatId &&
-            payload.new.chat_id ===
-            currentChatId
-          ) {
-
-            await loadMessages(
-              currentChatId
-            );
-
-
-            renderChat();
-
-          }
-
-        }
-
-      )
-      .subscribe();
-
-
-  realtimeChannels.push(
-    messagesChannel
-  );
-
-
-  const requestsChannel =
-    supabaseClient
-      .channel(
-        "blink-friend-requests-" +
-        currentUser.id
-      )
-      .on(
-
-        "postgres_changes",
-
-        {
-
-          event: "*",
-
-          schema: "public",
-
-          table: "friend_requests"
-
-        },
-
-        () => {
-
-          loadFriends();
-
-        }
-
-      )
-      .subscribe();
-
-
-  realtimeChannels.push(
-    requestsChannel
-  );
+function subscribeRealtime() {
+
+  /*
+   * Обновляем карту при изменении locations.
+   */
+
+  supabaseClient
+    .channel(
+      "blink-locations"
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "locations"
+      },
+      function() {
+
+        loadFriendLocations();
+
+      }
+    )
+    .subscribe();
+
+
+  /*
+   * Обновляем друзей при изменении
+   * friend_requests.
+   */
+
+  supabaseClient
+    .channel(
+      "blink-friend-requests"
+    )
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "friend_requests"
+      },
+      function() {
+
+        loadFriends();
+
+      }
+    )
+    .subscribe();
 
 }
-
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-function openPanel(
-  html
-) {
-
-  document.getElementById(
-    "sheet"
-  ).innerHTML =
-
-    '<div class="handle"></div>' +
-
-    html;
-
-
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "flex";
-
-}
-
-
-function closePanel() {
-
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "none";
-
-}
-
-
-document.getElementById(
-  "panel"
-).onclick =
-  function(event) {
-
-    if (
-      event.target.id ===
-      "panel"
-    ) {
-
-      closePanel();
-
-    }
-
-  };
 
 
 /* =========================================================
@@ -5738,9 +4024,10 @@ document.getElementById(
 
 document
   .querySelectorAll(".nav")
-  .forEach(button => {
+  .forEach(
+    button => {
 
-    button.onclick =
+      button.onclick =
       async function() {
 
         document
@@ -5752,15 +4039,12 @@ document
               )
           );
 
-
         button.classList.add(
           "active"
         );
 
-
         const page =
           button.dataset.page;
-
 
         if (
           page === "map"
@@ -5768,32 +4052,15 @@ document
 
           closePanel();
 
-          return;
-
         }
-
 
         if (
           page === "friends"
         ) {
 
-          await loadFriends();
-
           await showFriends();
 
         }
-
-
-        if (
-          page === "chats"
-        ) {
-
-          await loadChats();
-
-          showChats();
-
-        }
-
 
         if (
           page === "profile"
@@ -5802,7 +4069,6 @@ document
           showProfile();
 
         }
-
 
         if (
           page === "settings"
@@ -5814,158 +4080,70 @@ document
 
       };
 
-  });
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function avatar(
-  src
-) {
-
-  if (
-    src
-  ) {
-
-    return src;
-
-  }
-
-
-  return (
-
-    "data:image/svg+xml;charset=UTF-8," +
-
-    encodeURIComponent(
-
-      '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
-
-      '<rect width="160" height="160" fill="#222"/>' +
-
-      '<text x="80" y="108" text-anchor="middle" font-size="70" fill="white">👤</text>' +
-
-      '</svg>'
-
-    )
-
-  );
-
-}
-
-
-function escapeHtml(
-  value
-) {
-
-  return String(
-    value ?? ""
-  ).replace(
-    /[&<>"']/g,
-    character => ({
-
-      "&":
-        "&amp;",
-
-      "<":
-        "&lt;",
-
-      ">":
-        "&gt;",
-
-      '"':
-        "&quot;",
-
-      "'":
-        "&#039;"
-
-    })[character]
-  );
-
-}
-
-
-function formatTime(
-  date
-) {
-
-  if (
-    !date
-  ) {
-
-    return "";
-
-  }
-
-
-  return new Date(
-    date
-  ).toLocaleTimeString(
-    "ru-RU",
-    {
-      hour: "2-digit",
-      minute: "2-digit"
     }
   );
 
-}
 
+/* =========================================================
+   SESSION CHECK
+========================================================= */
 
-function toast(
-  text
-) {
+async function boot() {
 
-  const box =
+  try {
+
+    const {
+      data
+    } =
+      await supabaseClient.auth.getSession();
+
+    if (
+      data &&
+      data.session &&
+      data.session.user
+    ) {
+
+      currentUser =
+        data.session.user;
+
+      await enterApp();
+
+    }
+    else {
+
+      document.getElementById(
+        "loadingScreen"
+      ).style.display =
+        "none";
+
+      document.getElementById(
+        "authScreen"
+      ).style.display =
+        "flex";
+
+    }
+
+  }
+  catch(error) {
+
+    console.error(error);
+
     document.getElementById(
-      "toast"
+      "loadingScreen"
+    ).style.display =
+      "none";
+
+    document.getElementById(
+      "authScreen"
+    ).style.display =
+      "flex";
+
+    showAuthError(
+      "Ошибка подключения к Supabase: " +
+      error.message
     );
 
-
-  box.textContent =
-    text;
-
-
-  box.style.display =
-    "block";
-
-
-  clearTimeout(
-    window.blinkToast
-  );
-
-
-  window.blinkToast =
-    setTimeout(
-      () => {
-
-        box.style.display =
-          "none";
-
-      },
-      2500
-    );
-
-}
-
-
-function setStatus(
-  text,
-  live
-) {
-
-  document.getElementById(
-    "statusText"
-  ).textContent =
-    text;
-
-
-  document.getElementById(
-    "statusDot"
-  ).classList.toggle(
-    "live",
-    Boolean(live)
-  );
+  }
 
 }
 
@@ -5975,29 +4153,16 @@ function setStatus(
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-  async (event, session) => {
+  async function(
+    event,
+    session
+  ) {
 
     if (
       event === "SIGNED_OUT"
     ) {
 
-      currentUser =
-        null;
-
-      return;
-
-    }
-
-
-    if (
-      session?.user &&
-      !currentUser
-    ) {
-
-      currentUser =
-        session.user;
-
-      await initializeApp();
+      currentUser = null;
 
     }
 
@@ -6009,7 +4174,7 @@ supabaseClient.auth.onAuthStateChange(
    START
 ========================================================= */
 
-checkSession();
+boot();
 
 </script>
 
