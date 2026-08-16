@@ -2,2882 +2,1989 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#070914">
-<title>рядом — пространство поддержки</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b0710">
+<title>Рядом — пространство для тебя</title>
 
 <style>
-*{box-sizing:border-box}
-
-html{
- scroll-behavior:smooth;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
 }
 
-:root{
- --bg:#060813;
- --card:rgba(17,21,38,.86);
- --card2:#1a1f34;
- --line:#303650;
- --text:#f7f7ff;
- --muted:#9da3b8;
- --purple:#8c82ff;
- --purple2:#b276ff;
- --pink:#df82b1;
- --green:#72d3a7;
- --danger:#ec637e;
- --blue:#6ea9ff;
+html{
+    scroll-behavior:smooth;
 }
 
 body{
- margin:0;
- min-height:100vh;
- color:var(--text);
- font-family:
- -apple-system,
- BlinkMacSystemFont,
- "Segoe UI",
- Arial,
- sans-serif;
-
- background:
- radial-gradient(circle at 15% 0%,#8075ff32,transparent 30%),
- radial-gradient(circle at 95% 25%,#dc75aa20,transparent 30%),
- radial-gradient(circle at 40% 100%,#477cff1b,transparent 35%),
- var(--bg);
-
- overflow-x:hidden;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    background:#09070c;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
 }
 
-/* ---------------- BACKGROUND ---------------- */
-
-#stars{
- position:fixed;
- inset:0;
- pointer-events:none;
- z-index:-10;
+button,
+input{
+    font:inherit;
 }
 
-.star{
- position:absolute;
- width:2px;
- height:2px;
- border-radius:50%;
- background:#fff;
- opacity:.2;
- animation:twinkle 3s ease-in-out infinite alternate;
+button{
+    border:0;
+    cursor:pointer;
 }
 
-@keyframes twinkle{
- from{opacity:.1;transform:scale(.7)}
- to{opacity:1;transform:scale(1.6)}
+body::before{
+    content:"";
+    position:fixed;
+    width:450px;
+    height:450px;
+    border-radius:50%;
+    background:#762cff;
+    opacity:.08;
+    filter:blur(100px);
+    top:-180px;
+    left:-180px;
+    pointer-events:none;
 }
 
-.ambient{
- position:fixed;
- width:180px;
- height:180px;
- border-radius:50%;
- background:#8178ff10;
- filter:blur(20px);
- pointer-events:none;
- z-index:-4;
- animation:ambientMove 18s linear infinite;
+body::after{
+    content:"";
+    position:fixed;
+    width:400px;
+    height:400px;
+    border-radius:50%;
+    background:#ff7a18;
+    opacity:.05;
+    filter:blur(100px);
+    right:-180px;
+    bottom:-100px;
+    pointer-events:none;
 }
 
-@keyframes ambientMove{
- 0%{transform:translate(-20vw,100vh)}
- 50%{transform:translate(70vw,30vh)}
- 100%{transform:translate(-20vw,-30vh)}
-}
-
-.shooting{
- position:fixed;
- width:110px;
- height:2px;
- background:linear-gradient(90deg,transparent,#fff,transparent);
- transform:rotate(-30deg);
- z-index:-2;
- animation:shoot 1.5s linear forwards;
-}
-
-@keyframes shoot{
- from{
-  opacity:0;
-  transform:translate(0,0) rotate(-30deg);
- }
- 20%{opacity:1}
- to{
-  opacity:0;
-  transform:translate(-500px,300px) rotate(-30deg);
- }
-}
-
-/* ---------------- APP ---------------- */
+/* APP */
 
 .app{
- width:min(930px,100%);
- margin:auto;
- padding:18px 14px 110px;
+    width:100%;
+    max-width:720px;
+    margin:0 auto;
+    min-height:100vh;
+    padding-bottom:100px;
 }
 
-header{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:15px;
+/* HEADER */
+
+.header{
+    padding:24px 20px 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
 .logo{
- font-size:31px;
- font-weight:900;
- letter-spacing:-1.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.logo span{
- color:var(--purple);
+.logo-dot{
+    width:14px;
+    height:14px;
+    background:#ff7518;
+    border-radius:50%;
+    box-shadow:0 0 18px rgba(255,117,24,.7);
+    animation:pulseDot 2s infinite;
 }
 
-.status{
- font-size:10px;
- color:#b9bfd1;
- padding:9px 12px;
- border:1px solid var(--line);
- background:#111526cc;
- border-radius:30px;
- backdrop-filter:blur(15px);
+.logo-text{
+    font-size:23px;
+    font-weight:850;
+    letter-spacing:-.7px;
 }
 
-/* ---------------- PROFILE ---------------- */
-
-.profile{
- display:flex;
- align-items:center;
- gap:13px;
- padding:13px;
- margin-bottom:15px;
- border-radius:23px;
- background:var(--card);
- border:1px solid var(--line);
- backdrop-filter:blur(18px);
- box-shadow:0 15px 45px #0003;
+.header-icon{
+    width:43px;
+    height:43px;
+    border-radius:50%;
+    background:#18131d;
+    border:1px solid rgba(255,255,255,.08);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:19px;
 }
 
-.avatar{
- width:58px;
- height:58px;
- border-radius:20px;
- object-fit:cover;
- background:#242944;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:28px;
- flex-shrink:0;
+/* SCREENS */
+
+.screen{
+    display:none;
+    padding:10px 18px 30px;
+    animation:screenIn .35s ease;
 }
 
-.profile-info{
- flex:1;
- min-width:0;
+.screen.active{
+    display:block;
 }
 
-.profile-info b{
- display:block;
- font-size:17px;
- overflow:hidden;
- text-overflow:ellipsis;
- white-space:nowrap;
+@keyframes screenIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
-.profile-info small{
- display:block;
- margin-top:3px;
- color:var(--muted);
-}
-
-/* ---------------- HERO ---------------- */
+/* HERO */
 
 .hero{
- position:relative;
- overflow:hidden;
- padding:30px 25px;
- border-radius:32px;
-
- background:
- radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
- linear-gradient(145deg,#181c38ee,#0c1020ee);
-
- border:1px solid var(--line);
- box-shadow:0 25px 80px #0008;
-}
-
-.hero:after{
- content:"";
- position:absolute;
- width:190px;
- height:190px;
- border-radius:50%;
- border:1px solid #ffffff15;
- right:-80px;
- top:-80px;
- box-shadow:
- 0 0 0 35px #ffffff08,
- 0 0 0 70px #ffffff04;
- animation:moon 9s ease-in-out infinite alternate;
-}
-
-@keyframes moon{
- to{
-  transform:rotate(35deg) scale(1.12);
- }
+    padding:24px 4px 22px;
 }
 
 .hero h1{
- margin:0 0 14px;
- max-width:700px;
- font-size:clamp(31px,8vw,53px);
- line-height:.98;
- letter-spacing:-2px;
+    font-size:36px;
+    line-height:1.03;
+    letter-spacing:-1.5px;
+    margin-bottom:10px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#fff,#b77cff,#ff8a32);
+    -webkit-background-clip:text;
+    color:transparent;
 }
 
 .hero p{
- max-width:680px;
- color:#b9bfd0;
- line-height:1.7;
+    color:#9d96a5;
+    line-height:1.5;
+    font-size:15px;
 }
 
-/* ---------------- BUTTONS ---------------- */
-
-.buttons{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:9px;
- margin-top:22px;
-}
-
-.btn{
- border:0;
- color:#fff;
- border-radius:17px;
- padding:14px;
- font-weight:800;
- transition:
- transform .25s ease,
- filter .25s ease,
- box-shadow .25s ease;
-}
-
-.btn:hover{
- transform:translateY(-3px);
- filter:brightness(1.08);
-}
-
-.btn:active{
- transform:scale(.97);
-}
-
-.primary{
- background:linear-gradient(110deg,#7970ff,#bd79ff);
- box-shadow:0 10px 30px #8278ff25;
-}
-
-.secondary{
- background:#20253a;
- border:1px solid #383f5d;
-}
-
-.green{
- background:linear-gradient(110deg,#4ebc92,#79d8ac);
-}
-
-.danger{
- background:linear-gradient(110deg,#e95771,#bd619c);
-}
-
-.blue{
- background:linear-gradient(110deg,#5c8fff,#7776ff);
-}
-
-.full{
- width:100%;
-}
-
-/* ---------------- SECTIONS ---------------- */
-
-.section{
- display:none;
- opacity:0;
- transform:translateY(18px);
-}
-
-.section.active{
- display:block;
- animation:sectionIn .45s ease forwards;
-}
-
-@keyframes sectionIn{
- to{
-  opacity:1;
-  transform:none;
- }
-}
-
-.title{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin:26px 2px 12px;
-}
-
-.title h2{
- margin:0;
- font-size:19px;
-}
-
-.title small{
- color:var(--muted);
-}
+/* CARDS */
 
 .card{
- background:var(--card);
- border:1px solid var(--line);
- border-radius:23px;
- padding:18px;
- backdrop-filter:blur(18px);
- box-shadow:0 15px 45px #0003;
+    background:linear-gradient(
+        145deg,
+        rgba(255,255,255,.065),
+        rgba(255,255,255,.025)
+    );
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:25px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 15px 50px rgba(0,0,0,.16);
+    position:relative;
+    overflow:hidden;
 }
 
-.grid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px;
+.card::before{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    background:#9b5cff;
+    opacity:.035;
+    filter:blur(35px);
+    top:-80px;
+    right:-50px;
 }
 
-.click{
- cursor:pointer;
- transition:.25s;
+.card-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
 }
 
-.click:hover{
- transform:translateY(-5px);
- border-color:var(--purple);
+.card-title h2{
+    font-size:18px;
 }
 
-.icon{
- font-size:30px;
+.card-title span{
+    color:#8f8897;
+    font-size:13px;
 }
 
-.card b{
- display:block;
- margin-top:7px;
+/* MOOD */
+
+.mood-card{
+    background:
+        radial-gradient(circle at 90% 0%,rgba(255,125,38,.12),transparent 35%),
+        linear-gradient(145deg,#18111d,#100c13);
 }
 
-.card p{
- color:var(--muted);
- line-height:1.6;
- font-size:13px;
+.mood-face{
+    text-align:center;
+    font-size:54px;
+    margin:8px 0 4px;
+    transition:.35s;
 }
 
-/* ---------------- MOOD ---------------- */
-
-.moods{
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:7px;
+.mood-name{
+    text-align:center;
+    font-size:18px;
+    font-weight:750;
 }
 
-.mood{
- color:#fff;
- background:var(--card2);
- border:1px solid var(--line);
- border-radius:17px;
- padding:10px 2px;
- transition:.2s;
+.mood-description{
+    text-align:center;
+    color:#908895;
+    font-size:13px;
+    margin-top:4px;
 }
 
-.mood span{
- display:block;
- font-size:25px;
+.mood-range{
+    width:100%;
+    margin-top:22px;
+    appearance:none;
+    height:8px;
+    border-radius:20px;
+    outline:none;
+    background:linear-gradient(
+        90deg,
+        #693cff,
+        #a451ff,
+        #ff7b21
+    );
 }
 
-.mood small{
- color:var(--muted);
- font-size:9px;
+.mood-range::-webkit-slider-thumb{
+    appearance:none;
+    width:27px;
+    height:27px;
+    border-radius:50%;
+    background:white;
+    border:5px solid #9a5cff;
+    box-shadow:0 3px 15px rgba(0,0,0,.4);
 }
 
-.mood:hover,
-.mood.active{
- transform:translateY(-4px);
- background:#2b2851;
- border-color:var(--purple);
+.mood-labels{
+    display:flex;
+    justify-content:space-between;
+    color:#77717d;
+    font-size:11px;
+    margin-top:9px;
 }
 
-/* ---------------- POSTS ---------------- */
+/* PET */
 
-.posts{
- display:flex;
- gap:10px;
- overflow-x:auto;
- scrollbar-width:none;
+.pet-card{
+    min-height:260px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
 }
 
-.post{
- min-width:245px;
- padding:18px;
- background:var(--card);
- border:1px solid var(--line);
- border-radius:23px;
+.pet{
+    width:125px;
+    height:125px;
+    border-radius:45% 45% 42% 42%;
+    background:linear-gradient(145deg,#a96cff,#6931b8);
+    position:relative;
+    margin:15px 0;
+    box-shadow:
+        0 15px 40px rgba(120,45,255,.3),
+        inset 0 -10px 20px rgba(0,0,0,.15);
+    animation:petFloat 3s ease-in-out infinite;
 }
 
-.post .emoji{
- font-size:30px;
+.pet::before,
+.pet::after{
+    content:"";
+    position:absolute;
+    top:-22px;
+    width:43px;
+    height:48px;
+    background:#8d50d8;
+    z-index:-1;
 }
 
-.post p{
- color:var(--muted);
- line-height:1.5;
- font-size:13px;
+.pet::before{
+    left:8px;
+    transform:rotate(-24deg);
+    border-radius:70% 20% 50% 20%;
 }
 
-/* ---------------- MESSAGE BUTTONS ---------------- */
-
-.message{
- padding:16px;
- margin-bottom:8px;
- background:var(--card2);
- border:1px solid var(--line);
- border-radius:18px;
- cursor:pointer;
- transition:.25s;
+.pet::after{
+    right:8px;
+    transform:rotate(24deg);
+    border-radius:20% 70% 20% 50%;
 }
 
-.message:hover{
- transform:translateX(5px);
- border-color:var(--purple);
+.pet-eye{
+    position:absolute;
+    width:13px;
+    height:17px;
+    border-radius:50%;
+    background:#181020;
+    top:45px;
 }
 
-.message small{
- display:block;
- color:var(--muted);
- margin-top:5px;
+.pet-eye.left{
+    left:34px;
 }
 
-/* ---------------- PROFILE ---------------- */
-
-.profile-form{
- display:grid;
- gap:10px;
+.pet-eye.right{
+    right:34px;
 }
 
-.profile-form input,
-.profile-form textarea{
- width:100%;
- padding:14px;
- border-radius:15px;
- border:1px solid var(--line);
- background:#090c15;
- color:#fff;
- outline:none;
+.pet-mouth{
+    position:absolute;
+    width:24px;
+    height:12px;
+    border-bottom:3px solid #24142d;
+    border-radius:50%;
+    left:50%;
+    transform:translateX(-50%);
+    top:70px;
 }
 
-.photo-preview{
- width:110px;
- height:110px;
- border-radius:30px;
- object-fit:cover;
- background:#242944;
- display:block;
- margin:5px auto 15px;
+.pet-name{
+    font-size:21px;
+    font-weight:800;
 }
 
-.profile-color{
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:7px;
+.pet-status{
+    color:#958b9e;
+    font-size:13px;
+    margin-top:5px;
 }
 
-.color-choice{
- height:40px;
- border-radius:13px;
- border:2px solid transparent;
- cursor:pointer;
+.pet-buttons{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
 }
 
-.color-choice.selected{
- border-color:#fff;
+.pet-btn{
+    padding:10px 15px;
+    border-radius:13px;
+    color:white;
+    background:#21182a;
+    border:1px solid rgba(255,255,255,.08);
+    transition:.2s;
 }
 
-/* ---------------- FUTURE LETTER ---------------- */
-
-.letter{
- padding:25px;
- border-radius:24px;
- text-align:center;
- background:
- radial-gradient(circle at 50% 0%,#8178ff22,transparent 55%),
- #171b30;
- border:1px solid var(--line);
+.pet-btn:active{
+    transform:scale(.94);
 }
 
-.letter-icon{
- font-size:65px;
- animation:letterFloat 3s ease-in-out infinite;
+@keyframes petFloat{
+    0%,100%{transform:translateY(0) rotate(0)}
+    50%{transform:translateY(-9px) rotate(1deg)}
 }
 
-@keyframes letterFloat{
- 50%{
-  transform:translateY(-8px) rotate(2deg);
- }
+/* QUICK ACTIONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
 }
 
-.letter textarea{
- min-height:160px;
- margin-top:12px;
+.action{
+    min-height:105px;
+    border-radius:20px;
+    padding:16px;
+    color:white;
+    text-align:left;
+    background:#151119;
+    border:1px solid rgba(255,255,255,.07);
+    transition:.25s;
 }
 
-/* ---------------- DRAWING ---------------- */
-
-.canvas-wrap{
- padding:8px;
- border-radius:20px;
- background:#080b14;
+.action:active{
+    transform:scale(.96);
 }
 
-canvas{
- width:100%;
- height:300px;
- display:block;
- border-radius:14px;
- background:#fff;
- touch-action:none;
+.action-icon{
+    font-size:25px;
+    margin-bottom:12px;
 }
 
-.draw-tools{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:7px;
- margin-top:8px;
+.action strong{
+    display:block;
+    font-size:14px;
 }
 
-.draw-tools button{
- padding:10px 3px;
- color:#fff;
- background:var(--card2);
- border:1px solid var(--line);
- border-radius:13px;
+.action small{
+    display:block;
+    color:#7f7787;
+    margin-top:4px;
 }
 
-/* ---------------- MINI GAME ---------------- */
+/* PROFILE */
 
-.game{
- position:relative;
- height:360px;
- overflow:hidden;
- border-radius:23px;
- background:
- radial-gradient(circle at 50% 50%,#8178ff18,transparent 55%),
- #090c16;
- border:1px solid var(--line);
+.profile-top{
+    text-align:center;
+    padding:20px 0 25px;
 }
 
-.game-info{
- display:flex;
- justify-content:space-between;
- padding:12px;
- color:#c4c8d8;
- font-size:13px;
+.avatar{
+    width:105px;
+    height:105px;
+    margin:auto;
+    border-radius:35px;
+    background:linear-gradient(135deg,#7639ff,#ff7518);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:43px;
+    box-shadow:0 15px 40px rgba(123,51,255,.25);
 }
 
-.game-star{
- position:absolute;
- width:42px;
- height:42px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- background:#272b49;
- border:1px solid #555c80;
- cursor:pointer;
- font-size:22px;
- animation:gameStar 1.4s ease-in-out infinite alternate;
- box-shadow:0 0 25px #8278ff25;
+.profile-top h1{
+    margin-top:15px;
+    font-size:25px;
 }
 
-@keyframes gameStar{
- to{
-  transform:scale(1.15);
-  box-shadow:0 0 40px #8278ff50;
- }
+.profile-top p{
+    color:#8f8796;
+    margin-top:5px;
 }
 
-/* ---------------- EMERGENCY ---------------- */
-
-.emergency-box{
- padding:23px;
- border-radius:24px;
- background:
- radial-gradient(circle at 100% 0%,#e9637d25,transparent 45%),
- #21131b;
- border:1px solid #663442;
+.profile-row{
+    display:flex;
+    justify-content:space-between;
+    padding:16px 0;
+    border-bottom:1px solid rgba(255,255,255,.06);
 }
 
-.emergency-box h2{
- margin-top:0;
+.profile-row:last-child{
+    border-bottom:0;
 }
 
-.alert{
- padding:16px;
- border-radius:18px;
- line-height:1.7;
- background:#301820;
- border:1px solid #63303c;
- color:#f1d8de;
+.profile-row span{
+    color:#8e8793;
 }
 
-.call-button{
- display:flex;
- align-items:center;
- justify-content:center;
- gap:8px;
- width:100%;
- padding:16px;
- margin-top:10px;
- border-radius:17px;
- text-decoration:none;
- color:#fff;
- font-weight:900;
- background:linear-gradient(110deg,#e95771,#bd619c);
- transition:.25s;
+/* CATEGORY */
+
+.category-tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:4px 2px 16px;
+    scrollbar-width:none;
 }
 
-.call-button:hover{
- transform:translateY(-3px);
+.category-tabs::-webkit-scrollbar{
+    display:none;
 }
 
-/* ---------------- PHONE TRUST ---------------- */
-
-.phone-card{
- display:flex;
- align-items:center;
- gap:15px;
- padding:18px;
- border-radius:21px;
- background:var(--card);
- border:1px solid var(--line);
- margin-bottom:9px;
+.category{
+    white-space:nowrap;
+    padding:11px 15px;
+    background:#17131b;
+    border:1px solid rgba(255,255,255,.06);
+    color:#918a97;
+    border-radius:14px;
+    transition:.3s;
 }
 
-.phone-icon{
- width:52px;
- height:52px;
- border-radius:18px;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:26px;
- background:#252a43;
+.category.active{
+    background:#8b4cff;
+    color:white;
+    border-color:#8b4cff;
+    box-shadow:0 8px 25px rgba(139,76,255,.25);
 }
 
-.phone-info{
- flex:1;
+.content-item{
+    padding:18px;
+    border-radius:21px;
+    background:#151118;
+    border:1px solid rgba(255,255,255,.07);
+    margin-bottom:10px;
+    transition:.25s;
 }
 
-.phone-info b{
- display:block;
+.content-item:active{
+    transform:scale(.98);
 }
 
-.phone-info small{
- display:block;
- color:var(--muted);
- margin-top:4px;
- line-height:1.4;
+.content-item .emoji{
+    font-size:30px;
+    margin-bottom:10px;
 }
 
-.phone-number{
- font-size:18px;
- font-weight:900;
- color:#fff;
- text-decoration:none;
+.content-item h3{
+    margin-bottom:5px;
 }
 
-/* ---------------- FAQ ---------------- */
-
-.faq{
- display:grid;
- gap:8px;
+.content-item p{
+    color:#8f8795;
+    font-size:13px;
+    line-height:1.5;
 }
 
-.faq-item{
- background:var(--card);
- border:1px solid var(--line);
- border-radius:18px;
- overflow:hidden;
+/* HELP */
+
+.help-box{
+    text-align:center;
+    padding:26px 18px;
 }
 
-.faq-q{
- width:100%;
- text-align:left;
- color:#fff;
- background:none;
- border:0;
- padding:17px;
- font-weight:bold;
+.help-icon{
+    font-size:48px;
+    margin-bottom:10px;
 }
 
-.faq-a{
- display:none;
- padding:0 17px 17px;
- color:var(--muted);
- line-height:1.6;
+.help-box h2{
+    font-size:23px;
+    margin-bottom:8px;
 }
 
-.faq-item.open .faq-a{
- display:block;
+.help-box p{
+    color:#908995;
+    line-height:1.5;
+    font-size:14px;
 }
 
-/* ---------------- MODAL ---------------- */
+.phone{
+    display:block;
+    color:white;
+    text-decoration:none;
+    background:linear-gradient(135deg,#8b4cff,#5f25bd);
+    padding:16px;
+    border-radius:16px;
+    margin-top:17px;
+    font-size:20px;
+    font-weight:800;
+    box-shadow:0 10px 30px rgba(108,50,220,.25);
+}
+
+.telegram{
+    display:block;
+    color:white;
+    text-decoration:none;
+    background:#17131b;
+    border:1px solid rgba(255,255,255,.08);
+    padding:15px;
+    border-radius:16px;
+    margin-top:9px;
+    font-weight:700;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+    position:fixed;
+    z-index:9000;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(680px,calc(100% - 22px));
+    height:70px;
+    padding:7px;
+    display:flex;
+    justify-content:space-around;
+    background:rgba(18,14,22,.92);
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:24px;
+    box-shadow:0 15px 45px rgba(0,0,0,.45);
+}
+
+.nav-btn{
+    position:relative;
+    flex:1;
+    color:#77707e;
+    background:transparent;
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    transition:.35s cubic-bezier(.2,.8,.2,1);
+}
+
+.nav-btn .nav-icon{
+    font-size:21px;
+    transition:.35s;
+}
+
+.nav-btn span:last-child{
+    font-size:10px;
+}
+
+.nav-btn.active{
+    color:white;
+    background:linear-gradient(
+        135deg,
+        rgba(137,76,255,.27),
+        rgba(255,117,24,.12)
+    );
+}
+
+.nav-btn.active .nav-icon{
+    transform:translateY(-2px) scale(1.08);
+}
+
+.nav-indicator{
+    position:absolute;
+    bottom:4px;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#ff791f;
+}
+
+/* AI BUTTON */
+
+.ai-button{
+    position:fixed;
+    z-index:8999;
+    right:max(20px,calc((100vw - 720px)/2 + 20px));
+    bottom:95px;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#773cff,#ad5cff);
+    color:white;
+    font-weight:900;
+    font-size:18px;
+    box-shadow:
+        0 10px 35px rgba(121,60,255,.4),
+        0 0 0 0 rgba(150,80,255,.4);
+    animation:aiPulse 2.4s infinite;
+}
+
+.ai-button:active{
+    transform:scale(.9);
+}
+
+@keyframes aiPulse{
+    0%{
+        box-shadow:0 10px 35px rgba(121,60,255,.4),
+        0 0 0 0 rgba(150,80,255,.4);
+    }
+    70%{
+        box-shadow:0 10px 35px rgba(121,60,255,.4),
+        0 0 0 13px rgba(150,80,255,0);
+    }
+    100%{
+        box-shadow:0 10px 35px rgba(121,60,255,.4),
+        0 0 0 0 rgba(150,80,255,0);
+    }
+}
+
+/* AI WINDOW */
+
+.ai-window{
+    position:fixed;
+    z-index:10000;
+    right:max(15px,calc((100vw - 720px)/2 + 15px));
+    bottom:165px;
+    width:min(400px,calc(100vw - 30px));
+    height:min(620px,calc(100vh - 190px));
+    background:#0f0c12;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:26px;
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 25px 100px rgba(0,0,0,.65);
+    animation:aiOpen .3s ease;
+}
+
+.ai-window.open{
+    display:flex;
+}
+
+.ai-head{
+    padding:17px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:linear-gradient(135deg,#281340,#17101d);
+    border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.ai-title{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.ai-logo{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#8c4fff,#b861ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+}
+
+.ai-title strong{
+    display:block;
+}
+
+.ai-title small{
+    color:#948a9d;
+    display:block;
+    margin-top:2px;
+}
+
+.ai-close{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#ffffff0d;
+    color:white;
+    font-size:22px;
+}
+
+.ai-messages{
+    flex:1;
+    padding:16px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.ai-message{
+    max-width:84%;
+    padding:12px 14px;
+    border-radius:17px;
+    font-size:14px;
+    line-height:1.5;
+    white-space:pre-wrap;
+    animation:messageIn .25s ease;
+}
+
+.ai-message.bot{
+    align-self:flex-start;
+    background:#211b27;
+    color:#f3eef6;
+    border-bottom-left-radius:5px;
+}
+
+.ai-message.user{
+    align-self:flex-end;
+    background:linear-gradient(135deg,#773cff,#984cff);
+    border-bottom-right-radius:5px;
+}
+
+.ai-typing{
+    display:none;
+    padding:0 17px 8px;
+    color:#817688;
+    font-size:12px;
+}
+
+.ai-input{
+    padding:11px;
+    display:flex;
+    gap:8px;
+    background:#151118;
+    border-top:1px solid rgba(255,255,255,.07);
+}
+
+.ai-input input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    color:white;
+    background:#242026;
+    border-radius:15px;
+    padding:13px;
+}
+
+.ai-input button{
+    width:48px;
+    border-radius:15px;
+    color:white;
+    background:#8b4cff;
+    font-size:19px;
+}
+
+/* MODAL */
 
 .modal{
- position:fixed;
- inset:0;
- display:none;
- align-items:flex-end;
- justify-content:center;
- padding:10px;
- background:#000d;
- backdrop-filter:blur(8px);
- z-index:100;
+    position:fixed;
+    z-index:20000;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(8px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
 .modal.show{
- display:flex;
+    display:flex;
 }
 
-.sheet{
- width:min(850px,100%);
- max-height:92vh;
- overflow:auto;
- padding:23px;
- border-radius:29px;
- background:#101423;
- border:1px solid #3b415d;
- animation:sheet .35s ease;
+.modal-box{
+    width:min(430px,100%);
+    background:#17121b;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:26px;
+    padding:25px;
+    text-align:center;
+    animation:modalIn .3s ease;
 }
 
-@keyframes sheet{
- from{
-  opacity:0;
-  transform:translateY(60px);
- }
- to{
-  opacity:1;
-  transform:none;
- }
+.modal-box .big{
+    font-size:45px;
+    margin-bottom:10px;
 }
 
-.close{
- float:right;
- color:#fff;
- background:#252a40;
- border:0;
- border-radius:12px;
- padding:9px 12px;
- cursor:pointer;
+.modal-box h2{
+    font-size:21px;
+    margin-bottom:9px;
 }
 
-/* ---------------- NAV ---------------- */
-
-.nav{
- position:fixed;
- bottom:10px;
- left:50%;
- transform:translateX(-50%);
- width:min(900px,calc(100% - 20px));
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:4px;
- padding:7px;
- background:#0d1120ee;
- border:1px solid #303650;
- border-radius:23px;
- backdrop-filter:blur(20px);
- z-index:50;
+.modal-box p{
+    color:#a099a6;
+    font-size:14px;
+    line-height:1.5;
 }
 
-.nav button{
- border:0;
- background:none;
- color:#777d94;
- padding:7px 2px;
- border-radius:16px;
- font-size:10px;
- transition:
- background .35s ease,
- color .35s ease,
- transform .35s ease;
+.modal-close{
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    color:white;
+    border-radius:15px;
+    background:#8a4cff;
+    font-weight:750;
 }
 
-.nav button span{
- display:block;
- font-size:19px;
- margin-bottom:2px;
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:scale(.9) translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
 }
 
-.nav button.active{
- color:#fff;
- background:#29264e;
- transform:translateY(-3px);
-}
-
-/* ---------------- TOAST ---------------- */
+/* TOAST */
 
 .toast{
- position:fixed;
- left:50%;
- bottom:105px;
- transform:translate(-50%,20px);
- opacity:0;
- pointer-events:none;
- background:#252a40;
- border:1px solid #444b69;
- padding:12px 18px;
- border-radius:16px;
- z-index:300;
- transition:.3s;
+    position:fixed;
+    z-index:30000;
+    left:50%;
+    bottom:100px;
+    transform:translate(-50%,20px);
+    background:#242027;
+    border:1px solid rgba(255,255,255,.1);
+    padding:13px 18px;
+    border-radius:15px;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    font-size:13px;
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+    max-width:90%;
+    text-align:center;
 }
 
 .toast.show{
- opacity:1;
- transform:translate(-50%,0);
+    opacity:1;
+    transform:translate(-50%,0);
 }
 
-/* ---------------- SUPPORT POPUP ---------------- */
+/* RESPONSIVE */
 
-.support-popup{
- position:fixed;
- inset:0;
- display:none;
- align-items:center;
- justify-content:center;
- padding:20px;
- background:#000b;
- backdrop-filter:blur(12px);
- z-index:400;
-}
+@media(max-width:480px){
+    .hero h1{
+        font-size:32px;
+    }
 
-.support-popup.show{
- display:flex;
-}
+    .screen{
+        padding-left:15px;
+        padding-right:15px;
+    }
 
-.support-popup-card{
- width:min(480px,100%);
- padding:30px;
- border-radius:30px;
- text-align:center;
- background:
- radial-gradient(circle at 50% 0%,#8178ff2c,transparent 55%),
- #111525;
- border:1px solid #454b6c;
- box-shadow:0 30px 100px #000d;
- animation:supportIn .4s ease;
-}
+    .card{
+        border-radius:22px;
+    }
 
-@keyframes supportIn{
- from{
-  opacity:0;
-  transform:scale(.82);
- }
- to{
-  opacity:1;
-  transform:scale(1);
- }
-}
-
-.support-popup-icon{
- font-size:60px;
-}
-
-/* ---------------- SECRET ---------------- */
-
-.secret-button{
- position:fixed;
- right:13px;
- top:13px;
- width:38px;
- height:38px;
- border-radius:50%;
- border:1px solid #343952;
- background:#111526cc;
- color:#8d82ff;
- opacity:.18;
- z-index:80;
- transition:.4s;
-}
-
-.secret-button:hover{
- opacity:1;
- transform:rotate(20deg) scale(1.1);
-}
-
-.secret-story{
- position:fixed;
- inset:0;
- background:#03040bcc;
- backdrop-filter:blur(15px);
- display:none;
- align-items:center;
- justify-content:center;
- padding:20px;
- z-index:500;
-}
-
-.secret-story.show{
- display:flex;
-}
-
-.secret-card{
- width:min(520px,100%);
- padding:30px;
- border-radius:30px;
- text-align:center;
- background:
- radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),
- #111525;
- border:1px solid #343a59;
- box-shadow:0 30px 100px #000c;
- animation:secretIn .5s ease;
-}
-
-@keyframes secretIn{
- from{
-  opacity:0;
-  transform:scale(.8) translateY(30px);
- }
- to{
-  opacity:1;
-  transform:none;
- }
-}
-
-/* ---------------- MISC ---------------- */
-
-textarea{
- width:100%;
- min-height:130px;
- resize:vertical;
- border-radius:18px;
- padding:14px;
- color:#fff;
- background:#090c15;
- border:1px solid var(--line);
- outline:none;
-}
-
-.small-note{
- color:#73798c;
- font-size:11px;
- line-height:1.6;
-}
-
-.fade-text{
- animation:fadeText .5s ease;
-}
-
-@keyframes fadeText{
- from{
-  opacity:0;
-  transform:translateY(8px);
- }
- to{
-  opacity:1;
-  transform:none;
- }
-}
-
-body.silent *{
- animation:none!important;
- transition:none!important;
-}
-
-@media(max-width:520px){
-
- .buttons{
-  grid-template-columns:1fr;
- }
-
- .grid{
-  grid-template-columns:1fr 1fr;
- }
-
- .hero{
-  padding:23px;
- }
-
- .moods{
-  gap:4px;
- }
-
- .mood small{
-  font-size:8px;
- }
-
- .phone-card{
-  align-items:flex-start;
- }
-
+    .ai-window{
+        bottom:155px;
+        height:calc(100vh - 180px);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="stars"></div>
-
-<div class="ambient"></div>
-<div class="ambient" style="animation-delay:-8s;left:30%"></div>
-
 <div class="app">
 
-<header>
- <div class="logo">рядом<span>.</span></div>
- <div class="status">🌙 безопасное пространство</div>
-</header>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-dot"></div>
+            <div class="logo-text">Рядом</div>
+        </div>
+
+        <button class="header-icon" onclick="showToast('Здесь ты можешь быть собой 💜')">
+            ✦
+        </button>
+    </header>
 
 
-<!-- PROFILE HEADER -->
+    <!-- ГЛАВНАЯ -->
+    <main id="home" class="screen active">
 
-<div class="profile">
+        <section class="hero">
+            <h1>
+                Ты не один.<br>
+                Ты всегда <span>рядом.</span>
+            </h1>
 
- <img
-  id="avatar"
-  class="avatar"
-  alt=""
-  style="display:none">
+            <p>
+                Место, где можно отдохнуть, поговорить,
+                разобраться в своих чувствах и просто побыть собой.
+            </p>
+        </section>
 
- <div id="avatarEmoji" class="avatar">🌙</div>
 
- <div class="profile-info">
-  <b id="userName">Привет, незнакомец 💜</b>
-  <small id="profileMood">
-   Здесь можно просто побыть собой.
-  </small>
- </div>
+        <!-- НАСТРОЕНИЕ -->
+        <section class="card mood-card">
 
- <button
-  class="btn secondary"
-  onclick="openProfile()">
-  👤
- </button>
+            <div class="card-title">
+                <h2>Как ты сегодня?</h2>
+                <span>трекер настроения</span>
+            </div>
+
+            <div class="mood-face" id="moodFace">🙂</div>
+
+            <div class="mood-name" id="moodName">
+                Нормально
+            </div>
+
+            <div class="mood-description" id="moodDescription">
+                Можно сделать сегодняшний день немного лучше.
+            </div>
+
+            <input
+                id="moodRange"
+                class="mood-range"
+                type="range"
+                min="0"
+                max="100"
+                value="50"
+                oninput="changeMood(this.value)"
+            >
+
+            <div class="mood-labels">
+                <span>плохо</span>
+                <span>нормально</span>
+                <span>отлично</span>
+            </div>
+
+        </section>
+
+
+        <!-- ПИТОМЕЦ -->
+        <section class="card pet-card">
+
+            <div class="card-title" style="width:100%">
+                <h2>Твой питомец</h2>
+                <span id="petTime">сейчас</span>
+            </div>
+
+            <div class="pet" id="pet">
+
+                <div class="pet-eye left"></div>
+                <div class="pet-eye right"></div>
+                <div class="pet-mouth" id="petMouth"></div>
+
+            </div>
+
+            <div class="pet-name">Луми</div>
+
+            <div class="pet-status" id="petStatus">
+                Луми рад тебя видеть 💜
+            </div>
+
+            <div class="pet-buttons">
+                <button class="pet-btn" onclick="playPet()">
+                    🎮 Поиграть
+                </button>
+
+                <button class="pet-btn" onclick="feedPet()">
+                    🍎 Покормить
+                </button>
+            </div>
+
+        </section>
+
+
+        <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Что тебе сейчас нужно?</h2>
+            </div>
+
+            <div class="actions">
+
+                <button class="action" onclick="openAI()">
+                    <div class="action-icon">🤖</div>
+                    <strong>Поговорить</strong>
+                    <small>с Рядом AI</small>
+                </button>
+
+                <button class="action" onclick="openScreen('help')">
+                    <div class="action-icon">🫶</div>
+                    <strong>Мне нужна помощь</strong>
+                    <small>полезные контакты</small>
+                </button>
+
+                <button class="action" onclick="openScreen('categories')">
+                    <div class="action-icon">🌙</div>
+                    <strong>Успокоиться</strong>
+                    <small>идеи и упражнения</small>
+                </button>
+
+                <button class="action" onclick="showToast('Ты уже сделал что-то хорошее — открыл Рядом 💜')">
+                    <div class="action-icon">✨</div>
+                    <strong>Поддержка</strong>
+                    <small>маленькие напоминания</small>
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- КАТЕГОРИИ -->
+    <main id="categories" class="screen">
+
+        <section class="hero">
+            <h1>Для тебя <span>💜</span></h1>
+            <p>
+                Выбери то, что подходит тебе прямо сейчас.
+            </p>
+        </section>
+
+        <div class="category-tabs">
+
+            <button class="category active" onclick="selectCategory(this,'all')">
+                Всё
+            </button>
+
+            <button class="category" onclick="selectCategory(this,'calm')">
+                😌 Спокойствие
+            </button>
+
+            <button class="category" onclick="selectCategory(this,'motivation')">
+                ⚡ Мотивация
+            </button>
+
+            <button class="category" onclick="selectCategory(this,'sleep')">
+                🌙 Сон
+            </button>
+
+            <button class="category" onclick="selectCategory(this,'friends')">
+                🫂 Друзья
+            </button>
+
+        </div>
+
+        <div id="contentList"></div>
+
+    </main>
+
+
+    <!-- ПРОФИЛЬ -->
+    <main id="profile" class="screen">
+
+        <section class="profile-top">
+
+            <div class="avatar">
+                🐉
+            </div>
+
+            <h1 id="profileName">
+                Мой профиль
+            </h1>
+
+            <p>
+                Это твоё личное пространство
+            </p>
+
+        </section>
+
+        <section class="card">
+
+            <div class="profile-row">
+                <span>Настроение сегодня</span>
+                <strong id="profileMood">🙂 Нормально</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Питомец</span>
+                <strong>Луми 💜</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Дней в Рядом</span>
+                <strong id="daysCount">1</strong>
+            </div>
+
+            <div class="profile-row">
+                <span>Добрые поступки</span>
+                <strong id="goodCount">0 ✨</strong>
+            </div>
+
+        </section>
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Маленькое напоминание</h2>
+            </div>
+
+            <p style="color:#a099a5;line-height:1.6;font-size:14px">
+                Тебе не обязательно всегда быть сильным.
+                Иногда нормально устать, погрустить или попросить помощи.
+                💜
+            </p>
+
+        </section>
+
+        <button
+            class="telegram"
+            style="width:100%"
+            onclick="window.open('https://t.me/ryadom_online','_blank')"
+        >
+            ✈️ Telegram-канал «Рядом»
+        </button>
+
+    </main>
+
+
+    <!-- ПОМОЩЬ -->
+    <main id="help" class="screen">
+
+        <section class="hero">
+            <h1>Ты можешь попросить <span>помощи.</span></h1>
+
+            <p>
+                Если тебе очень тяжело, не обязательно справляться со всем одному.
+            </p>
+        </section>
+
+        <section class="card help-box">
+
+            <div class="help-icon">🫶</div>
+
+            <h2>Детский телефон доверия</h2>
+
+            <p>
+                В России можно бесплатно и анонимно
+                обратиться за психологической поддержкой.
+            </p>
+
+            <a class="phone" href="tel:88002000122">
+                ☎ 8-800-2000-122
+            </a>
+
+            <p style="margin-top:12px;font-size:12px">
+                Если ты находишься в другой стране,
+                используй местные экстренные или кризисные службы
+                либо обратись к взрослому, которому доверяешь.
+            </p>
+
+        </section>
+
+        <section class="card">
+
+            <h2 style="margin-bottom:10px">
+                Если прямо сейчас опасно
+            </h2>
+
+            <p style="color:#918994;line-height:1.5;font-size:14px">
+                Постарайся не оставаться одному.
+                Позови родителя, родственника, учителя или другого
+                взрослого, которому доверяешь.
+                При непосредственной опасности обратись в местную
+                экстренную службу.
+            </p>
+
+        </section>
+
+        <button
+            class="telegram"
+            style="width:100%"
+            onclick="window.open('https://t.me/ryadom_online','_blank')"
+        >
+            ✈️ Перейти в Telegram «Рядом»
+        </button>
+
+    </main>
 
 </div>
 
 
-<!-- ================= HOME ================= -->
+<!-- AI BUTTON -->
 
-<section id="home" class="section active">
-
-<div class="hero">
-
- <h1>
-  Ты не обязан справляться со всем один.
- </h1>
-
- <p>
-  Здесь можно выдохнуть, разобраться в своих чувствах,
-  переключиться или найти человека, с которым можно поговорить.
- </p>
-
- <div class="buttons">
-
-  <button
-   class="btn primary"
-   onclick="showSection('tools')">
-   ✨ Мне сейчас тяжело
-  </button>
-
-  <button
-   class="btn danger"
-   onclick="openEmergency()">
-   🛟 Мне очень плохо
-  </button>
-
- </div>
-
-</div>
+<button class="ai-button" onclick="openAI()">
+    AI
+</button>
 
 
-<div class="title">
- <h2>Как ты сейчас?</h2>
- <small id="moodLabel">выбери состояние</small>
-</div>
+<!-- AI -->
 
-<div class="card">
+<div class="ai-window" id="aiWindow">
 
- <div class="moods">
+    <div class="ai-head">
 
-  <button class="mood" onclick="setMood(this,'очень тяжело','😞')">
-   <span>😞</span>
-   <small>тяжело</small>
-  </button>
+        <div class="ai-title">
 
-  <button class="mood" onclick="setMood(this,'грустно','😔')">
-   <span>😔</span>
-   <small>грустно</small>
-  </button>
+            <div class="ai-logo">
+                ✦
+            </div>
 
-  <button class="mood" onclick="setMood(this,'нормально','😐')">
-   <span>😐</span>
-   <small>нормально</small>
-  </button>
+            <div>
+                <strong>Рядом AI</strong>
+                <small>виртуальный помощник</small>
+            </div>
 
-  <button class="mood" onclick="setMood(this,'хорошо','🙂')">
-   <span>🙂</span>
-   <small>хорошо</small>
-  </button>
+        </div>
 
-  <button class="mood" onclick="setMood(this,'отлично','😊')">
-   <span>😊</span>
-   <small>отлично</small>
-  </button>
+        <button class="ai-close" onclick="closeAI()">
+            ×
+        </button>
 
- </div>
+    </div>
+
+
+    <div class="ai-messages" id="aiMessages">
+
+        <div class="ai-message bot">
+            Привет 💜
+
+            Я Рядом AI. Можешь написать мне, что тебя беспокоит, что произошло сегодня или просто поговорить.
+        </div>
+
+    </div>
+
+
+    <div class="ai-typing" id="aiTyping">
+        Рядом AI печатает...
+    </div>
+
+
+    <div class="ai-input">
+
+        <input
+            id="aiInput"
+            type="text"
+            maxlength="1000"
+            placeholder="Напиши что-нибудь..."
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter') sendAI()"
+        >
+
+        <button onclick="sendAI()">
+            ➤
+        </button>
+
+    </div>
 
 </div>
 
 
-<div class="title">
- <h2>💌 Напоминание</h2>
-</div>
+<!-- MOOD MODAL -->
 
-<div class="card" id="supportBox">
- Ты имеешь право на плохой день.
-</div>
+<div class="modal" id="moodModal">
 
+    <div class="modal-box">
 
-<div class="title">
- <h2>Что тебе сейчас нужно?</h2>
-</div>
+        <div class="big">
+            💜
+        </div>
 
-<div class="grid">
+        <h2>
+            Всё настолько плохо?
+        </h2>
 
- <div class="card click" onclick="topic('anxiety')">
-  <div class="icon">😰</div>
-  <b>Успокоиться</b>
-  <p>Тревога и напряжение</p>
- </div>
+        <p>
+            Поделись своими переживаниями и мыслями,
+            постараюсь помочь.
+        </p>
 
- <div class="card click" onclick="topic('emotions')">
-  <div class="icon">💭</div>
-  <b>Понять себя</b>
-  <p>Разобраться в чувствах</p>
- </div>
+        <button class="modal-close" onclick="closeMoodModal()">
+            Поговорить с Рядом AI
+        </button>
 
- <div class="card click" onclick="topic('lonely')">
-  <div class="icon">🫂</div>
-  <b>Не быть одному</b>
-  <p>Нужен кто-то рядом</p>
- </div>
+        <button
+            onclick="closeMoodModal()"
+            style="margin-top:8px;background:transparent;color:#888;padding:10px"
+        >
+            Пока не хочу
+        </button>
 
- <div class="card click" onclick="topic('sleep')">
-  <div class="icon">🌙</div>
-  <b>Уснуть</b>
-  <p>Мысли не останавливаются</p>
- </div>
+    </div>
 
 </div>
 
 
-<div class="title">
- <h2>🌱 Посты</h2>
-</div>
+<!-- TOAST -->
 
-<div class="posts">
+<div class="toast" id="toast"></div>
 
- <div class="post">
-  <div class="emoji">🌱</div>
-  <h3>Твой темп — нормальный</h3>
-  <p>Ты не обязан успевать всё одновременно.</p>
- </div>
 
- <div class="post">
-  <div class="emoji">🫶</div>
-  <h3>Можно попросить помощи</h3>
-  <p>Просить поддержки — не слабость.</p>
- </div>
+<!-- BOTTOM NAV -->
 
- <div class="post">
-  <div class="emoji">☁️</div>
-  <h3>Плохой день закончится</h3>
-  <p>Состояние может измениться.</p>
- </div>
+<nav class="bottom-nav">
 
- <div class="post">
-  <div class="emoji">🌈</div>
-  <h3>Ты больше своего настроения</h3>
-  <p>Одна эмоция не определяет тебя.</p>
- </div>
+    <button class="nav-btn active" onclick="openScreen('home',this)">
+        <div class="nav-icon">⌂</div>
+        <span>Главная</span>
+        <div class="nav-indicator"></div>
+    </button>
 
-</div>
+    <button class="nav-btn" onclick="openScreen('categories',this)">
+        <div class="nav-icon">✦</div>
+        <span>Для тебя</span>
+    </button>
 
-</section>
+    <button class="nav-btn" onclick="openAI()">
+        <div class="nav-icon">💬</div>
+        <span>AI</span>
+    </button>
 
+    <button class="nav-btn" onclick="openScreen('help',this)">
+        <div class="nav-icon">🫶</div>
+        <span>Помощь</span>
+    </button>
 
-<!-- ================= TOOLS ================= -->
-
-<section id="tools" class="section">
-
-<div class="hero">
-
- <h1>✨ Комната спокойствия</h1>
-
- <p>
- Здесь можно остановиться на несколько минут
- и ничего от себя не требовать.
- </p>
-
-</div>
-
-
-<div class="title">
- <h2>🌬️ Дышим вместе</h2>
-</div>
-
-<div class="card" style="text-align:center">
-
- <p>
- Следуй за кругом. Не нужно делать глубокий вдох.
- Просто дыши спокойно.
- </p>
-
- <div
-  id="breathCircle"
-  style="
-   width:155px;
-   height:155px;
-   margin:25px auto;
-   border-radius:50%;
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   background:radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
-   box-shadow:0 0 70px #8177ff55;
-   transition:transform 4s ease-in-out;
-  ">
-  <span id="breathText">готов?</span>
- </div>
-
- <button
-  class="btn primary full"
-  onclick="startBreathing()">
-  Начать дыхание
- </button>
-
-</div>
-
-
-<!-- 5 -->
-
-<div class="title">
- <h2>🫂 Мне нужен кто-то рядом</h2>
-</div>
-
-<div class="card">
-
- <p>
- Иногда сложно подобрать слова.
- Нажми на подходящую фразу — она скопируется.
- </p>
-
- <div class="message" onclick="copyMessage(this)">
-  «Мне сейчас тяжело. Можешь немного побыть со мной?»
-  <small>нажми, чтобы скопировать</small>
- </div>
-
- <div class="message" onclick="copyMessage(this)">
-  «Мне нужна помощь, но мне сложно объяснить почему.»
-  <small>нажми, чтобы скопировать</small>
- </div>
-
- <div class="message" onclick="copyMessage(this)">
-  «Можешь позвонить мне? Мне сейчас не хочется быть одному/одной.»
-  <small>нажми, чтобы скопировать</small>
- </div>
-
- <div class="message" onclick="copyMessage(this)">
-  «Я хочу поговорить. Пожалуйста, побудь рядом.»
-  <small>нажми, чтобы скопировать</small>
- </div>
-
-</div>
-
-
-<!-- 9 -->
-
-<div class="title">
- <h2>🎨 Рисую то, что чувствую</h2>
-</div>
-
-<div class="card">
-
- <p>
- Не нужно уметь рисовать.
- Здесь нет правильного или неправильного рисунка.
- </p>
-
- <div class="canvas-wrap">
-  <canvas id="canvas"></canvas>
-
-  <div class="draw-tools">
-   <button onclick="setBrush(3)">тонко</button>
-   <button onclick="setBrush(8)">средне</button>
-   <button onclick="setBrush(16)">толсто</button>
-   <button onclick="clearCanvas()">очистить</button>
-  </div>
- </div>
-
- <button
-  class="btn primary full"
-  style="margin-top:9px"
-  onclick="saveDrawing()">
-  💾 Сохранить рисунок
- </button>
-
-</div>
-
-
-<!-- 13 -->
-
-<div class="title">
- <h2>💌 Письмо себе в будущее</h2>
-</div>
-
-<div class="card">
-
- <div class="letter">
-
-  <div class="letter-icon">💌</div>
-
-  <h3>
-   Напиши себе несколько слов.
-  </h3>
-
-  <p>
-   Это письмо сохранится только в этом браузере.
-  </p>
-
-  <textarea
-   id="futureLetter"
-   placeholder="Что бы ты хотел(а) сказать себе через некоторое время?"></textarea>
-
-  <button
-   class="btn primary full"
-   style="margin-top:9px"
-   onclick="saveLetter()">
-   💌 Сохранить письмо
-  </button>
-
-  <button
-   class="btn secondary full"
-   style="margin-top:9px"
-   onclick="openLetter()">
-   📖 Открыть моё письмо
-  </button>
-
- </div>
-
-</div>
-
-
-<!-- 15 -->
-
-<div class="title">
- <h2>🧩 Переключить внимание</h2>
-</div>
-
-<div class="card">
-
- <p>
- Попробуй найти все светящиеся звёзды.
- Это просто маленькая игра для переключения внимания.
- </p>
-
- <div class="game" id="game">
-
-  <div class="game-info">
-   <span>⭐ Найдено: <b id="gameScore">0</b>/5</span>
-   <span id="gameMessage">найди звёзды</span>
-  </div>
-
- </div>
-
- <button
-  class="btn secondary full"
-  style="margin-top:9px"
-  onclick="startGame()">
-  🔄 Новая игра
- </button>
-
-</div>
-
-</section>
-
-
-<!-- ================= PROFILE ================= -->
-
-<section id="profileSection" class="section">
-
-<div class="hero">
-
- <h1>👤 Мой профиль</h1>
-
- <p>
- Это твоё маленькое пространство.
- Данные профиля сохраняются только в браузере.
- </p>
-
-</div>
-
-<div class="title">
- <h2>✨ Как тебя называть?</h2>
-</div>
-
-<div class="card">
-
- <img
-  id="profilePreview"
-  class="photo-preview"
-  alt="">
-
- <div class="profile-form">
-
-  <input
-   id="profileName"
-   placeholder="Твоё имя или никнейм">
-
-  <input
-   id="profilePhoto"
-   type="file"
-   accept="image/*"
-   onchange="profilePhotoPreview(event)">
-
-  <textarea
-   id="profileBio"
-   placeholder="Небольшая фраза о себе..."></textarea>
-
-  <button
-   class="btn primary"
-   onclick="saveProfile()">
-   💾 Сохранить профиль
-  </button>
-
- </div>
-
- <p class="small-note">
- Фото, имя и описание сохраняются локально
- и не отправляются на сервер.
- </p>
-
-</div>
-
-</section>
-
-
-<!-- ================= EMERGENCY ================= -->
-
-<section id="emergency" class="section">
-
-<div class="hero">
-
- <h1>🛟 Сейчас главное — безопасность.</h1>
-
- <p>
- Если тебе прямо сейчас очень плохо,
- не оставайся с этим в одиночестве.
- </p>
-
-</div>
-
-
-<div class="title">
- <h2>❤️ Сначала сделай самое простое</h2>
-</div>
-
-<div class="emergency-box">
-
- <h2>Ты не обязан решать всё прямо сейчас.</h2>
-
- <div class="alert">
-
- Если есть риск, что ты можешь навредить себе,
- или кто-то прямо сейчас угрожает твоей безопасности,
- постарайся перейти туда, где есть люди,
- которым ты доверяешь.
-
- </div>
-
- <p>
- Можно сказать всего одну фразу:
- </p>
-
- <div class="message">
-  «Мне сейчас небезопасно. Пожалуйста, побудь со мной.»
- </div>
-
- <a
-  class="call-button"
-  href="tel:112">
-  📞 Экстренная помощь — 112
- </a>
-
-</div>
-
-
-<div class="title">
- <h2>🫂 К кому можно обратиться</h2>
-</div>
-
-<div class="card">
-
- <div class="message">
-  👨‍👩‍👧 Родитель или другой близкий взрослый
- </div>
-
- <div class="message">
-  🧑‍🏫 Учитель, школьный психолог или другой специалист
- </div>
-
- <div class="message">
-  🫂 Друг или человек, которому доверяешь
- </div>
-
-</div>
-
-
-<div class="title">
- <h2>💬 Если говорить сложно</h2>
-</div>
-
-<div class="card">
-
- <p>
- Можно просто показать человеку этот экран.
- Тебе не нужно идеально объяснять свои чувства.
- </p>
-
- <button
-  class="btn primary full"
-  onclick="copyEmergencyPhrase()">
-  📋 Скопировать фразу
- </button>
-
-</div>
-
-
-<div class="title">
- <h2>📞 Телефон доверия</h2>
-</div>
-
-<div class="phone-card">
-
- <div class="phone-icon">📞</div>
-
- <div class="phone-info">
-
-  <b>Детский телефон доверия — Россия</b>
-
-  <small>
-   Бесплатная линия психологической помощи.
-   Перед использованием проверь актуальность номера
-   на официальном сайте соответствующей службы.
-  </small>
-
-  <a
-   class="phone-number"
-   href="tel:88002000122">
-   8-800-2000-122
-  </a>
-
- </div>
-
-</div>
-
-
-<div class="phone-card">
-
- <div class="phone-icon">🚨</div>
-
- <div class="phone-info">
-
-  <b>Экстренная помощь</b>
-
-  <small>
-   Если существует непосредственная опасность.
-  </small>
-
-  <a
-   class="phone-number"
-   href="tel:112">
-   112
-  </a>
-
- </div>
-
-</div>
-
-
-<p class="small-note">
- Номера телефонов зависят от страны.
- Если ты находишься не в России, используй номер
- экстренной помощи своей страны или местную
- официальную линию психологической поддержки.
- </p>
-
-</section>
-
-
-<!-- ================= USEFUL ================= -->
-
-<section id="useful" class="section">
-
-<div class="hero">
-
- <h1>📱 Полезное</h1>
-
- <p>
- Музыка, поддержка и инструменты для заботы о себе.
- </p>
-
-</div>
-
-
-<div class="title">
- <h2>📞 Быстрая помощь</h2>
-</div>
-
-<div class="card">
-
- <button
-  class="btn danger full"
-  onclick="openEmergency()">
-  🛟 Мне очень плохо
- </button>
-
- <a
-  href="tel:88002000122"
-  class="call-button">
-  📞 Телефон доверия — 8-800-2000-122
- </a>
-
-</div>
-
-
-<div class="title">
- <h2>💬 Telegram</h2>
-</div>
-
-<div class="card">
-
- <p>
- Новости проекта, поддержка и новые материалы.
- </p>
-
- <a
-  href="https://t.me/ryadom_online"
-  target="_blank"
-  rel="noopener"
-  class="btn primary full"
-  style="
-   display:block;
-   text-align:center;
-   text-decoration:none;">
-  💜 Открыть канал «Рядом»
- </a>
-
-</div>
-
-
-<div class="title">
- <h2>🎧 Спокойная музыка</h2>
-</div>
-
-<div class="card">
-
- <a
-  href="https://music.yandex.ru/"
-  target="_blank"
-  rel="noopener"
-  class="resource-link">
-  🎵 Яндекс Музыка
- </a>
-
- <a
-  href="https://t.me/ryadom_online"
-  target="_blank"
-  rel="noopener"
-  class="resource-link">
-  🌙 Музыкальные рекомендации «Рядом»
- </a>
-
- <p class="small-note">
- Ссылки открывают внешние сервисы.
- </p>
-
-</div>
-
-</section>
-
-
-<!-- ================= NAV ================= -->
-
-<nav class="nav">
-
- <button
-  class="active"
-  onclick="showSection('home',this)">
-  <span>⌂</span>
-  Главная
- </button>
-
- <button
-  onclick="showSection('tools',this)">
-  <span>✨</span>
-  Инструменты
- </button>
-
- <button
-  onclick="showSection('profileSection',this)">
-  <span>👤</span>
-  Профиль
- </button>
-
- <button
-  onclick="showSection('emergency',this)">
-  <span>🛟</span>
-  Помощь
- </button>
-
- <button
-  onclick="showSection('useful',this)">
-  <span>📱</span>
-  Полезное
- </button>
+    <button class="nav-btn" onclick="openScreen('profile',this)">
+        <div class="nav-icon">◉</div>
+        <span>Профиль</span>
+    </button>
 
 </nav>
 
 
-<!-- ================= MODAL ================= -->
-
-<div
- id="modal"
- class="modal">
-
- <div class="sheet">
-
-  <button
-   class="close"
-   onclick="closeModal()">
-   Закрыть
-  </button>
-
-  <div id="modalContent"></div>
-
- </div>
-
-</div>
-
-
-<!-- ================= SUPPORT POPUP ================= -->
-
-<div
- id="supportPopup"
- class="support-popup">
-
- <div class="support-popup-card">
-
-  <div class="support-popup-icon">💜</div>
-
-  <h2>
-   Всё настолько плохо?
-  </h2>
-
-  <p style="
-   color:#bfc4d4;
-   line-height:1.7;">
-   Поделись своими переживаниями и мыслями.
-   Постараюсь помочь тебе найти следующий
-   маленький шаг.
-  </p>
-
-  <textarea
-   id="supportThought"
-   placeholder="Что сейчас происходит внутри?"></textarea>
-
-  <button
-   class="btn primary full"
-   style="margin-top:10px"
-   onclick="saveSupportThought()">
-   💜 Сохранить мысль
-  </button>
-
-  <button
-   class="btn secondary full"
-   style="margin-top:8px"
-   onclick="closeSupportPopup()">
-   Я просто хочу немного побыть здесь
-  </button>
-
- </div>
-
-</div>
-
-
-<!-- ================= SECRET ================= -->
-
-<button
- class="secret-button"
- onclick="openSecret()">
- 🌙
-</button>
-
-<div
- id="secretStory"
- class="secret-story">
-
- <div class="secret-card">
-
-  <button
-   class="close"
-   onclick="closeSecret()">
-   ×
-  </button>
-
-  <div style="font-size:55px">🌙</div>
-
-  <h2>
-   Небольшая секретная история
-  </h2>
-
-  <p>
-   Этот сайт создал
-   <b>17-летний подросток</b>.
-  </p>
-
-  <p>
-   Не потому, что у него есть ответы на всё.
-   А потому, что иногда самому подростку
-   очень хочется услышать простое:
-  </p>
-
-  <div style="
-   padding:18px;
-   border-radius:20px;
-   background:#7169ff14;
-   border:1px solid #7169ff35;
-   font-weight:bold;">
-   «Ты не один. Давай попробуем справиться
-   с этим вместе.»
-  </div>
-
-  <p>
-   Сделано подростком для подростков.
-  </p>
-
-  <div style="font-size:30px">💜</div>
-
- </div>
-
-</div>
-
-
-<div
- id="toast"
- class="toast">
-</div>
-
-
 <script>
 
-/* =====================================================
-   BACKGROUND
-===================================================== */
+/* =========================
+   НАСТРОЙКИ
+========================= */
 
-const stars=document.getElementById("stars");
+const AI_SERVER = "https://link-vwlw.onrender.com";
 
-for(let i=0;i<130;i++){
+let aiHistory = [];
 
- const star=document.createElement("i");
+let goodActions = Number(
+    localStorage.getItem("ryadom_good_actions") || 0
+);
 
- star.className="star";
 
- star.style.left=Math.random()*100+"%";
- star.style.top=Math.random()*100+"%";
- star.style.animationDelay=Math.random()*5+"s";
+/* =========================
+   ЭКРАНЫ
+========================= */
 
- stars.appendChild(star);
+function openScreen(id, button){
+
+    document.querySelectorAll(".screen").forEach(screen=>{
+        screen.classList.remove("active");
+    });
+
+    const target = document.getElementById(id);
+
+    if(target){
+        target.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn=>{
+        btn.classList.remove("active");
+
+        const indicator = btn.querySelector(".nav-indicator");
+
+        if(indicator){
+            indicator.remove();
+        }
+    });
+
+    if(button){
+        button.classList.add("active");
+
+        const indicator = document.createElement("div");
+
+        indicator.className = "nav-indicator";
+
+        button.appendChild(indicator);
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 }
+
+
+/* =========================
+   НАСТРОЕНИЕ
+========================= */
+
+function changeMood(value){
+
+    value = Number(value);
+
+    let face;
+    let name;
+    let description;
+
+    if(value <= 20){
+
+        face = "😢";
+        name = "Очень плохо";
+        description = "Похоже, сегодня тебе действительно тяжело.";
+
+        document.getElementById("moodModal").classList.add("show");
+
+    }else if(value <= 40){
+
+        face = "😕";
+        name = "Грустно";
+        description = "Иногда плохой день — просто плохой день.";
+
+    }else if(value <= 60){
+
+        face = "🙂";
+        name = "Нормально";
+        description = "Можно сделать сегодняшний день немного лучше.";
+
+    }else if(value <= 80){
+
+        face = "😊";
+        name = "Хорошо";
+        description = "Кажется, сегодня неплохой день!";
+
+    }else{
+
+        face = "🤩";
+        name = "Отлично!";
+        description = "Вот это настроение! Сохрани его ✨";
+
+    }
+
+    document.getElementById("moodFace").textContent = face;
+    document.getElementById("moodName").textContent = name;
+    document.getElementById("moodDescription").textContent = description;
+
+    document.getElementById("profileMood").textContent =
+        face + " " + name;
+
+    localStorage.setItem("ryadom_mood", value);
+}
+
+
+/* =========================
+   МОДАЛКА НАСТРОЕНИЯ
+========================= */
+
+function closeMoodModal(){
+    document.getElementById("moodModal").classList.remove("show");
+}
+
+document.getElementById("moodModal").addEventListener("click",function(e){
+
+    if(e.target === this){
+        closeMoodModal();
+    }
+
+});
+
+
+/* =========================
+   ПИТОМЕЦ
+========================= */
+
+let petHappiness =
+    Number(localStorage.getItem("ryadom_pet") || 70);
+
+function updatePet(){
+
+    const status = document.getElementById("petStatus");
+    const mouth = document.getElementById("petMouth");
+    const pet = document.getElementById("pet");
+
+    if(petHappiness >= 80){
+
+        status.textContent =
+            "Луми счастлив! Ему очень нравится быть с тобой 💜";
+
+        mouth.style.borderBottom =
+            "3px solid #24142d";
+
+        pet.style.filter =
+            "brightness(1.1)";
+
+    }else if(petHappiness >= 45){
+
+        status.textContent =
+            "Луми немного скучает по тебе.";
+
+        pet.style.filter =
+            "brightness(.95)";
+
+    }else{
+
+        status.textContent =
+            "Луми грустит... Поиграй с ним 🥺";
+
+        mouth.style.borderBottom =
+            "0";
+
+        pet.style.filter =
+            "brightness(.75)";
+    }
+
+    localStorage.setItem(
+        "ryadom_pet",
+        petHappiness
+    );
+}
+
+function playPet(){
+
+    petHappiness = Math.min(
+        100,
+        petHappiness + 18
+    );
+
+    updatePet();
+
+    addGoodAction();
+
+    showToast(
+        "Луми счастлив! 🎮💜"
+    );
+}
+
+function feedPet(){
+
+    petHappiness = Math.min(
+        100,
+        petHappiness + 10
+    );
+
+    updatePet();
+
+    addGoodAction();
+
+    showToast(
+        "Луми вкусно поел 🍎"
+    );
+}
+
+
+/* питомец постепенно скучает */
 
 setInterval(()=>{
 
- if(document.body.classList.contains("silent"))return;
+    petHappiness = Math.max(
+        0,
+        petHappiness - 1
+    );
 
- const shot=document.createElement("div");
+    updatePet();
 
- shot.className="shooting";
-
- shot.style.left=(50+Math.random()*50)+"%";
- shot.style.top=Math.random()*45+"%";
-
- document.body.appendChild(shot);
-
- setTimeout(()=>{
-  shot.remove();
- },1600);
-
-},7000);
+},60000);
 
 
-/* =====================================================
-   NAVIGATION
-===================================================== */
+/* =========================
+   ДОБРЫЕ ДЕЙСТВИЯ
+========================= */
 
-function showSection(id,button){
+function addGoodAction(){
 
- document.querySelectorAll(".section")
- .forEach(section=>{
-  section.classList.remove("active");
- });
+    goodActions++;
 
- const target=document.getElementById(id);
+    localStorage.setItem(
+        "ryadom_good_actions",
+        goodActions
+    );
 
- if(!target)return;
-
- target.classList.add("active");
-
- document.querySelectorAll(".nav button")
- .forEach(btn=>{
-  btn.classList.remove("active");
- });
-
- if(button){
-  button.classList.add("active");
- }
-
- window.scrollTo({
-  top:0,
-  behavior:"smooth"
- });
-
+    document.getElementById("goodCount").textContent =
+        goodActions + " ✨";
 }
 
 
-/* =====================================================
-   MODAL
-===================================================== */
+/* =========================
+   КАТЕГОРИИ
+========================= */
 
-function closeModal(){
+const content = {
 
- document.getElementById("modal")
- .classList.remove("show");
+    all:[
+        [
+            "🌿",
+            "Сделай паузу",
+            "Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."
+        ],
+        [
+            "💭",
+            "Запиши мысли",
+            "Иногда становится легче, если выписать всё, что сейчас происходит внутри."
+        ],
+        [
+            "🫶",
+            "Поговори с кем-нибудь",
+            "Выбери человека, которому доверяешь, и просто напиши ему."
+        ],
+        [
+            "✨",
+            "Маленькая победа",
+            "Даже если сегодня ты просто встал с кровати — это уже что-то."
+        ]
+    ],
 
+    calm:[
+        [
+            "🌬️",
+            "Дыхание 4–4",
+            "Вдохни на 4 секунды, задержи дыхание на 4 и медленно выдохни."
+        ],
+        [
+            "🌧️",
+            "Звуки дождя",
+            "Закрой глаза и представь место, где тебе спокойно и безопасно."
+        ],
+        [
+            "🧘",
+            "Заземление",
+            "Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."
+        ]
+    ],
+
+    motivation:[
+        [
+            "⚡",
+            "Один маленький шаг",
+            "Не обязательно решить всё сразу. Выбери только одну маленькую задачу."
+        ],
+        [
+            "🚀",
+            "Ты способен",
+            "Ошибки не делают тебя хуже. Они просто означают, что ты учишься."
+        ],
+        [
+            "🏆",
+            "Вспомни победу",
+            "Вспомни ситуацию, когда ты справился с тем, что казалось сложным."
+        ]
+    ],
+
+    sleep:[
+        [
+            "🌙",
+            "Выключи яркий экран",
+            "Перед сном попробуй немного уменьшить яркость телефона."
+        ],
+        [
+            "☁️",
+            "Спокойная мысль",
+            "Представь место, где тебе максимально спокойно."
+        ],
+        [
+            "🛏️",
+            "Не торопись уснуть",
+            "Не заставляй себя уснуть. Просто удобно устройся и дай телу расслабиться."
+        ]
+    ],
+
+    friends:[
+        [
+            "🫂",
+            "Напиши другу",
+            "Иногда простое «как ты?» может сильно изменить чей-то день."
+        ],
+        [
+            "💬",
+            "Будь рядом",
+            "Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."
+        ],
+        [
+            "❤️",
+            "Скажи что-нибудь хорошее",
+            "Отправь человеку сообщение, которое ему будет приятно получить."
+        ]
+    ]
+
+};
+
+function selectCategory(button,type){
+
+    document.querySelectorAll(".category").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    renderContent(type);
+}
+
+function renderContent(type){
+
+    const list =
+        document.getElementById("contentList");
+
+    list.innerHTML = "";
+
+    content[type].forEach(item=>{
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "content-item";
+
+        div.innerHTML = `
+            <div class="emoji">${item[0]}</div>
+            <h3>${item[1]}</h3>
+            <p>${item[2]}</p>
+        `;
+
+        div.onclick = ()=>{
+
+            addGoodAction();
+
+            showToast(
+                "Ты сделал что-то хорошее для себя ✨"
+            );
+        };
+
+        list.appendChild(div);
+
+    });
 }
 
 
-/* =====================================================
-   PROFILE
-===================================================== */
+/* =========================
+   AI
+========================= */
 
-function openProfile(){
+function openAI(){
 
- const name=localStorage.getItem("name")||"";
- const bio=localStorage.getItem("bio")||"";
- const avatar=localStorage.getItem("avatar");
+    document.getElementById("aiWindow")
+        .classList.add("open");
 
- document.getElementById("profileName").value=name;
- document.getElementById("profileBio").value=bio;
+    setTimeout(()=>{
 
- if(avatar){
+        document.getElementById("aiInput")
+            .focus();
 
-  document.getElementById("profilePreview").src=avatar;
-  document.getElementById("profilePreview").style.display="block";
+    },150);
+}
 
- }else{
+function closeAI(){
 
-  document.getElementById("profilePreview").style.display="none";
-
- }
-
- showSection("profileSection");
-
- document.querySelectorAll(".nav button")
- .forEach(btn=>btn.classList.remove("active"));
-
- document.querySelectorAll(".nav button")[2]
- .classList.add("active");
-
+    document.getElementById("aiWindow")
+        .classList.remove("open");
 }
 
 
-function profilePhotoPreview(event){
+function addAIMessage(text,type){
 
- const file=event.target.files[0];
+    const messages =
+        document.getElementById("aiMessages");
 
- if(!file)return;
+    const div =
+        document.createElement("div");
 
- const reader=new FileReader();
+    div.className =
+        "ai-message " + type;
 
- reader.onload=function(){
+    div.textContent = text;
 
-  document.getElementById("profilePreview").src=reader.result;
+    messages.appendChild(div);
 
-  document.getElementById("profilePreview")
-  .style.display="block";
-
- };
-
- reader.readAsDataURL(file);
-
+    messages.scrollTop =
+        messages.scrollHeight;
 }
 
 
-function saveProfile(){
+async function sendAI(){
 
- const name=
- document.getElementById("profileName")
- .value.trim();
+    const input =
+        document.getElementById("aiInput");
 
- const bio=
- document.getElementById("profileBio")
- .value.trim();
+    const message =
+        input.value.trim();
 
- if(name){
-  localStorage.setItem("name",name);
- }else{
-  localStorage.removeItem("name");
- }
+    if(!message){
+        return;
+    }
 
- localStorage.setItem("bio",bio);
+    input.value = "";
 
- const preview=
- document.getElementById("profilePreview");
+    addAIMessage(
+        message,
+        "user"
+    );
 
- if(
-  preview.src &&
-  preview.src.startsWith("data:")
- ){
+    aiHistory.push({
+        role:"user",
+        content:message
+    });
 
-  localStorage.setItem(
-   "avatar",
-   preview.src
-  );
+    const typing =
+        document.getElementById("aiTyping");
 
- }
+    typing.style.display =
+        "block";
 
- loadProfile();
+    try{
 
- toast("Профиль сохранён 💜");
+        const response =
+            await fetch(
+                AI_SERVER + "/chat",
+                {
+                    method:"POST",
 
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+                        message:message,
+                        history:
+                            aiHistory.slice(-10)
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.error ||
+                "Ошибка сервера"
+            );
+
+        }
+
+        const answer =
+            data.answer ||
+            "Я пока не смог ответить 😔";
+
+        aiHistory.push({
+            role:"assistant",
+            content:answer
+        });
+
+        addAIMessage(
+            answer,
+            "bot"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        addAIMessage(
+            "Не получилось подключиться к Рядом AI 😔\n\nПопробуй ещё раз через несколько секунд.",
+            "bot"
+        );
+
+    }finally{
+
+        typing.style.display =
+            "none";
+    }
 }
 
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function showToast(text){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = text;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(()=>{
+
+            toast.classList.remove("show");
+
+        },2600);
+}
+
+
+/* =========================
+   ПРОФИЛЬ
+========================= */
 
 function loadProfile(){
 
- const name=
- localStorage.getItem("name");
+    const savedMood =
+        localStorage.getItem("ryadom_mood");
 
- const bio=
- localStorage.getItem("bio");
+    if(savedMood !== null){
 
- const avatar=
- localStorage.getItem("avatar");
+        document.getElementById(
+            "moodRange"
+        ).value = savedMood;
 
- if(name){
+        changeMood(savedMood);
 
-  document.getElementById("userName")
-  .textContent=
-  "Привет, "+name+" 💜";
+    }
 
- }else{
-
-  document.getElementById("userName")
-  .textContent=
-  "Привет, незнакомец 💜";
-
- }
-
- if(bio){
-
-  document.getElementById("profileMood")
-  .textContent=bio;
-
- }
-
- if(avatar){
-
-  document.getElementById("avatar").src=avatar;
-  document.getElementById("avatar")
-  .style.display="block";
-
-  document.getElementById("avatarEmoji")
-  .style.display="none";
-
- }
-
- const profileName=
- document.getElementById("profileName");
-
- if(profileName){
-
-  profileName.value=name||"";
-
- }
-
- const profileBio=
- document.getElementById("profileBio");
-
- if(profileBio){
-
-  profileBio.value=bio||"";
-
- }
-
+    document.getElementById(
+        "goodCount"
+    ).textContent =
+        goodActions + " ✨";
 }
+
+
+/* =========================
+   СТАРТ
+========================= */
+
+renderContent("all");
+
+updatePet();
 
 loadProfile();
-
-
-/* =====================================================
-   MOOD
-===================================================== */
-
-const moodMessages={
-
- "очень тяжело":
- "Сегодня можно просто пережить этот день. Маленькими шагами.",
-
- "грустно":
- "Тебе не обязательно заставлять себя быть весёлым.",
-
- "нормально":
- "Иногда нормальный день — уже хороший результат.",
-
- "хорошо":
- "Рад, что сегодня немного легче 🌱",
-
- "отлично":
- "Сохрани это ощущение. Ты заслуживаешь хороших моментов."
-
-};
-
-
-function setMood(el,text,emoji){
-
- document.querySelectorAll(".mood")
- .forEach(x=>x.classList.remove("active"));
-
- el.classList.add("active");
-
- document.getElementById("moodLabel")
- .textContent=emoji+" "+text;
-
- document.getElementById("supportBox")
- .textContent=moodMessages[text];
-
- document.getElementById("profileMood")
- .textContent=
- "Сегодня: "+emoji+" "+text;
-
- localStorage.setItem("mood",text);
-
- localStorage.setItem("moodEmoji",emoji);
-
- if(
-  text==="очень тяжело" ||
-  text==="грустно"
- ){
-
-  setTimeout(()=>{
-   openSupportPopup();
-  },300);
-
- }
-
- toast("Настроение сохранено ❤️");
-
-}
-
-
-/* =====================================================
-   SUPPORT POPUP
-===================================================== */
-
-function openSupportPopup(){
-
- document.getElementById("supportPopup")
- .classList.add("show");
-
-}
-
-
-function closeSupportPopup(){
-
- document.getElementById("supportPopup")
- .classList.remove("show");
-
-}
-
-
-function saveSupportThought(){
-
- const text=
- document.getElementById("supportThought")
- .value.trim();
-
- if(!text){
-
-  toast("Можешь написать хотя бы несколько слов.");
-
-  return;
- }
-
- localStorage.setItem(
-  "supportThought",
-  text
- );
-
- closeSupportPopup();
-
- toast("Спасибо, что поделился/поделилась 💜");
-
-}
-
-
-/* =====================================================
-   TOPICS
-===================================================== */
-
-const topics={
-
- anxiety:[
-  "😰 Тревога",
-  "Попробуй поставить ноги на пол, расслабить плечи и сделать несколько спокойных выдохов. Затем назови несколько вещей, которые видишь вокруг."
- ],
-
- emotions:[
-  "💭 Эмоции",
-  "Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Не обязательно сразу находить решение."
- ],
-
- lonely:[
-  "🫂 Одиночество",
-  "Можно написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
- ],
-
- sleep:[
-  "🌙 Сон",
-  "Приглуши свет, убери яркий экран и попробуй несколько медленных выдохов."
- ]
-
-};
-
-
-function topic(id){
-
- const data=topics[id];
-
- if(!data)return;
-
- document.getElementById("modalContent").innerHTML=`
-
-  <h2>${data[0]}</h2>
-
-  <p style="line-height:1.7;color:#bdc2d1">
-   ${data[1]}
-  </p>
-
-  <button
-   class="btn primary full"
-   onclick="closeModal()">
-   💜 Спасибо
-  </button>
- `;
-
- document.getElementById("modal")
- .classList.add("show");
-
-}
-
-
-/* =====================================================
-   EMERGENCY
-===================================================== */
-
-function openEmergency(){
-
- showSection("emergency");
-
- document.querySelectorAll(".nav button")
- .forEach(btn=>btn.classList.remove("active"));
-
- document.querySelectorAll(".nav button")[3]
- .classList.add("active");
-
-}
-
-
-function copyEmergencyPhrase(){
-
- const phrase=
- "Мне сейчас очень плохо и мне нужна помощь. Пожалуйста, побудь со мной.";
-
- if(navigator.clipboard){
-
-  navigator.clipboard.writeText(phrase);
-
-  toast("Фраза скопирована ❤️");
-
- }else{
-
-  toast(phrase);
-
- }
-
-}
-
-
-/* =====================================================
-   BREATHING
-===================================================== */
-
-let breathing=false;
-
-function startBreathing(){
-
- if(breathing)return;
-
- breathing=true;
-
- const circle=
- document.getElementById("breathCircle");
-
- const text=
- document.getElementById("breathText");
-
- let cycles=0;
-
- function cycle(){
-
-  if(cycles>=4){
-
-   text.textContent="готово ❤️";
-   circle.style.transform="scale(1)";
-   breathing=false;
-
-   toast("Ты сделал маленькую паузу.");
-
-   return;
-  }
-
-  text.textContent="вдох";
-
-  circle.style.transform="scale(1.3)";
-
-  setTimeout(()=>{
-
-   text.textContent="выдох";
-
-   circle.style.transform="scale(1)";
-
-   setTimeout(()=>{
-
-    cycles++;
-
-    cycle();
-
-   },4000);
-
-  },4000);
-
- }
-
- cycle();
-
-}
-
-
-/* =====================================================
-   COPY MESSAGE
-===================================================== */
-
-function copyMessage(element){
-
- let text=element.childNodes[0].textContent.trim();
-
- if(navigator.clipboard){
-
-  navigator.clipboard.writeText(text);
-
-  toast("Фраза скопирована 💜");
-
- }else{
-
-  toast(text);
-
- }
-
-}
-
-
-/* =====================================================
-   FUTURE LETTER
-===================================================== */
-
-const futureLetter=
- document.getElementById("futureLetter");
-
-futureLetter.value=
- localStorage.getItem("futureLetter")||"";
-
-
-function saveLetter(){
-
- const text=
- futureLetter.value.trim();
-
- if(!text){
-
-  toast("Сначала напиши письмо.");
-
-  return;
- }
-
- localStorage.setItem(
-  "futureLetter",
-  text
- );
-
- toast("Письмо сохранено 💌");
-
-}
-
-
-function openLetter(){
-
- const text=
- localStorage.getItem("futureLetter");
-
- if(!text){
-
-  toast("Письма пока нет.");
-
-  return;
- }
-
- document.getElementById("modalContent").innerHTML=`
-
-  <div style="text-align:center">
-
-   <div style="font-size:65px">
-    💌
-   </div>
-
-   <h2>Письмо тебе</h2>
-
-   <div style="
-    padding:20px;
-    margin-top:15px;
-    border-radius:20px;
-    background:#1d2238;
-    color:#dfe2ed;
-    line-height:1.8;
-    text-align:left;
-    white-space:pre-wrap;">
-    ${escapeHtml(text)}
-   </div>
-
-  </div>
- `;
-
- document.getElementById("modal")
- .classList.add("show");
-
-}
-
-
-function escapeHtml(text){
-
- return text
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
-
-}
-
-
-/* =====================================================
-   DRAWING
-===================================================== */
-
-const canvas=
- document.getElementById("canvas");
-
-const ctx=
- canvas.getContext("2d");
-
-let drawing=false;
-let brush=8;
-
-
-function resizeCanvas(){
-
- const rect=
- canvas.getBoundingClientRect();
-
- const old=
- document.createElement("canvas");
-
- old.width=canvas.width;
- old.height=canvas.height;
-
- if(canvas.width>0){
-
-  old.getContext("2d")
-  .drawImage(canvas,0,0);
-
- }
-
- canvas.width=
- rect.width*devicePixelRatio;
-
- canvas.height=
- 300*devicePixelRatio;
-
- ctx.scale(
-  devicePixelRatio,
-  devicePixelRatio
- );
-
- ctx.lineCap="round";
- ctx.lineJoin="round";
-
-}
-
-
-resizeCanvas();
-
-
-window.addEventListener(
- "resize",
- resizeCanvas
-);
-
-
-function getPoint(event){
-
- const rect=
- canvas.getBoundingClientRect();
-
- const point=
- event.touches
- ?event.touches[0]
- :event;
-
- return{
-  x:point.clientX-rect.left,
-  y:point.clientY-rect.top
- };
-
-}
-
-
-function startDrawing(event){
-
- event.preventDefault();
-
- drawing=true;
-
- const point=
- getPoint(event);
-
- ctx.beginPath();
-
- ctx.moveTo(
-  point.x,
-  point.y
- );
-
-}
-
-
-function draw(event){
-
- if(!drawing)return;
-
- event.preventDefault();
-
- const point=
- getPoint(event);
-
- ctx.lineWidth=brush;
- ctx.strokeStyle="#7c73ff";
-
- ctx.lineTo(
-  point.x,
-  point.y
- );
-
- ctx.stroke();
-
-}
-
-
-canvas.addEventListener(
- "mousedown",
- startDrawing
-);
-
-canvas.addEventListener(
- "mousemove",
- draw
-);
-
-window.addEventListener(
- "mouseup",
- ()=>{
-  drawing=false;
- }
-);
-
-canvas.addEventListener(
- "touchstart",
- startDrawing,
- {passive:false}
-);
-
-canvas.addEventListener(
- "touchmove",
- draw,
- {passive:false}
-);
-
-canvas.addEventListener(
- "touchend",
- ()=>{
-  drawing=false;
- }
-);
-
-
-function setBrush(size){
-
- brush=size;
-
- toast("Размер кисти: "+size);
-
-}
-
-
-function clearCanvas(){
-
- ctx.clearRect(
-  0,
-  0,
-  canvas.width,
-  canvas.height
- );
-
- toast("Рисунок очищен");
-
-}
-
-
-function saveDrawing(){
-
- try{
-
-  localStorage.setItem(
-   "emotionDrawing",
-   canvas.toDataURL("image/png")
-  );
-
-  toast("Рисунок сохранён 🎨");
-
- }catch(e){
-
-  toast("Не удалось сохранить рисунок.");
-
- }
-
-}
-
-
-/* =====================================================
-   MINI GAME
-===================================================== */
-
-let gameScore=0;
-
-
-function startGame(){
-
- const game=
- document.getElementById("game");
-
- gameScore=0;
-
- document.getElementById("gameScore")
- .textContent="0";
-
- document.getElementById("gameMessage")
- .textContent="ищи звёзды";
-
- game.querySelectorAll(".game-star")
- .forEach(x=>x.remove());
-
- for(let i=0;i<5;i++){
-
-  const star=
-  document.createElement("div");
-
-  star.className="game-star";
-
-  star.textContent="⭐";
-
-  star.style.left=
-  (8+Math.random()*78)+"%";
-
-  star.style.top=
-  (18+Math.random()*68)+"%";
-
-  star.onclick=()=>{
-
-   if(star.dataset.found)return;
-
-   star.dataset.found="yes";
-
-   star.style.transform="scale(2)";
-   star.style.opacity="0";
-
-   gameScore++;
-
-   document.getElementById("gameScore")
-   .textContent=gameScore;
-
-   setTimeout(()=>{
-    star.remove();
-   },250);
-
-   if(gameScore>=5){
-
-    document.getElementById("gameMessage")
-    .textContent="готово! 🌟";
-
-    toast("Ты нашёл все звёзды ⭐");
-
-   }
-
-  };
-
-  game.appendChild(star);
-
- }
-
-}
-
-
-startGame();
-
-
-/* =====================================================
-   SECRET STORY
-===================================================== */
-
-function openSecret(){
-
- document.getElementById("secretStory")
- .classList.add("show");
-
-}
-
-
-function closeSecret(){
-
- document.getElementById("secretStory")
- .classList.remove("show");
-
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function toast(text){
-
- const element=
- document.getElementById("toast");
-
- element.textContent=text;
-
- element.classList.add("show");
-
- clearTimeout(window.toastTimer);
-
- window.toastTimer=
- setTimeout(()=>{
-
-  element.classList.remove("show");
-
- },2400);
-
-}
-
-
-/* =====================================================
-   ESC
-===================================================== */
-
-document.addEventListener(
- "keydown",
- event=>{
-
-  if(event.key==="Escape"){
-
-   closeModal();
-   closeSupportPopup();
-   closeSecret();
-
-  }
-
- }
-);
-
-
-/* =====================================================
-   RESTORE MOOD
-===================================================== */
-
-const savedMood=
- localStorage.getItem("mood");
-
-const savedMoodEmoji=
- localStorage.getItem("moodEmoji");
-
-if(savedMood){
-
- document.getElementById("profileMood")
- .textContent=
- "Сегодня: "+
- (savedMoodEmoji||"💜")+" "+
- savedMood;
-
- document.getElementById("supportBox")
- .textContent=
- moodMessages[savedMood]||
- "Ты уже уделил внимание своему состоянию.";
-
-}
 
 </script>
 
