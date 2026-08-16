@@ -1,1343 +1,2091 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>BLINK — Друзья всегда на связи</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <style>
-        /* Глобальные сбросы и базовые стили */
-        * { box-sizing: border-box; }
-        html, body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            font-family: Inter, Arial, sans-serif;
-            background: #090909;
-            color: #fff;
-        }
-        button, input { font: inherit; }
-        button {
-            cursor: pointer;
-            border: 0;
-        }
-        .hidden { display: none !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080a11">
+<title>Рядом — поддержка</title>
 
-        /* Основной контейнер приложения */
-        #app {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
+<style>
+:root{
+--bg:#080a11;
+--card:#11141d;
+--card2:#181b27;
+--line:#292e3d;
+--text:#f8f8fb;
+--muted:#a4a8b7;
+--violet:#8c82ff;
+--pink:#e887aa;
+--blue:#71c8df;
+--green:#72d6aa;
+--red:#e9556e;
+}
 
-        /* Экран авторизации */
-        #auth {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: radial-gradient(circle at 50% 20%, #191919, #080808 65%);
-        }
-        .auth-card {
-            width: min(590px, 94vw);
-            padding: 34px;
-            border: 1px solid #333;
-            border-radius: 34px;
-            background: #101010;
-            box-shadow: 0 30px 80px #000;
-        }
-        .logo {
-            text-align: center;
-            font-weight: 900;
-            font-size: 46px;
-            letter-spacing: -2px;
-        }
-        .logo span { color: #ffc400; }
-        .subtitle {
-            text-align: center;
-            color: #888;
-            font-size: 19px;
-            margin: 10px 0 30px;
-        }
+*{box-sizing:border-box}
 
-        /* Вкладки входа/регистрации */
-        .tabs {
-            display: flex;
-            background: #1a1a1a;
-            border-radius: 22px;
-            padding: 5px;
-            margin-bottom: 24px;
-        }
-        .tabs button {
-            flex: 1;
-            padding: 16px;
-            border-radius: 17px;
-            background: transparent;
-            color: #888;
-            font-weight: 800;
-        }
-        .tabs button.active {
-            background: #fff;
-            color: #111;
-        }
+html{scroll-behavior:smooth}
 
-        /* Поля формы */
-        .field { margin: 15px 0; }
-        .field label {
-            display: block;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
-        .field input, .modal input {
-            width: 100%;
-            padding: 17px 18px;
-            border: 1px solid #363636;
-            border-radius: 18px;
-            background: #171717;
-            color: #fff;
-            outline: none;
-        }
-        .field input:focus, .modal input:focus { border-color: #fff; }
+body{
+margin:0;
+background:
+radial-gradient(circle at 10% 0%,#766bff22,transparent 30%),
+radial-gradient(circle at 100% 80%,#ec729b1c,transparent 32%),
+var(--bg);
+color:var(--text);
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+overflow-x:hidden;
+}
 
-        /* Основная кнопка */
-        .primary {
-            width: 100%;
-            padding: 17px;
-            border-radius: 18px;
-            background: #fff;
-            color: #111;
-            font-weight: 900;
-            font-size: 18px;
-            margin-top: 12px;
-        }
+button,a{
+font:inherit;
+-webkit-tap-highlight-color:transparent;
+}
 
-        /* Сообщения об ошибках и успехе */
-        .error {
-            background: #3a1618;
-            border: 1px solid #6b292d;
-            color: #ff9b9f;
-            padding: 14px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
-        .success {
-            background: #142e1a;
-            border: 1px solid #2e7040;
-            color: #a6e9b5;
-            padding: 14px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
+button{color:inherit}
 
-        /* Основной экран с картой */
-        #main {
-            position: relative;
-            background: #111;
-        }
-        #map {
-            position: absolute;
-            inset: 0;
-        }
+body:before{
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+opacity:.14;
+background-image:radial-gradient(#fff 1px,transparent 1px);
+background-size:42px 42px;
+z-index:-2;
+animation:stars 20s linear infinite;
+}
 
-        /* Стили для элементов управления картой */
-        .leaflet-control-zoom {
-            margin-top: 90px !important;
-            margin-right: 15px !important;
-        }
-        .leaflet-control-zoom a {
-            background: #111 !important;
-            color: #fff !important;
-            border: 1px solid #333 !important;
-        }
-        .leaflet-control-attribution { font-size: 9px; }
+@keyframes stars{
+to{transform:translateY(42px)}
+}
 
-        /* Верхняя панель */
-        .top {
-            position: absolute;
-            z-index: 1000;
-            top: 18px;
-            left: 18px;
-            right: 18px;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
-        }
-        .pill {
-            pointer-events: auto;
-            background: #0d0d0df2;
-            border: 1px solid #333;
-            border-radius: 30px;
-            padding: 13px 18px;
-            box-shadow: 0 12px 35px #0008;
-            font-weight: 800;
-        }
-        .gps-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #777;
-            margin-right: 9px;
-        }
-        .gps-dot.ok {
-            background: #34d058;
-            box-shadow: 0 0 10px #34d058;
-        }
-        .logo-pill { font-size: 23px; }
-        .logo-pill span { color: #ffc400; }
+.orb{
+position:fixed;
+width:280px;
+height:280px;
+border-radius:50%;
+filter:blur(90px);
+opacity:.3;
+pointer-events:none;
+z-index:-1;
+}
 
-        /* Кнопки карты */
-        .map-actions {
-            position: absolute;
-            right: 16px;
-            top: 105px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .map-btn {
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
-            background: #0d0d0df2;
-            color: #fff;
-            border: 1px solid #333;
-            font-size: 25px;
-            box-shadow: 0 12px 25px #0008;
-        }
-        .map-btn.active { outline: 2px solid #ffc400; }
+.orb.one{
+background:#766cff;
+left:-140px;
+top:100px;
+animation:orb1 12s ease-in-out infinite alternate;
+}
 
-        /* Нижняя навигационная панель */
-        .bottom {
-            position: absolute;
-            z-index: 1000;
-            left: 16px;
-            right: 16px;
-            bottom: 16px;
-            height: 84px;
-            background: #0d0d0df5;
-            border: 1px solid #333;
-            border-radius: 30px;
-            display: flex;
-            padding: 7px;
-            box-shadow: 0 15px 45px #0009;
-        }
-        .nav {
-            flex: 1;
-            border-radius: 23px;
-            background: transparent;
-            color: #888;
-            font-weight: 800;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-        }
-        .nav .ico { font-size: 24px; }
-        .nav.active {
-            background: #fff;
-            color: #111;
-        }
-        .badge {
-            position: absolute;
-            background: #ff3b30;
-            color: #fff;
-            font-size: 11px;
-            border-radius: 20px;
-            padding: 3px 6px;
-            margin-left: 28px;
-            margin-top: -28px;
-        }
+.orb.two{
+background:#ed709b;
+right:-140px;
+bottom:80px;
+animation:orb2 14s ease-in-out infinite alternate;
+}
 
-        /* Всплывающие панели */
-        .panel {
-            position: absolute;
-            z-index: 1100;
-            inset: 0;
-            background: #090909;
-            overflow: auto;
-            padding: 20px 18px 120px;
-        }
-        .panel-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .panel h2 {
-            margin: 0;
-            font-size: 28px;
-        }
-        .close {
-            background: #1a1a1a;
-            color: #fff;
-            border: 1px solid #333;
-            width: 45px;
-            height: 45px;
-            border-radius: 15px;
-            font-size: 22px;
-        }
+@keyframes orb1{
+to{transform:translate(160px,110px)}
+}
 
-        /* Карточки */
-        .card {
-            background: #121212;
-            border: 1px solid #2d2d2d;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-        .muted { color: #888; }
-        .code {
-            font-size: 30px;
-            font-weight: 900;
-            letter-spacing: 7px;
-        }
-        .small-btn {
-            background: #fff;
-            color: #111;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-weight: 800;
-        }
-        .danger {
-            background: #351719;
-            color: #ff9a9f;
-        }
+@keyframes orb2{
+to{transform:translate(-130px,-100px)}
+}
 
-        /* Элементы друзей */
-        .friend {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #242424;
-            display: grid;
-            place-items: center;
-            font-size: 22px;
-            font-weight: 900;
-        }
-        .friend-info { flex: 1; }
-        .friend-name { font-weight: 900; }
-        .friend-code {
-            color: #888;
-            font-size: 13px;
-        }
-        .request-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .request-actions button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 12px;
-            font-weight: 800;
-        }
-        .accept {
-            background: #fff;
-            color: #111;
-        }
-        .reject {
-            background: #242424;
-            color: #fff;
-        }
+.app{
+width:min(850px,100%);
+margin:auto;
+padding:18px 15px 120px;
+}
 
-        /* Модальное окно */
-        .modal-wrap {
-            position: fixed;
-            inset: 0;
-            z-index: 3000;
-            background: #0009;
-            display: grid;
-            place-items: center;
-            padding: 20px;
-        }
-        .modal {
-            width: min(480px, 94vw);
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 25px;
-            padding: 22px;
-        }
-        .modal h3 { margin-top: 0; }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .modal-actions button {
-            flex: 1;
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 900;
-        }
+.screen{
+display:none;
+animation:appear .45s ease;
+}
 
-        /* Уведомления (тосты) */
-        .toast {
-            position: fixed;
-            z-index: 5000;
-            left: 50%;
-            bottom: 115px;
-            transform: translateX(-50%);
-            background: #fff;
-            color: #111;
-            padding: 14px 20px;
-            border-radius: 18px;
-            font-weight: 800;
-            max-width: 90vw;
-            text-align: center;
-            box-shadow: 0 15px 40px #0009;
-        }
+.screen.active{display:block}
 
-        /* Подписи на карте */
-        .place-label {
-            background: #111;
-            color: #fff;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 4px 7px;
-        }
-        .leaflet-popup-content-wrapper,
-        .leaflet-popup-tip {
-            background: #111;
-            color: #fff;
-        }
-        .leaflet-popup-content { margin: 12px; }
+@keyframes appear{
+from{
+opacity:0;
+transform:translateY(14px);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
 
-        /* Состояние загрузки */
-        .loading {
-            position: absolute;
-            z-index: 2500;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            background: #080808dd;
-            font-weight: 900;
-            font-size: 18px;
-        }
-        .spinner {
-            width: 35px;
-            height: 35px;
-            border: 4px solid #333;
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-            margin: auto auto 12px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
 
-        /* Адаптивность для мобильных устройств */
-        @media (max-width: 500px) {
-            .auth-card { padding: 25px; }
-            .logo { font-size: 40px; }
-            .subtitle { font-size: 16px; }
-            .bottom { height: 78px; }
-            .nav { font-size: 12px; }
-            .map-actions { top: 100px; }
-            .top { top: 14px; }
-            .pill { padding: 11px 14px; }
-            .logo-pill { font-size: 20px; }
-        }
-    </style>
+.logo{
+font-size:31px;
+font-weight:900;
+letter-spacing:-1.5px;
+}
+
+.logo span{
+color:var(--violet);
+}
+
+.badge{
+padding:8px 12px;
+border-radius:14px;
+border:1px solid var(--line);
+background:#12151de8;
+color:var(--muted);
+font-size:12px;
+}
+
+.hero{
+position:relative;
+overflow:hidden;
+padding:28px;
+border:1px solid #363b4d;
+border-radius:31px;
+background:linear-gradient(145deg,#1d1b32,#11141c 72%);
+box-shadow:0 25px 75px #0008;
+}
+
+.hero:after{
+content:"";
+position:absolute;
+width:180px;
+height:180px;
+border-radius:50%;
+border:1px solid #ffffff10;
+right:-80px;
+top:-80px;
+box-shadow:
+0 0 0 35px #ffffff04,
+0 0 0 70px #ffffff02;
+}
+
+.hero h1{
+font-size:clamp(29px,7vw,43px);
+line-height:1.03;
+margin:0 0 13px;
+max-width:700px;
+}
+
+.hero p{
+margin:0;
+color:#b9bdc9;
+line-height:1.65;
+max-width:700px;
+}
+
+.actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:20px;
+}
+
+.btn{
+border:0;
+border-radius:17px;
+padding:15px;
+font-weight:850;
+cursor:pointer;
+transition:.22s;
+}
+
+.btn:hover{
+transform:translateY(-3px);
+}
+
+.primary{
+background:linear-gradient(100deg,#8277ff,#bc78ff);
+box-shadow:0 14px 32px #8177ff25;
+}
+
+.danger{
+background:linear-gradient(100deg,#e9536c,#bd579c);
+}
+
+.dark{
+background:#20232e;
+border:1px solid #353949;
+}
+
+.green{
+background:#19382f;
+border:1px solid #345f50;
+color:#aaf0d0;
+}
+
+.title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:25px 2px 11px;
+}
+
+.title h2{
+font-size:19px;
+margin:0;
+}
+
+.title span{
+font-size:12px;
+color:#777b89;
+}
+
+.card,
+.mood-card,
+.journal,
+.info,
+.breath,
+.mini{
+background:#11141cdd;
+border:1px solid var(--line);
+border-radius:23px;
+}
+
+.mood-card{
+padding:18px;
+}
+
+.mood-card p{
+margin:0;
+color:#afb3bf;
+}
+
+.moods{
+display:flex;
+gap:7px;
+margin-top:15px;
+}
+
+.mood{
+flex:1;
+border:1px solid #2b303e;
+background:#191c25;
+border-radius:16px;
+padding:10px 3px;
+cursor:pointer;
+font-size:22px;
+transition:.25s;
+}
+
+.mood small{
+display:block;
+font-size:9px;
+color:#7f8390;
+margin-top:4px;
+}
+
+.mood:hover,
+.mood.active{
+background:#292651;
+border-color:var(--violet);
+transform:translateY(-5px);
+box-shadow:0 10px 25px #8177ff20;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.card{
+min-height:120px;
+text-align:left;
+padding:17px;
+cursor:pointer;
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-4px);
+border-color:#766dff;
+box-shadow:0 15px 35px #0007;
+}
+
+.icon{
+font-size:30px;
+}
+
+.card b{
+display:block;
+margin-top:8px;
+}
+
+.card small{
+display:block;
+color:#9094a1;
+margin-top:5px;
+line-height:1.4;
+}
+
+.posts{
+display:flex;
+gap:11px;
+overflow-x:auto;
+scrollbar-width:none;
+}
+
+.posts::-webkit-scrollbar{
+display:none;
+}
+
+.post{
+min-width:250px;
+padding:18px;
+border:1px solid var(--line);
+border-radius:23px;
+background:linear-gradient(145deg,#191c27,#10131a);
+transition:.25s;
+}
+
+.post:hover{
+transform:translateY(-3px);
+}
+
+.post-icon{
+font-size:30px;
+}
+
+.post h3{
+margin:10px 0 7px;
+}
+
+.post p{
+margin:0;
+color:#aeb1bd;
+font-size:14px;
+line-height:1.55;
+}
+
+.info{
+padding:18px;
+color:#c5c8d0;
+line-height:1.65;
+}
+
+.resource{
+width:100%;
+display:flex;
+align-items:center;
+gap:13px;
+padding:16px;
+margin-bottom:10px;
+border-radius:19px;
+background:#11141c;
+border:1px solid var(--line);
+color:#fff;
+text-decoration:none;
+text-align:left;
+cursor:pointer;
+transition:.2s;
+}
+
+.resource:hover{
+transform:translateX(4px);
+border-color:var(--violet);
+}
+
+.resource-icon{
+font-size:27px;
+}
+
+.resource small{
+display:block;
+color:#8e92a0;
+margin-top:3px;
+}
+
+.tags{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.tag{
+padding:9px 13px;
+border-radius:99px;
+border:1px solid var(--line);
+background:#151821;
+color:#c7cad4;
+cursor:pointer;
+}
+
+.tag.active{
+background:#292650;
+border-color:var(--violet);
+}
+
+.breath{
+padding:22px;
+text-align:center;
+}
+
+.circle{
+width:150px;
+height:150px;
+margin:20px auto;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:
+radial-gradient(
+circle,
+#aaa3ff,
+#6d62d7 48%,
+#302d6b 70%,
+transparent 71%
+);
+box-shadow:0 0 65px #8177ff50;
+transition:transform 4s ease-in-out;
+}
+
+.circle.expand{
+transform:scale(1.35);
+}
+
+.breath-text{
+font-weight:900;
+}
+
+textarea{
+width:100%;
+min-height:130px;
+margin-top:12px;
+padding:14px;
+border-radius:16px;
+border:1px solid #2b303e;
+background:#0c0e13;
+color:#fff;
+resize:vertical;
+outline:none;
+}
+
+textarea:focus{
+border-color:var(--violet);
+}
+
+.statgrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:9px;
+}
+
+.stat{
+padding:15px;
+border:1px solid var(--line);
+border-radius:18px;
+background:#11141c;
+text-align:center;
+}
+
+.stat strong{
+display:block;
+font-size:22px;
+}
+
+.stat small{
+color:#888c9a;
+}
+
+.progress{
+height:8px;
+background:#222632;
+border-radius:99px;
+overflow:hidden;
+margin:14px 0;
+}
+
+.progress i{
+display:block;
+height:100%;
+width:0;
+background:linear-gradient(90deg,var(--violet),var(--pink));
+transition:.5s;
+}
+
+.faq{
+display:grid;
+gap:9px;
+}
+
+.faq-item{
+border:1px solid var(--line);
+border-radius:18px;
+background:#11141c;
+overflow:hidden;
+}
+
+.faq-question{
+width:100%;
+border:0;
+background:none;
+padding:17px;
+text-align:left;
+cursor:pointer;
+font-weight:800;
+}
+
+.faq-answer{
+display:none;
+padding:0 17px 17px;
+color:#adb0bc;
+line-height:1.6;
+}
+
+.faq-item.open .faq-answer{
+display:block;
+}
+
+.nav{
+position:fixed;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:min(780px,calc(100% - 20px));
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:4px;
+padding:7px;
+border:1px solid #303544;
+border-radius:23px;
+background:#10131bee;
+backdrop-filter:blur(18px);
+box-shadow:0 20px 50px #0009;
+z-index:20;
+}
+
+.nav button{
+border:0;
+background:transparent;
+color:#777b8b;
+border-radius:16px;
+padding:7px 3px;
+cursor:pointer;
+font-size:10px;
+}
+
+.nav button span{
+display:block;
+font-size:19px;
+margin-bottom:2px;
+}
+
+.nav button.active{
+background:#29274e;
+color:#fff;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:#000d;
+display:none;
+align-items:flex-end;
+justify-content:center;
+padding:10px;
+z-index:40;
+}
+
+.modal.show{
+display:flex;
+}
+
+.sheet{
+width:min(820px,100%);
+max-height:90vh;
+overflow:auto;
+padding:23px;
+border:1px solid #363b4d;
+border-radius:29px;
+background:#11141c;
+animation:sheet .3s ease;
+}
+
+@keyframes sheet{
+from{
+opacity:0;
+transform:translateY(45px);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
+
+.close{
+float:right;
+border:0;
+background:#252936;
+padding:9px 12px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.sheet h2{
+font-size:27px;
+margin:4px 60px 15px 0;
+}
+
+.sheet p{
+color:#c3c6cf;
+line-height:1.65;
+}
+
+.rednote{
+padding:16px;
+border-radius:17px;
+background:#2b171d;
+border:1px solid #5b2933;
+color:#d4c4c8;
+line-height:1.6;
+}
+
+.modal-buttons{
+display:grid;
+gap:9px;
+margin-top:15px;
+}
+
+.modal-buttons a{
+text-decoration:none;
+text-align:center;
+}
+
+.toast{
+position:fixed;
+left:50%;
+bottom:102px;
+transform:translate(-50%,20px);
+opacity:0;
+background:#252936;
+border:1px solid #414758;
+padding:12px 18px;
+border-radius:15px;
+z-index:100;
+transition:.25s;
+}
+
+.toast.show{
+opacity:1;
+transform:translate(-50%,0);
+}
+
+.footer{
+color:#676b79;
+font-size:11px;
+line-height:1.55;
+margin-top:24px;
+}
+
+@media(max-width:470px){
+.actions{
+grid-template-columns:1fr;
+}
+
+.grid{
+gap:8px;
+}
+
+.card{
+padding:14px;
+}
+
+.mood{
+font-size:20px;
+}
+
+.nav button{
+font-size:9px;
+}
+}
+</style>
 </head>
+
 <body>
-<div id="app">
-    <!-- Экран авторизации -->
-    <section id="auth" class="screen">
-        <div class="auth-card">
-            <div class="logo"><span>⚡</span> BLINK</div>
-            <div class="subtitle">Друзья рядом. В реальном времени.</div>
-            <div class="tabs">
-                <button id="loginTab" class="active">Вход</button>
-                <button id="registerTab">Регистрация</button>
-            </div>
-            <div id="authMsg" class="hidden"></div>
-            <div id="usernameField" class="field hidden">
-                <label>Имя пользователя</label>
-                <input id="username" maxlength="30" placeholder="Например, Никс">
-            </div>
-            <div class="field">
-                <label>Email</label>
-                <input id="email" type="email" autocomplete="email" placeholder="example@mail.com">
-            </div>
-            <div class="field">
-                <label>Пароль</label>
-                <input id="password" type="password" autocomplete="current-password" placeholder="Минимум 6 символов">
-            </div>
-            <button id="authBtn" class="primary">Войти</button>
-        </div>
-    </section>
 
-    <!-- Основной экран -->
-    <section id="main" class="screen hidden">
-        <div id="map"></div>
+<div class="orb one"></div>
+<div class="orb two"></div>
 
-        <!-- Верхняя панель -->
-        <div class="top">
-            <div class="pill logo-pill"><span>⚡</span> BLINK</div>
-            <div class="pill">
-                <span id="gpsDot" class="gps-dot"></span>
-                <span id="gpsText">GPS не запущен</span>
-            </div>
-        </div>
+<main class="app">
 
-        <!-- Кнопки управления картой -->
-        <div class="map-actions">
-            <button class="map-btn" id="zoomIn">+</button>
-            <button class="map-btn" id="zoomOut">−</button>
-            <button class="map-btn" id="locateBtn">🎯</button>
-            <button class="map-btn" id="addPlaceBtn">📍</button>
-            <button class="map-btn" id="hybridBtn">🗺️</button>
-        </div>
+<!-- ГЛАВНАЯ -->
 
-        <!-- Нижняя навигация -->
-        <div class="bottom">
-            <button class="nav active" data-panel="mapPanel"><span class="ico">🗺️</span>Карта</button>
-            <button class="nav" data-panel="friendsPanel"><span class="ico">👥</span><span class="badge hidden" id="requestBadge">0</span>Друзья</button>
-            <button class="nav" data-panel="profilePanel"><span class="ico">👤</span>Профиль</button>
-            <button class="nav" data-panel="settingsPanel"><span class="ico">⚙️</span>Настройки</button>
-        </div>
+<section class="screen active" id="home">
 
-        <!-- Панели -->
-        <div id="friendsPanel" class="panel hidden"></div>
-        <div id="profilePanel" class="panel hidden"></div>
-        <div id="settingsPanel" class="panel hidden"></div>
-    </section>
-
-    <!-- Модальное окно -->
-    <div id="modalWrap" class="modal-wrap hidden">
-        <div class="modal" id="modal"></div>
-    </div>
-
-    <!-- Уведомление (тост) -->
-    <div id="toast" class="toast hidden"></div>
-
-    <!-- Индикатор загрузки -->
-    <div id="loading" class="loading hidden">
-        <div>
-            <div class="spinner"></div>
-            <div id="loadingText">Загрузка…</div>
-        </div>
-    </div>
+<div class="top">
+<div class="logo">рядом<span>.</span></div>
+<div class="badge">анонимно</div>
 </div>
 
-<!-- Подключение библиотек -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div class="hero">
+
+<h1>
+Ты не обязан справляться со всем один.
+</h1>
+
+<p>
+Спокойное пространство для подростков.
+Здесь можно выдохнуть, разобраться в чувствах,
+почитать поддержку и найти безопасный следующий шаг.
+</p>
+
+<div class="actions">
+
+<button
+class="btn primary"
+onclick="showScreen('tools')">
+✨ Мне сейчас тяжело
+</button>
+
+<button
+class="btn danger"
+onclick="openTopic('urgent')">
+🆘 Мне небезопасно
+</button>
+
+</div>
+</div>
+
+
+<div class="title">
+<h2>Как ты сейчас?</h2>
+<span id="moodStatus">не выбрано</span>
+</div>
+
+<div class="mood-card">
+
+<p>
+Выбери настроение.
+Здесь нет неправильных ответов.
+</p>
+
+<div class="moods">
+
+<button class="mood" onclick="setMood(this,'тяжело')">
+😞
+<small>тяжело</small>
+</button>
+
+<button class="mood" onclick="setMood(this,'не очень')">
+😕
+<small>не очень</small>
+</button>
+
+<button class="mood" onclick="setMood(this,'нормально')">
+😐
+<small>нормально</small>
+</button>
+
+<button class="mood" onclick="setMood(this,'хорошо')">
+🙂
+<small>хорошо</small>
+</button>
+
+<button class="mood" onclick="setMood(this,'отлично')">
+😊
+<small>отлично</small>
+</button>
+
+</div>
+</div>
+
+
+<div class="title">
+<h2>Что тебе сейчас нужно?</h2>
+</div>
+
+<div class="grid">
+
+<button class="card" onclick="openTopic('anxiety')">
+<div class="icon">😰</div>
+<b>Успокоиться</b>
+<small>Тревога, паника и напряжение</small>
+</button>
+
+<button class="card" onclick="openTopic('emotions')">
+<div class="icon">💭</div>
+<b>Разобраться</b>
+<small>Понять свои чувства</small>
+</button>
+
+<button class="card" onclick="openTopic('sleep')">
+<div class="icon">🌙</div>
+<b>Заснуть</b>
+<small>Если мысли не дают спать</small>
+</button>
+
+<button class="card" onclick="openTopic('listen')">
+<div class="icon">❤️</div>
+<b>Поговорить</b>
+<small>Когда хочется, чтобы выслушали</small>
+</button>
+
+<button class="card" onclick="openTopic('anger')">
+<div class="icon">😡</div>
+<b>Злость</b>
+<small>Когда всё слишком сильно бесит</small>
+</button>
+
+<button class="card" onclick="openTopic('empty')">
+<div class="icon">🧊</div>
+<b>Пустота</b>
+<small>Если ничего не чувствуешь</small>
+</button>
+
+</div>
+
+
+<div class="title">
+<h2>Небольшие посты</h2>
+<span>листай →</span>
+</div>
+
+<div class="posts">
+
+<article class="post">
+<div class="post-icon">🌱</div>
+<h3>Не обязательно быть сильным</h3>
+<p>Можно устать. Можно заплакать. Можно попросить помощи.</p>
+</article>
+
+<article class="post">
+<div class="post-icon">☁️</div>
+<h3>Плохой день не определяет тебя</h3>
+<p>То, что ты чувствуешь сегодня, не обязательно останется навсегда.</p>
+</article>
+
+<article class="post">
+<div class="post-icon">🫶</div>
+<h3>Ты имеешь значение</h3>
+<p>Даже если сейчас тебе трудно в это поверить.</p>
+</article>
+
+<article class="post">
+<div class="post-icon">🌙</div>
+<h3>Можно начать с маленького</h3>
+<p>Не нужно решить всю жизнь сегодня. Достаточно одного безопасного шага.</p>
+</article>
+
+<article class="post">
+<div class="post-icon">🪴</div>
+<h3>Сравнивать себя не обязательно</h3>
+<p>У каждого человека свой темп. Тебе не нужно быть похожим на других.</p>
+</article>
+
+</div>
+
+
+<div class="title">
+<h2>Фраза для тебя</h2>
+</div>
+
+<div class="info" id="quote">
+Ты уже сделал маленький шаг, просто открыв эту страницу. ❤️
+</div>
+
+</section>
+
+
+<!-- ИНСТРУМЕНТЫ -->
+
+<section class="screen" id="tools">
+
+<div class="top">
+<div class="logo">инструменты<span>.</span></div>
+</div>
+
+<div class="hero">
+
+<h1>
+Давай сделаем этот момент немного легче.
+</h1>
+
+<p>
+Выбери любое упражнение.
+Можно остановиться в любой момент.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>Быстрые упражнения</h2>
+</div>
+
+<div class="grid">
+
+<button class="card" onclick="startBreathing()">
+<div class="icon">🌬️</div>
+<b>Дыхание</b>
+<small>Медленно успокоить тело</small>
+</button>
+
+<button class="card" onclick="openTopic('grounding')">
+<div class="icon">🌍</div>
+<b>5–4–3–2–1</b>
+<small>Вернуться в настоящий момент</small>
+</button>
+
+<button class="card" onclick="openTopic('anger')">
+<div class="icon">😡</div>
+<b>Злость</b>
+<small>Сделать паузу</small>
+</button>
+
+<button class="card" onclick="openTopic('empty')">
+<div class="icon">🧊</div>
+<b>Пустота</b>
+<small>Вернуть внимание к себе</small>
+</button>
+
+</div>
+
+
+<div class="title">
+<h2>Мини-тест</h2>
+<span id="testCount">0 / 5</span>
+</div>
+
+<div class="mini">
+
+<div id="testQuestion">
+Последние несколько дней тебе было трудно расслабиться?
+</div>
+
+<div class="actions" style="margin-top:14px">
+
+<button class="btn dark" onclick="answerTest(true)">
+Да
+</button>
+
+<button class="btn dark" onclick="answerTest(false)">
+Нет
+</button>
+
+</div>
+
+<div class="progress">
+<i id="testProgress"></i>
+</div>
+
+<div
+id="testResult"
+style="color:#aeb1bd">
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>Дневник</h2>
+<span>только на этом устройстве</span>
+</div>
+
+<div class="journal" style="padding:18px">
+
+<div style="color:#b5b8c3">
+Напиши всё как есть. Это место только для тебя.
+</div>
+
+<textarea
+id="journal"
+placeholder="Сегодня я чувствую...">
+</textarea>
+
+<button
+class="btn primary"
+style="width:100%;margin-top:10px"
+onclick="saveJournal()">
+💾 Сохранить
+</button>
+
+<div
+id="saved"
+style="color:#777b88;font-size:12px;margin-top:10px">
+Запись сохраняется только на этом устройстве.
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>Настроение за неделю</h2>
+</div>
+
+<div class="statgrid">
+
+<div class="stat">
+<strong id="statDays">0</strong>
+<small>отметок</small>
+</div>
+
+<div class="stat">
+<strong id="statGood">0</strong>
+<small>хороших дней</small>
+</div>
+
+<div class="stat">
+<strong id="statMood">—</strong>
+<small>последнее</small>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ПОМОЩЬ -->
+
+<section class="screen" id="help">
+
+<div class="top">
+<div class="logo">помощь<span>.</span></div>
+</div>
+
+<div class="hero">
+
+<h1>
+Если сейчас очень тяжело — помощь существует.
+</h1>
+
+<p>
+Если ты боишься, что можешь навредить себе
+или другому человеку, не оставайся один.
+Перейди к безопасному человеку и скажи,
+что тебе нужна помощь.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>Срочная помощь</h2>
+</div>
+
+
+<a class="resource" href="tel:112">
+
+<div class="resource-icon">📞</div>
+
+<div>
+<b>112 — экстренная помощь</b>
+<small>Если опасность прямо сейчас</small>
+</div>
+
+</a>
+
+
+<button class="resource" onclick="openTopic('adult')">
+
+<div class="resource-icon">🧑‍🤝‍🧑</div>
+
+<div>
+<b>Позвать взрослого</b>
+<small>Как сказать, что тебе плохо</small>
+</div>
+
+</button>
+
+
+<button class="resource" onclick="openTopic('suicide')">
+
+<div class="resource-icon">🆘</div>
+
+<div>
+<b>Мысли о смерти</b>
+<small>Что делать прямо сейчас</small>
+</div>
+
+</button>
+
+
+<button class="resource" onclick="openTopic('selfharm')">
+
+<div class="resource-icon">❤️</div>
+
+<div>
+<b>Хочется навредить себе</b>
+<small>Безопасные первые шаги</small>
+</div>
+
+</button>
+
+
+<div class="title">
+<h2>Если тебя обижают</h2>
+</div>
+
+<div class="grid">
+
+<button class="card" onclick="openTopic('bullying')">
+<div class="icon">🛡️</div>
+<b>Буллинг</b>
+<small>Что делать, если тебя травят</small>
+</button>
+
+<button class="card" onclick="openTopic('parents')">
+<div class="icon">🏠</div>
+<b>Проблемы дома</b>
+<small>Как найти безопасного взрослого</small>
+</button>
+
+</div>
+
+
+<div class="title">
+<h2>Очень важно</h2>
+</div>
+
+<div class="info">
+
+Если один взрослый не смог тебя понять,
+это не значит, что помощи нет.
+
+Попробуй другого человека:
+родителя, родственника, школьного психолога,
+учителя или другого взрослого,
+которому ты доверяешь.
+
+</div>
+
+</section>
+
+
+<!-- ПОЛЕЗНОЕ -->
+
+<section class="screen" id="useful">
+
+<div class="top">
+<div class="logo">полезное<span>.</span></div>
+</div>
+
+<div class="hero">
+
+<h1>
+Забота о себе
+</h1>
+
+<p>
+Простые инструменты для сна,
+настроения, привычек и самочувствия.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>iPhone</h2>
+</div>
+
+<a
+class="resource"
+href="https://support.apple.com/ru-ru/guide/iphone/iph6a6decb13/26/ios/26"
+target="_blank">
+
+<div class="resource-icon">🍎</div>
+
+<div>
+<b>Apple «Здоровье»</b>
+<small>Настроение, эмоции, сон и здоровье</small>
+</div>
+
+</a>
+
+
+<div class="title">
+<h2>Android</h2>
+</div>
+
+<a
+class="resource"
+href="https://play.google.com/store/"
+target="_blank">
+
+<div class="resource-icon">🤖</div>
+
+<div>
+<b>Google Play</b>
+<small>Приложения для сна, настроения и привычек</small>
+</div>
+
+</a>
+
+
+<div class="title">
+<h2>Расслабление</h2>
+</div>
+
+<a
+class="resource"
+href="https://www.headspace.com/"
+target="_blank">
+
+<div class="resource-icon">🧘</div>
+
+<div>
+<b>Headspace</b>
+<small>Сон, медитации и расслабление</small>
+</div>
+
+</a>
+
+
+<div class="title">
+<h2>Что выбрать?</h2>
+</div>
+
+<div class="tags">
+
+<button class="tag" onclick="filterApps(this,'sleep')">
+🌙 Сон
+</button>
+
+<button class="tag" onclick="filterApps(this,'mood')">
+🙂 Настроение
+</button>
+
+<button class="tag" onclick="filterApps(this,'habits')">
+🌱 Привычки
+</button>
+
+<button class="tag" onclick="filterApps(this,'calm')">
+🧘 Спокойствие
+</button>
+
+</div>
+
+
+<div class="info" style="margin-top:15px">
+
+Не обязательно скачивать много приложений.
+Выбери то, которое тебе действительно удобно.
+
+Приложения не заменяют помощь специалиста.
+
+</div>
+
+</section>
+
+
+<!-- ЕЩЁ -->
+
+<section class="screen" id="more">
+
+<div class="top">
+<div class="logo">ещё<span>.</span></div>
+</div>
+
+<div class="hero">
+
+<h1>
+Здесь можно задавать любые вопросы.
+</h1>
+
+<p>
+Даже те, которые кажутся странными,
+стыдными или неудобными.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>Случайная поддержка</h2>
+</div>
+
+<div class="info" id="randomQuote">
+Ты не обязан знать все ответы прямо сейчас.
+</div>
+
+<button
+class="btn primary"
+style="width:100%;margin-top:10px"
+onclick="randomQuote()">
+✨ Другая фраза
+</button>
+
+
+<div class="title">
+<h2>Частые вопросы</h2>
+</div>
+
+<div class="faq">
+
+<div class="faq-item">
+
+<button class="faq-question" onclick="faq(this)">
+Почему я так много тревожусь? ＋
+</button>
+
+<div class="faq-answer">
+Тревога может появляться из-за стресса,
+учёбы, отношений, перемен, усталости
+или множества причин одновременно.
+Ты не слабый из-за того, что тревожишься.
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<button class="faq-question" onclick="faq(this)">
+Нормально ли иногда ничего не чувствовать? ＋
+</button>
+
+<div class="faq-answer">
+Такое может происходить после сильного
+стресса или переутомления. Если состояние
+долго не проходит или мешает жизни,
+лучше поговорить со взрослым или специалистом.
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<button class="faq-question" onclick="faq(this)">
+Как попросить помощи? ＋
+</button>
+
+<div class="faq-answer">
+Можно сказать:
+«Мне сейчас тяжело. Мне нужна помощь.
+Пожалуйста, побудь со мной».
+Не обязательно объяснять всё сразу.
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<button class="faq-question" onclick="faq(this)">
+А если меня не поймут? ＋
+</button>
+
+<div class="faq-answer">
+Попробуй другого безопасного взрослого.
+Если один человек тебя не услышал,
+это не означает, что твои чувства не важны.
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<button class="faq-question" onclick="faq(this)">
+Я постоянно сравниваю себя с другими. ＋
+</button>
+
+<div class="faq-answer">
+Социальные сети показывают только часть жизни
+других людей. Твой путь не обязан выглядеть
+как чей-то ещё.
+</div>
+
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>Для родителей</h2>
+</div>
+
+<div class="info">
+
+Если вы родитель или другой взрослый рядом
+с подростком, самое полезное — сначала
+выслушать, а не сразу пытаться исправить ситуацию.
+
+Можно сказать:
+
+«Я рядом».
+
+«Я тебя слышу».
+
+«Давай разберёмся вместе».
+
+</div>
+
+
+<div class="footer">
+
+Этот сайт создан как информационное пространство
+поддержки и не заменяет врача, психолога
+или экстренную помощь.
+
+Если существует непосредственная опасность,
+обратись к безопасному человеку рядом
+и в местную экстренную службу.
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- НАВИГАЦИЯ -->
+
+<nav class="nav">
+
+<button class="active"
+data-screen="home"
+onclick="showScreen('home')">
+<span>⌂</span>
+Главная
+</button>
+
+<button
+data-screen="tools"
+onclick="showScreen('tools')">
+<span>✨</span>
+Инструменты
+</button>
+
+<button
+data-screen="help"
+onclick="showScreen('help')">
+<span>🛟</span>
+Помощь
+</button>
+
+<button
+data-screen="useful"
+onclick="showScreen('useful')">
+<span>📱</span>
+Полезное
+</button>
+
+<button
+data-screen="more"
+onclick="showScreen('more')">
+<span>🫶</span>
+Ещё
+</button>
+
+</nav>
+
+
+<!-- МОДАЛЬНОЕ ОКНО -->
+
+<div
+class="modal"
+id="modal"
+onclick="if(event.target===this)closeModal()">
+
+<div class="sheet">
+
+<button
+class="close"
+onclick="closeModal()">
+Закрыть
+</button>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
 
 <script>
-    // Конфигурация Supabase
-    const SUPABASE_URL = 'https://pfglyeeiydnnfrkjkglk.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_mqY9TwP0DuU3_b8kNswqYg_SQT1rEKt';
-    const { createClient } = supabase;
-    const db = createClient(SUABASE_URL, SUPABASE_KEY);
-
-    // Глобальные переменные состояния
-    let user = null,
-        profile = null,
-        map = null,
-        meMarker = null,
-        accuracyCircle = null;
-    let friends = [],
-        incoming = [],
-        friendMarkers = new Map(),
-        placeMarkers = new Map();
-    let locationWatch = null,
-        locationChannel = null,
-        requestChannel = null,
-        addPlaceMode = false,
-        lastPosition = null;
-    let imageryLayer = null,
-        labelsLayer = null,
-        streetLayer = null,
-        hybrid = true;
-
-    // Вспомогательные функции
-    const $ = id => document.getElementById(id);
-
-    function esc(v) {
-        return String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
-    }
-
-    function toast(msg, ms = 3000) {
-        const el = $('toast');
-        el.textContent = msg;
-        el.classList.remove('hidden');
-        clearTimeout(window.__toast);
-        window.__toast = setTimeout(() => el.classList.add('hidden'), ms);
-    }
-
-    function setLoading(on, text = 'Загрузка…') {
-        $('loadingText').textContent = text;
-        $('loading').classList.toggle('hidden', !on);
-    }
-
-    function authMessage(msg, type = 'error') {
-        const el = $('authMsg');
-        el.className = type;
-        el.textContent = msg;
-    }
-
-    function clearAuthMessage() {
-        const el = $('authMsg');
-        el.className = 'hidden';
-        el.textContent = '';
-    }
-
-    function initials(name) {
-        return (name || '?').trim().slice(0, 2).toUpperCase();
-    }
-
-    function validCode(c) {
-        return /^\d{4}$/.test(c);
-    }
-
-    function randomCode() {
-        return String(Math.floor(1000 + Math.random() * 9000));
-    }
-
-    // Управление вкладками авторизации
-    let registerMode = false;
-
-    function setAuthMode(reg) {
-        registerMode = reg;
-        $('loginTab').classList.toggle('active', !reg);
-        $('registerTab').classList.toggle('active', reg);
-        $('usernameField').classList.toggle('hidden', !reg);
-        $('authBtn').textContent = reg ? 'Создать аккаунт' : 'Войти';
-        clearAuthMessage();
-    }
-
-    // Обработка клика по кнопке авторизации
-    $('loginTab').onclick = () => setAuthMode(false);
-    $('registerTab').onclick = () => setAuthMode(true);
-    $('authBtn').onclick = handleAuth;
-
-    async function handleAuth() {
-        const email = $('email').value.trim(),
-            password = $('password').value,
-            username = $('username').value.trim();
-
-        if (!email || !password) {
-            authMessage('Заполни email и пароль.');
-            return;
-        }
-        if (password.length < 6) {
-            authMessage('Пароль должен содержать минимум 6 символов.');
-            return;
-        }
-        if (registerMode && !username) {
-            authMessage('Укажи имя пользователя.');
-            return;
-        }
-
-        setLoading(true, registerMode ? 'Создание аккаунта…' : 'Вход…');
-        clearAuthMessage();
-
-        try {
-            if (registerMode) {
-                const { data, error } = await db.auth.signUp({
-                    email,
-                    password,
-                    options: { data: { username } }
-                });
-                if (error) throw error;
-                if (!data.session) {
-                    setLoading(false);
-                    authMessage('Аккаунт создан. Подтверди email, затем войди.', 'success');
-                    return;
-                }
-                user = data.user;
-            } else {
-                const { data, error } = await db.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                user = data.user;
-            }
-            await enterApp();
-        } catch (e) {
-            console.error(e);
-            authMessage(humanError(e));
-            setLoading(false);
-        }
-    }
-
-    function humanError(e) {
-        const m = e?.message || String(e);
-        if (/Invalid login credentials/i.test(m)) return 'Неверный email или пароль.';
-        if (/Email not confirmed/i.test(m)) return 'Сначала подтверди email.';
-        if (/permission denied|row-level security|42501/i.test(m)) return 'Нет доступа к данным. Проверь RLS-политики Supabase.';
-        return m;
-    }
-
-    // Создание/получение профиля пользователя
-    async function ensureProfile() {
-        const { data, error } = await db.from('profiles').select('*').eq('id', user.id).maybeSingle();
-        if (error) throw error;
-        if (data) { profile = data; return data; }
-
-        let lastErr = null;
-        for (let i = 0; i < 8; i++) {
-            const code = randomCode();
-            const row = {
-                id: user.id,
-                username: user.user_metadata?.username || user.email?.split('@')[0] || 'Пользователь',
-                friend_code: code,
-                notifications_enabled: true,
-                location_sharing_enabled: true
-            };
-            const r = await db.from('profiles').upsert(row, { onConflict: 'id' }).select().single();
-            if (!r.error) { profile = r.data; return profile; }
-            lastErr = r.error;
-        }
-        throw lastErr || new Error('Не удалось создать профиль');
-    }
-
-    // Вход в приложение
-    async function enterApp() {
-        setLoading(true, 'Подключение BLINK…');
-        try {
-            await ensureProfile();
-            showMain();
-            initMap();
-            await Promise.all([loadFriends(), loadIncoming(), loadFriendLocations(), loadPlaces()]);
-            startLocation();
-            subscribeRealtime();
-            renderProfile();
-            setLoading(false);
-        } catch (e) {
-            console.error(e);
-            setLoading(false);
-            showMain();
-            initMap();
-            toast('Ошибка загрузки: ' + humanError(e), 5000);
-        }
-    }
-
-    function showMain() {
-        $('auth').classList.add('hidden');
-        $('main').classList.remove('hidden');
-    }
-
-    function showAuth() {
-        $('main').classList.add('hidden');
-        $('auth').classList.remove('hidden');
-        stopLocation();
-        unsubscribeRealtime();
-    }
-
-    // Инициализация карты
-    function initMap() {
-        if (map) return;
-        map = L.map('map', { zoomControl: false, worldCopyJump: true }).setView([50, 15], 4);
-
-        imageryLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19,
-            attribution: '© Esri'
-        });
-        streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        });
-        labelsLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19,
-            opacity: .95,
-            attribution: '© Esri'
-        });
-
-        imageryLayer.addTo(map);
-        labelsLayer.addTo(map);
-
-        // Обработчики кнопок управления
-        $('zoomIn').onclick = () => map.zoomIn();
-        $('zoomOut').onclick = () => map.zoomOut();
-        $('locateBtn').onclick = () => locateMe();
-        $('hybridBtn').onclick = toggleHybrid;
-        $('addPlaceBtn').onclick = toggleAddPlace;
-
-        // Клик по карте для добавления места
-        map.on('click', async e => {
-            if (addPlaceMode) {
-                await savePlaceAt(e.latlng.lat, e.latlng.lng);
-                addPlaceMode = false;
-                $('addPlaceBtn').classList.remove('active');
-            }
-        });
-    }
-
-    // Переключение гибридного/обычного режима карты
-    function toggleHybrid() {
-        hybrid = !hybrid;
-        if (hybrid) {
-            if (map.hasLayer(streetLayer)) map.removeLayer(streetLayer);
-            if (!map.hasLayer(imageryLayer)) imageryLayer.addTo(map);
-            if (!map.hasLayer(labelsLayer)) labelsLayer.addTo(map);
-            toast('Гибридная карта включена');
-        } else {
-            if (map.hasLayer(imageryLayer)) map.removeLayer(imageryLayer);
-            if (map.hasLayer(labelsLayer)) map.removeLayer(labelsLayer);
-            if (!map.hasLayer(streetLayer)) streetLayer.addTo(map);
-            toast('Обычная карта включена');
-        }
-    }
-
-    // Определение местоположения пользователя
-    function locateMe() {
-        if (lastPosition) {
-            map.flyTo([lastPosition.lat, lastPosition.lng], 17, { duration: 1 });
-        } else {
-            toast('Жду GPS…');
-            startLocation();
-        }
-    }
-
-    // Запуск отслеживания GPS
-    function startLocation() {
-        if (!navigator.geolocation) {
-            $('gpsText').textContent = 'GPS недоступен';
-            return;
-        }
-        if (locationWatch !== null) return;
-
-        $('gpsText').textContent = 'Запуск GPS…';
-        locationWatch = navigator.geolocation.watchPosition(
-            async pos => {
-                const c = pos.coords;
-                lastPosition = {
-                    lat: c.latitude,
-                    lng: c.longitude,
-                    accuracy: c.accuracy,
-                    speed: c.speed,
-                    heading: c.heading
-                };
-                updateMeMarker(c.latitude, c.longitude, c.accuracy);
-                $('gpsDot').classList.add('ok');
-                $('gpsText').textContent = 'GPS включён';
-                try {
-                    await updateMyLocation(c);
-                } catch (e) {
-                    console.warn('Не удалось записать GPS:', e);
-                }
-            },
-            err => {
-                console.warn(err);
-                $('gpsDot').classList.remove('ok');
-                $('gpsText').textContent = err.code === 1 ? 'GPS запрещён' : 'GPS недоступен';
-            },
-            { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
-        );
-    }
-
-    function stopLocation() {
-        if (locationWatch !== null) {
-            navigator.geolocation.clearWatch(locationWatch);
-            locationWatch = null;
-        }
-    }
-
-    // Обновление маркера пользователя на карте
-    function updateMeMarker(lat, lng, accuracy) {
-        const icon = L.divIcon({
-            className: '',
-            html: '<div style="width:22px;height:22px;border-radius:50%;background:#fff;border:5px solid #111;box-shadow:0 0 0 7px #fff4,0 0 25px #fff"></div>',
-            iconSize: [22, 22],
-            iconAnchor: [11, 11]
-        });
-
-        if (!meMarker) {
-            meMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 })
-                .addTo(map)
-                .bindPopup('<b>Вы</b><br>Моё местоположение');
-            map.flyTo([lat, lng], 16, { duration: 1 });
-        } else {
-            meMarker.setLatLng([lat, lng]);
-        }
-
-        if (!accuracyCircle) {
-            accuracyCircle = L.circle([lat, lng], {
-                radius: accuracy || 20,
-                color: '#fff',
-                weight: 1,
-                fillOpacity: .04
-            }).addTo(map);
-        } else {
-            accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy || 20);
-        }
-    }
-
-    // Обновление местоположения в базе данных
-    async function updateMyLocation(c) {
-        const args = {
-            p_latitude: c.latitude,
-            p_longitude: c.longitude,
-            p_accuracy: c.accuracy || 0,
-            p_speed: c.speed || 0,
-            p_heading: c.heading || 0
-        };
-        const r = await db.rpc('update_my_location', args);
-        if (r.error) {
-            const fallback = await db.from('locations').upsert({
-                user_id: user.id,
-                latitude: c.latitude,
-                longitude: c.longitude,
-                accuracy: c.accuracy || 0,
-                speed: c.speed || 0,
-                heading: c.heading || 0,
-                updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id' });
-            if (fallback.error) throw r.error;
-        }
-    }
-
-    // Обёртка для вызова RPC-функций
-    async function rpc(name, args = {}) {
-        const r = await db.rpc(name, args);
-        if (r.error) throw r.error;
-        return r.data;
-    }
-
-    // Загрузка списка друзей
-    async function loadFriends() {
-        try {
-            friends = await rpc('get_my_friends') || [];
-        } catch (e) {
-            console.warn('get_my_friends:', e);
-            friends = [];
-        }
-        renderFriends();
-    }
-
-    // Загрузка входящих заявок
-    async function loadIncoming() {
-        try {
-            incoming = await rpc('get_incoming_requests') || [];
-        } catch (e) {
-            console.warn('get_incoming_requests:', e);
-            incoming = [];
-        }
-        renderFriends();
-        updateBadge();
-    }
-
-    // Загрузка местоположений друзей
-    async function loadFriendLocations() {
-        try {
-            const rows = await rpc('get_friend_locations') || [];
-            const seen = new Set();
-            rows.forEach(r => {
-                seen.add(r.user_id);
-                updateFriendMarker(r);
-            });
-            for (const [id, m] of friendMarkers) {
-                if (!seen.has(id)) {
-                    map.removeLayer(m);
-                    friendMarkers.delete(id);
-                }
-            }
-        } catch (e) {
-            console.warn('get_friend_locations:', e);
-        }
-    }
-
-    // Обновление маркера друга
-    function updateFriendMarker(r) {
-        const icon = L.divIcon({
-            className: '',
-            html: '<div style="width:28px;height:28px;border-radius:50%;background:#ffc400;border:4px solid #111;box-shadow:0 0 0 5px #ffc40055,0 4px 15px #000"></div>',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
-        });
-
-        let m = friendMarkers.get(r.user_id);
-        if (!m) {
-            m = L.marker([r.latitude, r.longitude], { icon }).addTo(map);
-            friendMarkers.set(r.user_id, m);
-        } else {
-            m.setLatLng([r.latitude, r.longitude]);
-        }
-
-        m.bindPopup(
-            `<b>${esc(r.username || 'Друг')}</b><br>Код: ${esc(r.friend_code || '----')}<br><span style="color:#888">Обновлено: ${new Date(r.updated_at || Date.now()).toLocaleTimeString('ru-RU')}</span>`
-        );
-    }
-
-    // Отправка заявки в друзья
-    async function sendFriendRequest() {
-        const code = $('friendCodeInput').value.trim();
-        if (!validCode(code)) {
-            toast('Введи ровно 4 цифры');
-            return;
-        }
-        try {
-            setLoading(true, 'Отправка заявки…');
-            await rpc('send_friend_request_by_code', { p_friend_code: code });
-            toast('Заявка отправлена');
-            $('friendCodeInput').value = '';
-            await loadIncoming();
-        } catch (e) {
-            toast(humanError(e), 4500);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    // Принятие заявки
-    async function acceptRequest(id) {
-        try {
-            await rpc('accept_friend_request', { p_request_id: id });
-            toast('Друг добавлен');
-            await loadFriends();
-            await loadIncoming();
-            await loadFriendLocations();
-        } catch (e) {
-            toast(humanError(e), 4500);
-        }
-    }
-
-    // Отклонение заявки
-    async function rejectRequest(id) {
-        try {
-            await rpc('reject_friend_request', { p_request_id: id });
-            toast('Заявка отклонена');
-            await loadIncoming();
-        } catch (e) {
-            toast(humanError(e), 4500);
-        }
-    }
-
-    // Удаление друга
-    async function removeFriend(id) {
-        if (!confirm('Удалить этого друга?')) return;
-        try {
-            await rpc('remove_friend', { p_friend_id: id });
-            toast('Друг удалён');
-            await loadFriends();
-            await loadFriendLocations();
-        } catch (e) {
-            toast(humanError(e), 4500);
-        }
-    }
-
-    // Отрисовка панели друзей
-    function renderFriends() {
-        const p = $('friendsPanel');
-        if (p.classList.contains('hidden')) return;
-
-        p.innerHTML = `
-            <div class="panel-head">
-                <h2>Друзья</h2>
-                <button class="close" onclick="closePanels()">×</button>
-            </div>
-            <div class="card">
-                <div class="muted">Твой 4-значный код</div>
-                <div class="row" style="margin-top:7px">
-                    <div class="code">${esc(profile?.friend_code || '----')}</div>
-                    <button class="small-btn" onclick="copyCode()">Копировать</button>
-                </div>
-                <div class="muted" style="margin-top:7px">Отправь этот код другу, чтобы он добавил тебя.</div>
-            </div>
-            <div class="card">
-                <div class="muted" style="margin-bottom:9px">Добавить друга</div>
-                <div class="row">
-                    <input id="friendCodeInput" inputmode="numeric" maxlength="4" placeholder="1234" style="flex:1;padding:13px;border-radius:13px;background:#181818;border:1px solid #333;color:#fff">
-                    <button class="small-btn" onclick="sendFriendRequest()">Отправить</button>
-                </div>
-            </div>
-            ${incoming.length ? `<h3>Входящие заявки (${incoming.length})</h3>
-            ${incoming.map(r => `
-                <div class="card">
-                    <div class="friend">
-                        <div class="avatar">${initials(r.username)}</div>
-                        <div class="friend-info">
-                            <div class="friend-name">${esc(r.username || 'Пользователь')}</div>
-                            <div class="friend-code">Код: ${esc(r.friend_code || '----')}</div>
-                        </div>
-                    </div>
-                    <div class="request-actions">
-                        <button class="accept" onclick="acceptRequest('${esc(r.id)}')">Принять</button>
-                        <button class="reject" onclick="rejectRequest('${esc(r.id)}')">Отклонить</button>
-                    </div>
-                </div>
-            `).join('')}` : ''}
-            <h3>Мои друзья (${friends.length})</h3>
-            ${friends.length ? friends.map(f => `
-                <div class="card">
-                    <div class="friend">
-                        <div class="avatar">${initials(f.username)}</div>
-                        <div class="friend-info">
-                            <div class="friend-name">${esc(f.username || 'Пользователь')}</div>
-                            <div class="friend-code">Код: ${esc(f.friend_code || '----')}</div>
-                        </div>
-                        <button class="small-btn danger" onclick="removeFriend('${esc(f.id)}')">×</button>
-                    </div>
-                </div>
-            `).join('') : '<div class="card muted">Пока нет друзей. Добавь человека по его 4-значному коду.</div>'}
-        `;
-    }
-
-    function updateBadge() {
-        const n = incoming.length;
-        const badge = $('requestBadge');
-        badge.textContent = n;
-        badge.classList.toggle('hidden', !n);
-    }
-
-    async function copyCode() {
-        try {
-            await navigator.clipboard.writeText(profile.friend_code);
-            toast('Код скопирован');
-        } catch {
-            toast(profile.friend_code);
-        }
-    }
-
-    // Загрузка сохранённых мест
-    async function loadPlaces() {
-        const r = await db.from('saved_places').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-        if (r.error) {
-            console.warn('saved_places:', r.error);
-            return;
-        }
-        r.data.forEach(addPlaceMarker);
-    }
-
-    function addPlaceMarker(p) {
-        const icon = L.divIcon({
-            className: '',
-            html: '<div style="font-size:25px">📍</div>',
-            iconSize: [28, 28],
-            iconAnchor: [14, 28]
-        });
-        const m = L.marker([p.latitude, p.longitude], { icon })
-            .addTo(map)
-            .bindPopup(`<b>${esc(p.name)}</b><br><span style="color:#888">${esc(p.type || 'Место')}</span>`);
-        placeMarkers.set(p.id, m);
-    }
-
-    function toggleAddPlace() {
-        addPlaceMode = !addPlaceMode;
-        $('addPlaceBtn').classList.toggle('active', addPlaceMode);
-        toast(addPlaceMode ? 'Нажми на карту там, где сохранить место' : 'Добавление места отменено');
-    }
-
-    async function savePlaceAt(lat, lng) {
-        openModal(`
-            <h3>Новое место</h3>
-            <input id="placeName" placeholder="Название места">
-            <input id="placeType" style="margin-top:10px" placeholder="Тип: дом, кафе, школа…">
-            <div class="modal-actions">
-                <button class="reject" onclick="closeModal()">Отмена</button>
-                <button class="accept" onclick="confirmPlace(${lat}, ${lng})">Сохранить</button>
-            </div>
-        `);
-    }
-
-    async function confirmPlace(lat, lng) {
-        const name = $('placeName').value.trim();
-        const type = $('placeType').value.trim() || 'Место';
-        if (!name) {
-            toast('Введи название');
-            return;
-        }
-        const r = await db.from('saved_places').insert({
-            user_id: user.id,
-            name,
-            type,
-            latitude: lat,
-            longitude: lng
-        }).select().single();
-        if (r.error) {
-            toast(humanError(r.error), 4500);
-            return;
-        }
-        addPlaceMarker(r.data);
-        closeModal();
-        toast('Место сохранено');
-    }
-
-    // Профиль
-    function renderProfile() {
-        const p = $('profilePanel');
-        p.innerHTML = `
-            <div class="panel-head">
-                <h2>Профиль</h2>
-                <button class="close" onclick="closePanels()">×</button>
-            </div>
-            <div class="card">
-                <div class="friend">
-                    <div class="avatar">${initials(profile?.username)}</div>
-                    <div>
-                        <div class="friend-name">${esc(profile?.username || 'Пользователь')}</div>
-                        <div class="friend-code">${esc(user?.email || '')}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="muted">Мой код</div>
-                <div class="code" style="margin-top:8px">${esc(profile?.friend_code || '----')}</div>
-            </div>
-        `;
-    }
-
-    // Настройки
-    function renderSettings() {
-        const p = $('settingsPanel');
-        p.innerHTML = `
-            <div class="panel-head">
-                <h2>Настройки</h2>
-                <button class="close" onclick="closePanels()">×</button>
-            </div>
-            <div class="card">
-                <div class="row">
-                    <div>
-                        <b>Показывать местоположение</b>
-                        <div class="muted">Друзья смогут видеть твою позицию.</div>
-                    </div>
-                    <button class="small-btn" id="sharingBtn" onclick="toggleSharing()">${profile?.location_sharing_enabled === false ? 'Выкл' : 'Вкл'}</button>
-                </div>
-            </div>
-            <div class="card">
-                <button class="primary" onclick="logout()">Выйти из аккаунта</button>
-            </div>
-        `;
-    }
-
-    async function toggleSharing() {
-        const value = profile?.location_sharing_enabled === false;
-        const r = await db.from('profiles').update({
-            location_sharing_enabled: value,
-            updated_at: new Date().toISOString()
-        }).eq('id', user.id);
-        if (r.error) {
-            toast(humanError(r.error));
-            return;
-        }
-        profile.location_sharing_enabled = value;
-        renderSettings();
-        toast(value ? 'Местоположение включено' : 'Местоположение выключено');
-    }
-
-    async function logout() {
-        await db.auth.signOut();
-        user = null;
-        profile = null;
-        showAuth();
-        setAuthMode(false);
-    }
-
-    // Управление панелями
-    function openPanel(id) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
-        if (id === 'friendsPanel') renderFriends();
-        if (id === 'profilePanel') renderProfile();
-        if (id === 'settingsPanel') renderSettings();
-        if (id !== 'mapPanel') $(id).classList.remove('hidden');
-        document.querySelectorAll('.nav').forEach(n =>
-            n.classList.toggle('active', n.dataset.panel === id || (id === 'mapPanel' && n.dataset.panel === 'mapPanel'))
-        );
-    }
-
-    function closePanels() {
-        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.nav').forEach(n => n.classList.toggle('active', n.dataset.panel === 'mapPanel'));
-    }
-
-    document.querySelectorAll('.nav').forEach(n => n.onclick = () => openPanel(n.dataset.panel));
-
-    // Модальное окно
-    function openModal(html) {
-        $('modal').innerHTML = html;
-        $('modalWrap').classList.remove('hidden');
-    }
-
-    function closeModal() {
-        $('modalWrap').classList.add('hidden');
-    }
-
-    $('modalWrap').onclick = e => {
-        if (e.target === $('modalWrap')) closeModal();
-    };
-
-    // Подписка на изменения в реальном времени
-    function subscribeRealtime() {
-        unsubscribeRealtime();
-
-        locationChannel = db.channel('blink-locations')
-            .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'locations'
-            }, payload => {
-                if (payload.new?.user_id !== user?.id) loadFriendLocations();
-            })
-            .subscribe((status, err) => {
-                if (status === 'SUBSCRIBED') console.log('✅ Realtime locations');
-                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn('Realtime locations:', status, err);
-            });
-
-        requestChannel = db.channel('blink-requests')
-            .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'friend_requests'
-            }, payload => {
-                loadIncoming();
-                loadFriends();
-            })
-            .subscribe((status, err) => {
-                if (status === 'SUBSCRIBED') console.log('✅ Realtime requests');
-                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn('Realtime requests:', status, err);
-            });
-    }
-
-    function unsubscribeRealtime() {
-        if (locationChannel) {
-            db.removeChannel(locationChannel);
-            locationChannel = null;
-        }
-        if (requestChannel) {
-            db.removeChannel(requestChannel);
-            requestChannel = null;
-        }
-    }
-
-    // Обработка изменений состояния аутентификации
-    db.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user && !user) {
-            user = session.user;
-            try {
-                await ensureProfile();
-                await enterApp();
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        if (!session) {
-            user = null;
-            profile = null;
-        }
-    });
-
-    // Автоматический вход при наличии сессии
-    (async () => {
-        const { data } = await db.auth.getSession();
-        if (data.session) {
-            user = data.session.user;
-            await enterApp();
-        }
-    })();
+
+const topics={
+
+anxiety:{
+title:"😰 Тревога",
+text:"Тревогу не обязательно победить. Сейчас задача — сделать ближайшие минуты немного легче.",
+body:"Поставь ноги на пол. Сделай спокойный выдох. Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь. Если можешь — выпей воды и побудь рядом с безопасным человеком."
+},
+
+emotions:{
+title:"💭 Разобраться в чувствах",
+text:"Иногда трудно понять, что именно ты чувствуешь. Это нормально.",
+body:"Попробуй фразу: «Сейчас мне ___, потому что ___». Подойдут любые слова: грусть, злость, страх, стыд, одиночество, усталость или растерянность."
+},
+
+sleep:{
+title:"🌙 Не могу уснуть",
+text:"Не нужно заставлять себя уснуть мгновенно.",
+body:"Приглуши свет, убери яркий экран, расслабь плечи и попробуй медленно дышать. Если мысли не отпускают — запиши их и скажи себе, что вернёшься к ним завтра."
+},
+
+listen:{
+title:"❤️ Хочется поговорить",
+text:"Тебе не обязательно сразу искать решение.",
+body:"Можно сказать: «Мне сейчас тяжело. Можешь просто побыть со мной и послушать? Мне не нужны советы». Просить поддержки — нормально."
+},
+
+anger:{
+title:"😡 Злость",
+text:"Злость сама по себе не делает тебя плохим человеком.",
+body:"Возьми паузу. Отойди от конфликта, сделай несколько спокойных выдохов, пройдись или запиши мысли. Не причиняй вред себе или другим."
+},
+
+empty:{
+title:"🧊 Пустота",
+text:"После сильного стресса внутри иногда становится очень тихо.",
+body:"Попробуй тёплый напиток, душ, плед, музыку или прогулку. Если такое состояние долго не проходит — поговори со взрослым или специалистом."
+},
+
+grounding:{
+title:"🌍 Упражнение 5–4–3–2–1",
+text:"Попробуй вернуть внимание в настоящий момент.",
+body:"Назови 5 вещей, которые видишь. 4 вещи, которых можешь коснуться. 3 звука, которые слышишь. 2 запаха. 1 вкус или ощущение во рту."
+},
+
+adult:{
+title:"🧑‍🤝‍🧑 Как попросить взрослого о помощи",
+text:"Не нужно придумывать идеальную речь.",
+body:"Можно сказать: «Мне последнее время очень тяжело. Я не справляюсь один/одна. Мне нужна помощь. Пожалуйста, побудь со мной». Если тебя не услышали — попробуй другого безопасного взрослого."
+},
+
+bullying:{
+title:"🛡️ Если тебя травят",
+text:"Буллинг — не твоя вина.",
+body:"Не оставайся с этим один. Сохрани сообщения или другие доказательства, если это безопасно, и расскажи взрослому, которому доверяешь. Если есть непосредственная угроза — уйди в безопасное место и попроси помощи."
+},
+
+parents:{
+title:"🏠 Если дома тяжело",
+text:"Тебе не нужно решать опасную ситуацию самостоятельно.",
+body:"Найди безопасного взрослого вне ситуации: родственника, учителя, школьного психолога или другого человека, которому доверяешь. Если тебе прямо сейчас угрожает опасность — перейди в безопасное место и обратись в экстренную службу."
+},
+
+selfharm:{
+title:"🛟 Если хочется навредить себе",
+text:"Ты заслуживаешь помощи и не обязан проходить через это один.",
+body:"Отойди от предметов или мест, которыми можно причинить себе вред. Перейди туда, где есть безопасные люди. Скажи взрослому прямо, что боишься навредить себе. При непосредственной опасности обратись в местную экстренную службу."
+},
+
+suicide:{
+title:"🆘 Если появляются мысли о самоубийстве",
+text:"Пожалуйста, не оставайся с этим один/одна.",
+body:"Если есть риск, что ты можешь навредить себе прямо сейчас, перейди к безопасному человеку и скажи, что тебе нужна помощь. Обратись к родителю, родственнику, школьному психологу или другому безопасному взрослому. При непосредственной опасности обратись в местную экстренную службу."
+},
+
+urgent:{
+title:"🆘 Сейчас главное — безопасность",
+text:"Если тебе очень плохо или ты боишься, что можешь навредить себе, не оставайся один/одна.",
+body:"Перейди туда, где есть безопасный взрослый или другой человек. Скажи прямо: «Мне сейчас очень плохо. Мне нужна помощь». При непосредственной опасности обратись в местную экстренную службу."
+}
+
+};
+
+
+function showScreen(id){
+
+document
+.querySelectorAll(".screen")
+.forEach(x=>x.classList.remove("active"));
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll(".nav button")
+.forEach(x=>{
+x.classList.toggle(
+"active",
+x.dataset.screen===id
+);
+});
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+function setMood(el,text){
+
+document
+.querySelectorAll(".mood")
+.forEach(x=>x.classList.remove("active"));
+
+el.classList.add("active");
+
+document
+.getElementById("moodStatus")
+.textContent=text;
+
+localStorage.setItem(
+"lastMood",
+text
+);
+
+let history=
+JSON.parse(
+localStorage.getItem("moodHistory")||"[]"
+);
+
+history.push({
+mood:text,
+date:new Date().toLocaleDateString()
+});
+
+if(history.length>30){
+history=history.slice(-30);
+}
+
+localStorage.setItem(
+"moodHistory",
+JSON.stringify(history)
+);
+
+updateStats();
+
+toast("Настроение отмечено ❤️");
+
+}
+
+
+function updateStats(){
+
+let history=
+JSON.parse(
+localStorage.getItem("moodHistory")||"[]"
+);
+
+document
+.getElementById("statDays")
+.textContent=history.length;
+
+let good=
+history.filter(
+x=>x.mood==="хорошо"||x.mood==="отлично"
+).length;
+
+document
+.getElementById("statGood")
+.textContent=good;
+
+let last=
+localStorage.getItem("lastMood");
+
+document
+.getElementById("statMood")
+.textContent=last||"—";
+
+}
+
+
+function openTopic(key){
+
+const item=topics[key];
+
+if(!item)return;
+
+const emergency=
+key==="urgent"||
+key==="suicide"||
+key==="selfharm";
+
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<h2>${item.title}</h2>
+
+<p><b>${item.text}</b></p>
+
+<p>${item.body}</p>
+
+${
+emergency
+?
+`
+
+<div class="rednote">
+
+Если тебе угрожает непосредственная опасность,
+не оставайся один/одна.
+
+Перейди к безопасному человеку
+и попроси его остаться рядом.
+
+</div>
+
+<div class="modal-buttons">
+
+<a
+href="tel:112"
+class="btn danger">
+📞 Позвонить 112
+</a>
+
+<button
+class="btn dark"
+onclick="closeModal()">
+🧑‍🤝‍🧑 Я попробую позвать взрослого
+</button>
+
+</div>
+
+`
+:
+`
+
+<button
+class="btn primary"
+style="width:100%;margin-top:15px"
+onclick="closeModal()">
+Понятно ❤️
+</button>
+
+`
+}
+
+`;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+let breathing=false;
+
+function startBreathing(){
+
+document
+.getElementById("modalContent")
+.innerHTML=`
+
+<h2>🌬️ Дыхание</h2>
+
+<p>
+Попробуй несколько спокойных циклов.
+Не нужно делать глубокий вдох —
+дыши так, как комфортно.
+</p>
+
+<div class="breath">
+
+<div class="circle" id="breathCircle">
+<div class="breath-text" id="breathText">
+Готов?
+</div>
+</div>
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="runBreathing()">
+Начать
+</button>
+
+</div>
+`;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function runBreathing(){
+
+if(breathing)return;
+
+breathing=true;
+
+const circle=
+document.getElementById("breathCircle");
+
+const text=
+document.getElementById("breathText");
+
+let count=0;
+
+function cycle(){
+
+if(count>=5){
+
+text.textContent="Готово ❤️";
+
+circle.classList.remove("expand");
+
+breathing=false;
+
+return;
+}
+
+text.textContent="Спокойный вдох";
+
+circle.classList.add("expand");
+
+setTimeout(()=>{
+
+text.textContent="Медленный выдох";
+
+circle.classList.remove("expand");
+
+setTimeout(()=>{
+
+count++;
+cycle();
+
+},4000);
+
+},4000);
+
+}
+
+cycle();
+
+}
+
+
+const questions=[
+"Последние несколько дней тебе было трудно расслабиться?",
+"Тебе часто бывает сложно уснуть из-за мыслей?",
+"Ты часто чувствуешь напряжение без понятной причины?",
+"Тебе стало сложнее получать удовольствие от привычных вещей?",
+"Тебе хотелось бы поговорить с кем-то о том, что происходит?"
+];
+
+let questionIndex=0;
+let yesAnswers=0;
+
+function answerTest(answer){
+
+if(answer)yesAnswers++;
+
+questionIndex++;
+
+if(questionIndex>=questions.length){
+
+document
+.getElementById("testQuestion")
+.textContent="Тест завершён ❤️";
+
+document
+.getElementById("testCount")
+.textContent="5 / 5";
+
+document
+.getElementById("testProgress")
+.style.width="100%";
+
+let message="";
+
+if(yesAnswers<=1){
+message="Похоже, сейчас у тебя не так много признаков сильного напряжения. Но только ты знаешь, как тебе на самом деле.";
+}
+else if(yesAnswers<=3){
+message="Похоже, тебе сейчас может быть непросто. Попробуй упражнения выше и поговори с человеком, которому доверяешь.";
+}
+else{
+message="Похоже, сейчас тебе действительно тяжело. Не оставайся с этим один/одна — попробуй поговорить с безопасным взрослым или специалистом.";
+}
+
+document
+.getElementById("testResult")
+.textContent=message;
+
+return;
+}
+
+document
+.getElementById("testQuestion")
+.textContent=questions[questionIndex];
+
+document
+.getElementById("testCount")
+.textContent=
+(questionIndex)+" / 5";
+
+document
+.getElementById("testProgress")
+.style.width=
+(questionIndex/5*100)+"%";
+
+}
+
+
+function saveJournal(){
+
+const text=
+document
+.getElementById("journal")
+.value
+.trim();
+
+if(!text){
+
+toast("Сначала что-нибудь напиши");
+
+return;
+
+}
+
+localStorage.setItem(
+"journal",
+text
+);
+
+document
+.getElementById("saved")
+.textContent=
+"Сохранено только на этом устройстве ❤️";
+
+toast("Запись сохранена");
+
+}
+
+
+function faq(button){
+
+button
+.parentElement
+.classList
+.toggle("open");
+
+}
+
+
+const quotes=[
+"Ты не обязан решать всю жизнь сегодня.",
+"Просить помощи — это не слабость.",
+"Можно идти маленькими шагами.",
+"Твои чувства имеют значение.",
+"Плохой день не делает тебя плохим человеком.",
+"Ты заслуживаешь спокойствия и заботы.",
+"Не обязательно быть сильным каждую минуту.",
+"То, что сейчас тяжело, не означает, что так будет всегда.",
+"Можно сделать паузу.",
+"Ты имеешь право сказать: «Мне нужна помощь»."
+];
+
+
+function randomQuote(){
+
+const random=
+quotes[
+Math.floor(
+Math.random()*quotes.length
+)
+];
+
+document
+.getElementById("randomQuote")
+.textContent=random;
+
+}
+
+
+function filterApps(button,type){
+
+document
+.querySelectorAll(".tag")
+.forEach(x=>x.classList.remove("active"));
+
+button.classList.add("active");
+
+let text="";
+
+if(type==="sleep"){
+text="Для сна попробуй спокойный вечерний режим, приглушённый свет и упражнения на расслабление.";
+}
+
+if(type==="mood"){
+text="Для настроения полезно отмечать состояние каждый день и замечать, что влияет на него.";
+}
+
+if(type==="habits"){
+text="Для привычек начни с одной маленькой цели: вода, прогулка, сон или короткий отдых.";
+}
+
+if(type==="calm"){
+text="Для успокоения попробуй дыхание, заземление, музыку или спокойную прогулку.";
+}
+
+toast(text);
+
+}
+
+
+function toast(text){
+
+const element=
+document.getElementById("toast");
+
+element.textContent=text;
+
+element.classList.add("show");
+
+setTimeout(()=>{
+element.classList.remove("show");
+},2200);
+
+}
+
+
+window.addEventListener("load",()=>{
+
+const mood=
+localStorage.getItem("lastMood");
+
+if(mood){
+
+document
+.getElementById("moodStatus")
+.textContent=mood;
+
+}
+
+const journal=
+localStorage.getItem("journal");
+
+if(journal){
+
+document
+.getElementById("journal")
+.value=journal;
+
+document
+.getElementById("saved")
+.textContent=
+"Есть сохранённая запись на этом устройстве";
+
+}
+
+updateStats();
+
+});
+
 </script>
+
 </body>
 </html>
