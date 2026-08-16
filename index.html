@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -17,8 +18,13 @@
 
 <style>
 
+/* =========================================================
+   RESET
+========================================================= */
+
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -29,13 +35,17 @@ body {
   overflow: hidden;
 
   background: #080808;
-  color: #fff;
+  color: white;
 
-  font-family: Arial, sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 button,
 input,
+textarea,
 select {
   font: inherit;
 }
@@ -44,17 +54,130 @@ button {
   cursor: pointer;
 }
 
+button:active {
+  transform: scale(.97);
+}
+
 
 /* =========================================================
    MAP
 ========================================================= */
 
 #map {
-  position: absolute;
-
+  position: fixed;
   inset: 0;
-
   z-index: 1;
+}
+
+
+/* =========================================================
+   AUTH SCREEN
+========================================================= */
+
+#authScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      #242424 0%,
+      #090909 50%,
+      #000 100%
+    );
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+
+  padding: 28px 22px;
+
+  background:
+    rgba(15,15,15,.96);
+
+  border:
+    1px solid #333;
+
+  border-radius: 30px;
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.7);
+}
+
+.logo {
+  font-size: 34px;
+  font-weight: 1000;
+  letter-spacing: 3px;
+  text-align: center;
+
+  margin-bottom: 5px;
+}
+
+.logo-sub {
+  text-align: center;
+  color: #777;
+  font-size: 12px;
+  margin-bottom: 25px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 6px;
+
+  padding: 5px;
+
+  background: #111;
+
+  border-radius: 15px;
+
+  margin-bottom: 18px;
+}
+
+.auth-tab {
+  border: 0;
+
+  padding: 11px;
+
+  border-radius: 11px;
+
+  background: transparent;
+
+  color: #777;
+
+  font-weight: 800;
+}
+
+.auth-tab.active {
+  background: white;
+  color: black;
+}
+
+.auth-error {
+  display: none;
+
+  padding: 11px;
+
+  margin-bottom: 12px;
+
+  border-radius: 12px;
+
+  background: #321313;
+
+  border: 1px solid #642525;
+
+  color: #ff9b9b;
+
+  font-size: 13px;
 }
 
 
@@ -63,16 +186,15 @@ button {
 ========================================================= */
 
 .topbar {
-  position: absolute;
+  position: fixed;
 
-  z-index: 1000;
+  z-index: 2000;
 
   top: 12px;
   left: 12px;
   right: 12px;
 
   display: flex;
-
   justify-content: space-between;
 
   pointer-events: none;
@@ -80,10 +202,10 @@ button {
 
 .badge {
   background:
-    rgba(8, 8, 8, 0.92);
+    rgba(7,7,7,.91);
 
   backdrop-filter:
-    blur(15px);
+    blur(16px);
 
   border:
     1px solid #333;
@@ -99,40 +221,29 @@ button {
 }
 
 .brand {
-  font-weight: 900;
-
-  letter-spacing:
-    1px;
+  font-weight: 1000;
+  letter-spacing: 1px;
 }
 
 .status {
-  font-size:
-    12px;
+  font-size: 12px;
 }
 
 .dot {
-  display:
-    inline-block;
+  display: inline-block;
 
-  width:
-    8px;
+  width: 8px;
+  height: 8px;
 
-  height:
-    8px;
+  border-radius: 50%;
 
-  border-radius:
-    50%;
+  background: #666;
 
-  background:
-    #777;
-
-  margin-right:
-    7px;
+  margin-right: 7px;
 }
 
 .dot.live {
-  background:
-    #4cff8a;
+  background: #4cff8a;
 
   box-shadow:
     0 0 12px #4cff8a;
@@ -144,125 +255,61 @@ button {
 ========================================================= */
 
 .map-controls {
-  position: absolute;
+  position: fixed;
 
   z-index: 2000;
 
-  right: 14px;
-
-  top: 130px;
+  right: 13px;
+  top: 125px;
 
   display: flex;
-
   flex-direction: column;
 
   gap: 8px;
 }
 
-
-/* =========================================================
-   ZOOM
-========================================================= */
-
-.zoom-controls {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.zoom-button {
+.map-control {
   width: 50px;
-
   height: 50px;
 
   border:
     1px solid #333;
 
-  border-radius:
-    16px;
+  border-radius: 16px;
 
-  background:
-    #050505;
+  background: #050505;
 
-  color:
-    white;
+  color: white;
 
-  font-size:
-    30px;
-
-  font-weight:
-    700;
-
-  line-height:
-    1;
+  font-size: 21px;
 
   box-shadow:
     0 8px 25px rgba(0,0,0,.55);
 }
 
-.zoom-button:active {
-  transform:
-    scale(.94);
-
-  background:
-    #222;
+.map-control.big {
+  font-size: 28px;
+  font-weight: 900;
 }
 
 
 /* =========================================================
-   MAP STYLE BUTTON
+   MAP STYLE MENU
 ========================================================= */
 
 .map-style-box {
-  position:
-    relative;
-}
-
-.map-style-button {
-  width:
-    50px;
-
-  height:
-    50px;
-
-  border:
-    1px solid #333;
-
-  border-radius:
-    16px;
-
-  background:
-    #050505;
-
-  color:
-    white;
-
-  font-size:
-    22px;
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,.55);
-}
-
-.map-style-button:active {
-  transform:
-    scale(.94);
+  position: relative;
 }
 
 .map-styles {
-  position:
-    absolute;
+  position: absolute;
 
-  right:
-    58px;
+  right: 58px;
+  top: 0;
 
-  top:
-    0;
+  width: 165px;
 
-  width:
-    155px;
+  padding: 6px;
 
   background:
     rgba(5,5,5,.97);
@@ -270,264 +317,172 @@ button {
   border:
     1px solid #333;
 
-  border-radius:
-    16px;
-
-  padding:
-    6px;
+  border-radius: 16px;
 
   box-shadow:
-    0 10px 30px rgba(0,0,0,.6);
+    0 10px 30px rgba(0,0,0,.7);
 }
 
 .map-styles button {
-  width:
-    100%;
+  width: 100%;
 
-  border:
-    0;
+  border: 0;
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    white;
+  color: white;
 
-  text-align:
-    left;
+  text-align: left;
 
-  padding:
-    11px;
+  padding: 11px;
 
-  border-radius:
-    11px;
+  border-radius: 10px;
 
-  font-size:
-    13px;
-
-  font-weight:
-    bold;
+  font-weight: 700;
 }
 
-.map-styles button:active {
-  background:
-    #333;
+.map-styles button:hover {
+  background: #222;
 }
 
 
 /* =========================================================
-   ADD PLACE MAP BUTTON
-========================================================= */
-
-.add-place-map-button {
-  width:
-    50px;
-
-  height:
-    50px;
-
-  border:
-    1px solid #333;
-
-  border-radius:
-    16px;
-
-  background:
-    #050505;
-
-  color:
-    white;
-
-  font-size:
-    22px;
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,.55);
-}
-
-.add-place-map-button:active {
-  transform:
-    scale(.94);
-}
-
-
-/* =========================================================
-   BOTTOM MENU
+   BOTTOM NAV
 ========================================================= */
 
 .bottom {
-  position:
-    absolute;
+  position: fixed;
 
-  z-index:
-    1000;
+  z-index: 2500;
 
-  bottom:
-    10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
 
-  left:
-    10px;
+  padding: 7px;
 
-  right:
-    10px;
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
+  gap: 5px;
 
   background:
-    rgba(8,8,8,.95);
+    rgba(8,8,8,.96);
 
   border:
     1px solid #333;
 
-  border-radius:
-    24px;
+  border-radius: 24px;
 
-  padding:
-    7px;
+  backdrop-filter:
+    blur(18px);
 
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:
-    5px;
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.7);
 }
 
 .nav {
-  border:
-    0;
+  border: 0;
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    #999;
+  color: #777;
 
-  border-radius:
-    17px;
+  border-radius: 17px;
 
-  padding:
-    8px 3px;
+  padding: 7px 2px;
 }
 
 .nav.active {
-  background:
-    white;
-
-  color:
-    black;
-}
-
-.nav span {
-  display:
-    block;
+  background: white;
+  color: black;
 }
 
 .nav .icon {
-  font-size:
-    19px;
+  display: block;
+  font-size: 18px;
 }
 
 .nav .txt {
-  font-size:
-    10px;
+  display: block;
 
-  font-weight:
-    bold;
+  margin-top: 2px;
+
+  font-size: 9px;
+
+  font-weight: 900;
 }
 
 
 /* =========================================================
-   PANELS
+   PANEL
 ========================================================= */
 
 .panel {
-  position:
-    absolute;
+  position: fixed;
 
-  z-index:
-    3000;
+  z-index: 5000;
 
-  inset:
-    0;
+  inset: 0;
+
+  display: flex;
+
+  align-items: flex-end;
 
   background:
     rgba(0,0,0,.62);
 
-  display:
-    flex;
-
-  align-items:
-    flex-end;
-
   backdrop-filter:
-    blur(3px);
+    blur(5px);
 }
 
 .sheet {
-  width:
-    100%;
+  width: 100%;
 
-  max-height:
-    88dvh;
+  max-height: 88dvh;
 
-  overflow-y:
-    auto;
+  overflow-y: auto;
 
-  background:
-    #0d0d0d;
+  padding: 18px 16px 35px;
+
+  background: #0d0d0d;
 
   border:
     1px solid #292929;
 
   border-radius:
     28px 28px 0 0;
-
-  padding:
-    18px 16px 30px;
 }
 
 .handle {
-  width:
-    42px;
+  width: 42px;
+  height: 4px;
 
-  height:
-    4px;
+  background: #444;
 
-  background:
-    #444;
-
-  border-radius:
-    10px;
+  border-radius: 10px;
 
   margin:
-    0 auto 16px;
+    0 auto 17px;
 }
 
 .close {
-  float:
-    right;
+  float: right;
 
-  border:
-    0;
+  width: 36px;
+  height: 36px;
 
-  background:
-    #222;
+  border: 0;
 
-  color:
-    white;
+  border-radius: 50%;
 
-  width:
-    36px;
+  background: #222;
 
-  height:
-    36px;
+  color: white;
 
-  border-radius:
-    50%;
-
-  font-size:
-    22px;
+  font-size: 22px;
 }
 
 
@@ -536,51 +491,47 @@ button {
 ========================================================= */
 
 .field {
-  margin:
-    12px 0;
+  margin: 12px 0;
 }
 
 .field label {
-  display:
-    block;
+  display: block;
 
-  color:
-    #aaa;
+  color: #aaa;
 
-  font-size:
-    12px;
+  font-size: 12px;
 
-  margin-bottom:
-    6px;
+  margin-bottom: 6px;
 }
 
 input,
+textarea,
 select {
-  width:
-    100%;
+  width: 100%;
 
-  background:
-    #171717;
+  padding: 13px;
 
-  color:
-    white;
+  outline: none;
+
+  background: #171717;
+
+  color: white;
 
   border:
     1px solid #333;
 
-  border-radius:
-    14px;
-
-  padding:
-    12px;
-
-  outline:
-    none;
+  border-radius: 14px;
 }
 
-select {
-  appearance:
-    none;
+textarea {
+  min-height: 90px;
+  resize: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #777;
 }
 
 
@@ -589,67 +540,57 @@ select {
 ========================================================= */
 
 .btn {
-  width:
-    100%;
+  width: 100%;
 
-  border:
-    0;
+  border: 0;
 
-  border-radius:
-    15px;
+  border-radius: 15px;
 
-  padding:
-    13px;
+  padding: 13px;
 
-  background:
-    white;
+  background: white;
 
-  color:
-    black;
+  color: black;
 
-  font-weight:
-    900;
+  font-weight: 900;
 
-  margin-top:
-    8px;
+  margin-top: 8px;
 }
 
 .btn.secondary {
-  background:
-    #222;
+  background: #222;
 
-  color:
-    white;
+  color: white;
 
   border:
     1px solid #333;
 }
 
 .btn.danger {
-  background:
-    #351515;
+  background: #351515;
 
-  color:
-    #ff8b8b;
+  color: #ff9292;
 
   border:
     1px solid #552222;
 }
 
+.btn.small {
+  width: auto;
+
+  padding: 9px 12px;
+
+  margin: 0;
+}
+
 .row {
-  display:
-    flex;
-
-  gap:
-    8px;
-
-  align-items:
-    center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .grow {
-  flex:
-    1;
+  flex: 1;
 }
 
 
@@ -658,173 +599,165 @@ select {
 ========================================================= */
 
 .profile {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    14px;
+  gap: 14px;
 
-  margin:
-    15px 0;
+  margin: 15px 0;
 }
 
 .avatar {
-  width:
-    70px;
+  width: 70px;
+  height: 70px;
 
-  height:
-    70px;
+  min-width: 70px;
 
-  border-radius:
-    50%;
+  object-fit: cover;
 
-  object-fit:
-    cover;
+  border-radius: 50%;
 
-  background:
-    #222;
+  background: #222;
 
   border:
     2px solid white;
 }
 
 .avatar.small {
-  width:
-    46px;
+  width: 46px;
+  height: 46px;
 
-  height:
-    46px;
+  min-width: 46px;
 
-  border-width:
-    1px;
+  border-width: 1px;
 }
 
 .code {
-  font-size:
-    12px;
+  color: #888;
 
-  color:
-    #999;
+  font-size: 12px;
+
+  margin-top: 4px;
+}
+
+.note {
+  color: #777;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  margin-top: 15px;
 }
 
 
 /* =========================================================
-   FRIENDS
+   FRIEND
 ========================================================= */
 
 .friend {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    10px;
+  gap: 10px;
 
-  padding:
-    11px 0;
+  padding: 12px 0;
 
   border-bottom:
     1px solid #252525;
 }
 
-.empty {
-  text-align:
-    center;
-
-  color:
-    #888;
-
-  padding:
-    25px;
+.friend-name {
+  font-weight: 900;
 }
 
-.note {
-  color:
-    #777;
+.online-dot {
+  display: inline-block;
 
-  font-size:
-    12px;
+  width: 7px;
+  height: 7px;
 
-  line-height:
-    1.5;
+  border-radius: 50%;
+
+  background: #555;
+
+  margin-left: 4px;
+}
+
+.online-dot.online {
+  background: #4cff8a;
+
+  box-shadow:
+    0 0 8px #4cff8a;
 }
 
 
 /* =========================================================
-   PLACE LIST
+   EMPTY
+========================================================= */
+
+.empty {
+  text-align: center;
+
+  color: #777;
+
+  padding: 30px 15px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   PLACES
 ========================================================= */
 
 .place-item {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    12px;
+  gap: 11px;
 
-  padding:
-    13px 0;
+  padding: 12px 0;
 
   border-bottom:
     1px solid #252525;
 }
 
 .place-icon {
-  width:
-    46px;
+  width: 46px;
+  height: 46px;
 
-  height:
-    46px;
+  min-width: 46px;
 
-  min-width:
-    46px;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #171717;
 
   border:
     1px solid #333;
 
-  border-radius:
-    14px;
+  border-radius: 14px;
 
-  background:
-    #171717;
-
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  font-size:
-    22px;
+  font-size: 21px;
 }
 
 .place-name {
-  font-weight:
-    900;
-
-  font-size:
-    15px;
+  font-size: 15px;
+  font-weight: 900;
 }
 
 .place-type {
-  color:
-    #888;
+  margin-top: 3px;
 
-  font-size:
-    11px;
+  color: #777;
 
-  margin-top:
-    3px;
+  font-size: 11px;
 }
 
 
@@ -833,81 +766,25 @@ select {
 ========================================================= */
 
 .place-marker {
-  width:
-    44px;
+  width: 44px;
+  height: 44px;
 
-  height:
-    44px;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
 
   border:
     2px solid white;
 
-  border-radius:
-    50%;
+  border-radius: 50%;
 
-  background:
-    #080808;
+  background: #080808;
 
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  font-size:
-    21px;
+  font-size: 21px;
 
   box-shadow:
     0 5px 20px rgba(0,0,0,.65);
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast {
-  position:
-    absolute;
-
-  z-index:
-    5000;
-
-  left:
-    50%;
-
-  bottom:
-    92px;
-
-  transform:
-    translateX(-50%);
-
-  background:
-    white;
-
-  color:
-    black;
-
-  padding:
-    11px 15px;
-
-  border-radius:
-    14px;
-
-  font-size:
-    13px;
-
-  font-weight:
-    800;
-
-  max-width:
-    90%;
-
-  text-align:
-    center;
 }
 
 
@@ -916,54 +793,40 @@ select {
 ========================================================= */
 
 .pin {
-  width:
-    46px;
+  position: relative;
 
-  height:
-    46px;
+  width: 48px;
+  height: 48px;
 
   border:
     3px solid white;
 
-  border-radius:
-    50%;
+  border-radius: 50%;
 
-  background:
-    #222;
-
-  position:
-    relative;
+  background: #222;
 
   box-shadow:
-    0 5px 20px rgba(0,0,0,.6);
+    0 5px 20px rgba(0,0,0,.65);
 }
 
 .pin img {
-  width:
-    100%;
+  width: 100%;
+  height: 100%;
 
-  height:
-    100%;
+  border-radius: 50%;
 
-  border-radius:
-    50%;
-
-  object-fit:
-    cover;
+  object-fit: cover;
 }
 
 .ring {
-  position:
-    absolute;
+  position: absolute;
 
-  inset:
-    -8px;
+  inset: -8px;
 
   border:
     2px solid white;
 
-  border-radius:
-    50%;
+  border-radius: 50%;
 
   animation:
     pulse 1.5s infinite;
@@ -972,70 +835,49 @@ select {
 @keyframes pulse {
 
   50% {
-    transform:
-      scale(1.2);
-
-    opacity:
-      .15;
+    transform: scale(1.2);
+    opacity: .15;
   }
 
 }
 
 .speed-label {
-  position:
-    absolute;
+  position: absolute;
 
-  top:
-    50px;
+  top: 53px;
 
-  left:
-    50%;
+  left: 50%;
 
   transform:
     translateX(-50%);
 
-  white-space:
-    nowrap;
-
-  background:
-    #000;
-
-  border:
-    1px solid #333;
-
-  border-radius:
-    8px;
+  white-space: nowrap;
 
   padding:
     3px 7px;
 
-  font-size:
-    10px;
+  background: #000;
 
-  font-weight:
-    900;
+  border:
+    1px solid #333;
+
+  border-radius: 8px;
+
+  font-size: 10px;
+
+  font-weight: 900;
 }
 
-
-/* =========================================================
-   DIRECTION ARROW
-========================================================= */
-
 .direction-arrow {
-  position:
-    absolute;
+  position: absolute;
 
-  left:
-    50%;
-
-  top:
-    -27px;
+  left: 50%;
+  top: -27px;
 
   transform:
     translateX(-50%);
 
-  font-size:
-    18px;
+  font-size: 18px;
 
   text-shadow:
     0 2px 5px #000;
@@ -1043,51 +885,181 @@ select {
 
 
 /* =========================================================
-   LEAFLET POPUP
+   CHAT
 ========================================================= */
 
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-  background:
-    #0d0d0d;
-
-  color:
-    white;
+.chat-list {
+  margin-top: 5px;
 }
 
-.leaflet-popup-content {
-  font-family:
-    Arial,
-    sans-serif;
+.chat-item {
+  display: flex;
 
-  font-size:
-    13px;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 13px 0;
+
+  border-bottom:
+    1px solid #252525;
+
+  cursor: pointer;
 }
 
-.popup-delete {
-  width:
-    100%;
+.chat-last {
+  color: #777;
 
-  margin-top:
-    8px;
+  font-size: 11px;
+
+  margin-top: 4px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.messages {
+  max-height: 48dvh;
+
+  overflow-y: auto;
+
+  padding: 5px 0;
+}
+
+.message {
+  display: flex;
+
+  margin: 7px 0;
+}
+
+.message.mine {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 78%;
+
+  padding: 10px 12px;
+
+  border-radius: 16px;
+
+  background: #222;
+
+  font-size: 13px;
+
+  line-height: 1.35;
+}
+
+.message.mine .message-bubble {
+  background: white;
+  color: black;
+}
+
+.message-time {
+  margin-top: 3px;
+
+  font-size: 9px;
+
+  opacity: .5;
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+.notification {
+  padding: 13px 0;
+
+  border-bottom:
+    1px solid #252525;
+}
+
+.notification.unread {
+  border-left:
+    3px solid white;
+
+  padding-left: 10px;
+}
+
+.notification-title {
+  font-weight: 900;
+}
+
+.notification-body {
+  color: #999;
+
+  font-size: 12px;
+
+  margin-top: 4px;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+  position: fixed;
+
+  z-index: 9000;
+
+  left: 50%;
+
+  bottom: 92px;
+
+  transform:
+    translateX(-50%);
+
+  max-width: 90%;
+
+  padding: 11px 15px;
+
+  background: white;
+
+  color: black;
+
+  border-radius: 14px;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+  text-align: center;
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.5);
+}
+
+
+/* =========================================================
+   LOADER
+========================================================= */
+
+.loader {
+  width: 22px;
+  height: 22px;
 
   border:
-    1px solid #444;
+    3px solid #333;
 
-  border-radius:
-    9px;
+  border-top-color: white;
 
-  padding:
-    7px 10px;
+  border-radius: 50%;
 
-  background:
-    #222;
+  animation:
+    spin .7s linear infinite;
 
-  color:
-    white;
+  margin: 15px auto;
+}
 
-  font-weight:
-    bold;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -1095,48 +1067,145 @@ select {
    DESKTOP
 ========================================================= */
 
-@media (min-width:700px) {
+@media (min-width: 700px) {
 
   .bottom {
-    width:
-      520px;
+    width: 560px;
 
-    left:
-      50%;
-
-    right:
-      auto;
+    left: 50%;
+    right: auto;
 
     transform:
       translateX(-50%);
   }
 
   .panel {
-    align-items:
-      center;
-
-    justify-content:
-      center;
+    align-items: center;
+    justify-content: center;
   }
 
   .sheet {
-    width:
-      520px;
+    width: 540px;
 
-    border-radius:
-      28px;
+    max-height: 82vh;
 
-    max-height:
-      80vh;
+    border-radius: 28px;
   }
 
 }
 
 </style>
+
 </head>
 
-
 <body>
+
+
+<!-- =======================================================
+     AUTH
+======================================================== -->
+
+<div id="authScreen">
+
+  <div class="auth-card">
+
+    <div class="logo">
+      ⚡ BLINK
+    </div>
+
+    <div class="logo-sub">
+      Люди рядом. Всегда.
+    </div>
+
+    <div class="auth-tabs">
+
+      <button
+        id="loginTab"
+        class="auth-tab active"
+        onclick="showAuthMode('login')"
+      >
+        Войти
+      </button>
+
+      <button
+        id="registerTab"
+        class="auth-tab"
+        onclick="showAuthMode('register')"
+      >
+        Регистрация
+      </button>
+
+    </div>
+
+
+    <div
+      id="authError"
+      class="auth-error"
+    ></div>
+
+
+    <div
+      id="registerNameField"
+      class="field"
+      style="display:none"
+    >
+
+      <label>
+        Имя
+      </label>
+
+      <input
+        id="authName"
+        maxlength="30"
+        placeholder="Твоё имя"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Email
+      </label>
+
+      <input
+        id="authEmail"
+        type="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Пароль
+      </label>
+
+      <input
+        id="authPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Минимум 6 символов"
+      >
+
+    </div>
+
+
+    <button
+      id="authButton"
+      class="btn"
+      onclick="submitAuth()"
+    >
+      Войти
+    </button>
+
+  </div>
+
+</div>
 
 
 <!-- =======================================================
@@ -1176,50 +1245,47 @@ select {
      MAP CONTROLS
 ======================================================== -->
 
-<div class="map-controls">
-
-
-  <!-- ZOOM -->
-
-  <div class="zoom-controls">
-
-    <button
-      class="zoom-button"
-      onclick="zoomIn()"
-      aria-label="Приблизить"
-    >
-      +
-    </button>
-
-    <button
-      class="zoom-button"
-      onclick="zoomOut()"
-      aria-label="Отдалить"
-    >
-      −
-    </button>
-
-  </div>
-
-
-  <!-- ADD PLACE -->
+<div
+  id="mapControls"
+  class="map-controls"
+  style="display:none"
+>
 
   <button
-    class="add-place-map-button"
+    class="map-control big"
+    onclick="zoomIn()"
+  >
+    +
+  </button>
+
+  <button
+    class="map-control big"
+    onclick="zoomOut()"
+  >
+    −
+  </button>
+
+
+  <button
+    class="map-control"
+    onclick="centerMe()"
+  >
+    🎯
+  </button>
+
+
+  <button
+    class="map-control"
     onclick="startAddingPlace()"
-    title="Добавить место"
   >
     📍
   </button>
 
 
-  <!-- MAP STYLE -->
-
   <div class="map-style-box">
 
     <button
-      id="mapStyleButton"
-      class="map-style-button"
+      class="map-control"
       onclick="toggleMapStyles()"
     >
       🗺️
@@ -1231,22 +1297,16 @@ select {
       style="display:none"
     >
 
-      <button
-        onclick="setMapStyle('light')"
-      >
-        ⚪ Белая
+      <button onclick="setMapStyle('light')">
+        ⚪ Светлая
       </button>
 
-      <button
-        onclick="setMapStyle('dark')"
-      >
+      <button onclick="setMapStyle('dark')">
         ⚫ Тёмная
       </button>
 
-      <button
-        onclick="setMapStyle('hybrid')"
-      >
-        🛰️ Гибрид
+      <button onclick="setMapStyle('hybrid')">
+        🛰️ Спутник
       </button>
 
     </div>
@@ -1257,10 +1317,14 @@ select {
 
 
 <!-- =======================================================
-     BOTTOM MENU
+     BOTTOM NAV
 ======================================================== -->
 
-<div class="bottom">
+<div
+  id="bottomNav"
+  class="bottom"
+  style="display:none"
+>
 
   <button
     class="nav active"
@@ -1296,6 +1360,22 @@ select {
 
   <button
     class="nav"
+    data-page="chats"
+  >
+
+    <span class="icon">
+      💬
+    </span>
+
+    <span class="txt">
+      Чаты
+    </span>
+
+  </button>
+
+
+  <button
+    class="nav"
     data-page="profile"
   >
 
@@ -1320,7 +1400,7 @@ select {
     </span>
 
     <span class="txt">
-      Настройки
+      Ещё
     </span>
 
   </button>
@@ -1357,6 +1437,13 @@ select {
 ></div>
 
 
+<!-- =======================================================
+     SUPABASE
+======================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <script
   src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ></script>
@@ -1365,20 +1452,83 @@ select {
 <script>
 
 /* =========================================================
-   BLINK
-   ЛОКАЛЬНАЯ ВЕРСИЯ
-
-   GPS
-   СКОРОСТЬ
-   НАПРАВЛЕНИЕ
-   ПРОФИЛЬ
-   ФОТО
-   ДРУЗЬЯ
-   МЕСТА
-   СТИЛИ КАРТЫ
-
-   РАДУЖНОГО ШЛЕЙФА НЕТ
+   SUPABASE
 ========================================================= */
+
+const SUPABASE_URL =
+  "https://ytmdvlqcrqqeblxbnzno.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_irhX2HtmV_Ygk6bV_LDKQA_yPuTi4op";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   GLOBAL DATA
+========================================================= */
+
+let currentUser =
+  null;
+
+let myProfile =
+  null;
+
+let friends =
+  [];
+
+let friendLocations =
+  [];
+
+let notifications =
+  [];
+
+let chats =
+  [];
+
+let messages =
+  [];
+
+let currentChatId =
+  null;
+
+let realtimeChannels =
+  [];
+
+
+/* =========================================================
+   LOCAL UI DATA
+========================================================= */
+
+let locationEnabled =
+  localStorage.getItem(
+    "blink_location"
+  ) !== "off";
+
+let watchId =
+  null;
+
+let marker =
+  null;
+
+let lastPosition =
+  null;
+
+let placeMarkers =
+  {};
+
+let savedPlaces =
+  JSON.parse(
+    localStorage.getItem(
+      "blink_places"
+    ) || "[]"
+  );
 
 
 /* =========================================================
@@ -1388,134 +1538,82 @@ select {
 const map =
   L.map("map")
    .setView(
-     [0, 0],
+     [0,0],
      2
    );
 
 
-/* =========================================================
-   MAP LAYERS
-========================================================= */
-
-
-/* LIGHT */
-
 const lightMap =
   L.tileLayer(
-
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
     {
-      maxZoom:
-        19,
-
-      attribution:
-        "© OpenStreetMap"
+      maxZoom: 19,
+      attribution: "© OpenStreetMap"
     }
-
   );
 
-
-/* DARK */
 
 const darkMap =
   L.tileLayer(
-
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-
     {
-      maxZoom:
-        20,
-
-      attribution:
-        "© OpenStreetMap © CARTO"
+      maxZoom: 20,
+      attribution: "© OpenStreetMap © CARTO"
     }
-
   );
 
-
-/* SATELLITE */
 
 const satelliteMap =
   L.tileLayer(
-
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-
     {
-      maxZoom:
-        19,
-
-      attribution:
-        "© Esri"
+      maxZoom: 19,
+      attribution: "© Esri"
     }
-
   );
 
-
-/* SATELLITE LABELS */
 
 const labelsMap =
   L.tileLayer(
-
     "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
-
     {
-      maxZoom:
-        20,
-
-      attribution:
-        "© OpenStreetMap © CARTO"
+      maxZoom: 20,
+      attribution: "© OpenStreetMap © CARTO"
     }
-
   );
 
-
-/* =========================================================
-   MAP STYLE
-========================================================= */
 
 let currentMapStyle =
   localStorage.getItem(
     "blink_map_style"
-  ) || "light";
+  ) || "dark";
 
 
-function setMapStyle(
-  style
-) {
+function setMapStyle(style) {
 
   [
     lightMap,
     darkMap,
     satelliteMap,
     labelsMap
+  ].forEach(layer => {
 
-  ].forEach(
+    if (
+      map.hasLayer(layer)
+    ) {
 
-    function(layer) {
-
-      if (
-        map.hasLayer(layer)
-      ) {
-
-        map.removeLayer(
-          layer
-        );
-
-      }
+      map.removeLayer(layer);
 
     }
 
-  );
+  });
 
 
   if (
     style === "light"
   ) {
 
-    lightMap.addTo(
-      map
-    );
+    lightMap.addTo(map);
 
   }
 
@@ -1524,9 +1622,7 @@ function setMapStyle(
     style === "dark"
   ) {
 
-    darkMap.addTo(
-      map
-    );
+    darkMap.addTo(map);
 
   }
 
@@ -1535,13 +1631,9 @@ function setMapStyle(
     style === "hybrid"
   ) {
 
-    satelliteMap.addTo(
-      map
-    );
+    satelliteMap.addTo(map);
 
-    labelsMap.addTo(
-      map
-    );
+    labelsMap.addTo(map);
 
   }
 
@@ -1564,6 +1656,11 @@ function setMapStyle(
 }
 
 
+setMapStyle(
+  currentMapStyle
+);
+
+
 function toggleMapStyles() {
 
   const menu =
@@ -1580,253 +1677,74 @@ function toggleMapStyles() {
 }
 
 
-/* =========================================================
-   ZOOM
-========================================================= */
-
 function zoomIn() {
-
   map.zoomIn();
-
 }
 
 
 function zoomOut() {
-
   map.zoomOut();
-
 }
 
 
 /* =========================================================
-   START MAP
+   AUTH MODE
 ========================================================= */
 
-setMapStyle(
-  currentMapStyle
-);
+let authMode =
+  "login";
 
 
-/* =========================================================
-   DATA
-========================================================= */
+function showAuthMode(mode) {
 
-let myName =
-  localStorage.getItem(
-    "blink_name"
-  ) || "Я";
+  authMode =
+    mode;
 
 
-let myPhoto =
-  localStorage.getItem(
-    "blink_photo"
-  ) || "";
-
-
-let myCode =
-  localStorage.getItem(
-    "blink_code"
-  );
-
-
-if (
-  !myCode
-) {
-
-  myCode =
-    String(
-      Math.floor(
-        1000 +
-        Math.random() *
-        9000
-      )
+  document
+    .getElementById("loginTab")
+    .classList.toggle(
+      "active",
+      mode === "login"
     );
 
 
-  localStorage.setItem(
-    "blink_code",
-    myCode
-  );
+  document
+    .getElementById("registerTab")
+    .classList.toggle(
+      "active",
+      mode === "register"
+    );
+
+
+  document.getElementById(
+    "registerNameField"
+  ).style.display =
+    mode === "register"
+      ? "block"
+      : "none";
+
+
+  document.getElementById(
+    "authButton"
+  ).textContent =
+    mode === "register"
+      ? "Создать аккаунт"
+      : "Войти";
+
+
+  hideAuthError();
 
 }
 
 
-/* FRIENDS */
-
-let friends =
-  JSON.parse(
-    localStorage.getItem(
-      "blink_friends"
-    ) || "[]"
-  );
-
-
-/* LOCATION */
-
-let locationEnabled =
-  localStorage.getItem(
-    "blink_location"
-  ) !== "off";
-
-
-/* GPS */
-
-let watchId =
-  null;
-
-
-/* USER MARKER */
-
-let marker =
-  null;
-
-
-/* LAST POSITION */
-
-let lastPosition =
-  null;
-
-
-/* =========================================================
-   SAVED PLACES
-========================================================= */
-
-let savedPlaces =
-  JSON.parse(
-    localStorage.getItem(
-      "blink_places"
-    ) || "[]"
-  );
-
-
-/* LEAFLET PLACE MARKERS */
-
-let placeMarkers =
-  {};
-
-
-/* =========================================================
-   PLACE TYPES
-========================================================= */
-
-const placeTypes = {
-
-  home: {
-    name:
-      "Дом",
-
-    icon:
-      "🏠"
-  },
-
-  work: {
-    name:
-      "Работа",
-
-    icon:
-      "💼"
-  },
-
-  school: {
-    name:
-      "Школа",
-
-    icon:
-      "🎓"
-  },
-
-  other: {
-    name:
-      "Другое",
-
-    icon:
-      "📍"
-  }
-
-};
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function avatar(
-  src
-) {
-
-  if (
-    src
-  ) {
-
-    return src;
-
-  }
-
-
-  return (
-
-    "data:image/svg+xml;charset=UTF-8," +
-
-    encodeURIComponent(
-
-      '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
-
-      '<rect width="160" height="160" fill="#222"/>' +
-
-      '<text x="80" y="108" text-anchor="middle" font-size="70" fill="white">👤</text>' +
-
-      '</svg>'
-
-    )
-
-  );
-
-}
-
-
-function escapeHtml(
-  value
-) {
-
-  return String(
-    value ?? ""
-  ).replace(
-    /[&<>"']/g,
-
-    function(c) {
-
-      return {
-
-        "&":
-          "&amp;",
-
-        "<":
-          "&lt;",
-
-        ">":
-          "&gt;",
-
-        '"':
-          "&quot;",
-
-        "'":
-          "&#039;"
-
-      }[c];
-
-    }
-  );
-
-}
-
-
-function toast(
+function showAuthError(
   text
 ) {
 
   const box =
     document.getElementById(
-      "toast"
+      "authError"
     );
 
 
@@ -1837,1052 +1755,1030 @@ function toast(
   box.style.display =
     "block";
 
-
-  clearTimeout(
-    window.blinkToast
-  );
-
-
-  window.blinkToast =
-    setTimeout(
-
-      function() {
-
-        box.style.display =
-          "none";
-
-      },
-
-      2500
-
-    );
-
 }
 
 
-function setStatus(
-  text,
-  live
-) {
+function hideAuthError() {
 
   document.getElementById(
-    "statusText"
-  ).textContent =
-    text;
+    "authError"
+  ).style.display =
+    "none";
+
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function submitAuth() {
+
+  hideAuthError();
+
+
+  const email =
+    document.getElementById(
+      "authEmail"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "authPassword"
+    ).value;
+
+
+  if (
+    !email ||
+    !password
+  ) {
+
+    showAuthError(
+      "Заполни email и пароль."
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "authButton"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "Подождите…";
+
+
+  try {
+
+    if (
+      authMode === "register"
+    ) {
+
+      const name =
+        document.getElementById(
+          "authName"
+        ).value.trim()
+        || "Пользователь";
+
+
+      if (
+        password.length < 6
+      ) {
+
+        throw new Error(
+          "Пароль должен содержать минимум 6 символов."
+        );
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signUp({
+
+          email,
+          password,
+
+          options: {
+
+            data: {
+              username: name
+            }
+
+          }
+
+        });
+
+
+      if (
+        error
+      ) {
+
+        throw error;
+
+      }
+
+
+      if (
+        data.user
+      ) {
+
+        currentUser =
+          data.user;
+
+      }
+
+
+      toast(
+        "Аккаунт создан."
+      );
+
+
+      if (
+        !data.session
+      ) {
+
+        showAuthError(
+          "Проверь почту и подтверди регистрацию."
+        );
+
+        return;
+
+      }
+
+    }
+
+    else {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+
+          email,
+          password
+
+        });
+
+
+      if (
+        error
+      ) {
+
+        throw error;
+
+      }
+
+
+      currentUser =
+        data.user;
+
+    }
+
+
+    await initializeApp();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+
+    showAuthError(
+      translateAuthError(
+        error.message
+      )
+    );
+
+  }
+
+  finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      authMode === "register"
+        ? "Создать аккаунт"
+        : "Войти";
+
+  }
+
+}
+
+
+function translateAuthError(
+  message
+) {
+
+  if (
+    message.includes(
+      "Invalid login credentials"
+    )
+  ) {
+
+    return "Неверный email или пароль.";
+
+  }
+
+
+  if (
+    message.includes(
+      "already registered"
+    )
+  ) {
+
+    return "Этот email уже зарегистрирован.";
+
+  }
+
+
+  return message;
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+async function checkSession() {
+
+  try {
+
+    const {
+      data
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    if (
+      data.session
+    ) {
+
+      currentUser =
+        data.session.user;
+
+      await initializeApp();
+
+    }
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+async function initializeApp() {
+
+  document.getElementById(
+    "authScreen"
+  ).style.display =
+    "none";
 
 
   document.getElementById(
-    "statusDot"
-  ).classList.toggle(
-    "live",
-    !!live
+    "mapControls"
+  ).style.display =
+    "flex";
+
+
+  document.getElementById(
+    "bottomNav"
+  ).style.display =
+    "grid";
+
+
+  await loadProfile();
+
+  await loadFriends();
+
+  await loadNotifications();
+
+  await loadChats();
+
+  await loadFriendLocations();
+
+  renderSavedPlaces();
+
+  startRealtime();
+
+  startGPS();
+
+  setTimeout(
+    () => map.invalidateSize(),
+    300
   );
 
 }
 
 
 /* =========================================================
-   DISTANCE
+   PROFILE
 ========================================================= */
 
-function calculateDistance(
+async function loadProfile() {
 
-  lat1,
-  lon1,
+  if (
+    !currentUser
+  ) {
 
-  lat2,
-  lon2
+    return;
 
-) {
-
-  const R =
-    6371000;
-
-  const rad =
-    Math.PI / 180;
-
-  const dLat =
-    (lat2 - lat1) *
-    rad;
-
-  const dLon =
-    (lon2 - lon1) *
-    rad;
-
-  const a =
-
-    Math.sin(
-      dLat / 2
-    ) ** 2
-
-    +
-
-    Math.cos(
-      lat1 * rad
-    )
-
-    *
-
-    Math.cos(
-      lat2 * rad
-    )
-
-    *
-
-    Math.sin(
-      dLon / 2
-    ) ** 2;
+  }
 
 
-  return (
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq(
+        "id",
+        currentUser.id
+      )
+      .maybeSingle();
 
-    2 *
 
-    R *
+  if (
+    error
+  ) {
 
-    Math.asin(
-      Math.sqrt(a)
-    )
+    console.error(
+      error
+    );
 
+    return;
+
+  }
+
+
+  if (
+    data
+  ) {
+
+    myProfile =
+      data;
+
+    return;
+
+  }
+
+
+  const username =
+    currentUser.user_metadata?.username
+    || "Пользователь";
+
+
+  const code =
+    await generateUniqueCode();
+
+
+  const {
+    data: created,
+    error: createError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .insert({
+
+        id:
+          currentUser.id,
+
+        username:
+          username,
+
+        friend_code:
+          code,
+
+        avatar_url:
+          "",
+
+        bio:
+          "",
+
+        notifications_enabled:
+          true,
+
+        location_sharing_enabled:
+          true
+
+      })
+      .select()
+      .single();
+
+
+  if (
+    createError
+  ) {
+
+    console.error(
+      createError
+    );
+
+    return;
+
+  }
+
+
+  myProfile =
+    created;
+
+}
+
+
+async function generateUniqueCode() {
+
+  for (
+    let i = 0;
+    i < 20;
+    i++
+  ) {
+
+    const code =
+      String(
+        Math.floor(
+          1000 +
+          Math.random() * 9000
+        )
+      );
+
+
+    const {
+      data
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select("id")
+        .eq(
+          "friend_code",
+          code
+        )
+        .maybeSingle();
+
+
+    if (
+      !data
+    ) {
+
+      return code;
+
+    }
+
+  }
+
+
+  throw new Error(
+    "Не удалось создать код."
   );
 
 }
 
 
 /* =========================================================
-   BEARING
+   FRIENDS
 ========================================================= */
 
-function calculateBearing(
+async function loadFriends() {
 
-  lat1,
-  lon1,
+  try {
 
-  lat2,
-  lon2
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_my_friends"
+      );
 
+
+    if (
+      error
+    ) {
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
+
+
+    friends =
+      data || [];
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+async function addFriend() {
+
+  const input =
+    document.getElementById(
+      "friendCode"
+    );
+
+
+  if (
+    !input
+  ) {
+
+    return;
+
+  }
+
+
+  const code =
+    input.value.trim();
+
+
+  if (
+    !/^\d{4}$/.test(code)
+  ) {
+
+    toast(
+      "Код должен состоять из 4 цифр."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    code === myProfile?.friend_code
+  ) {
+
+    toast(
+      "Нельзя добавить самого себя."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.rpc(
+        "send_friend_request_by_code",
+        {
+          p_friend_code:
+            code
+        }
+      );
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    toast(
+      "Заявка отправлена."
+    );
+
+
+    showFriends();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+    toast(
+      error.message ||
+      "Не удалось отправить заявку."
+    );
+
+  }
+
+}
+
+
+async function acceptFriend(
+  requestId
 ) {
 
-  const rad =
-    Math.PI / 180;
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.rpc(
+        "accept_friend_request",
+        {
+          p_request_id:
+            requestId
+        }
+      );
 
 
-  const y =
+    if (
+      error
+    ) {
 
-    Math.sin(
-      (lon2 - lon1) *
-      rad
-    )
+      throw error;
 
-    *
+    }
 
-    Math.cos(
-      lat2 * rad
+
+    toast(
+      "Друг добавлен."
     );
 
 
-  const x =
+    await loadFriends();
 
-    Math.cos(
-      lat1 * rad
-    )
+    showFriends();
 
-    *
+  }
 
-    Math.sin(
-      lat2 * rad
-    )
+  catch(error) {
 
-    -
+    console.error(
+      error
+    );
 
-    Math.sin(
-      lat1 * rad
-    )
+    toast(
+      error.message ||
+      "Ошибка."
+    );
 
-    *
+  }
 
-    Math.cos(
-      lat2 * rad
-    )
+}
 
-    *
 
-    Math.cos(
-      (lon2 - lon1) *
-      rad
+async function rejectFriend(
+  requestId
+) {
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.rpc(
+        "reject_friend_request",
+        {
+          p_request_id:
+            requestId
+        }
+      );
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    toast(
+      "Заявка отклонена."
     );
 
 
-  let bearing =
+    showFriends();
 
-    Math.atan2(
-      y,
-      x
+  }
+
+  catch(error) {
+
+    toast(
+      error.message ||
+      "Ошибка."
+    );
+
+  }
+
+}
+
+
+async function removeFriend(
+  friendId
+) {
+
+  if (
+    !confirm(
+      "Удалить этого друга?"
     )
+  ) {
 
-    *
+    return;
 
-    180 /
-    Math.PI;
+  }
 
 
-  return (
+  try {
 
-    bearing +
-    360
+    const {
+      error
+    } =
+      await supabaseClient.rpc(
+        "remove_friend",
+        {
+          p_friend_id:
+            friendId
+        }
+      );
 
-  ) % 360;
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    await loadFriends();
+
+    showFriends();
+
+    toast(
+      "Друг удалён."
+    );
+
+  }
+
+  catch(error) {
+
+    toast(
+      error.message ||
+      "Ошибка."
+    );
+
+  }
 
 }
 
 
 /* =========================================================
-   COMPASS
+   FRIEND REQUESTS
 ========================================================= */
 
-function directionName(
-  degrees
-) {
+async function loadIncomingRequests() {
 
-  const names = [
+  try {
 
-    "С",
-    "СВ",
-    "В",
-    "ЮВ",
-    "Ю",
-    "ЮЗ",
-    "З",
-    "СЗ"
-
-  ];
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_incoming_requests"
+      );
 
 
-  return names[
-    Math.round(
-      degrees / 45
-    ) % 8
-  ];
+    if (
+      error
+    ) {
+
+      console.error(
+        error
+      );
+
+      return [];
+
+    }
+
+
+    return data || [];
+
+  }
+
+  catch(error) {
+
+    return [];
+
+  }
 
 }
 
 
 /* =========================================================
-   USER ICON
+   FRIEND LOCATIONS
 ========================================================= */
 
-function userIcon(
+async function loadFriendLocations() {
 
-  speed,
+  try {
 
-  direction
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_friend_locations"
+      );
 
+
+    if (
+      error
+    ) {
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
+
+
+    friendLocations =
+      data || [];
+
+
+    renderFriendLocations();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FRIEND MARKERS
+========================================================= */
+
+let friendMarkers =
+  {};
+
+
+function friendIcon(
+  photo
 ) {
-
-  const moving =
-    speed > 0.5;
-
 
   return L.divIcon({
 
-    className:
-      "",
-
+    className: "",
 
     html:
 
-      '<div class="pin">' +
+      '<div style="' +
 
-        '<div class="ring"></div>' +
+        'width:44px;' +
+        'height:44px;' +
+        'border:2px solid white;' +
+        'border-radius:50%;' +
+        'overflow:hidden;' +
+        'background:#222;' +
+        'box-shadow:0 5px 20px rgba(0,0,0,.6);' +
+
+      '">' +
 
         '<img src="' +
 
           avatar(
-            myPhoto
+            photo
           ) +
+
+        '" style="' +
+
+          'width:100%;' +
+          'height:100%;' +
+          'object-fit:cover;' +
 
         '">' +
 
-        (
-
-          moving
-
-          ?
-
-          '<div class="direction-arrow" ' +
-
-          'style="transform:translateX(-50%) rotate(' +
-
-          direction +
-
-          'deg)">' +
-
-          '➤' +
-
-          '</div>'
-
-          :
-
-          ""
-
-        ) +
-
-      '</div>' +
-
-
-      '<div class="speed-label">' +
-
-        speed.toFixed(
-          1
-        ) +
-
-        ' км/ч' +
-
       '</div>',
 
-
     iconSize:
-      [
-        46,
-        70
-      ],
-
+      [44,44],
 
     iconAnchor:
-      [
-        23,
-        23
-      ]
+      [22,22]
 
   });
 
 }
 
 
-/* =========================================================
-   PLACE ICON
-========================================================= */
-
-function placeIcon(
-  type
-) {
-
-  const data =
-    placeTypes[type]
-    ||
-    placeTypes.other;
-
-
-  return L.divIcon({
-
-    className:
-      "",
-
-    html:
-
-      '<div class="place-marker">' +
-
-        data.icon +
-
-      '</div>',
-
-
-    iconSize:
-      [
-        44,
-        44
-      ],
-
-
-    iconAnchor:
-      [
-        22,
-        22
-      ]
-
-  });
-
-}
-
-
-/* =========================================================
-   RENDER SAVED PLACES
-========================================================= */
-
-function renderSavedPlaces() {
+function renderFriendLocations() {
 
   Object.keys(
-    placeMarkers
-  ).forEach(
+    friendMarkers
+  ).forEach(id => {
 
-    function(id) {
+    if (
+      map.hasLayer(
+        friendMarkers[id]
+      )
+    ) {
 
-      const existing =
-        placeMarkers[id];
-
-      if (
-        existing &&
-        map.hasLayer(existing)
-      ) {
-
-        map.removeLayer(
-          existing
-        );
-
-      }
+      map.removeLayer(
+        friendMarkers[id]
+      );
 
     }
 
-  );
+  });
 
 
-  placeMarkers =
+  friendMarkers =
     {};
 
 
-  savedPlaces.forEach(
+  friendLocations.forEach(
+    friend => {
 
-    function(place) {
+      if (
+        !friend.latitude ||
+        !friend.longitude
+      ) {
 
-      const data =
-        placeTypes[
-          place.type
-        ] ||
-        placeTypes.other;
+        return;
+
+      }
 
 
-      const leafletMarker =
+      const marker =
         L.marker(
 
           [
-            place.lat,
-            place.lng
+            Number(
+              friend.latitude
+            ),
+
+            Number(
+              friend.longitude
+            )
+
           ],
 
           {
             icon:
-              placeIcon(
-                place.type
+              friendIcon(
+                friend.avatar_url
               ),
 
             zIndexOffset:
-              500
+              800
           }
 
-        ).addTo(
-          map
-        );
+        ).addTo(map);
 
 
-      leafletMarker.bindPopup(
+      marker.bindPopup(`
 
-        '<div>' +
+        <b>
+          ${escapeHtml(
+            friend.username
+          )}
+        </b>
 
-          '<b>' +
+        <br>
 
-            escapeHtml(
-              place.name
-            ) +
+        🚀 ${Number(
+          friend.speed || 0
+        ).toFixed(1)} км/ч
 
-          '</b>' +
-
-          '<br>' +
-
-          data.icon +
-
-          ' ' +
-
-          data.name +
-
-          '<br><br>' +
-
-          '<button ' +
-
-            'class="popup-delete" ' +
-
-            'onclick="deletePlace(\'' +
-
-              place.id +
-
-            '\')" ' +
-
-          '>' +
-
-            'Удалить место' +
-
-          '</button>' +
-
-        '</div>'
-
-      );
+      `);
 
 
-      placeMarkers[
-        place.id
+      friendMarkers[
+        friend.user_id
       ] =
-        leafletMarker;
+        marker;
 
     }
-
-  );
-
-}
-
-
-/* =========================================================
-   SAVE PLACES
-========================================================= */
-
-function persistPlaces() {
-
-  localStorage.setItem(
-
-    "blink_places",
-
-    JSON.stringify(
-      savedPlaces
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-   START ADDING PLACE
-========================================================= */
-
-function startAddingPlace() {
-
-  closePanel();
-
-
-  toast(
-    "Нажми на карте точку, где находится место."
-  );
-
-
-  map.once(
-    "click",
-    handlePlaceMapClick
-  );
-
-}
-
-
-/* =========================================================
-   MAP CLICK
-========================================================= */
-
-function handlePlaceMapClick(
-  event
-) {
-
-  showAddPlaceForm(
-
-    event.latlng.lat,
-
-    event.latlng.lng
-
-  );
-
-}
-
-
-/* =========================================================
-   ADD PLACE FORM
-========================================================= */
-
-function showAddPlaceForm(
-  lat,
-  lng
-) {
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-
-    <h2>
-      Добавить место
-    </h2>
-
-
-    <p class="note">
-
-      Координаты выбраны на карте.
-
-      Теперь дай месту название
-      и выбери его тип.
-
-    </p>
-
-
-    <div class="field">
-
-      <label>
-        Название места
-      </label>
-
-      <input
-        id="placeName"
-        maxlength="40"
-        placeholder="Например: Мой дом"
-        autocomplete="off"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Тип места
-      </label>
-
-      <select
-        id="placeType"
-      >
-
-        <option value="home">
-          🏠 Дом
-        </option>
-
-        <option value="work">
-          💼 Работа
-        </option>
-
-        <option value="school">
-          🎓 Школа
-        </option>
-
-        <option value="other">
-          📍 Другое
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <button
-      class="btn"
-      onclick="
-        confirmNewPlace(
-          ${lat},
-          ${lng}
-        )
-      "
-    >
-      Сохранить место
-    </button>
-
-
-    <button
-      class="btn secondary"
-      onclick="closePanel()"
-    >
-      Отмена
-    </button>
-
-  `);
-
-}
-
-
-/* =========================================================
-   CONFIRM NEW PLACE
-========================================================= */
-
-function confirmNewPlace(
-  lat,
-  lng
-) {
-
-  const nameInput =
-    document.getElementById(
-      "placeName"
-    );
-
-
-  const typeInput =
-    document.getElementById(
-      "placeType"
-    );
-
-
-  if (
-    !nameInput ||
-    !typeInput
-  ) {
-
-    return;
-
-  }
-
-
-  const name =
-    nameInput.value.trim();
-
-
-  const type =
-    typeInput.value;
-
-
-  if (
-    !name
-  ) {
-
-    toast(
-      "Введи название места."
-    );
-
-    nameInput.focus();
-
-    return;
-
-  }
-
-
-  const data =
-    placeTypes[type]
-    ||
-    placeTypes.other;
-
-
-  const place = {
-
-    id:
-      Date.now().toString(),
-
-    name:
-      name,
-
-    type:
-      type,
-
-    lat:
-      lat,
-
-    lng:
-      lng
-
-  };
-
-
-  savedPlaces.push(
-    place
-  );
-
-
-  persistPlaces();
-
-
-  renderSavedPlaces();
-
-
-  closePanel();
-
-
-  toast(
-    "Место сохранено."
-  );
-
-
-  map.setView(
-
-    [
-      lat,
-      lng
-    ],
-
-    Math.max(
-      map.getZoom(),
-      16
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-   DELETE PLACE
-========================================================= */
-
-function deletePlace(
-  id
-) {
-
-  const place =
-    savedPlaces.find(
-
-      function(item) {
-
-        return item.id === id;
-
-      }
-
-    );
-
-
-  savedPlaces =
-    savedPlaces.filter(
-
-      function(item) {
-
-        return item.id !== id;
-
-      }
-
-    );
-
-
-  persistPlaces();
-
-
-  if (
-    placeMarkers[id]
-  ) {
-
-    map.removeLayer(
-      placeMarkers[id]
-    );
-
-    delete placeMarkers[id];
-
-  }
-
-
-  toast(
-    "Место удалено."
-  );
-
-}
-
-
-/* =========================================================
-   MY PLACES
-========================================================= */
-
-function showPlaces() {
-
-  let list =
-    "";
-
-
-  savedPlaces.forEach(
-
-    function(place) {
-
-      const data =
-        placeTypes[
-          place.type
-        ] ||
-        placeTypes.other;
-
-
-      list += `
-
-        <div class="place-item">
-
-          <div class="place-icon">
-
-            ${data.icon}
-
-          </div>
-
-
-          <div class="grow">
-
-            <div class="place-name">
-
-              ${escapeHtml(
-                place.name
-              )}
-
-            </div>
-
-
-            <div class="place-type">
-
-              ${data.name}
-
-            </div>
-
-          </div>
-
-
-          <button
-            class="btn secondary"
-            style="
-              width:auto;
-              margin:0;
-              padding:9px 12px;
-            "
-            onclick="
-              focusPlace('${place.id}')
-            "
-          >
-            👁️
-          </button>
-
-
-          <button
-            class="btn danger"
-            style="
-              width:auto;
-              margin:0;
-              padding:9px 12px;
-            "
-            onclick="
-              deletePlace('${place.id}');
-              showPlaces();
-            "
-          >
-            ×
-          </button>
-
-        </div>
-
-      `;
-
-    }
-
-  );
-
-
-  if (
-    !list
-  ) {
-
-    list = `
-
-      <div class="empty">
-
-        Пока нет сохранённых мест.
-
-        <br><br>
-
-        Нажми кнопку ниже,
-        затем выбери точку
-        на карте.
-
-      </div>
-
-    `;
-
-  }
-
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-
-    <h2>
-      📍 Мои места
-    </h2>
-
-
-    <button
-      class="btn"
-      onclick="startAddingPlace()"
-    >
-      ＋ Добавить место на карте
-    </button>
-
-
-    <div
-      style="margin-top:12px"
-    >
-
-      ${list}
-
-    </div>
-
-
-    <p class="note">
-
-      Места сохраняются только
-      в этом браузере на этом устройстве.
-
-    </p>
-
-  `);
-
-}
-
-
-/* =========================================================
-   FOCUS PLACE
-========================================================= */
-
-function focusPlace(
-  id
-) {
-
-  const place =
-    savedPlaces.find(
-
-      function(item) {
-
-        return item.id === id;
-
-      }
-
-    );
-
-
-  if (
-    !place
-  ) {
-
-    return;
-
-  }
-
-
-  closePanel();
-
-
-  map.setView(
-
-    [
-      place.lat,
-      place.lng
-    ],
-
-    17
-
-  );
-
-
-  setTimeout(
-
-    function() {
-
-      if (
-        placeMarkers[id]
-      ) {
-
-        placeMarkers[id].openPopup();
-
-      }
-
-    },
-
-    300
 
   );
 
@@ -2927,10 +2823,9 @@ function startGPS() {
     watchId !== null
   ) {
 
-    navigator.geolocation
-      .clearWatch(
-        watchId
-      );
+    navigator.geolocation.clearWatch(
+      watchId
+    );
 
   }
 
@@ -2942,37 +2837,24 @@ function startGPS() {
 
 
   watchId =
+    navigator.geolocation.watchPosition(
 
-    navigator.geolocation
-      .watchPosition(
+      onPosition,
 
-        onPosition,
+      onPositionError,
 
-        onPositionError,
+      {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 15000
+      }
 
-        {
-
-          enableHighAccuracy:
-            true,
-
-          maximumAge:
-            1000,
-
-          timeout:
-            15000
-
-        }
-
-      );
+    );
 
 }
 
 
-/* =========================================================
-   NEW GPS POSITION
-========================================================= */
-
-function onPosition(
+async function onPosition(
   position
 ) {
 
@@ -2981,34 +2863,18 @@ function onPosition(
 
 
   let speedMs =
-
-    Number.isFinite(
-      c.speed
-    )
-
-    ?
-
-    Math.max(
-      0,
-      c.speed
-    )
-
-    :
-
-    null;
+    Number.isFinite(c.speed)
+      ? Math.max(
+          0,
+          c.speed
+        )
+      : null;
 
 
   let direction =
-
     lastPosition
-
-    ?
-
-    lastPosition.direction
-
-    :
-
-    0;
+      ? lastPosition.direction
+      : 0;
 
 
   if (
@@ -3016,13 +2882,9 @@ function onPosition(
   ) {
 
     const seconds =
-
       (
-
         position.timestamp -
-
         lastPosition.time
-
       ) / 1000;
 
 
@@ -3031,15 +2893,12 @@ function onPosition(
     ) {
 
       const meters =
-
         calculateDistance(
 
           lastPosition.lat,
-
           lastPosition.lng,
 
           c.latitude,
-
           c.longitude
 
         );
@@ -3061,15 +2920,12 @@ function onPosition(
       ) {
 
         direction =
-
           calculateBearing(
 
             lastPosition.lat,
-
             lastPosition.lng,
 
             c.latitude,
-
             c.longitude
 
           );
@@ -3082,9 +2938,7 @@ function onPosition(
 
 
   const speedKmh =
-
-    (speedMs || 0) *
-    3.6;
+    (speedMs || 0) * 3.6;
 
 
   lastPosition = {
@@ -3107,80 +2961,81 @@ function onPosition(
   };
 
 
-  /* =====================================================
-     USER MARKER
-  ===================================================== */
+  updateUserMarker(
+    c.latitude,
+    c.longitude,
+    speedKmh,
+    direction
+  );
+
+
+  setStatus(
+    "GPS • " +
+    directionName(direction),
+    true
+  );
+
+
+  await saveMyLocation(
+
+    c.latitude,
+    c.longitude,
+
+    c.accuracy,
+
+    speedKmh,
+
+    direction
+
+  );
+
+}
+
+
+function updateUserMarker(
+  lat,
+  lng,
+  speed,
+  direction
+) {
 
   if (
     !marker
   ) {
 
     marker =
-
       L.marker(
 
         [
-          c.latitude,
-          c.longitude
+          lat,
+          lng
         ],
 
         {
-
           icon:
             userIcon(
-
-              speedKmh,
-
+              speed,
               direction
-
             ),
 
           zIndexOffset:
             1000
-
         }
 
-      ).addTo(
-        map
-      );
+      ).addTo(map);
 
 
     marker.bindPopup(
-
-      "<b>" +
-
-      escapeHtml(
-        myName
-      ) +
-
-      "</b>" +
-
-      "<br>🚀 " +
-
-      speedKmh.toFixed(
-        1
-      ) +
-
-      " км/ч" +
-
-      "<br>🧭 " +
-
-      directionName(
+      userPopup(
+        speed,
         direction
       )
-
     );
 
 
     map.setView(
-
-      [
-        c.latitude,
-        c.longitude
-      ],
-
+      [lat,lng],
       16
-
     );
 
   }
@@ -3188,77 +3043,212 @@ function onPosition(
   else {
 
     marker.setLatLng(
-
-      [
-        c.latitude,
-        c.longitude
-      ]
-
+      [lat,lng]
     );
 
 
     marker.setIcon(
-
       userIcon(
-
-        speedKmh,
-
+        speed,
         direction
-
       )
-
     );
 
 
     marker
       .getPopup()
       .setContent(
-
-        "<b>" +
-
-        escapeHtml(
-          myName
-        ) +
-
-        "</b>" +
-
-        "<br>🚀 " +
-
-        speedKmh.toFixed(
-          1
-        ) +
-
-        " км/ч" +
-
-        "<br>🧭 " +
-
-        directionName(
+        userPopup(
+          speed,
           direction
         )
-
       );
 
   }
 
+}
 
-  setStatus(
 
-    "GPS • " +
+async function saveMyLocation(
+  lat,
+  lng,
+  accuracy,
+  speed,
+  direction
+) {
 
-    directionName(
-      direction
-    ),
+  if (
+    !currentUser ||
+    !locationEnabled
+  ) {
 
-    true
+    return;
 
-  );
+  }
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("locations")
+        .upsert(
+
+          {
+
+            user_id:
+              currentUser.id,
+
+            latitude:
+              lat,
+
+            longitude:
+              lng,
+
+            accuracy:
+              accuracy,
+
+            speed:
+              speed,
+
+            direction:
+              direction,
+
+            updated_at:
+              new Date().toISOString()
+
+          },
+
+          {
+            onConflict:
+              "user_id"
+          }
+
+        );
+
+
+    if (
+      error
+    ) {
+
+      console.error(
+        "LOCATION:",
+        error
+      );
+
+    }
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
 
 }
 
 
-/* =========================================================
-   GPS ERROR
-========================================================= */
+function userIcon(
+  speed,
+  direction
+) {
+
+  const photo =
+    myProfile?.avatar_url
+    || "";
+
+
+  return L.divIcon({
+
+    className: "",
+
+    html:
+
+      '<div class="pin">' +
+
+        '<div class="ring"></div>' +
+
+        '<img src="' +
+
+          avatar(photo) +
+
+        '">' +
+
+        (
+
+          speed > 0.5
+
+          ?
+
+          '<div class="direction-arrow" ' +
+
+          'style="transform:translateX(-50%) rotate(' +
+
+          direction +
+
+          'deg)">' +
+
+          '➤' +
+
+          '</div>'
+
+          :
+
+          ""
+
+        ) +
+
+      '</div>' +
+
+      '<div class="speed-label">' +
+
+        speed.toFixed(1) +
+
+        ' км/ч' +
+
+      '</div>',
+
+    iconSize:
+      [48,72],
+
+    iconAnchor:
+      [24,24]
+
+  });
+
+}
+
+
+function userPopup(
+  speed,
+  direction
+) {
+
+  return `
+
+    <b>
+      ${escapeHtml(
+        myProfile?.username || "Я"
+      )}
+    </b>
+
+    <br>
+
+    🚀 ${speed.toFixed(1)} км/ч
+
+    <br>
+
+    🧭 ${directionName(direction)}
+
+  `;
+
+}
+
 
 function onPositionError(
   error
@@ -3273,9 +3263,8 @@ function onPositionError(
       false
     );
 
-
     toast(
-      "Разреши браузеру доступ к геолокации."
+      "Разреши браузеру доступ к GPS."
     );
 
   }
@@ -3291,9 +3280,7 @@ function onPositionError(
 
   }
 
-  else if (
-    error.code === 3
-  ) {
+  else {
 
     setStatus(
       "GPS не отвечает",
@@ -3302,73 +3289,142 @@ function onPositionError(
 
   }
 
-  else {
-
-    setStatus(
-      "Ошибка GPS",
-      false
-    );
-
-  }
-
 }
 
 
 /* =========================================================
-   PANELS
+   DISTANCE
 ========================================================= */
 
-function openPanel(
-  html
+function calculateDistance(
+  lat1,
+  lon1,
+  lat2,
+  lon2
 ) {
 
-  document.getElementById(
-    "sheet"
-  ).innerHTML =
+  const R =
+    6371000;
 
-    '<div class="handle"></div>' +
+  const rad =
+    Math.PI / 180;
 
-    html;
+  const dLat =
+    (lat2-lat1)*rad;
+
+  const dLon =
+    (lon2-lon1)*rad;
 
 
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "flex";
+  const a =
+
+    Math.sin(dLat/2)**2
+
+    +
+
+    Math.cos(lat1*rad) *
+    Math.cos(lat2*rad) *
+    Math.sin(dLon/2)**2;
+
+
+  return (
+    2 *
+    R *
+    Math.asin(
+      Math.sqrt(a)
+    )
+  );
 
 }
-
-
-function closePanel() {
-
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "none";
-
-}
-
-
-document.getElementById(
-  "panel"
-).onclick =
-
-  function(e) {
-
-    if (
-      e.target.id ===
-      "panel"
-    ) {
-
-      closePanel();
-
-    }
-
-  };
 
 
 /* =========================================================
-   PROFILE
+   BEARING
+========================================================= */
+
+function calculateBearing(
+  lat1,
+  lon1,
+  lat2,
+  lon2
+) {
+
+  const rad =
+    Math.PI / 180;
+
+
+  const y =
+    Math.sin(
+      (lon2-lon1)*rad
+    )
+    *
+    Math.cos(
+      lat2*rad
+    );
+
+
+  const x =
+
+    Math.cos(
+      lat1*rad
+    )
+    *
+    Math.sin(
+      lat2*rad
+    )
+
+    -
+
+    Math.sin(
+      lat1*rad
+    )
+    *
+    Math.cos(
+      lat2*rad
+    )
+    *
+    Math.cos(
+      (lon2-lon1)*rad
+    );
+
+
+  return (
+    Math.atan2(y,x)
+    * 180 /
+    Math.PI
+    + 360
+  ) % 360;
+
+}
+
+
+function directionName(
+  degrees
+) {
+
+  const names = [
+    "С",
+    "СВ",
+    "В",
+    "ЮВ",
+    "Ю",
+    "ЮЗ",
+    "З",
+    "СЗ"
+  ];
+
+
+  return names[
+    Math.round(
+      degrees / 45
+    ) % 8
+  ];
+
+}
+
+
+/* =========================================================
+   PROFILE UI
 ========================================================= */
 
 function showProfile() {
@@ -3384,7 +3440,7 @@ function showProfile() {
 
 
     <h2>
-      Профиль
+      👤 Профиль
     </h2>
 
 
@@ -3393,23 +3449,31 @@ function showProfile() {
       <img
         id="profilePreview"
         class="avatar"
-        src="${avatar(myPhoto)}"
+        src="${avatar(
+          myProfile?.avatar_url
+        )}"
       >
 
 
       <div>
 
         <b>
-          ${escapeHtml(myName)}
+          ${escapeHtml(
+            myProfile?.username ||
+            "Пользователь"
+          )}
         </b>
 
 
         <div class="code">
 
-          Мой код:
+          Код:
 
           <b>
-            ${myCode}
+            ${escapeHtml(
+              myProfile?.friend_code ||
+              "----"
+            )}
           </b>
 
         </div>
@@ -3422,14 +3486,15 @@ function showProfile() {
     <div class="field">
 
       <label>
-        Одна фотография профиля
+        Имя
       </label>
 
-
       <input
-        id="photoInput"
-        type="file"
-        accept="image/*"
+        id="nameInput"
+        maxlength="30"
+        value="${escapeHtml(
+          myProfile?.username || ""
+        )}"
       >
 
     </div>
@@ -3438,14 +3503,30 @@ function showProfile() {
     <div class="field">
 
       <label>
-        Имя
+        О себе
       </label>
 
+      <textarea
+        id="bioInput"
+        maxlength="160"
+        placeholder="Расскажи немного о себе"
+      >${escapeHtml(
+        myProfile?.bio || ""
+      )}</textarea>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Фото профиля
+      </label>
 
       <input
-        id="nameInput"
-        maxlength="30"
-        value="${escapeHtml(myName)}"
+        id="photoInput"
+        type="file"
+        accept="image/*"
       >
 
     </div>
@@ -3468,11 +3549,8 @@ function showProfile() {
 
 
     <p class="note">
-
-      Без базы данных фотография
-      хранится только в браузере
-      этого устройства.
-
+      Твой 4-значный код нужен друзьям,
+      чтобы отправить тебе заявку.
     </p>
 
   `);
@@ -3481,122 +3559,21 @@ function showProfile() {
   document.getElementById(
     "photoInput"
   ).onchange =
-
-    function(e) {
-
-      const file =
-        e.target.files[0];
-
-
-      if (
-        !file
-      ) {
-
-        return;
-
-      }
-
-
-      if (
-        file.size >
-        5 * 1024 * 1024
-      ) {
-
-        toast(
-          "Фото должно быть меньше 5 МБ."
-        );
-
-        return;
-
-      }
-
-
-      const reader =
-        new FileReader();
-
-
-      reader.onload =
-        function() {
-
-          myPhoto =
-            reader.result;
-
-
-          localStorage.setItem(
-            "blink_photo",
-            myPhoto
-          );
-
-
-          const preview =
-            document.getElementById(
-              "profilePreview"
-            );
-
-
-          if (
-            preview
-          ) {
-
-            preview.src =
-              myPhoto;
-
-          }
-
-
-          if (
-            marker
-          ) {
-
-            marker.setIcon(
-
-              userIcon(
-
-                lastPosition
-                  ? lastPosition.speed
-                  : 0,
-
-                lastPosition
-                  ? lastPosition.direction
-                  : 0
-
-              )
-
-            );
-
-          }
-
-
-          toast(
-            "Фотография сохранена."
-          );
-
-        };
-
-
-      reader.readAsDataURL(
-        file
-      );
-
-    };
+    handlePhotoChange;
 
 }
 
 
-/* =========================================================
-   SAVE PROFILE
-========================================================= */
+async function handlePhotoChange(
+  event
+) {
 
-function saveProfile() {
-
-  const input =
-    document.getElementById(
-      "nameInput"
-    );
+  const file =
+    event.target.files[0];
 
 
   if (
-    !input
+    !file
   ) {
 
     return;
@@ -3604,131 +3581,397 @@ function saveProfile() {
   }
 
 
-  myName =
-    input.value.trim()
-    ||
-    "Я";
+  if (
+    file.size >
+    5 * 1024 * 1024
+  ) {
+
+    toast(
+      "Фото должно быть меньше 5 МБ."
+    );
+
+    return;
+
+  }
 
 
-  localStorage.setItem(
-    "blink_name",
-    myName
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    async function() {
+
+      try {
+
+        const dataUrl =
+          reader.result;
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("profiles")
+            .update({
+
+              avatar_url:
+                dataUrl
+
+            })
+            .eq(
+              "id",
+              currentUser.id
+            );
+
+
+        if (
+          error
+        ) {
+
+          throw error;
+
+        }
+
+
+        myProfile.avatar_url =
+          dataUrl;
+
+
+        const preview =
+          document.getElementById(
+            "profilePreview"
+          );
+
+
+        if (
+          preview
+        ) {
+
+          preview.src =
+            dataUrl;
+
+        }
+
+
+        if (
+          marker
+        ) {
+
+          marker.setIcon(
+
+            userIcon(
+
+              lastPosition
+                ? lastPosition.speed
+                : 0,
+
+              lastPosition
+                ? lastPosition.direction
+                : 0
+
+            )
+
+          );
+
+        }
+
+
+        toast(
+          "Фотография сохранена."
+        );
+
+      }
+
+      catch(error) {
+
+        console.error(
+          error
+        );
+
+        toast(
+          "Не удалось сохранить фото."
+        );
+
+      }
+
+    };
+
+
+  reader.readAsDataURL(
+    file
   );
+
+}
+
+
+async function saveProfile() {
+
+  const name =
+    document.getElementById(
+      "nameInput"
+    ).value.trim()
+    || "Пользователь";
+
+
+  const bio =
+    document.getElementById(
+      "bioInput"
+    ).value.trim();
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .update({
+
+          username:
+            name,
+
+          bio:
+            bio
+
+        })
+        .eq(
+          "id",
+          currentUser.id
+        )
+        .select()
+        .single();
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    myProfile =
+      data;
+
+
+    if (
+      marker
+    ) {
+
+      marker.setIcon(
+
+        userIcon(
+
+          lastPosition
+            ? lastPosition.speed
+            : 0,
+
+          lastPosition
+            ? lastPosition.direction
+            : 0
+
+        )
+
+      );
+
+    }
+
+
+    toast(
+      "Профиль сохранён."
+    );
+
+
+    closePanel();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+    toast(
+      error.message ||
+      "Ошибка сохранения."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FRIENDS UI
+========================================================= */
+
+async function showFriends() {
+
+  const requests =
+    await loadIncomingRequests();
+
+
+  let requestHtml =
+    "";
 
 
   if (
-    marker
+    requests.length
   ) {
 
-    const speed =
-      lastPosition
-        ? lastPosition.speed
-        : 0;
+    requestHtml = `
+
+      <h3>
+        📨 Заявки
+      </h3>
+
+    `;
 
 
-    const direction =
-      lastPosition
-        ? lastPosition.direction
-        : 0;
+    requests.forEach(
+      request => {
 
+        requestHtml += `
 
-    marker.setIcon(
+          <div class="friend">
 
-      userIcon(
-        speed,
-        direction
-      )
+            <img
+              class="avatar small"
+              src="${avatar(
+                request.avatar_url
+              )}"
+            >
+
+            <div class="grow">
+
+              <div class="friend-name">
+                ${escapeHtml(
+                  request.username
+                )}
+              </div>
+
+              <div class="code">
+                Код:
+                ${escapeHtml(
+                  request.friend_code
+                )}
+              </div>
+
+            </div>
+
+            <button
+              class="btn small"
+              onclick="acceptFriend('${request.id}')"
+            >
+              ✓
+            </button>
+
+            <button
+              class="btn danger small"
+              onclick="rejectFriend('${request.id}')"
+            >
+              ×
+            </button>
+
+          </div>
+
+        `;
+
+      }
 
     );
 
   }
 
 
-  toast(
-    "Профиль сохранён."
-  );
-
-
-  closePanel();
-
-}
-
-
-/* =========================================================
-   FRIENDS
-========================================================= */
-
-function showFriends() {
-
-  let list =
+  let friendHtml =
     "";
 
 
-  friends.forEach(
+  if (
+    friends.length
+  ) {
 
-    function(
-      friend,
-      index
-    ) {
+    friends.forEach(
+      friend => {
 
-      list += `
+        friendHtml += `
 
-        <div class="friend">
+          <div class="friend">
 
-          <img
-            class="avatar small"
-            src="${avatar(friend.photo)}"
-          >
+            <img
+              class="avatar small"
+              src="${avatar(
+                friend.avatar_url
+              )}"
+            >
 
+            <div class="grow">
 
-          <div class="grow">
+              <div class="friend-name">
 
-            <b>
-              ${escapeHtml(friend.name)}
-            </b>
+                ${escapeHtml(
+                  friend.username
+                )}
 
+              </div>
 
-            <div class="code">
+              <div class="code">
 
-              Код:
+                Код:
+                ${escapeHtml(
+                  friend.friend_code
+                )}
 
-              ${escapeHtml(friend.code)}
+              </div>
 
             </div>
 
+            <button
+              class="btn secondary small"
+              onclick="openChatForFriend('${friend.id}')"
+            >
+              💬
+            </button>
+
+            <button
+              class="btn danger small"
+              onclick="removeFriend('${friend.id}')"
+            >
+              ×
+            </button>
+
           </div>
 
+        `;
 
-          <button
-            class="btn secondary"
-            style="width:auto;margin:0"
-            onclick="removeFriend(${index})"
-          >
-            ×
-          </button>
+      }
 
-        </div>
+    );
 
-      `;
+  }
 
-    }
+  else {
 
-  );
+    friendHtml = `
 
+      <div class="empty">
 
-  if (
-    !list
-  ) {
+        Пока нет друзей.
 
-    list =
+        <br>
 
-      '<div class="empty">' +
+        Добавь первого друга
+        по его 4-значному коду.
 
-      'Пока нет друзей.<br>' +
+      </div>
 
-      'Добавь друга по 4-значному коду.' +
-
-      '</div>';
+    `;
 
   }
 
@@ -3744,24 +3987,17 @@ function showFriends() {
 
 
     <h2>
-      Друзья
+      👥 Друзья
     </h2>
 
 
     <div class="field">
 
       <label>
-        Добавить друга
+        Код друга
       </label>
 
-
       <div class="row">
-
-        <input
-          id="friendName"
-          placeholder="Имя"
-        >
-
 
         <input
           id="friendCode"
@@ -3770,30 +4006,27 @@ function showFriends() {
           placeholder="1234"
         >
 
+        <button
+          class="btn small"
+          onclick="addFriend()"
+        >
+          Добавить
+        </button>
+
       </div>
-
-
-      <button
-        class="btn"
-        onclick="addFriend()"
-      >
-        Добавить друга
-      </button>
 
     </div>
 
 
-    ${list}
+    ${requestHtml}
 
 
-    <p class="note">
+    <h3>
+      Мои друзья
+    </h3>
 
-      ⚠️ Это локальная версия.
-      Реальные координаты друзей
-      между телефонами появятся
-      после подключения базы данных.
 
-    </p>
+    ${friendHtml}
 
   `);
 
@@ -3801,75 +4034,813 @@ function showFriends() {
 
 
 /* =========================================================
-   ADD FRIEND
+   CHATS
 ========================================================= */
 
-function addFriend() {
+async function loadChats() {
 
-  const name =
+  try {
 
-    document.getElementById(
-      "friendName"
-    ).value.trim()
-
-    ||
-
-    "Друг";
-
-
-  const code =
-
-    document.getElementById(
-      "friendCode"
-    ).value.trim();
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_my_chats"
+      );
 
 
-  if (
-    !/^\d{4}$/.test(
-      code
-    )
-  ) {
+    if (
+      error
+    ) {
 
-    toast(
-      "Код должен состоять из 4 цифр."
-    );
+      console.error(
+        error
+      );
 
-    return;
+      return;
+
+    }
+
+
+    chats =
+      data || [];
 
   }
 
+  catch(error) {
 
-  if (
-    code === myCode
-  ) {
-
-    toast(
-      "Нельзя добавить самого себя."
+    console.error(
+      error
     );
-
-    return;
 
   }
 
+}
 
-  const exists =
-    friends.some(
 
-      function(friend) {
+function showChats() {
 
-        return friend.code === code;
+  let html =
+    "";
+
+
+  if (
+    !chats.length
+  ) {
+
+    html = `
+
+      <div class="empty">
+
+        💬
+
+        <br>
+
+        Пока нет чатов.
+
+        <br>
+
+        Открой профиль друга
+        и нажми 💬.
+
+      </div>
+
+    `;
+
+  }
+
+  else {
+
+    chats.forEach(
+      chat => {
+
+        html += `
+
+          <div
+            class="chat-item"
+            onclick="openChat('${chat.chat_id}')"
+          >
+
+            <img
+              class="avatar small"
+              src="${avatar(
+                chat.avatar_url
+              )}"
+            >
+
+            <div class="grow">
+
+              <b>
+                ${escapeHtml(
+                  chat.other_username
+                )}
+              </b>
+
+              <div class="chat-last">
+
+                ${escapeHtml(
+                  chat.last_message ||
+                  "Нет сообщений"
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
 
       }
 
     );
 
+  }
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+    <h2>
+      💬 Чаты
+    </h2>
+
+    <div class="chat-list">
+      ${html}
+    </div>
+
+  `);
+
+}
+
+
+async function openChatForFriend(
+  friendId
+) {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "create_direct_chat",
+        {
+          p_other_user_id:
+            friendId
+        }
+      );
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    currentChatId =
+      data;
+
+
+    await loadChats();
+
+    await openChat(
+      data
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+    toast(
+      error.message ||
+      "Не удалось открыть чат."
+    );
+
+  }
+
+}
+
+
+async function loadMessages(
+  chatId
+) {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_chat_messages",
+        {
+          p_chat_id:
+            chatId
+        }
+      );
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    messages =
+      data || [];
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+    messages =
+      [];
+
+  }
+
+}
+
+
+async function openChat(
+  chatId
+) {
+
+  currentChatId =
+    chatId;
+
+
+  await loadMessages(
+    chatId
+  );
+
+
+  renderChat();
+
+}
+
+
+function renderChat() {
+
+  let html =
+    "";
+
+
+  messages.forEach(
+    message => {
+
+      const mine =
+        message.sender_id ===
+        currentUser.id;
+
+
+      html += `
+
+        <div class="message ${
+          mine ? "mine" : ""
+        }">
+
+          <div class="message-bubble">
+
+            ${escapeHtml(
+              message.body
+            )}
+
+            <div class="message-time">
+
+              ${formatTime(
+                message.created_at
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+  );
+
 
   if (
-    exists
+    !html
+  ) {
+
+    html = `
+
+      <div class="empty">
+        Начните общение 👋
+      </div>
+
+    `;
+
+  }
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="showChats()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      💬 Чат
+    </h2>
+
+
+    <div
+      id="messages"
+      class="messages"
+    >
+      ${html}
+    </div>
+
+
+    <div class="row">
+
+      <input
+        id="messageInput"
+        maxlength="1000"
+        placeholder="Написать сообщение…"
+        onkeydown="
+          if(event.key === 'Enter')
+            sendMessage();
+        "
+      >
+
+      <button
+        class="btn small"
+        onclick="sendMessage()"
+      >
+        ➤
+      </button>
+
+    </div>
+
+  `);
+
+
+  const box =
+    document.getElementById(
+      "messages"
+    );
+
+
+  if (
+    box
+  ) {
+
+    box.scrollTop =
+      box.scrollHeight;
+
+  }
+
+}
+
+
+async function sendMessage() {
+
+  const input =
+    document.getElementById(
+      "messageInput"
+    );
+
+
+  if (
+    !input
+  ) {
+
+    return;
+
+  }
+
+
+  const body =
+    input.value.trim();
+
+
+  if (
+    !body ||
+    !currentChatId
+  ) {
+
+    return;
+
+  }
+
+
+  input.value =
+    "";
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient.rpc(
+        "send_message",
+        {
+          p_chat_id:
+            currentChatId,
+
+          p_body:
+            body
+        }
+      );
+
+
+    if (
+      error
+    ) {
+
+      throw error;
+
+    }
+
+
+    await loadMessages(
+      currentChatId
+    );
+
+
+    renderChat();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+    toast(
+      error.message ||
+      "Не удалось отправить."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function loadNotifications() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("notifications")
+        .select("*")
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(50);
+
+
+    if (
+      error
+    ) {
+
+      console.error(
+        error
+      );
+
+      return;
+
+    }
+
+
+    notifications =
+      data || [];
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+async function showNotifications() {
+
+  await loadNotifications();
+
+
+  let html =
+    "";
+
+
+  if (
+    !notifications.length
+  ) {
+
+    html = `
+
+      <div class="empty">
+
+        🔔
+
+        <br>
+
+        Пока уведомлений нет.
+
+      </div>
+
+    `;
+
+  }
+
+  else {
+
+    notifications.forEach(
+      notification => {
+
+        html += `
+
+          <div class="notification ${
+            notification.read
+              ? ""
+              : "unread"
+          }">
+
+            <div class="notification-title">
+
+              ${escapeHtml(
+                notification.title ||
+                "Уведомление"
+              )}
+
+            </div>
+
+            <div class="notification-body">
+
+              ${escapeHtml(
+                notification.body ||
+                ""
+              )}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+    );
+
+  }
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      🔔 Уведомления
+    </h2>
+
+
+    ${html}
+
+  `);
+
+
+  await supabaseClient
+    .from("notifications")
+    .update({
+      read: true
+    })
+    .eq(
+      "user_id",
+      currentUser.id
+    )
+    .eq(
+      "read",
+      false
+    );
+
+}
+
+
+/* =========================================================
+   PLACES
+========================================================= */
+
+const placeTypes = {
+
+  home: {
+    name: "Дом",
+    icon: "🏠"
+  },
+
+  work: {
+    name: "Работа",
+    icon: "💼"
+  },
+
+  school: {
+    name: "Школа",
+    icon: "🎓"
+  },
+
+  other: {
+    name: "Другое",
+    icon: "📍"
+  }
+
+};
+
+
+function startAddingPlace() {
+
+  closePanel();
+
+
+  toast(
+    "Нажми на карту, чтобы выбрать место."
+  );
+
+
+  map.once(
+    "click",
+    handlePlaceMapClick
+  );
+
+}
+
+
+function handlePlaceMapClick(
+  event
+) {
+
+  showAddPlaceForm(
+    event.latlng.lat,
+    event.latlng.lng
+  );
+
+}
+
+
+function showAddPlaceForm(
+  lat,
+  lng
+) {
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      📍 Добавить место
+    </h2>
+
+
+    <div class="field">
+
+      <label>
+        Название
+      </label>
+
+      <input
+        id="placeName"
+        maxlength="40"
+        placeholder="Например: Мой дом"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Тип
+      </label>
+
+      <select id="placeType">
+
+        <option value="home">
+          🏠 Дом
+        </option>
+
+        <option value="work">
+          💼 Работа
+        </option>
+
+        <option value="school">
+          🎓 Школа
+        </option>
+
+        <option value="other">
+          📍 Другое
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      class="btn"
+      onclick="
+        confirmNewPlace(
+          ${lat},
+          ${lng}
+        )
+      "
+    >
+      Сохранить
+    </button>
+
+  `);
+
+}
+
+
+function confirmNewPlace(
+  lat,
+  lng
+) {
+
+  const name =
+    document.getElementById(
+      "placeName"
+    ).value.trim();
+
+
+  const type =
+    document.getElementById(
+      "placeType"
+    ).value;
+
+
+  if (
+    !name
   ) {
 
     toast(
-      "Этот друг уже добавлен."
+      "Введи название."
     );
 
     return;
@@ -3877,67 +4848,395 @@ function addFriend() {
   }
 
 
-  friends.push({
+  const place = {
+
+    id:
+      Date.now().toString(),
 
     name:
       name,
 
-    code:
-      code,
+    type:
+      type,
 
-    photo:
-      ""
+    lat:
+      lat,
 
-  });
+    lng:
+      lng
+
+  };
+
+
+  savedPlaces.push(
+    place
+  );
 
 
   localStorage.setItem(
 
-    "blink_friends",
+    "blink_places",
 
     JSON.stringify(
-      friends
+      savedPlaces
     )
 
   );
 
 
+  renderSavedPlaces();
+
+  closePanel();
+
+
   toast(
-    "Друг добавлен."
+    "Место сохранено."
   );
 
 
-  showFriends();
+  map.setView(
+    [lat,lng],
+    17
+  );
 
 }
 
 
-/* =========================================================
-   REMOVE FRIEND
-========================================================= */
+function renderSavedPlaces() {
 
-function removeFriend(
-  index
+  Object.values(
+    placeMarkers
+  ).forEach(
+    marker => {
+
+      if (
+        map.hasLayer(marker)
+      ) {
+
+        map.removeLayer(marker);
+
+      }
+
+    }
+  );
+
+
+  placeMarkers =
+    {};
+
+
+  savedPlaces.forEach(
+    place => {
+
+      const data =
+        placeTypes[
+          place.type
+        ] ||
+        placeTypes.other;
+
+
+      const marker =
+        L.marker(
+
+          [
+            place.lat,
+            place.lng
+          ],
+
+          {
+            icon:
+              placeIcon(
+                place.type
+              ),
+
+            zIndexOffset:
+              500
+          }
+
+        ).addTo(map);
+
+
+      marker.bindPopup(`
+
+        <b>
+          ${escapeHtml(
+            place.name
+          )}
+        </b>
+
+        <br>
+
+        ${data.icon}
+        ${data.name}
+
+        <br><br>
+
+        <button
+          class="popup-delete"
+          onclick="
+            deletePlace('${place.id}')
+          "
+        >
+          Удалить
+        </button>
+
+      `);
+
+
+      placeMarkers[
+        place.id
+      ] =
+        marker;
+
+    }
+  );
+
+}
+
+
+function placeIcon(
+  type
 ) {
 
-  friends.splice(
-    index,
-    1
-  );
+  const data =
+    placeTypes[
+      type
+    ] ||
+    placeTypes.other;
+
+
+  return L.divIcon({
+
+    className: "",
+
+    html:
+
+      '<div class="place-marker">' +
+
+        data.icon +
+
+      '</div>',
+
+    iconSize:
+      [44,44],
+
+    iconAnchor:
+      [22,22]
+
+  });
+
+}
+
+
+function deletePlace(
+  id
+) {
+
+  savedPlaces =
+    savedPlaces.filter(
+      place =>
+        place.id !== id
+    );
 
 
   localStorage.setItem(
 
-    "blink_friends",
+    "blink_places",
 
     JSON.stringify(
-      friends
+      savedPlaces
     )
 
   );
 
 
-  showFriends();
+  if (
+    placeMarkers[id]
+  ) {
+
+    map.removeLayer(
+      placeMarkers[id]
+    );
+
+    delete placeMarkers[id];
+
+  }
+
+
+  toast(
+    "Место удалено."
+  );
+
+}
+
+
+function showPlaces() {
+
+  let html =
+    "";
+
+
+  savedPlaces.forEach(
+    place => {
+
+      const data =
+        placeTypes[
+          place.type
+        ] ||
+        placeTypes.other;
+
+
+      html += `
+
+        <div class="place-item">
+
+          <div class="place-icon">
+            ${data.icon}
+          </div>
+
+          <div class="grow">
+
+            <div class="place-name">
+
+              ${escapeHtml(
+                place.name
+              )}
+
+            </div>
+
+            <div class="place-type">
+
+              ${data.name}
+
+            </div>
+
+          </div>
+
+          <button
+            class="btn secondary small"
+            onclick="
+              focusPlace('${place.id}')
+            "
+          >
+            👁️
+          </button>
+
+          <button
+            class="btn danger small"
+            onclick="
+              deletePlace('${place.id}');
+              showPlaces();
+            "
+          >
+            ×
+          </button>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  if (
+    !html
+  ) {
+
+    html = `
+
+      <div class="empty">
+
+        Пока нет сохранённых мест.
+
+        <br><br>
+
+        Нажми «Добавить место»,
+        затем выбери точку на карте.
+
+      </div>
+
+    `;
+
+  }
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <h2>
+      📍 Мои места
+    </h2>
+
+
+    <button
+      class="btn"
+      onclick="startAddingPlace()"
+    >
+      ＋ Добавить место
+    </button>
+
+
+    ${html}
+
+  `);
+
+}
+
+
+function focusPlace(
+  id
+) {
+
+  const place =
+    savedPlaces.find(
+      p =>
+        p.id === id
+    );
+
+
+  if (
+    !place
+  ) {
+
+    return;
+
+  }
+
+
+  closePanel();
+
+
+  map.setView(
+    [
+      place.lat,
+      place.lng
+    ],
+    17
+  );
+
+
+  setTimeout(
+    () => {
+
+      if (
+        placeMarkers[id]
+      ) {
+
+        placeMarkers[id].openPopup();
+
+      }
+
+    },
+    300
+  );
 
 }
 
@@ -3959,7 +5258,7 @@ function showSettings() {
 
 
     <h2>
-      Настройки
+      ⚙️ Настройки
     </h2>
 
 
@@ -3971,11 +5270,13 @@ function showSettings() {
           📍 Геолокация
         </b>
 
-
         <div class="code">
 
-          Показывать твоё
-          местоположение и скорость.
+          ${
+            locationEnabled
+              ? "Сейчас включена"
+              : "Сейчас выключена"
+          }
 
         </div>
 
@@ -3983,8 +5284,7 @@ function showSettings() {
 
 
       <button
-        class="btn secondary"
-        style="width:auto"
+        class="btn secondary small"
         onclick="toggleLocation()"
       >
 
@@ -4015,17 +5315,28 @@ function showSettings() {
     </button>
 
 
+    <button
+      class="btn secondary"
+      onclick="showNotifications()"
+    >
+      🔔 Уведомления
+    </button>
+
+
+    <button
+      class="btn danger"
+      onclick="logout()"
+    >
+      Выйти из аккаунта
+    </button>
+
+
     <p class="note">
 
-      Blink определяет направление
-      движения по последним GPS
-      координатам.
-
-      Скорость отображается
-      непосредственно под твоей
-      геопозицией.
-
-      Радужный шлейф отключён.
+      Blink хранит аккаунт,
+      профиль, друзей,
+      координаты и сообщения
+      в Supabase.
 
     </p>
 
@@ -4033,10 +5344,6 @@ function showSettings() {
 
 }
 
-
-/* =========================================================
-   TOGGLE GPS
-========================================================= */
 
 function toggleLocation() {
 
@@ -4094,10 +5401,6 @@ function toggleLocation() {
 }
 
 
-/* =========================================================
-   CENTER USER
-========================================================= */
-
 function centerMe() {
 
   closePanel();
@@ -4132,101 +5435,581 @@ function centerMe() {
 
 
 /* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+  try {
+
+    if (
+      watchId !== null
+    ) {
+
+      navigator.geolocation
+        .clearWatch(
+          watchId
+        );
+
+    }
+
+
+    realtimeChannels.forEach(
+      channel => {
+
+        supabaseClient
+          .removeChannel(
+            channel
+          );
+
+      }
+    );
+
+
+    await supabaseClient.auth.signOut();
+
+
+    location.reload();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+function startRealtime() {
+
+  if (
+    !currentUser
+  ) {
+
+    return;
+
+  }
+
+
+  realtimeChannels.forEach(
+    channel => {
+
+      supabaseClient
+        .removeChannel(
+          channel
+        );
+
+    }
+  );
+
+
+  realtimeChannels =
+    [];
+
+
+  const notificationsChannel =
+    supabaseClient
+      .channel(
+        "blink-notifications-" +
+        currentUser.id
+      )
+      .on(
+
+        "postgres_changes",
+
+        {
+
+          event: "INSERT",
+
+          schema: "public",
+
+          table: "notifications",
+
+          filter:
+            "user_id=eq." +
+            currentUser.id
+
+        },
+
+        payload => {
+
+          notifications.unshift(
+            payload.new
+          );
+
+
+          toast(
+            payload.new.title ||
+            "Новое уведомление"
+          );
+
+        }
+
+      )
+      .subscribe();
+
+
+  realtimeChannels.push(
+    notificationsChannel
+  );
+
+
+  const locationChannel =
+    supabaseClient
+      .channel(
+        "blink-locations"
+      )
+      .on(
+
+        "postgres_changes",
+
+        {
+
+          event: "*",
+
+          schema: "public",
+
+          table: "locations"
+
+        },
+
+        async () => {
+
+          await loadFriendLocations();
+
+        }
+
+      )
+      .subscribe();
+
+
+  realtimeChannels.push(
+    locationChannel
+  );
+
+
+  const messagesChannel =
+    supabaseClient
+      .channel(
+        "blink-messages"
+      )
+      .on(
+
+        "postgres_changes",
+
+        {
+
+          event: "INSERT",
+
+          schema: "public",
+
+          table: "messages"
+
+        },
+
+        async payload => {
+
+          if (
+            currentChatId &&
+            payload.new.chat_id ===
+            currentChatId
+          ) {
+
+            await loadMessages(
+              currentChatId
+            );
+
+
+            renderChat();
+
+          }
+
+        }
+
+      )
+      .subscribe();
+
+
+  realtimeChannels.push(
+    messagesChannel
+  );
+
+
+  const requestsChannel =
+    supabaseClient
+      .channel(
+        "blink-friend-requests-" +
+        currentUser.id
+      )
+      .on(
+
+        "postgres_changes",
+
+        {
+
+          event: "*",
+
+          schema: "public",
+
+          table: "friend_requests"
+
+        },
+
+        () => {
+
+          loadFriends();
+
+        }
+
+      )
+      .subscribe();
+
+
+  realtimeChannels.push(
+    requestsChannel
+  );
+
+}
+
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+function openPanel(
+  html
+) {
+
+  document.getElementById(
+    "sheet"
+  ).innerHTML =
+
+    '<div class="handle"></div>' +
+
+    html;
+
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closePanel() {
+
+  document.getElementById(
+    "panel"
+  ).style.display =
+    "none";
+
+}
+
+
+document.getElementById(
+  "panel"
+).onclick =
+  function(event) {
+
+    if (
+      event.target.id ===
+      "panel"
+    ) {
+
+      closePanel();
+
+    }
+
+  };
+
+
+/* =========================================================
    NAVIGATION
 ========================================================= */
 
 document
-  .querySelectorAll(
-    ".nav"
-  )
-  .forEach(
+  .querySelectorAll(".nav")
+  .forEach(button => {
 
-    function(button) {
+    button.onclick =
+      async function() {
 
-      button.onclick =
-
-        function() {
-
-          document
-            .querySelectorAll(
-              ".nav"
-            )
-            .forEach(
-
-              function(b) {
-
-                b.classList.remove(
-                  "active"
-                );
-
-              }
-
-            );
-
-
-          button.classList.add(
-            "active"
+        document
+          .querySelectorAll(".nav")
+          .forEach(
+            b =>
+              b.classList.remove(
+                "active"
+              )
           );
 
 
-          const page =
-            button.dataset.page;
+        button.classList.add(
+          "active"
+        );
 
 
-          if (
-            page === "map"
-          ) {
-
-            closePanel();
-
-          }
+        const page =
+          button.dataset.page;
 
 
-          if (
-            page === "friends"
-          ) {
+        if (
+          page === "map"
+        ) {
 
-            showFriends();
+          closePanel();
 
-          }
+          return;
 
-
-          if (
-            page === "profile"
-          ) {
-
-            showProfile();
-
-          }
+        }
 
 
-          if (
-            page === "settings"
-          ) {
+        if (
+          page === "friends"
+        ) {
 
-            showSettings();
+          await loadFriends();
 
-          }
+          await showFriends();
 
-        };
+        }
 
-    }
+
+        if (
+          page === "chats"
+        ) {
+
+          await loadChats();
+
+          showChats();
+
+        }
+
+
+        if (
+          page === "profile"
+        ) {
+
+          showProfile();
+
+        }
+
+
+        if (
+          page === "settings"
+        ) {
+
+          showSettings();
+
+        }
+
+      };
+
+  });
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function avatar(
+  src
+) {
+
+  if (
+    src
+  ) {
+
+    return src;
+
+  }
+
+
+  return (
+
+    "data:image/svg+xml;charset=UTF-8," +
+
+    encodeURIComponent(
+
+      '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">' +
+
+      '<rect width="160" height="160" fill="#222"/>' +
+
+      '<text x="80" y="108" text-anchor="middle" font-size="70" fill="white">👤</text>' +
+
+      '</svg>'
+
+    )
 
   );
 
+}
+
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    character => ({
+
+      "&":
+        "&amp;",
+
+      "<":
+        "&lt;",
+
+      ">":
+        "&gt;",
+
+      '"':
+        "&quot;",
+
+      "'":
+        "&#039;"
+
+    })[character]
+  );
+
+}
+
+
+function formatTime(
+  date
+) {
+
+  if (
+    !date
+  ) {
+
+    return "";
+
+  }
+
+
+  return new Date(
+    date
+  ).toLocaleTimeString(
+    "ru-RU",
+    {
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
+
+}
+
+
+function toast(
+  text
+) {
+
+  const box =
+    document.getElementById(
+      "toast"
+    );
+
+
+  box.textContent =
+    text;
+
+
+  box.style.display =
+    "block";
+
+
+  clearTimeout(
+    window.blinkToast
+  );
+
+
+  window.blinkToast =
+    setTimeout(
+      () => {
+
+        box.style.display =
+          "none";
+
+      },
+      2500
+    );
+
+}
+
+
+function setStatus(
+  text,
+  live
+) {
+
+  document.getElementById(
+    "statusText"
+  ).textContent =
+    text;
+
+
+  document.getElementById(
+    "statusDot"
+  ).classList.toggle(
+    "live",
+    Boolean(live)
+  );
+
+}
+
 
 /* =========================================================
-   INITIALIZE SAVED PLACES
+   AUTH STATE LISTENER
 ========================================================= */
 
-renderSavedPlaces();
+supabaseClient.auth.onAuthStateChange(
+  async (event, session) => {
+
+    if (
+      event === "SIGNED_OUT"
+    ) {
+
+      currentUser =
+        null;
+
+      return;
+
+    }
+
+
+    if (
+      session?.user &&
+      !currentUser
+    ) {
+
+      currentUser =
+        session.user;
+
+      await initializeApp();
+
+    }
+
+  }
+);
 
 
 /* =========================================================
-   START GPS
+   START
 ========================================================= */
 
-startGPS();
+checkSession();
 
 </script>
 
