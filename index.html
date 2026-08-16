@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0b0710">
+
 <title>Рядом — пространство для тебя</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -25,6 +27,7 @@ body{
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
     background:#09070c;
     color:#fff;
     min-height:100vh;
@@ -69,6 +72,7 @@ body::after{
     pointer-events:none;
 }
 
+
 /* APP */
 
 .app{
@@ -78,6 +82,7 @@ body::after{
     min-height:100vh;
     padding-bottom:100px;
 }
+
 
 /* HEADER */
 
@@ -103,6 +108,20 @@ body::after{
     animation:pulseDot 2s infinite;
 }
 
+@keyframes pulseDot{
+
+    0%,100%{
+        transform:scale(1);
+        box-shadow:0 0 12px rgba(255,117,24,.5);
+    }
+
+    50%{
+        transform:scale(1.18);
+        box-shadow:0 0 25px rgba(255,117,24,.9);
+    }
+
+}
+
 .logo-text{
     font-size:23px;
     font-weight:850;
@@ -122,6 +141,7 @@ body::after{
     font-size:19px;
 }
 
+
 /* SCREENS */
 
 .screen{
@@ -135,15 +155,19 @@ body::after{
 }
 
 @keyframes screenIn{
+
     from{
         opacity:0;
         transform:translateY(12px);
     }
+
     to{
         opacity:1;
         transform:translateY(0);
     }
+
 }
+
 
 /* HERO */
 
@@ -159,7 +183,13 @@ body::after{
 }
 
 .hero h1 span{
-    background:linear-gradient(90deg,#fff,#b77cff,#ff8a32);
+    background:linear-gradient(
+        90deg,
+        #fff,
+        #b77cff,
+        #ff8a32
+    );
+
     -webkit-background-clip:text;
     color:transparent;
 }
@@ -170,6 +200,7 @@ body::after{
     font-size:15px;
 }
 
+
 /* CARDS */
 
 .card{
@@ -178,11 +209,18 @@ body::after{
         rgba(255,255,255,.065),
         rgba(255,255,255,.025)
     );
+
     border:1px solid rgba(255,255,255,.08);
+
     border-radius:25px;
+
     padding:20px;
+
     margin-bottom:15px;
-    box-shadow:0 15px 50px rgba(0,0,0,.16);
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.16);
+
     position:relative;
     overflow:hidden;
 }
@@ -216,12 +254,21 @@ body::after{
     font-size:13px;
 }
 
+
 /* MOOD */
 
 .mood-card{
     background:
-        radial-gradient(circle at 90% 0%,rgba(255,125,38,.12),transparent 35%),
-        linear-gradient(145deg,#18111d,#100c13);
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(255,125,38,.12),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #18111d,
+            #100c13
+        );
 }
 
 .mood-face{
@@ -251,12 +298,14 @@ body::after{
     height:8px;
     border-radius:20px;
     outline:none;
-    background:linear-gradient(
-        90deg,
-        #693cff,
-        #a451ff,
-        #ff7b21
-    );
+
+    background:
+        linear-gradient(
+            90deg,
+            #693cff,
+            #a451ff,
+            #ff7b21
+        );
 }
 
 .mood-range::-webkit-slider-thumb{
@@ -277,6 +326,7 @@ body::after{
     margin-top:9px;
 }
 
+
 /* PET */
 
 .pet-card{
@@ -292,13 +342,26 @@ body::after{
     width:125px;
     height:125px;
     border-radius:45% 45% 42% 42%;
-    background:linear-gradient(145deg,#a96cff,#6931b8);
+
+    background:
+        linear-gradient(
+            145deg,
+            #a96cff,
+            #6931b8
+        );
+
     position:relative;
     margin:15px 0;
+
     box-shadow:
         0 15px 40px rgba(120,45,255,.3),
         inset 0 -10px 20px rgba(0,0,0,.15);
+
     animation:petFloat 3s ease-in-out infinite;
+
+    transition:
+        filter .4s,
+        transform .3s;
 }
 
 .pet::before,
@@ -331,6 +394,7 @@ body::after{
     border-radius:50%;
     background:#181020;
     top:45px;
+    transition:.3s;
 }
 
 .pet-eye.left{
@@ -350,6 +414,7 @@ body::after{
     left:50%;
     transform:translateX(-50%);
     top:70px;
+    transition:.3s;
 }
 
 .pet-name{
@@ -383,11 +448,19 @@ body::after{
 }
 
 @keyframes petFloat{
-    0%,100%{transform:translateY(0) rotate(0)}
-    50%{transform:translateY(-9px) rotate(1deg)}
+
+    0%,100%{
+        transform:translateY(0) rotate(0);
+    }
+
+    50%{
+        transform:translateY(-9px) rotate(1deg);
+    }
+
 }
 
-/* QUICK ACTIONS */
+
+/* ACTIONS */
 
 .actions{
     display:grid;
@@ -426,6 +499,7 @@ body::after{
     margin-top:4px;
 }
 
+
 /* PROFILE */
 
 .profile-top{
@@ -438,12 +512,36 @@ body::after{
     height:105px;
     margin:auto;
     border-radius:35px;
-    background:linear-gradient(135deg,#7639ff,#ff7518);
+
+    background:
+        linear-gradient(
+            135deg,
+            #7639ff,
+            #ff7518
+        );
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     font-size:43px;
-    box-shadow:0 15px 40px rgba(123,51,255,.25);
+
+    box-shadow:
+        0 15px 40px rgba(123,51,255,.25);
+
+    animation:avatarFloat 4s ease-in-out infinite;
+}
+
+@keyframes avatarFloat{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-6px);
+    }
+
 }
 
 .profile-top h1{
@@ -471,7 +569,8 @@ body::after{
     color:#8e8793;
 }
 
-/* CATEGORY */
+
+/* CATEGORIES */
 
 .category-tabs{
     display:flex;
@@ -499,7 +598,9 @@ body::after{
     background:#8b4cff;
     color:white;
     border-color:#8b4cff;
-    box-shadow:0 8px 25px rgba(139,76,255,.25);
+
+    box-shadow:
+        0 8px 25px rgba(139,76,255,.25);
 }
 
 .content-item{
@@ -530,6 +631,7 @@ body::after{
     line-height:1.5;
 }
 
+
 /* HELP */
 
 .help-box{
@@ -557,13 +659,29 @@ body::after{
     display:block;
     color:white;
     text-decoration:none;
-    background:linear-gradient(135deg,#8b4cff,#5f25bd);
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b4cff,
+            #5f25bd
+        );
+
     padding:16px;
     border-radius:16px;
     margin-top:17px;
+
     font-size:20px;
     font-weight:800;
-    box-shadow:0 10px 30px rgba(108,50,220,.25);
+
+    box-shadow:
+        0 10px 30px rgba(108,50,220,.25);
+
+    transition:.2s;
+}
+
+.phone:active{
+    transform:scale(.97);
 }
 
 .telegram{
@@ -578,39 +696,55 @@ body::after{
     font-weight:700;
 }
 
-/* BOTTOM NAV */
+
+/* NAV */
 
 .bottom-nav{
     position:fixed;
     z-index:9000;
+
     bottom:12px;
     left:50%;
     transform:translateX(-50%);
+
     width:min(680px,calc(100% - 22px));
     height:70px;
+
     padding:7px;
+
     display:flex;
     justify-content:space-around;
+
     background:rgba(18,14,22,.92);
+
     backdrop-filter:blur(25px);
     -webkit-backdrop-filter:blur(25px);
+
     border:1px solid rgba(255,255,255,.09);
     border-radius:24px;
-    box-shadow:0 15px 45px rgba(0,0,0,.45);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.45);
 }
 
 .nav-btn{
     position:relative;
     flex:1;
+
     color:#77707e;
     background:transparent;
+
     border-radius:18px;
+
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+
     gap:3px;
-    transition:.35s cubic-bezier(.2,.8,.2,1);
+
+    transition:
+        .35s cubic-bezier(.2,.8,.2,1);
 }
 
 .nav-btn .nav-icon{
@@ -624,43 +758,71 @@ body::after{
 
 .nav-btn.active{
     color:white;
-    background:linear-gradient(
-        135deg,
-        rgba(137,76,255,.27),
-        rgba(255,117,24,.12)
-    );
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(137,76,255,.27),
+            rgba(255,117,24,.12)
+        );
 }
 
 .nav-btn.active .nav-icon{
-    transform:translateY(-2px) scale(1.08);
+    transform:
+        translateY(-2px)
+        scale(1.08);
 }
 
 .nav-indicator{
     position:absolute;
     bottom:4px;
+
     width:5px;
     height:5px;
+
     border-radius:50%;
+
     background:#ff791f;
+
+    box-shadow:
+        0 0 10px rgba(255,121,31,.7);
 }
+
 
 /* AI BUTTON */
 
 .ai-button{
     position:fixed;
     z-index:8999;
-    right:max(20px,calc((100vw - 720px)/2 + 20px));
+
+    right:max(
+        20px,
+        calc((100vw - 720px)/2 + 20px)
+    );
+
     bottom:95px;
+
     width:60px;
     height:60px;
+
     border-radius:50%;
-    background:linear-gradient(135deg,#773cff,#ad5cff);
+
+    background:
+        linear-gradient(
+            135deg,
+            #773cff,
+            #ad5cff
+        );
+
     color:white;
+
     font-weight:900;
     font-size:18px;
+
     box-shadow:
         0 10px 35px rgba(121,60,255,.4),
         0 0 0 0 rgba(150,80,255,.4);
+
     animation:aiPulse 2.4s infinite;
 }
 
@@ -669,36 +831,65 @@ body::after{
 }
 
 @keyframes aiPulse{
+
     0%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),
-        0 0 0 0 rgba(150,80,255,.4);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 0 rgba(150,80,255,.4);
     }
+
     70%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),
-        0 0 0 13px rgba(150,80,255,0);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 13px rgba(150,80,255,0);
     }
+
     100%{
-        box-shadow:0 10px 35px rgba(121,60,255,.4),
-        0 0 0 0 rgba(150,80,255,0);
+        box-shadow:
+            0 10px 35px rgba(121,60,255,.4),
+            0 0 0 0 rgba(150,80,255,0);
     }
+
 }
+
 
 /* AI WINDOW */
 
 .ai-window{
     position:fixed;
     z-index:10000;
-    right:max(15px,calc((100vw - 720px)/2 + 15px));
+
+    right:max(
+        15px,
+        calc((100vw - 720px)/2 + 15px)
+    );
+
     bottom:165px;
-    width:min(400px,calc(100vw - 30px));
-    height:min(620px,calc(100vh - 190px));
+
+    width:min(
+        400px,
+        calc(100vw - 30px)
+    );
+
+    height:min(
+        620px,
+        calc(100vh - 190px)
+    );
+
     background:#0f0c12;
+
     border:1px solid rgba(255,255,255,.1);
+
     border-radius:26px;
+
     display:none;
     flex-direction:column;
+
     overflow:hidden;
-    box-shadow:0 25px 100px rgba(0,0,0,.65);
+
+    box-shadow:
+        0 25px 100px rgba(0,0,0,.65);
+
     animation:aiOpen .3s ease;
 }
 
@@ -706,13 +897,40 @@ body::after{
     display:flex;
 }
 
+@keyframes aiOpen{
+
+    from{
+        opacity:0;
+        transform:
+            translateY(25px)
+            scale(.95);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
 .ai-head{
     padding:17px;
+
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:linear-gradient(135deg,#281340,#17101d);
-    border-bottom:1px solid rgba(255,255,255,.07);
+
+    background:
+        linear-gradient(
+            135deg,
+            #281340,
+            #17101d
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
 }
 
 .ai-title{
@@ -724,11 +942,20 @@ body::after{
 .ai-logo{
     width:42px;
     height:42px;
+
     border-radius:14px;
-    background:linear-gradient(135deg,#8c4fff,#b861ff);
+
+    background:
+        linear-gradient(
+            135deg,
+            #8c4fff,
+            #b861ff
+        );
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     font-weight:900;
 }
 
@@ -736,98 +963,236 @@ body::after{
     display:block;
 }
 
-.ai-title small{
-    color:#948a9d;
-    display:block;
-    margin-top:2px;
+.ai-status{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    font-size:11px;
+    margin-top:3px;
+
+    color:#c69cff;
+
+    transition:.25s;
+}
+
+.ai-status-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#a96cff;
+
+    box-shadow:
+        0 0 9px rgba(169,108,255,.7);
+
+    transition:.25s;
+}
+
+.ai-status.online{
+    color:#72e68a;
+}
+
+.ai-status.online .ai-status-dot{
+    background:#48df6b;
+
+    box-shadow:
+        0 0 9px rgba(72,223,107,.8);
+
+    animation:onlinePulse 1.8s infinite;
+}
+
+@keyframes onlinePulse{
+
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.25);
+    }
+
+}
+
+.ai-status.offline{
+    color:#ff8d8d;
+}
+
+.ai-status.offline .ai-status-dot{
+    background:#ff4545;
+
+    box-shadow:
+        0 0 9px rgba(255,69,69,.7);
+}
+
+.ai-status.checking{
+    color:#c69cff;
+}
+
+.ai-status.checking .ai-status-dot{
+    background:#a96cff;
 }
 
 .ai-close{
     width:38px;
     height:38px;
+
     border-radius:50%;
+
     background:#ffffff0d;
+
     color:white;
+
     font-size:22px;
 }
 
 .ai-messages{
     flex:1;
+
     padding:16px;
+
     overflow-y:auto;
+
     display:flex;
     flex-direction:column;
+
     gap:9px;
 }
 
 .ai-message{
     max-width:84%;
+
     padding:12px 14px;
+
     border-radius:17px;
+
     font-size:14px;
     line-height:1.5;
+
     white-space:pre-wrap;
+
     animation:messageIn .25s ease;
+}
+
+@keyframes messageIn{
+
+    from{
+        opacity:0;
+        transform:translateY(7px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
 }
 
 .ai-message.bot{
     align-self:flex-start;
+
     background:#211b27;
+
     color:#f3eef6;
+
     border-bottom-left-radius:5px;
 }
 
 .ai-message.user{
     align-self:flex-end;
-    background:linear-gradient(135deg,#773cff,#984cff);
+
+    background:
+        linear-gradient(
+            135deg,
+            #773cff,
+            #984cff
+        );
+
     border-bottom-right-radius:5px;
 }
 
 .ai-typing{
     display:none;
-    padding:0 17px 8px;
+
+    padding:
+        0 17px 8px;
+
     color:#817688;
+
     font-size:12px;
 }
 
 .ai-input{
     padding:11px;
+
     display:flex;
+
     gap:8px;
+
     background:#151118;
-    border-top:1px solid rgba(255,255,255,.07);
+
+    border-top:
+        1px solid rgba(255,255,255,.07);
 }
 
 .ai-input input{
     flex:1;
     min-width:0;
+
     border:0;
     outline:0;
+
     color:white;
+
     background:#242026;
+
     border-radius:15px;
+
     padding:13px;
+}
+
+.ai-input input::placeholder{
+    color:#756e7b;
 }
 
 .ai-input button{
     width:48px;
+
     border-radius:15px;
+
     color:white;
+
     background:#8b4cff;
+
     font-size:19px;
+
+    transition:.2s;
 }
+
+.ai-input button:active{
+    transform:scale(.9);
+}
+
 
 /* MODAL */
 
 .modal{
     position:fixed;
     z-index:20000;
+
     inset:0;
-    background:rgba(0,0,0,.72);
+
+    background:
+        rgba(0,0,0,.72);
+
     backdrop-filter:blur(8px);
+
     display:none;
+
     align-items:center;
     justify-content:center;
+
     padding:20px;
 }
 
@@ -837,11 +1202,18 @@ body::after{
 
 .modal-box{
     width:min(430px,100%);
+
     background:#17121b;
-    border:1px solid rgba(255,255,255,.1);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
     border-radius:26px;
+
     padding:25px;
+
     text-align:center;
+
     animation:modalIn .3s ease;
 }
 
@@ -863,54 +1235,88 @@ body::after{
 
 .modal-close{
     width:100%;
+
     margin-top:18px;
+
     padding:14px;
+
     color:white;
+
     border-radius:15px;
+
     background:#8a4cff;
+
     font-weight:750;
 }
 
 @keyframes modalIn{
+
     from{
         opacity:0;
-        transform:scale(.9) translateY(20px);
+        transform:
+            scale(.9)
+            translateY(20px);
     }
+
     to{
         opacity:1;
-        transform:scale(1) translateY(0);
+        transform:
+            scale(1)
+            translateY(0);
     }
+
 }
+
 
 /* TOAST */
 
 .toast{
     position:fixed;
     z-index:30000;
+
     left:50%;
     bottom:100px;
-    transform:translate(-50%,20px);
+
+    transform:
+        translate(-50%,20px);
+
     background:#242027;
-    border:1px solid rgba(255,255,255,.1);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
     padding:13px 18px;
+
     border-radius:15px;
+
     opacity:0;
+
     pointer-events:none;
+
     transition:.3s;
+
     font-size:13px;
-    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
+
     max-width:90%;
+
     text-align:center;
 }
 
 .toast.show{
     opacity:1;
-    transform:translate(-50%,0);
+
+    transform:
+        translate(-50%,0);
 }
+
 
 /* RESPONSIVE */
 
 @media(max-width:480px){
+
     .hero h1{
         font-size:32px;
     }
@@ -928,937 +1334,1839 @@ body::after{
         bottom:155px;
         height:calc(100vh - 180px);
     }
+
 }
+
 </style>
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">
-            <div class="logo-dot"></div>
-            <div class="logo-text">Рядом</div>
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <div class="logo">
+
+        <div class="logo-dot"></div>
+
+        <div class="logo-text">
+            Рядом
         </div>
 
-        <button class="header-icon" onclick="showToast('Здесь ты можешь быть собой 💜')">
-            ✦
-        </button>
-    </header>
+    </div>
 
+    <button
+        class="header-icon"
+        onclick="showToast('Здесь ты можешь быть собой 💜')"
+    >
+        ✦
+    </button>
 
-    <!-- ГЛАВНАЯ -->
-    <main id="home" class="screen active">
+</header>
 
-        <section class="hero">
-            <h1>
-                Ты не один.<br>
-                Ты всегда <span>рядом.</span>
-            </h1>
 
-            <p>
-                Место, где можно отдохнуть, поговорить,
-                разобраться в своих чувствах и просто побыть собой.
-            </p>
-        </section>
+<!-- HOME -->
 
+<main id="home" class="screen active">
 
-        <!-- НАСТРОЕНИЕ -->
-        <section class="card mood-card">
 
-            <div class="card-title">
-                <h2>Как ты сегодня?</h2>
-                <span>трекер настроения</span>
-            </div>
+<section class="hero">
 
-            <div class="mood-face" id="moodFace">🙂</div>
+    <h1>
+        Ты не один.<br>
+        Ты всегда <span>рядом.</span>
+    </h1>
 
-            <div class="mood-name" id="moodName">
-                Нормально
-            </div>
+    <p>
+        Место, где можно отдохнуть,
+        поговорить, разобраться в своих
+        чувствах и просто побыть собой.
+    </p>
 
-            <div class="mood-description" id="moodDescription">
-                Можно сделать сегодняшний день немного лучше.
-            </div>
+</section>
 
-            <input
-                id="moodRange"
-                class="mood-range"
-                type="range"
-                min="0"
-                max="100"
-                value="50"
-                oninput="changeMood(this.value)"
-            >
 
-            <div class="mood-labels">
-                <span>плохо</span>
-                <span>нормально</span>
-                <span>отлично</span>
-            </div>
+<!-- MOOD -->
 
-        </section>
+<section class="card mood-card">
 
+    <div class="card-title">
 
-        <!-- ПИТОМЕЦ -->
-        <section class="card pet-card">
+        <h2>
+            Как ты сегодня?
+        </h2>
 
-            <div class="card-title" style="width:100%">
-                <h2>Твой питомец</h2>
-                <span id="petTime">сейчас</span>
-            </div>
+        <span>
+            трекер настроения
+        </span>
 
-            <div class="pet" id="pet">
+    </div>
 
-                <div class="pet-eye left"></div>
-                <div class="pet-eye right"></div>
-                <div class="pet-mouth" id="petMouth"></div>
+    <div
+        class="mood-face"
+        id="moodFace"
+    >
+        🙂
+    </div>
 
-            </div>
+    <div
+        class="mood-name"
+        id="moodName"
+    >
+        Нормально
+    </div>
 
-            <div class="pet-name">Луми</div>
+    <div
+        class="mood-description"
+        id="moodDescription"
+    >
+        Можно сделать сегодняшний день немного лучше.
+    </div>
 
-            <div class="pet-status" id="petStatus">
-                Луми рад тебя видеть 💜
-            </div>
+    <input
+        id="moodRange"
+        class="mood-range"
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        oninput="changeMood(this.value)"
+    >
 
-            <div class="pet-buttons">
-                <button class="pet-btn" onclick="playPet()">
-                    🎮 Поиграть
-                </button>
+    <div class="mood-labels">
 
-                <button class="pet-btn" onclick="feedPet()">
-                    🍎 Покормить
-                </button>
-            </div>
+        <span>
+            плохо
+        </span>
 
-        </section>
+        <span>
+            нормально
+        </span>
 
+        <span>
+            отлично
+        </span>
 
-        <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
-        <section class="card">
+    </div>
 
-            <div class="card-title">
-                <h2>Что тебе сейчас нужно?</h2>
-            </div>
+</section>
 
-            <div class="actions">
 
-                <button class="action" onclick="openAI()">
-                    <div class="action-icon">🤖</div>
-                    <strong>Поговорить</strong>
-                    <small>с Рядом AI</small>
-                </button>
+<!-- PET -->
 
-                <button class="action" onclick="openScreen('help')">
-                    <div class="action-icon">🫶</div>
-                    <strong>Мне нужна помощь</strong>
-                    <small>полезные контакты</small>
-                </button>
+<section class="card pet-card">
 
-                <button class="action" onclick="openScreen('categories')">
-                    <div class="action-icon">🌙</div>
-                    <strong>Успокоиться</strong>
-                    <small>идеи и упражнения</small>
-                </button>
+    <div
+        class="card-title"
+        style="width:100%"
+    >
 
-                <button class="action" onclick="showToast('Ты уже сделал что-то хорошее — открыл Рядом 💜')">
-                    <div class="action-icon">✨</div>
-                    <strong>Поддержка</strong>
-                    <small>маленькие напоминания</small>
-                </button>
+        <h2>
+            Твой питомец
+        </h2>
 
-            </div>
+        <span id="petTime">
+            сейчас
+        </span>
 
-        </section>
+    </div>
 
-    </main>
 
+    <div
+        class="pet"
+        id="pet"
+    >
 
-    <!-- КАТЕГОРИИ -->
-    <main id="categories" class="screen">
+        <div class="pet-eye left"></div>
+        <div class="pet-eye right"></div>
 
-        <section class="hero">
-            <h1>Для тебя <span>💜</span></h1>
-            <p>
-                Выбери то, что подходит тебе прямо сейчас.
-            </p>
-        </section>
+        <div
+            class="pet-mouth"
+            id="petMouth"
+        ></div>
 
-        <div class="category-tabs">
+    </div>
 
-            <button class="category active" onclick="selectCategory(this,'all')">
-                Всё
-            </button>
 
-            <button class="category" onclick="selectCategory(this,'calm')">
-                😌 Спокойствие
-            </button>
+    <div class="pet-name">
+        Луми
+    </div>
 
-            <button class="category" onclick="selectCategory(this,'motivation')">
-                ⚡ Мотивация
-            </button>
+    <div
+        class="pet-status"
+        id="petStatus"
+    >
+        Луми рад тебя видеть 💜
+    </div>
 
-            <button class="category" onclick="selectCategory(this,'sleep')">
-                🌙 Сон
-            </button>
 
-            <button class="category" onclick="selectCategory(this,'friends')">
-                🫂 Друзья
-            </button>
-
-        </div>
-
-        <div id="contentList"></div>
-
-    </main>
-
-
-    <!-- ПРОФИЛЬ -->
-    <main id="profile" class="screen">
-
-        <section class="profile-top">
-
-            <div class="avatar">
-                🐉
-            </div>
-
-            <h1 id="profileName">
-                Мой профиль
-            </h1>
-
-            <p>
-                Это твоё личное пространство
-            </p>
-
-        </section>
-
-        <section class="card">
-
-            <div class="profile-row">
-                <span>Настроение сегодня</span>
-                <strong id="profileMood">🙂 Нормально</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Питомец</span>
-                <strong>Луми 💜</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Дней в Рядом</span>
-                <strong id="daysCount">1</strong>
-            </div>
-
-            <div class="profile-row">
-                <span>Добрые поступки</span>
-                <strong id="goodCount">0 ✨</strong>
-            </div>
-
-        </section>
-
-        <section class="card">
-
-            <div class="card-title">
-                <h2>Маленькое напоминание</h2>
-            </div>
-
-            <p style="color:#a099a5;line-height:1.6;font-size:14px">
-                Тебе не обязательно всегда быть сильным.
-                Иногда нормально устать, погрустить или попросить помощи.
-                💜
-            </p>
-
-        </section>
+    <div class="pet-buttons">
 
         <button
-            class="telegram"
-            style="width:100%"
-            onclick="window.open('https://t.me/ryadom_online','_blank')"
+            class="pet-btn"
+            onclick="playPet()"
         >
-            ✈️ Telegram-канал «Рядом»
+            🎮 Поиграть
         </button>
-
-    </main>
-
-
-    <!-- ПОМОЩЬ -->
-    <main id="help" class="screen">
-
-        <section class="hero">
-            <h1>Ты можешь попросить <span>помощи.</span></h1>
-
-            <p>
-                Если тебе очень тяжело, не обязательно справляться со всем одному.
-            </p>
-        </section>
-
-        <section class="card help-box">
-
-            <div class="help-icon">🫶</div>
-
-            <h2>Детский телефон доверия</h2>
-
-            <p>
-                В России можно бесплатно и анонимно
-                обратиться за психологической поддержкой.
-            </p>
-
-            <a class="phone" href="tel:88002000122">
-                ☎ 8-800-2000-122
-            </a>
-
-            <p style="margin-top:12px;font-size:12px">
-                Если ты находишься в другой стране,
-                используй местные экстренные или кризисные службы
-                либо обратись к взрослому, которому доверяешь.
-            </p>
-
-        </section>
-
-        <section class="card">
-
-            <h2 style="margin-bottom:10px">
-                Если прямо сейчас опасно
-            </h2>
-
-            <p style="color:#918994;line-height:1.5;font-size:14px">
-                Постарайся не оставаться одному.
-                Позови родителя, родственника, учителя или другого
-                взрослого, которому доверяешь.
-                При непосредственной опасности обратись в местную
-                экстренную службу.
-            </p>
-
-        </section>
 
         <button
-            class="telegram"
-            style="width:100%"
-            onclick="window.open('https://t.me/ryadom_online','_blank')"
+            class="pet-btn"
+            onclick="feedPet()"
         >
-            ✈️ Перейти в Telegram «Рядом»
+            🍎 Покормить
         </button>
 
-    </main>
+    </div>
+
+</section>
+
+
+<!-- ACTIONS -->
+
+<section class="card">
+
+    <div class="card-title">
+
+        <h2>
+            Что тебе сейчас нужно?
+        </h2>
+
+    </div>
+
+
+    <div class="actions">
+
+
+        <button
+            class="action"
+            onclick="openAI()"
+        >
+
+            <div class="action-icon">
+                🤖
+            </div>
+
+            <strong>
+                Поговорить
+            </strong>
+
+            <small>
+                с Рядом AI
+            </small>
+
+        </button>
+
+
+        <button
+            class="action"
+            onclick="openScreen('help')"
+        >
+
+            <div class="action-icon">
+                🫶
+            </div>
+
+            <strong>
+                Мне нужна помощь
+            </strong>
+
+            <small>
+                полезные контакты
+            </small>
+
+        </button>
+
+
+        <button
+            class="action"
+            onclick="openScreen('categories')"
+        >
+
+            <div class="action-icon">
+                🌙
+            </div>
+
+            <strong>
+                Успокоиться
+            </strong>
+
+            <small>
+                идеи и упражнения
+            </small>
+
+        </button>
+
+
+        <button
+            class="action"
+            onclick="showToast('Ты уже сделал что-то хорошее — открыл Рядом 💜')"
+        >
+
+            <div class="action-icon">
+                ✨
+            </div>
+
+            <strong>
+                Поддержка
+            </strong>
+
+            <small>
+                маленькие напоминания
+            </small>
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- CATEGORIES -->
+
+<main
+    id="categories"
+    class="screen"
+>
+
+
+<section class="hero">
+
+    <h1>
+        Для тебя <span>💜</span>
+    </h1>
+
+    <p>
+        Выбери то, что подходит тебе прямо сейчас.
+    </p>
+
+</section>
+
+
+<div class="category-tabs">
+
+
+<button
+    class="category active"
+    onclick="selectCategory(this,'all')"
+>
+    Всё
+</button>
+
+
+<button
+    class="category"
+    onclick="selectCategory(this,'calm')"
+>
+    😌 Спокойствие
+</button>
+
+
+<button
+    class="category"
+    onclick="selectCategory(this,'motivation')"
+>
+    ⚡ Мотивация
+</button>
+
+
+<button
+    class="category"
+    onclick="selectCategory(this,'sleep')"
+>
+    🌙 Сон
+</button>
+
+
+<button
+    class="category"
+    onclick="selectCategory(this,'friends')"
+>
+    🫂 Друзья
+</button>
+
+
+</div>
+
+
+<div id="contentList"></div>
+
+
+</main>
+
+
+<!-- PROFILE -->
+
+<main
+    id="profile"
+    class="screen"
+>
+
+
+<section class="profile-top">
+
+
+<div class="avatar">
+    🐉
+</div>
+
+
+<h1 id="profileName">
+    Мой профиль
+</h1>
+
+
+<p>
+    Это твоё личное пространство
+</p>
+
+
+</section>
+
+
+<section class="card">
+
+
+<div class="profile-row">
+
+    <span>
+        Настроение сегодня
+    </span>
+
+    <strong id="profileMood">
+        🙂 Нормально
+    </strong>
+
+</div>
+
+
+<div class="profile-row">
+
+    <span>
+        Питомец
+    </span>
+
+    <strong>
+        Луми 💜
+    </strong>
+
+</div>
+
+
+<div class="profile-row">
+
+    <span>
+        Дней в Рядом
+    </span>
+
+    <strong id="daysCount">
+        1
+    </strong>
+
+</div>
+
+
+<div class="profile-row">
+
+    <span>
+        Добрые поступки
+    </span>
+
+    <strong id="goodCount">
+        0 ✨
+    </strong>
+
+</div>
+
+
+</section>
+
+
+<section class="card">
+
+
+<div class="card-title">
+
+    <h2>
+        Маленькое напоминание
+    </h2>
+
+</div>
+
+
+<p
+    style="
+        color:#a099a5;
+        line-height:1.6;
+        font-size:14px
+    "
+>
+    Тебе не обязательно всегда быть сильным.
+    Иногда нормально устать, погрустить или
+    попросить помощи. 💜
+</p>
+
+
+</section>
+
+
+<button
+    class="telegram"
+    style="width:100%"
+    onclick="
+        window.open(
+            'https://t.me/ryadom_online',
+            '_blank'
+        )
+    "
+>
+    ✈️ Telegram-канал «Рядом»
+</button>
+
+
+</main>
+
+
+<!-- HELP -->
+
+<main
+    id="help"
+    class="screen"
+>
+
+
+<section class="hero">
+
+    <h1>
+        Ты можешь попросить
+        <span>помощи.</span>
+    </h1>
+
+    <p>
+        Если тебе очень тяжело,
+        не обязательно справляться
+        со всем одному.
+    </p>
+
+</section>
+
+
+<section class="card help-box">
+
+
+<div class="help-icon">
+    🫶
+</div>
+
+
+<h2>
+    Детский телефон доверия
+</h2>
+
+
+<p>
+    В России можно бесплатно и анонимно
+    обратиться за психологической поддержкой.
+</p>
+
+
+<a
+    class="phone"
+    href="tel:88002000122"
+>
+    ☎ 8-800-2000-122
+</a>
+
+
+<p
+    style="
+        margin-top:12px;
+        font-size:12px
+    "
+>
+    Если ты находишься в другой стране,
+    используй местные экстренные или
+    кризисные службы либо обратись
+    к взрослому, которому доверяешь.
+</p>
+
+
+</section>
+
+
+<section class="card">
+
+
+<h2 style="margin-bottom:10px">
+    Если прямо сейчас опасно
+</h2>
+
+
+<p
+    style="
+        color:#918994;
+        line-height:1.5;
+        font-size:14px
+    "
+>
+    Постарайся не оставаться одному.
+    Позови родителя, родственника,
+    учителя или другого взрослого,
+    которому доверяешь.
+    При непосредственной опасности
+    обратись в местную экстренную службу.
+</p>
+
+
+</section>
+
+
+<button
+    class="telegram"
+    style="width:100%"
+    onclick="
+        window.open(
+            'https://t.me/ryadom_online',
+            '_blank'
+        )
+    "
+>
+    ✈️ Перейти в Telegram «Рядом»
+</button>
+
+
+</main>
+
 
 </div>
 
 
 <!-- AI BUTTON -->
 
-<button class="ai-button" onclick="openAI()">
+<button
+    class="ai-button"
+    onclick="openAI()"
+>
     AI
 </button>
 
 
-<!-- AI -->
+<!-- AI WINDOW -->
 
-<div class="ai-window" id="aiWindow">
-
-    <div class="ai-head">
-
-        <div class="ai-title">
-
-            <div class="ai-logo">
-                ✦
-            </div>
-
-            <div>
-                <strong>Рядом AI</strong>
-                <small>виртуальный помощник</small>
-            </div>
-
-        </div>
-
-        <button class="ai-close" onclick="closeAI()">
-            ×
-        </button>
-
-    </div>
+<div
+    class="ai-window"
+    id="aiWindow"
+>
 
 
-    <div class="ai-messages" id="aiMessages">
-
-        <div class="ai-message bot">
-            Привет 💜
-
-            Я Рядом AI. Можешь написать мне, что тебя беспокоит, что произошло сегодня или просто поговорить.
-        </div>
-
-    </div>
+<div class="ai-head">
 
 
-    <div class="ai-typing" id="aiTyping">
-        Рядом AI печатает...
-    </div>
+<div class="ai-title">
 
 
-    <div class="ai-input">
+<div class="ai-logo">
+    ✦
+</div>
 
-        <input
-            id="aiInput"
-            type="text"
-            maxlength="1000"
-            placeholder="Напиши что-нибудь..."
-            autocomplete="off"
-            onkeydown="if(event.key==='Enter') sendAI()"
-        >
 
-        <button onclick="sendAI()">
-            ➤
-        </button>
+<div>
 
-    </div>
+<strong>
+    Рядом AI
+</strong>
+
+
+<div
+    id="aiStatus"
+    class="ai-status checking"
+>
+
+    <span class="ai-status-dot"></span>
+
+    <span id="aiStatusText">
+        проверяем...
+    </span>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<button
+    class="ai-close"
+    onclick="closeAI()"
+>
+    ×
+</button>
+
+
+</div>
+
+
+<div
+    class="ai-messages"
+    id="aiMessages"
+>
+
+
+<div class="ai-message bot">
+
+Привет 💜
+
+Я Рядом AI. Можешь написать мне, что тебя беспокоит, что произошло сегодня или просто поговорить.
+
+</div>
+
+
+</div>
+
+
+<div
+    class="ai-typing"
+    id="aiTyping"
+>
+    Рядом AI печатает...
+</div>
+
+
+<div class="ai-input">
+
+
+<input
+    id="aiInput"
+    type="text"
+    maxlength="1000"
+    placeholder="Напиши что-нибудь..."
+    autocomplete="off"
+    onkeydown="
+        if(event.key==='Enter'){
+            sendAI()
+        }
+    "
+>
+
+
+<button
+    onclick="sendAI()"
+>
+    ➤
+</button>
+
+
+</div>
+
 
 </div>
 
 
 <!-- MOOD MODAL -->
 
-<div class="modal" id="moodModal">
+<div
+    class="modal"
+    id="moodModal"
+>
 
-    <div class="modal-box">
 
-        <div class="big">
-            💜
-        </div>
+<div class="modal-box">
 
-        <h2>
-            Всё настолько плохо?
-        </h2>
 
-        <p>
-            Поделись своими переживаниями и мыслями,
-            постараюсь помочь.
-        </p>
+<div class="big">
+    💜
+</div>
 
-        <button class="modal-close" onclick="closeMoodModal()">
-            Поговорить с Рядом AI
-        </button>
 
-        <button
-            onclick="closeMoodModal()"
-            style="margin-top:8px;background:transparent;color:#888;padding:10px"
-        >
-            Пока не хочу
-        </button>
+<h2>
+    Всё настолько плохо?
+</h2>
 
-    </div>
+
+<p>
+    Поделись своими переживаниями
+    и мыслями, постараюсь помочь.
+</p>
+
+
+<button
+    class="modal-close"
+    onclick="
+        closeMoodModal();
+        openAI();
+    "
+>
+    Поговорить с Рядом AI
+</button>
+
+
+<button
+    onclick="closeMoodModal()"
+    style="
+        margin-top:8px;
+        background:transparent;
+        color:#888;
+        padding:10px
+    "
+>
+    Пока не хочу
+</button>
+
+
+</div>
+
 
 </div>
 
 
 <!-- TOAST -->
 
-<div class="toast" id="toast"></div>
+<div
+    class="toast"
+    id="toast"
+></div>
 
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 
 <nav class="bottom-nav">
 
-    <button class="nav-btn active" onclick="openScreen('home',this)">
-        <div class="nav-icon">⌂</div>
-        <span>Главная</span>
-        <div class="nav-indicator"></div>
-    </button>
 
-    <button class="nav-btn" onclick="openScreen('categories',this)">
-        <div class="nav-icon">✦</div>
-        <span>Для тебя</span>
-    </button>
+<button
+    class="nav-btn active"
+    onclick="openScreen('home',this)"
+>
 
-    <button class="nav-btn" onclick="openAI()">
-        <div class="nav-icon">💬</div>
-        <span>AI</span>
-    </button>
+<div class="nav-icon">
+    ⌂
+</div>
 
-    <button class="nav-btn" onclick="openScreen('help',this)">
-        <div class="nav-icon">🫶</div>
-        <span>Помощь</span>
-    </button>
+<span>
+    Главная
+</span>
 
-    <button class="nav-btn" onclick="openScreen('profile',this)">
-        <div class="nav-icon">◉</div>
-        <span>Профиль</span>
-    </button>
+<div class="nav-indicator"></div>
+
+</button>
+
+
+<button
+    class="nav-btn"
+    onclick="openScreen('categories',this)"
+>
+
+<div class="nav-icon">
+    ✦
+</div>
+
+<span>
+    Для тебя
+</span>
+
+</button>
+
+
+<button
+    class="nav-btn"
+    onclick="openAI()"
+>
+
+<div class="nav-icon">
+    💬
+</div>
+
+<span>
+    AI
+</span>
+
+</button>
+
+
+<button
+    class="nav-btn"
+    onclick="openScreen('help',this)"
+>
+
+<div class="nav-icon">
+    🫶
+</div>
+
+<span>
+    Помощь
+</span>
+
+</button>
+
+
+<button
+    class="nav-btn"
+    onclick="openScreen('profile',this)"
+>
+
+<div class="nav-icon">
+    ◉
+</div>
+
+<span>
+    Профиль
+</span>
+
+</button>
+
 
 </nav>
 
 
 <script>
 
-/* =========================
-   НАСТРОЙКИ
-========================= */
 
-const AI_SERVER = "https://link-vwlw.onrender.com";
+/* =========================================
+   НАСТРОЙКИ
+========================================= */
+
+const AI_SERVER =
+    "https://link-vwlw.onrender.com";
 
 let aiHistory = [];
 
-let goodActions = Number(
-    localStorage.getItem("ryadom_good_actions") || 0
-);
+let goodActions =
+    Number(
+        localStorage.getItem(
+            "ryadom_good_actions"
+        ) || 0
+    );
 
 
-/* =========================
+/* =========================================
    ЭКРАНЫ
-========================= */
+========================================= */
 
-function openScreen(id, button){
+function openScreen(id,button){
 
-    document.querySelectorAll(".screen").forEach(screen=>{
-        screen.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen=>{
 
-    const target = document.getElementById(id);
+            screen.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const target =
+        document.getElementById(id);
+
 
     if(target){
-        target.classList.add("active");
+
+        target.classList.add(
+            "active"
+        );
+
     }
 
-    document.querySelectorAll(".nav-btn").forEach(btn=>{
-        btn.classList.remove("active");
 
-        const indicator = btn.querySelector(".nav-indicator");
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(btn=>{
 
-        if(indicator){
-            indicator.remove();
-        }
-    });
+            btn.classList.remove(
+                "active"
+            );
+
+            const indicator =
+                btn.querySelector(
+                    ".nav-indicator"
+                );
+
+            if(indicator){
+
+                indicator.remove();
+
+            }
+
+        });
+
 
     if(button){
-        button.classList.add("active");
 
-        const indicator = document.createElement("div");
+        button.classList.add(
+            "active"
+        );
 
-        indicator.className = "nav-indicator";
 
-        button.appendChild(indicator);
+        const indicator =
+            document.createElement(
+                "div"
+            );
+
+        indicator.className =
+            "nav-indicator";
+
+        button.appendChild(
+            indicator
+        );
+
     }
 
+
     window.scrollTo({
+
         top:0,
+
         behavior:"smooth"
+
     });
+
 }
 
 
-/* =========================
+/* =========================================
    НАСТРОЕНИЕ
-========================= */
+========================================= */
+
+let moodModalShown = false;
+
 
 function changeMood(value){
 
-    value = Number(value);
+    value =
+        Number(value);
+
 
     let face;
     let name;
     let description;
 
+
     if(value <= 20){
 
         face = "😢";
-        name = "Очень плохо";
-        description = "Похоже, сегодня тебе действительно тяжело.";
 
-        document.getElementById("moodModal").classList.add("show");
+        name =
+            "Очень плохо";
 
-    }else if(value <= 40){
+        description =
+            "Похоже, сегодня тебе действительно тяжело.";
+
+
+        if(!moodModalShown){
+
+            moodModalShown =
+                true;
+
+            document
+                .getElementById(
+                    "moodModal"
+                )
+                .classList.add(
+                    "show"
+                );
+
+        }
+
+    }
+
+
+    else if(value <= 40){
 
         face = "😕";
-        name = "Грустно";
-        description = "Иногда плохой день — просто плохой день.";
 
-    }else if(value <= 60){
+        name =
+            "Грустно";
+
+        description =
+            "Иногда плохой день — просто плохой день.";
+
+    }
+
+
+    else if(value <= 60){
 
         face = "🙂";
-        name = "Нормально";
-        description = "Можно сделать сегодняшний день немного лучше.";
 
-    }else if(value <= 80){
+        name =
+            "Нормально";
+
+        description =
+            "Можно сделать сегодняшний день немного лучше.";
+
+    }
+
+
+    else if(value <= 80){
 
         face = "😊";
-        name = "Хорошо";
-        description = "Кажется, сегодня неплохой день!";
 
-    }else{
+        name =
+            "Хорошо";
+
+        description =
+            "Кажется, сегодня неплохой день!";
+
+    }
+
+
+    else{
 
         face = "🤩";
-        name = "Отлично!";
-        description = "Вот это настроение! Сохрани его ✨";
+
+        name =
+            "Отлично!";
+
+        description =
+            "Вот это настроение! Сохрани его ✨";
 
     }
 
-    document.getElementById("moodFace").textContent = face;
-    document.getElementById("moodName").textContent = name;
-    document.getElementById("moodDescription").textContent = description;
 
-    document.getElementById("profileMood").textContent =
-        face + " " + name;
+    document
+        .getElementById(
+            "moodFace"
+        )
+        .textContent =
+        face;
 
-    localStorage.setItem("ryadom_mood", value);
+
+    document
+        .getElementById(
+            "moodName"
+        )
+        .textContent =
+        name;
+
+
+    document
+        .getElementById(
+            "moodDescription"
+        )
+        .textContent =
+        description;
+
+
+    document
+        .getElementById(
+            "profileMood"
+        )
+        .textContent =
+        face +
+        " " +
+        name;
+
+
+    localStorage.setItem(
+        "ryadom_mood",
+        value
+    );
+
 }
 
 
-/* =========================
-   МОДАЛКА НАСТРОЕНИЯ
-========================= */
+/* =========================================
+   MODAL
+========================================= */
 
 function closeMoodModal(){
-    document.getElementById("moodModal").classList.remove("show");
+
+    document
+        .getElementById(
+            "moodModal"
+        )
+        .classList.remove(
+            "show"
+        );
+
 }
 
-document.getElementById("moodModal").addEventListener("click",function(e){
 
-    if(e.target === this){
-        closeMoodModal();
-    }
+document
+    .getElementById("moodModal")
+    .addEventListener(
+        "click",
+        function(e){
 
-});
+            if(e.target === this){
+
+                closeMoodModal();
+
+            }
+
+        }
+    );
 
 
-/* =========================
+/* =========================================
    ПИТОМЕЦ
-========================= */
+========================================= */
 
 let petHappiness =
-    Number(localStorage.getItem("ryadom_pet") || 70);
+    Number(
+        localStorage.getItem(
+            "ryadom_pet"
+        ) || 70
+    );
+
 
 function updatePet(){
 
-    const status = document.getElementById("petStatus");
-    const mouth = document.getElementById("petMouth");
-    const pet = document.getElementById("pet");
+    const status =
+        document.getElementById(
+            "petStatus"
+        );
+
+    const mouth =
+        document.getElementById(
+            "petMouth"
+        );
+
+    const pet =
+        document.getElementById(
+            "pet"
+        );
+
 
     if(petHappiness >= 80){
 
         status.textContent =
             "Луми счастлив! Ему очень нравится быть с тобой 💜";
 
+
         mouth.style.borderBottom =
             "3px solid #24142d";
+
 
         pet.style.filter =
             "brightness(1.1)";
 
-    }else if(petHappiness >= 45){
+    }
+
+
+    else if(petHappiness >= 45){
 
         status.textContent =
             "Луми немного скучает по тебе.";
 
+
+        mouth.style.borderBottom =
+            "3px solid #24142d";
+
+
         pet.style.filter =
             "brightness(.95)";
 
-    }else{
+    }
+
+
+    else{
 
         status.textContent =
             "Луми грустит... Поиграй с ним 🥺";
 
+
         mouth.style.borderBottom =
             "0";
 
+
         pet.style.filter =
             "brightness(.75)";
+
     }
+
 
     localStorage.setItem(
         "ryadom_pet",
         petHappiness
     );
+
 }
+
 
 function playPet(){
 
-    petHappiness = Math.min(
-        100,
-        petHappiness + 18
-    );
+    petHappiness =
+        Math.min(
+            100,
+            petHappiness + 18
+        );
+
 
     updatePet();
 
     addGoodAction();
+
 
     showToast(
         "Луми счастлив! 🎮💜"
     );
+
 }
+
 
 function feedPet(){
 
-    petHappiness = Math.min(
-        100,
-        petHappiness + 10
-    );
+    petHappiness =
+        Math.min(
+            100,
+            petHappiness + 10
+        );
+
 
     updatePet();
 
     addGoodAction();
 
+
     showToast(
         "Луми вкусно поел 🍎"
     );
+
 }
 
 
-/* питомец постепенно скучает */
+/* питомец скучает */
 
 setInterval(()=>{
 
-    petHappiness = Math.max(
-        0,
-        petHappiness - 1
-    );
+    petHappiness =
+        Math.max(
+            0,
+            petHappiness - 1
+        );
+
 
     updatePet();
 
 },60000);
 
 
-/* =========================
+/* =========================================
    ДОБРЫЕ ДЕЙСТВИЯ
-========================= */
+========================================= */
 
 function addGoodAction(){
 
     goodActions++;
+
 
     localStorage.setItem(
         "ryadom_good_actions",
         goodActions
     );
 
-    document.getElementById("goodCount").textContent =
-        goodActions + " ✨";
+
+    const counter =
+        document.getElementById(
+            "goodCount"
+        );
+
+
+    if(counter){
+
+        counter.textContent =
+            goodActions +
+            " ✨";
+
+    }
+
 }
 
 
-/* =========================
+/* =========================================
    КАТЕГОРИИ
-========================= */
+========================================= */
 
 const content = {
 
-    all:[
-        [
-            "🌿",
-            "Сделай паузу",
-            "Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."
-        ],
-        [
-            "💭",
-            "Запиши мысли",
-            "Иногда становится легче, если выписать всё, что сейчас происходит внутри."
-        ],
-        [
-            "🫶",
-            "Поговори с кем-нибудь",
-            "Выбери человека, которому доверяешь, и просто напиши ему."
-        ],
-        [
-            "✨",
-            "Маленькая победа",
-            "Даже если сегодня ты просто встал с кровати — это уже что-то."
-        ]
-    ],
 
-    calm:[
-        [
-            "🌬️",
-            "Дыхание 4–4",
-            "Вдохни на 4 секунды, задержи дыхание на 4 и медленно выдохни."
-        ],
-        [
-            "🌧️",
-            "Звуки дождя",
-            "Закрой глаза и представь место, где тебе спокойно и безопасно."
-        ],
-        [
-            "🧘",
-            "Заземление",
-            "Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."
-        ]
-    ],
+all:[
 
-    motivation:[
-        [
-            "⚡",
-            "Один маленький шаг",
-            "Не обязательно решить всё сразу. Выбери только одну маленькую задачу."
-        ],
-        [
-            "🚀",
-            "Ты способен",
-            "Ошибки не делают тебя хуже. Они просто означают, что ты учишься."
-        ],
-        [
-            "🏆",
-            "Вспомни победу",
-            "Вспомни ситуацию, когда ты справился с тем, что казалось сложным."
-        ]
-    ],
+[
+"🌿",
+"Сделай паузу",
+"Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."
+],
 
-    sleep:[
-        [
-            "🌙",
-            "Выключи яркий экран",
-            "Перед сном попробуй немного уменьшить яркость телефона."
-        ],
-        [
-            "☁️",
-            "Спокойная мысль",
-            "Представь место, где тебе максимально спокойно."
-        ],
-        [
-            "🛏️",
-            "Не торопись уснуть",
-            "Не заставляй себя уснуть. Просто удобно устройся и дай телу расслабиться."
-        ]
-    ],
+[
+"💭",
+"Запиши мысли",
+"Иногда становится легче, если выписать всё, что сейчас происходит внутри."
+],
 
-    friends:[
-        [
-            "🫂",
-            "Напиши другу",
-            "Иногда простое «как ты?» может сильно изменить чей-то день."
-        ],
-        [
-            "💬",
-            "Будь рядом",
-            "Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."
-        ],
-        [
-            "❤️",
-            "Скажи что-нибудь хорошее",
-            "Отправь человеку сообщение, которое ему будет приятно получить."
-        ]
-    ]
+[
+"🫶",
+"Поговори с кем-нибудь",
+"Выбери человека, которому доверяешь, и просто напиши ему."
+],
+
+[
+"✨",
+"Маленькая победа",
+"Даже если сегодня ты просто встал с кровати — это уже что-то."
+]
+
+],
+
+
+calm:[
+
+[
+"🌬️",
+"Дыхание 4–4",
+"Вдохни на 4 секунды, задержи дыхание на 4 и медленно выдохни."
+],
+
+[
+"🌧️",
+"Звуки дождя",
+"Закрой глаза и представь место, где тебе спокойно и безопасно."
+],
+
+[
+"🧘",
+"Заземление",
+"Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."
+]
+
+],
+
+
+motivation:[
+
+[
+"⚡",
+"Один маленький шаг",
+"Не обязательно решить всё сразу. Выбери только одну маленькую задачу."
+],
+
+[
+"🚀",
+"Ты способен",
+"Ошибки не делают тебя хуже. Они просто означают, что ты учишься."
+],
+
+[
+"🏆",
+"Вспомни победу",
+"Вспомни ситуацию, когда ты справился с тем, что казалось сложным."
+]
+
+],
+
+
+sleep:[
+
+[
+"🌙",
+"Выключи яркий экран",
+"Перед сном попробуй немного уменьшить яркость телефона."
+],
+
+[
+"☁️",
+"Спокойная мысль",
+"Представь место, где тебе максимально спокойно."
+],
+
+[
+"🛏️",
+"Не торопись уснуть",
+"Не заставляй себя уснуть. Просто удобно устройся и дай телу расслабиться."
+]
+
+],
+
+
+friends:[
+
+[
+"🫂",
+"Напиши другу",
+"Иногда простое «как ты?» может сильно изменить чей-то день."
+],
+
+[
+"💬",
+"Будь рядом",
+"Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."
+],
+
+[
+"❤️",
+"Скажи что-нибудь хорошее",
+"Отправь человеку сообщение, которое ему будет приятно получить."
+]
+
+]
 
 };
 
-function selectCategory(button,type){
 
-    document.querySelectorAll(".category").forEach(btn=>{
-        btn.classList.remove("active");
-    });
+function selectCategory(
+    button,
+    type
+){
 
-    button.classList.add("active");
+    document
+        .querySelectorAll(
+            ".category"
+        )
+        .forEach(btn=>{
 
-    renderContent(type);
+            btn.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    button.classList.add(
+        "active"
+    );
+
+
+    renderContent(
+        type
+    );
+
 }
+
 
 function renderContent(type){
 
     const list =
-        document.getElementById("contentList");
+        document.getElementById(
+            "contentList"
+        );
+
 
     list.innerHTML = "";
 
-    content[type].forEach(item=>{
 
-        const div =
-            document.createElement("div");
+    content[type]
+        .forEach(item=>{
 
-        div.className =
-            "content-item";
+            const div =
+                document.createElement(
+                    "div"
+                );
 
-        div.innerHTML = `
-            <div class="emoji">${item[0]}</div>
-            <h3>${item[1]}</h3>
-            <p>${item[2]}</p>
-        `;
 
-        div.onclick = ()=>{
+            div.className =
+                "content-item";
 
-            addGoodAction();
 
-            showToast(
-                "Ты сделал что-то хорошее для себя ✨"
+            div.innerHTML = `
+
+                <div class="emoji">
+                    ${item[0]}
+                </div>
+
+                <h3>
+                    ${item[1]}
+                </h3>
+
+                <p>
+                    ${item[2]}
+                </p>
+
+            `;
+
+
+            div.onclick = ()=>{
+
+                addGoodAction();
+
+
+                showToast(
+                    "Ты сделал что-то хорошее для себя ✨"
+                );
+
+            };
+
+
+            list.appendChild(
+                div
             );
-        };
 
-        list.appendChild(div);
+        });
 
-    });
 }
 
 
-/* =========================
+/* =========================================
    AI
-========================= */
+========================================= */
 
 function openAI(){
 
-    document.getElementById("aiWindow")
-        .classList.add("open");
+    document
+        .getElementById(
+            "aiWindow"
+        )
+        .classList.add(
+            "open"
+        );
+
+
+    checkAIStatus();
+
 
     setTimeout(()=>{
 
-        document.getElementById("aiInput")
+        document
+            .getElementById(
+                "aiInput"
+            )
             .focus();
 
     },150);
+
 }
+
 
 function closeAI(){
 
-    document.getElementById("aiWindow")
-        .classList.remove("open");
+    document
+        .getElementById(
+            "aiWindow"
+        )
+        .classList.remove(
+            "open"
+        );
+
 }
 
 
-function addAIMessage(text,type){
+function addAIMessage(
+    text,
+    type
+){
 
     const messages =
-        document.getElementById("aiMessages");
+        document.getElementById(
+            "aiMessages"
+        );
+
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.className =
-        "ai-message " + type;
+        "ai-message " +
+        type;
 
-    div.textContent = text;
 
-    messages.appendChild(div);
+    div.textContent =
+        text;
+
+
+    messages.appendChild(
+        div
+    );
+
 
     messages.scrollTop =
         messages.scrollHeight;
+
 }
 
+
+/* =========================================
+   AI STATUS
+========================================= */
+
+function setAIStatus(
+    status
+){
+
+    const statusElement =
+        document.getElementById(
+            "aiStatus"
+        );
+
+
+    const textElement =
+        document.getElementById(
+            "aiStatusText"
+        );
+
+
+    statusElement.classList.remove(
+        "online",
+        "offline",
+        "checking"
+    );
+
+
+    if(status === true){
+
+        statusElement.classList.add(
+            "online"
+        );
+
+
+        textElement.textContent =
+            "онлайн";
+
+    }
+
+
+    else if(status === false){
+
+        statusElement.classList.add(
+            "offline"
+        );
+
+
+        textElement.textContent =
+            "не в сети";
+
+    }
+
+
+    else{
+
+        statusElement.classList.add(
+            "checking"
+        );
+
+
+        textElement.textContent =
+            "проверяем...";
+
+    }
+
+}
+
+
+async function checkAIStatus(){
+
+    setAIStatus(null);
+
+
+    const controller =
+        new AbortController();
+
+
+    const timeout =
+        setTimeout(
+            ()=>{
+                controller.abort();
+            },
+            12000
+        );
+
+
+    try{
+
+        const response =
+            await fetch(
+                AI_SERVER + "/",
+                {
+                    method:"GET",
+
+                    cache:"no-store",
+
+                    signal:
+                        controller.signal
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Server offline"
+            );
+
+        }
+
+
+        setAIStatus(true);
+
+    }
+
+
+    catch(error){
+
+        console.log(
+            "AI status:",
+            error
+        );
+
+
+        setAIStatus(false);
+
+    }
+
+
+    finally{
+
+        clearTimeout(
+            timeout
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SEND AI
+========================================= */
 
 async function sendAI(){
 
     const input =
-        document.getElementById("aiInput");
+        document.getElementById(
+            "aiInput"
+        );
+
 
     const message =
         input.value.trim();
 
+
     if(!message){
+
         return;
+
     }
 
+
     input.value = "";
+
 
     addAIMessage(
         message,
         "user"
     );
 
-    aiHistory.push({
-        role:"user",
-        content:message
-    });
 
     const typing =
-        document.getElementById("aiTyping");
+        document.getElementById(
+            "aiTyping"
+        );
+
 
     typing.style.display =
         "block";
+
 
     try{
 
@@ -1874,15 +3182,25 @@ async function sendAI(){
                     },
 
                     body:JSON.stringify({
-                        message:message,
+
+                        message:
+
+                            message,
+
                         history:
-                            aiHistory.slice(-10)
+
+                            aiHistory
+                                .slice(-10)
+
                     })
+
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if(!response.ok){
 
@@ -1893,98 +3211,182 @@ async function sendAI(){
 
         }
 
+
         const answer =
             data.answer ||
             "Я пока не смог ответить 😔";
 
+
         aiHistory.push({
-            role:"assistant",
-            content:answer
+
+            role:"user",
+
+            content:
+                message
+
         });
+
+
+        aiHistory.push({
+
+            role:"assistant",
+
+            content:
+                answer
+
+        });
+
 
         addAIMessage(
             answer,
             "bot"
         );
 
-    }catch(error){
 
-        console.error(error);
+        setAIStatus(true);
 
-        addAIMessage(
-            "Не получилось подключиться к Рядом AI 😔\n\nПопробуй ещё раз через несколько секунд.",
-            "bot"
+    }
+
+
+    catch(error){
+
+        console.error(
+            error
         );
 
-    }finally{
+
+        setAIStatus(false);
+
+
+        addAIMessage(
+
+            "Не получилось подключиться к Рядом AI 😔\n\nПопробуй ещё раз через несколько секунд.",
+
+            "bot"
+
+        );
+
+    }
+
+
+    finally{
 
         typing.style.display =
             "none";
+
     }
+
 }
 
 
-/* =========================
+/* =========================================
    TOAST
-========================= */
+========================================= */
 
 let toastTimer;
+
 
 function showToast(text){
 
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
 
-    toast.textContent = text;
 
-    toast.classList.add("show");
+    toast.textContent =
+        text;
 
-    clearTimeout(toastTimer);
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
 
     toastTimer =
         setTimeout(()=>{
 
-            toast.classList.remove("show");
+            toast.classList.remove(
+                "show"
+            );
 
         },2600);
+
 }
 
 
-/* =========================
-   ПРОФИЛЬ
-========================= */
+/* =========================================
+   PROFILE
+========================================= */
 
 function loadProfile(){
 
     const savedMood =
-        localStorage.getItem("ryadom_mood");
+        localStorage.getItem(
+            "ryadom_mood"
+        );
+
 
     if(savedMood !== null){
 
-        document.getElementById(
-            "moodRange"
-        ).value = savedMood;
+        document
+            .getElementById(
+                "moodRange"
+            )
+            .value =
+            savedMood;
 
-        changeMood(savedMood);
+
+        changeMood(
+            savedMood
+        );
 
     }
 
-    document.getElementById(
-        "goodCount"
-    ).textContent =
-        goodActions + " ✨";
+
+    document
+        .getElementById(
+            "goodCount"
+        )
+        .textContent =
+        goodActions +
+        " ✨";
+
 }
 
 
-/* =========================
-   СТАРТ
-========================= */
+/* =========================================
+   ЗАПУСК
+========================================= */
 
-renderContent("all");
+renderContent(
+    "all"
+);
+
 
 updatePet();
 
+
 loadProfile();
+
+
+/* сразу проверяем AI */
+
+checkAIStatus();
+
+
+/* проверяем каждые 20 секунд */
+
+setInterval(
+    checkAIStatus,
+    20000
+);
+
 
 </script>
 
