@@ -10,1280 +10,1297 @@
 *{box-sizing:border-box}
 
 html{
-  scroll-behavior:smooth;
+scroll-behavior:smooth;
 }
 
 :root{
-  --bg:#060813;
-  --card:#111526e8;
-  --card2:#191e32;
-  --line:#2c334d;
-  --text:#f5f6ff;
-  --muted:#999fb5;
-  --purple:#8d82ff;
-  --pink:#df82b1;
-  --green:#71d2a6;
-  --danger:#e9637d;
+--bg:#060813;
+--card:#111526e8;
+--card2:#191e32;
+--line:#303750;
+--text:#f7f7ff;
+--muted:#9da3b8;
+--purple:#8d82ff;
+--pink:#df82b1;
+--green:#71d2a6;
+--danger:#e9637d;
+--blue:#6fa9ff;
 }
 
 body{
-  margin:0;
-  color:var(--text);
-  font-family:Arial,sans-serif;
-  background:
-    radial-gradient(circle at 20% 0%,#766cff35,transparent 30%),
-    radial-gradient(circle at 90% 40%,#dc76a526,transparent 30%),
-    radial-gradient(circle at 40% 100%,#4c8dff1c,transparent 35%),
-    var(--bg);
-  min-height:100vh;
-  overflow-x:hidden;
+margin:0;
+color:var(--text);
+font-family:Arial,sans-serif;
+background:
+radial-gradient(circle at 20% 0%,#766cff38,transparent 30%),
+radial-gradient(circle at 90% 40%,#dc76a526,transparent 30%),
+radial-gradient(circle at 40% 100%,#4c8dff1c,transparent 35%),
+var(--bg);
+min-height:100vh;
+overflow-x:hidden;
+transition:background .8s ease,color .5s ease;
 }
 
 button,input,textarea{
-  font-family:inherit;
+font-family:inherit;
 }
 
 button{
-  cursor:pointer;
+cursor:pointer;
+}
+
+button:active{
+transform:scale(.97);
 }
 
 #stars{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-5;
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:-5;
 }
 
 .star{
-  position:absolute;
-  width:2px;
-  height:2px;
-  border-radius:50%;
-  background:white;
-  animation:twinkle 3s infinite alternate;
+position:absolute;
+width:2px;
+height:2px;
+border-radius:50%;
+background:white;
+animation:twinkle 3s infinite alternate;
 }
 
 @keyframes twinkle{
-  from{
-    opacity:.1;
-  }
-  to{
-    opacity:1;
-    transform:scale(1.7);
-  }
+from{
+opacity:.1;
+transform:scale(.7);
+}
+to{
+opacity:1;
+transform:scale(1.7);
+}
 }
 
 .shooting{
-  position:fixed;
-  width:100px;
-  height:2px;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    #fff,
-    transparent
-  );
-  transform:rotate(-30deg);
-  animation:shoot 1.5s linear forwards;
-  z-index:-1;
+position:fixed;
+width:110px;
+height:2px;
+background:linear-gradient(90deg,transparent,#fff,transparent);
+transform:rotate(-30deg);
+animation:shoot 1.5s linear forwards;
+z-index:-1;
 }
 
 @keyframes shoot{
-  from{
-    opacity:0;
-    transform:translate(0,0) rotate(-30deg);
-  }
-  20%{
-    opacity:1;
-  }
-  to{
-    opacity:0;
-    transform:translate(-500px,300px) rotate(-30deg);
-  }
+from{
+opacity:0;
+transform:translate(0,0) rotate(-30deg);
+}
+20%{
+opacity:1;
+}
+to{
+opacity:0;
+transform:translate(-500px,300px) rotate(-30deg);
+}
 }
 
 .bubble{
-  position:fixed;
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  background:#8277ff12;
-  filter:blur(2px);
-  pointer-events:none;
-  z-index:-2;
-  animation:bubble 15s linear infinite;
+position:fixed;
+width:90px;
+height:90px;
+border-radius:50%;
+background:#8277ff12;
+filter:blur(2px);
+pointer-events:none;
+z-index:-2;
+animation:bubble 15s linear infinite;
 }
 
 @keyframes bubble{
-  from{
-    transform:translateY(110vh);
-  }
-  to{
-    transform:translateY(-120vh) translateX(100px);
-  }
+from{
+transform:translateY(110vh);
+}
+to{
+transform:translateY(-120vh) translateX(100px);
+}
 }
 
 .app{
-  width:min(920px,100%);
-  margin:auto;
-  padding:18px 14px 110px;
+width:min(920px,100%);
+margin:auto;
+padding:18px 14px 120px;
 }
 
 header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
 }
 
 .logo{
-  font-size:30px;
-  font-weight:900;
-  letter-spacing:-1px;
+font-size:30px;
+font-weight:900;
+letter-spacing:-1px;
 }
 
 .logo span{
-  color:var(--purple);
+color:var(--purple);
 }
 
 .status{
-  font-size:10px;
-  color:#aeb3c5;
-  border:1px solid var(--line);
-  background:#111526bb;
-  padding:9px 12px;
-  border-radius:20px;
+font-size:10px;
+color:#aeb3c5;
+border:1px solid var(--line);
+background:#111526bb;
+padding:9px 12px;
+border-radius:20px;
+backdrop-filter:blur(15px);
 }
 
 .profile{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin-bottom:15px;
-  padding:13px;
-  border-radius:22px;
-  background:var(--card);
-  border:1px solid var(--line);
-  backdrop-filter:blur(15px);
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:15px;
+padding:13px;
+border-radius:22px;
+background:var(--card);
+border:1px solid var(--line);
+backdrop-filter:blur(15px);
+animation:profileIn .7s ease;
+}
+
+@keyframes profileIn{
+from{
+opacity:0;
+transform:translateY(-15px);
+}
+to{
+opacity:1;
+transform:none;
+}
 }
 
 .avatar{
-  width:58px;
-  height:58px;
-  border-radius:20px;
-  object-fit:cover;
-  background:#242a43;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:27px;
+width:58px;
+height:58px;
+border-radius:20px;
+object-fit:cover;
+background:#242a43;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:27px;
 }
 
 .profile-info{
-  flex:1;
+flex:1;
 }
 
 .profile-info b{
-  display:block;
-  font-size:17px;
+display:block;
+font-size:17px;
 }
 
 .profile-info small{
-  color:var(--muted);
+color:var(--muted);
 }
 
 .hero{
-  position:relative;
-  overflow:hidden;
-  padding:30px 25px;
-  border-radius:32px;
-  background:
-    radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
-    linear-gradient(145deg,#181c38ee,#0c1020ee);
-  border:1px solid var(--line);
-  box-shadow:0 25px 80px #0008;
+position:relative;
+overflow:hidden;
+padding:30px 25px;
+border-radius:32px;
+background:
+radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
+linear-gradient(145deg,#181c38ee,#0c1020ee);
+border:1px solid var(--line);
+box-shadow:0 25px 80px #0008;
+animation:heroIn .8s ease;
+}
+
+@keyframes heroIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:none;
+}
 }
 
 .hero:before{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  border:1px solid #fff2;
-  right:-70px;
-  top:-70px;
-  box-shadow:
-    0 0 0 35px #fff1,
-    0 0 0 70px #fff08;
-  animation:moon 8s ease-in-out infinite alternate;
+content:"";
+position:absolute;
+width:180px;
+height:180px;
+border-radius:50%;
+border:1px solid #fff2;
+right:-70px;
+top:-70px;
+box-shadow:
+0 0 0 35px #fff1,
+0 0 0 70px #fff08;
+animation:moon 8s ease-in-out infinite alternate;
 }
 
 @keyframes moon{
-  to{
-    transform:rotate(30deg) scale(1.15);
-  }
+to{
+transform:rotate(30deg) scale(1.15);
+}
 }
 
 .hero h1{
-  font-size:clamp(31px,8vw,53px);
-  line-height:1;
-  margin:0 0 15px;
-  letter-spacing:-2px;
-  max-width:700px;
+font-size:clamp(31px,8vw,53px);
+line-height:1;
+margin:0 0 15px;
+letter-spacing:-2px;
+max-width:700px;
+position:relative;
+z-index:2;
 }
 
 .hero p{
-  color:#b8bdce;
-  line-height:1.7;
-  max-width:650px;
+color:#b8bdce;
+line-height:1.7;
+max-width:650px;
+position:relative;
+z-index:2;
 }
 
 .buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:22px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px;
+margin-top:22px;
+position:relative;
+z-index:3;
 }
 
 .btn{
-  border:0;
-  color:white;
-  border-radius:17px;
-  padding:14px;
-  font-weight:bold;
-  transition:.25s;
+border:0;
+color:white;
+border-radius:17px;
+padding:14px;
+font-weight:bold;
+transition:
+transform .25s,
+filter .25s,
+box-shadow .25s;
 }
 
 .btn:hover{
-  transform:translateY(-3px);
-  filter:brightness(1.1);
+transform:translateY(-3px);
+filter:brightness(1.1);
+box-shadow:0 10px 30px #0004;
 }
 
 .primary{
-  background:linear-gradient(110deg,#7b71ff,#bd79ff);
+background:linear-gradient(110deg,#7b71ff,#bd79ff);
 }
 
 .secondary{
-  background:#20253a;
-  border:1px solid #363c58;
+background:#20253a;
+border:1px solid #363c58;
 }
 
 .green{
-  background:linear-gradient(110deg,#4dbb91,#79d8ac);
+background:linear-gradient(110deg,#4dbb91,#79d8ac);
 }
 
 .danger{
-  background:linear-gradient(110deg,#e95771,#bd619c);
+background:linear-gradient(110deg,#e95771,#bd619c);
+}
+
+.blue{
+background:linear-gradient(110deg,#568ff4,#78b5ff);
 }
 
 .full{
-  width:100%;
+width:100%;
 }
 
 .title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:26px 2px 12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:28px 2px 12px;
 }
 
 .title h2{
-  margin:0;
-  font-size:19px;
+margin:0;
+font-size:19px;
 }
 
 .title small{
-  color:var(--muted);
+color:var(--muted);
 }
 
 .card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:23px;
-  padding:18px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 15px 45px #0003;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:23px;
+padding:18px;
+backdrop-filter:blur(18px);
+box-shadow:0 15px 45px #0003;
+animation:cardIn .5s ease;
+}
+
+@keyframes cardIn{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:none;
+}
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
 }
 
 .click{
-  cursor:pointer;
-  transition:.25s;
+cursor:pointer;
+transition:.25s;
 }
 
 .click:hover{
-  transform:translateY(-5px);
-  border-color:var(--purple);
+transform:translateY(-5px);
+border-color:var(--purple);
 }
 
 .icon{
-  font-size:30px;
+font-size:30px;
 }
 
 .card b{
-  display:block;
-  margin-top:7px;
+display:block;
+margin-top:7px;
 }
 
 .card p{
-  color:var(--muted);
-  line-height:1.6;
-  font-size:13px;
+color:var(--muted);
+line-height:1.6;
+font-size:13px;
 }
 
-
-/* =========================
-   ТРЕКЕР НАСТРОЕНИЯ
-========================= */
-
-.mood-tracker{
-  text-align:center;
-  position:relative;
-  overflow:hidden;
+.moods{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:7px;
 }
 
-.mood-tracker:before{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:180px;
-  border-radius:50%;
-  background:#8d82ff12;
-  filter:blur(30px);
-  left:50%;
-  top:20px;
-  transform:translateX(-50%);
-  pointer-events:none;
+.mood{
+color:white;
+background:var(--card2);
+border:1px solid var(--line);
+border-radius:17px;
+padding:10px 2px;
+transition:.2s;
 }
 
-.mood-face{
-  position:relative;
-  z-index:1;
-  font-size:72px;
-  margin:5px 0 15px;
-  filter:drop-shadow(0 10px 25px #0006);
-  transition:.4s;
+.mood span{
+display:block;
+font-size:25px;
 }
 
-.mood-face.changed{
-  animation:moodPop .5s ease;
+.mood small{
+color:var(--muted);
+font-size:9px;
 }
 
-@keyframes moodPop{
-  0%{
-    transform:scale(.7) rotate(-8deg);
-  }
-  55%{
-    transform:scale(1.18) rotate(5deg);
-  }
-  100%{
-    transform:scale(1) rotate(0);
-  }
+.mood:hover,
+.mood.active{
+transform:translateY(-4px);
+background:#2b2851;
+border-color:var(--purple);
 }
-
-.mood-scale{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  position:relative;
-  z-index:2;
-}
-
-.mood-scale span{
-  font-size:25px;
-}
-
-#moodSlider{
-  flex:1;
-  appearance:none;
-  height:9px;
-  border-radius:20px;
-  outline:none;
-  background:
-    linear-gradient(
-      90deg,
-      #e9637d,
-      #dca06f,
-      #8ecf9b,
-      #6ed6ba,
-      #8d82ff
-    );
-}
-
-#moodSlider::-webkit-slider-thumb{
-  appearance:none;
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  background:#fff;
-  border:4px solid #8d82ff;
-  box-shadow:0 5px 20px #0008;
-  cursor:pointer;
-  transition:.2s;
-}
-
-#moodSlider::-webkit-slider-thumb:hover{
-  transform:scale(1.2);
-}
-
-#moodSlider::-moz-range-thumb{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  background:#fff;
-  border:4px solid #8d82ff;
-  box-shadow:0 5px 20px #0008;
-}
-
-.mood-labels{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:8px;
-}
-
-#moodDescription{
-  min-height:43px;
-  transition:.3s;
-}
-
-
-/* =========================
-   ОКНО ПОДДЕРЖКИ
-========================= */
-
-.mood-support{
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:#02030acc;
-  backdrop-filter:blur(15px);
-  opacity:0;
-  visibility:hidden;
-  transition:.35s ease;
-}
-
-.mood-support.show{
-  opacity:1;
-  visibility:visible;
-}
-
-.mood-support-card{
-  width:min(470px,100%);
-  padding:30px 24px;
-  text-align:center;
-  border-radius:30px;
-  border:1px solid #454b6c;
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      #8d82ff28,
-      transparent 55%
-    ),
-    #111526;
-  box-shadow:0 30px 100px #000b;
-  transform:translateY(30px) scale(.92);
-  transition:.4s cubic-bezier(.2,.8,.2,1);
-}
-
-.mood-support.show .mood-support-card{
-  transform:translateY(0) scale(1);
-}
-
-.mood-support-icon{
-  font-size:60px;
-  animation:softHeart 2s infinite ease-in-out;
-}
-
-@keyframes softHeart{
-  50%{
-    transform:scale(1.12);
-  }
-}
-
-.mood-support-card h2{
-  margin:12px 0;
-}
-
-.mood-support-card p{
-  color:#b9bfd1;
-  line-height:1.7;
-}
-
-.mood-support-buttons{
-  display:grid;
-  gap:8px;
-  margin-top:20px;
-}
-
-
-/* POSTS */
 
 .posts{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  scrollbar-width:none;
+display:flex;
+gap:10px;
+overflow-x:auto;
+scrollbar-width:none;
+padding-bottom:4px;
 }
 
 .post{
-  min-width:245px;
-  padding:18px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:23px;
+min-width:245px;
+padding:18px;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:23px;
+transition:.3s;
+}
+
+.post:hover{
+transform:translateY(-6px) rotate(-1deg);
+border-color:#7169ff88;
 }
 
 .post .emoji{
-  font-size:30px;
+font-size:30px;
 }
 
 .post p{
-  color:var(--muted);
-  line-height:1.5;
-  font-size:13px;
+color:var(--muted);
+line-height:1.5;
+font-size:13px;
 }
 
+/* НАСТРОЕНИЕ */
+
+.mood-slider-wrap{
+padding:15px 5px 5px;
+}
+
+.mood-slider{
+width:100%;
+appearance:none;
+height:11px;
+border-radius:20px;
+background:linear-gradient(
+90deg,
+#e9637d,
+#df9a82,
+#d8c46f,
+#71c99c,
+#70a7ff
+);
+outline:none;
+}
+
+.mood-slider::-webkit-slider-thumb{
+appearance:none;
+width:30px;
+height:30px;
+border-radius:50%;
+background:white;
+border:5px solid #8d82ff;
+box-shadow:0 4px 20px #0007;
+}
+
+.mood-slider::-moz-range-thumb{
+width:25px;
+height:25px;
+border-radius:50%;
+background:white;
+border:5px solid #8d82ff;
+}
+
+.slider-labels{
+display:flex;
+justify-content:space-between;
+font-size:11px;
+color:var(--muted);
+margin-top:10px;
+}
+
+.mood-result{
+text-align:center;
+font-size:25px;
+font-weight:bold;
+margin:15px 0 5px;
+}
 
 /* ПИТОМЕЦ */
 
 .pet{
-  text-align:center;
+text-align:center;
 }
 
 .pet-stage{
-  height:210px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:radial-gradient(circle,#8277ff1d,transparent 60%);
-  border-radius:20px;
+height:230px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:radial-gradient(circle,#8277ff1d,transparent 60%);
+border-radius:20px;
+position:relative;
+overflow:hidden;
 }
 
 .pet-body{
-  width:125px;
-  height:105px;
-  background:linear-gradient(145deg,#958aff,#6459d1);
-  border-radius:55%;
-  position:relative;
-  box-shadow:0 20px 45px #756bff55;
-  animation:petfloat 3s infinite ease-in-out;
+width:125px;
+height:105px;
+background:linear-gradient(145deg,#958aff,#6459d1);
+border-radius:55%;
+position:relative;
+box-shadow:0 20px 45px #756bff55;
+animation:petfloat 3s infinite ease-in-out;
+transition:.5s;
+}
+
+.pet-body.sad{
+background:linear-gradient(145deg,#70758f,#4d526b);
+box-shadow:0 15px 30px #3c415c55;
 }
 
 @keyframes petfloat{
-  50%{
-    transform:translateY(-12px);
-  }
+50%{
+transform:translateY(-12px);
+}
 }
 
 .ear{
-  position:absolute;
-  top:-18px;
-  width:45px;
-  height:45px;
-  background:#766bdd;
-  border-radius:15px 35px 10px 35px;
+position:absolute;
+top:-18px;
+width:45px;
+height:45px;
+background:#766bdd;
+border-radius:15px 35px 10px 35px;
+}
+
+.sad .ear{
+background:#555b76;
 }
 
 .ear.l{
-  left:5px;
-  transform:rotate(-20deg);
+left:5px;
+transform:rotate(-20deg);
 }
 
 .ear.r{
-  right:5px;
-  transform:rotate(20deg) scaleX(-1);
+right:5px;
+transform:rotate(20deg) scaleX(-1);
 }
 
 .eye{
-  position:absolute;
-  top:38px;
-  width:12px;
-  height:16px;
-  background:white;
-  border-radius:50%;
+position:absolute;
+top:38px;
+width:12px;
+height:16px;
+background:white;
+border-radius:50%;
 }
 
 .eye:after{
-  content:"";
-  position:absolute;
-  width:5px;
-  height:7px;
-  background:#16182a;
-  border-radius:50%;
-  left:4px;
-  top:5px;
+content:"";
+position:absolute;
+width:5px;
+height:7px;
+background:#16182a;
+border-radius:50%;
+left:4px;
+top:5px;
 }
 
 .eye.l{
-  left:32px;
+left:32px;
 }
 
 .eye.r{
-  right:32px;
+right:32px;
 }
 
 .mouth{
-  position:absolute;
-  top:64px;
-  left:50%;
-  transform:translateX(-50%);
-  width:22px;
-  height:11px;
-  border-bottom:3px solid white;
-  border-radius:50%;
+position:absolute;
+top:64px;
+left:50%;
+transform:translateX(-50%);
+width:22px;
+height:11px;
+border-bottom:3px solid white;
+border-radius:50%;
+}
+
+.sad .mouth{
+border-bottom:0;
+border-top:3px solid white;
+top:70px;
 }
 
 .heart{
-  position:absolute;
-  right:-16px;
-  top:15px;
-  animation:heartbeat 1.8s infinite;
+position:absolute;
+right:-16px;
+top:15px;
+animation:heartbeat 1.8s infinite;
 }
 
 @keyframes heartbeat{
-  50%{
-    transform:scale(1.3);
-  }
+50%{
+transform:scale(1.3);
+}
 }
 
-.pet-sad{
-  filter:grayscale(.3);
+.pet-message{
+font-size:15px;
+font-weight:bold;
+margin:8px 0;
 }
 
-.pet-sad .heart{
-  opacity:.4;
+.pet-status{
+font-size:11px;
+color:var(--muted);
 }
 
 .xp{
-  height:8px;
-  background:#292e46;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:10px;
+height:8px;
+background:#292e46;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
 }
 
 .xp i{
-  display:block;
-  height:100%;
-  width:30%;
-  background:linear-gradient(90deg,#7d73ff,#e58db9);
-  transition:.5s;
+display:block;
+height:100%;
+width:30%;
+background:linear-gradient(90deg,#7d73ff,#e58db9);
+transition:.5s;
 }
-
 
 /* ДЫХАНИЕ */
 
 .breath{
-  text-align:center;
+text-align:center;
 }
 
 .breath-circle{
-  width:155px;
-  height:155px;
-  margin:25px auto;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:
-    radial-gradient(
-      circle,
-      #aaa4ff,
-      #6f64d8 50%,
-      #302c69 72%,
-      transparent 73%
-    );
-  box-shadow:0 0 70px #8177ff55;
-  transition:transform 4s ease-in-out;
+width:155px;
+height:155px;
+margin:25px auto;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:
+radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
+box-shadow:0 0 70px #8177ff55;
+transition:transform 4s ease-in-out;
 }
 
 .breath-circle.expand{
-  transform:scale(1.3);
+transform:scale(1.3);
 }
-
 
 /* ДЕРЕВО */
 
 .tree{
-  height:280px;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-  border-radius:20px;
-  background:radial-gradient(circle,#8277ff15,transparent 60%);
+height:300px;
+position:relative;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:flex-end;
+border-radius:20px;
+background:
+radial-gradient(circle,#8277ff15,transparent 60%);
 }
 
 .trunk{
-  position:absolute;
-  bottom:15px;
-  width:25px;
-  height:135px;
-  border-radius:20px;
-  background:linear-gradient(90deg,#654a3e,#a8785d);
+position:absolute;
+bottom:15px;
+width:25px;
+height:135px;
+border-radius:20px;
+background:linear-gradient(90deg,#654a3e,#a8785d);
 }
 
 .crown{
-  position:absolute;
-  bottom:130px;
-  width:190px;
-  height:120px;
-  border-radius:50%;
-  background:#507b65;
-  box-shadow:
-    -55px 20px 0 #426b58,
-    55px 22px 0 #628d73,
-    0 -25px 0 #639678;
+position:absolute;
+bottom:130px;
+width:190px;
+height:120px;
+border-radius:50%;
+background:#507b65;
+box-shadow:
+-55px 20px 0 #426b58,
+55px 22px 0 #628d73,
+0 -25px 0 #639678;
 }
 
 .leaf{
-  position:absolute;
-  font-size:22px;
-  animation:leaf 3s infinite alternate ease-in-out;
+position:absolute;
+font-size:22px;
+animation:leaf 3s infinite alternate ease-in-out;
 }
 
 @keyframes leaf{
-  to{
-    transform:translateY(-7px) rotate(8deg);
-  }
+to{
+transform:translateY(-7px) rotate(8deg);
+}
 }
 
+/* ДНЕВНИК */
+
+textarea{
+width:100%;
+min-height:150px;
+resize:vertical;
+border-radius:18px;
+padding:14px;
+color:white;
+background:#090c15;
+border:1px solid var(--line);
+outline:none;
+}
+
+textarea:focus{
+border-color:var(--purple);
+box-shadow:0 0 25px #8177ff15;
+}
 
 /* РИСОВАЛКА */
 
-textarea{
-  width:100%;
-  min-height:150px;
-  resize:vertical;
-  border-radius:18px;
-  padding:14px;
-  color:white;
-  background:#090c15;
-  border:1px solid var(--line);
-  outline:none;
-}
-
 .canvas-wrap{
-  background:#080b14;
-  padding:8px;
-  border-radius:20px;
+background:#080b14;
+padding:8px;
+border-radius:20px;
 }
 
 canvas{
-  width:100%;
-  height:300px;
-  background:white;
-  border-radius:14px;
-  display:block;
-  touch-action:none;
+width:100%;
+height:300px;
+background:white;
+border-radius:14px;
+display:block;
+touch-action:none;
 }
 
 .draw-tools{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-  margin-top:8px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px;
+margin-top:8px;
 }
 
 .draw-tools button,
 .filter-btn{
-  padding:10px 3px;
-  color:white;
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:13px;
+padding:10px 3px;
+color:white;
+background:var(--card2);
+border:1px solid var(--line);
+border-radius:13px;
 }
 
-
-/* ПОМОЩЬ */
+/* СООБЩЕНИЯ */
 
 .message{
-  padding:16px;
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:18px;
-  margin-bottom:8px;
-  cursor:pointer;
-  transition:.2s;
+padding:16px;
+background:var(--card2);
+border:1px solid var(--line);
+border-radius:18px;
+margin-bottom:8px;
+cursor:pointer;
+transition:.2s;
 }
 
 .message:hover{
-  transform:translateX(5px);
-  border-color:var(--purple);
+transform:translateX(5px);
+border-color:var(--purple);
 }
-
-.alert{
-  background:#301820;
-  border:1px solid #63303c;
-  padding:16px;
-  border-radius:18px;
-  line-height:1.6;
-}
-
 
 /* РЕСУРСЫ */
 
 .resource{
-  display:flex;
-  gap:13px;
-  align-items:center;
-  color:white;
-  text-decoration:none;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:19px;
-  padding:16px;
-  margin-bottom:9px;
-  transition:.2s;
+display:flex;
+gap:13px;
+align-items:center;
+color:white;
+text-decoration:none;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:19px;
+padding:16px;
+margin-bottom:9px;
+transition:.2s;
 }
 
 .resource:hover{
-  transform:translateX(5px);
-  border-color:var(--purple);
+transform:translateX(5px);
+border-color:var(--purple);
 }
 
 .resource-icon{
-  font-size:29px;
+font-size:29px;
 }
 
 .resource small{
-  display:block;
-  color:var(--muted);
-  margin-top:4px;
+display:block;
+color:var(--muted);
+margin-top:4px;
 }
 
+/* МУЗЫКА */
+
 .music{
-  display:grid;
-  gap:9px;
+display:grid;
+gap:9px;
 }
 
 .music a{
-  display:block;
-  padding:14px;
-  color:white;
-  text-decoration:none;
-  border-radius:16px;
-  background:#20253a;
-  border:1px solid var(--line);
+display:block;
+padding:14px;
+color:white;
+text-decoration:none;
+border-radius:16px;
+background:#20253a;
+border:1px solid var(--line);
 }
 
 .music a:hover{
-  border-color:var(--purple);
+border-color:var(--purple);
 }
-
 
 /* СВЕЧА */
 
 .candle{
-  width:70px;
-  height:100px;
-  margin:20px auto;
-  background:linear-gradient(
-    90deg,
-    #e9e1c4,
-    #fff4ce,
-    #cfc69f
-  );
-  border-radius:10px 10px 7px 7px;
-  position:relative;
-  box-shadow:0 0 25px #ffe7a644;
+width:70px;
+height:100px;
+margin:20px auto;
+background:linear-gradient(
+90deg,
+#e9e1c4,
+#fff4ce,
+#cfc69f
+);
+border-radius:10px 10px 7px 7px;
+position:relative;
+box-shadow:0 0 25px #ffe7a644;
 }
 
 .flame{
-  width:27px;
-  height:42px;
-  position:absolute;
-  left:22px;
-  top:-39px;
-  background:linear-gradient(
-    #fff,
-    #ffb13b,
-    #ff6d36
-  );
-  border-radius:50% 50% 45% 45%;
-  filter:blur(.3px);
-  box-shadow:0 0 35px #ffae3d;
-  animation:flame .7s infinite alternate;
+width:27px;
+height:42px;
+position:absolute;
+left:22px;
+top:-39px;
+background:linear-gradient(#fff,#ffb13b,#ff6d36);
+border-radius:50% 50% 45% 45%;
+box-shadow:0 0 35px #ffae3d;
+animation:flame .7s infinite alternate;
 }
 
 @keyframes flame{
-  to{
-    transform:scale(.85) rotate(4deg);
-  }
+to{
+transform:scale(.85) rotate(4deg);
 }
-
+}
 
 /* КОНВЕРТ */
 
 .envelope{
-  text-align:center;
-  padding:28px;
-  border-radius:22px;
-  background:linear-gradient(145deg,#25294b,#171b30);
-  border:1px solid var(--line);
-  cursor:pointer;
-  transition:.3s;
+text-align:center;
+padding:28px;
+border-radius:22px;
+background:linear-gradient(145deg,#25294b,#171b30);
+border:1px solid var(--line);
+cursor:pointer;
+transition:.3s;
 }
 
 .envelope:hover{
-  transform:scale(1.02);
+transform:scale(1.02);
 }
 
 .envelope-icon{
-  font-size:65px;
-  animation:env 2s infinite ease-in-out;
+font-size:65px;
+animation:env 2s infinite ease-in-out;
 }
 
 @keyframes env{
-  50%{
-    transform:translateY(-7px) rotate(2deg);
-  }
+50%{
+transform:translateY(-7px) rotate(2deg);
+}
 }
 
-
-/* TIMER */
+/* ТАЙМЕР */
 
 .timer{
-  font-size:60px;
-  text-align:center;
-  font-weight:900;
-  margin:15px;
+font-size:60px;
+text-align:center;
+font-weight:900;
+margin:15px;
 }
-
 
 /* FAQ */
 
 .faq{
-  display:grid;
-  gap:8px;
+display:grid;
+gap:8px;
 }
 
 .faq-item{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  overflow:hidden;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:18px;
+overflow:hidden;
 }
 
 .faq-q{
-  width:100%;
-  text-align:left;
-  color:white;
-  background:none;
-  border:0;
-  padding:17px;
-  font-weight:bold;
+width:100%;
+text-align:left;
+color:white;
+background:none;
+border:0;
+padding:17px;
+font-weight:bold;
 }
 
 .faq-a{
-  display:none;
-  padding:0 17px 17px;
-  color:var(--muted);
-  line-height:1.6;
+display:none;
+padding:0 17px 17px;
+color:var(--muted);
+line-height:1.6;
 }
 
 .faq-item.open .faq-a{
-  display:block;
+display:block;
 }
 
+/* ЭКСТРЕННАЯ ПОМОЩЬ */
 
-/* MODAL */
+.alert{
+background:#301820;
+border:1px solid #63303c;
+padding:16px;
+border-radius:18px;
+line-height:1.6;
+}
+
+.help-number{
+text-align:center;
+padding:20px;
+border-radius:22px;
+background:
+radial-gradient(circle at 50% 0%,#8d82ff22,transparent 65%),
+#171b2e;
+border:1px solid #3b4160;
+transition:.3s;
+}
+
+.help-number:hover{
+transform:translateY(-4px);
+border-color:var(--purple);
+}
+
+.help-number .number{
+font-size:30px;
+font-weight:900;
+letter-spacing:1px;
+margin:7px 0;
+}
+
+/* МОДАЛЬНОЕ ОКНО */
 
 .modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  padding:10px;
-  background:#000d;
-  z-index:100;
+position:fixed;
+inset:0;
+display:none;
+align-items:flex-end;
+justify-content:center;
+padding:10px;
+background:#000d;
+z-index:100;
 }
 
 .modal.show{
-  display:flex;
+display:flex;
 }
 
 .sheet{
-  width:min(850px,100%);
-  max-height:92vh;
-  overflow:auto;
-  padding:23px;
-  border-radius:29px;
-  background:#101423;
-  border:1px solid #3b415d;
-  animation:sheet .3s ease;
+width:min(850px,100%);
+max-height:92vh;
+overflow:auto;
+padding:23px;
+border-radius:29px;
+background:#101423;
+border:1px solid #3b415d;
+animation:sheet .3s ease;
 }
 
 @keyframes sheet{
-  from{
-    opacity:0;
-    transform:translateY(50px);
-  }
-  to{
-    opacity:1;
-    transform:none;
-  }
+from{
+opacity:0;
+transform:translateY(50px);
+}
+to{
+opacity:1;
+transform:none;
+}
 }
 
 .close{
-  float:right;
-  color:white;
-  background:#252a40;
-  border:0;
-  border-radius:12px;
-  padding:9px 12px;
+float:right;
+color:white;
+background:#252a40;
+border:0;
+border-radius:12px;
+padding:9px 12px;
 }
 
 .sheet p{
-  color:#bdc2d1;
-  line-height:1.65;
+color:#bdc2d1;
+line-height:1.65;
 }
-
 
 /* ПРОФИЛЬ */
 
 .profile-form{
-  display:grid;
-  gap:10px;
+display:grid;
+gap:10px;
 }
 
 .profile-form input{
-  width:100%;
-  padding:14px;
-  border-radius:15px;
-  border:1px solid var(--line);
-  background:#090c15;
-  color:white;
-  outline:none;
+width:100%;
+padding:14px;
+border-radius:15px;
+border:1px solid var(--line);
+background:#090c15;
+color:white;
+outline:none;
 }
 
 .photo-preview{
-  width:100px;
-  height:100px;
-  border-radius:30px;
-  object-fit:cover;
-  background:#242a43;
-  display:block;
-  margin:5px auto 10px;
+width:100px;
+height:100px;
+border-radius:30px;
+object-fit:cover;
+background:#242a43;
+display:block;
+margin:5px auto 10px;
 }
-
 
 /* СЕКЦИИ */
 
 .section{
-  display:none;
+display:none;
 }
 
 .section.active{
-  display:block;
+display:block;
+animation:sectionIn .35s ease;
 }
 
+@keyframes sectionIn{
+from{
+opacity:0;
+transform:translateY(15px);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
 
 /* НАВИГАЦИЯ */
 
 .nav{
-  position:fixed;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(900px,calc(100% - 20px));
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  padding:7px;
-  gap:4px;
-  background:#0d1120ee;
-  border:1px solid #303650;
-  border-radius:23px;
-  backdrop-filter:blur(20px);
-  z-index:50;
+position:fixed;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:min(900px,calc(100% - 20px));
+display:grid;
+grid-template-columns:repeat(6,1fr);
+padding:7px;
+gap:4px;
+background:#0d1120ee;
+border:1px solid #303650;
+border-radius:23px;
+backdrop-filter:blur(20px);
+z-index:50;
+box-shadow:0 15px 50px #0009;
 }
 
 .nav button{
-  border:0;
-  background:none;
-  color:#777d94;
-  padding:7px 2px;
-  border-radius:16px;
-  font-size:10px;
-  transition:.3s;
+border:0;
+background:none;
+color:#777d94;
+padding:7px 2px;
+border-radius:16px;
+font-size:9px;
+transition:
+background .3s,
+color .3s,
+transform .3s;
 }
 
 .nav button span{
-  display:block;
-  font-size:19px;
-  transition:.3s;
+display:block;
+font-size:19px;
+margin-bottom:2px;
 }
 
 .nav button.active{
-  color:white;
-  background:#29264e;
+color:white;
+background:#29264e;
+transform:translateY(-3px);
 }
-
-.nav button.active span{
-  transform:translateY(-2px) scale(1.08);
-}
-
 
 /* TOAST */
 
 .toast{
-  position:fixed;
-  left:50%;
-  bottom:105px;
-  transform:translate(-50%,20px);
-  opacity:0;
-  background:#252a40;
-  border:1px solid #444b69;
-  padding:12px 18px;
-  border-radius:16px;
-  z-index:1200;
-  transition:.25s;
-  pointer-events:none;
+position:fixed;
+left:50%;
+bottom:105px;
+transform:translate(-50%,20px);
+opacity:0;
+background:#252a40;
+border:1px solid #444b69;
+padding:12px 18px;
+border-radius:16px;
+z-index:200;
+transition:.25s;
+pointer-events:none;
 }
 
 .toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+opacity:1;
+transform:translate(-50%,0);
 }
 
-
-/* СЕКРЕТНАЯ ИСТОРИЯ */
+/* СЕКРЕТ */
 
 .secret-button{
-  position:fixed;
-  right:13px;
-  top:13px;
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  border:1px solid #343952;
-  background:#111526cc;
-  color:#8d82ff;
-  opacity:.2;
-  z-index:80;
-  transition:.4s;
+position:fixed;
+right:13px;
+top:13px;
+width:38px;
+height:38px;
+border-radius:50%;
+border:1px solid #343952;
+background:#111526cc;
+color:#8d82ff;
+opacity:.2;
+z-index:80;
+transition:.4s;
 }
 
 .secret-button:hover{
-  opacity:1;
-  transform:rotate(20deg) scale(1.1);
+opacity:1;
+transform:rotate(20deg) scale(1.1);
 }
 
 .secret-story{
-  position:fixed;
-  inset:0;
-  background:#03040bcc;
-  backdrop-filter:blur(15px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:500;
+position:fixed;
+inset:0;
+background:#03040bcc;
+backdrop-filter:blur(15px);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+z-index:500;
 }
 
 .secret-story.show{
-  display:flex;
+display:flex;
 }
 
 .secret-card{
-  position:relative;
-  width:min(520px,100%);
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      #8178ff22,
-      transparent 45%
-    ),
-    #111525;
-  border:1px solid #343a59;
-  border-radius:30px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 30px 100px #000c;
-  animation:secretIn .5s ease;
+position:relative;
+width:min(520px,100%);
+background:
+radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),
+#111525;
+border:1px solid #343a59;
+border-radius:30px;
+padding:30px;
+text-align:center;
+box-shadow:0 30px 100px #000c;
+animation:secretIn .5s ease;
 }
 
 @keyframes secretIn{
-  from{
-    opacity:0;
-    transform:scale(.8) translateY(30px);
-  }
-  to{
-    opacity:1;
-    transform:none;
-  }
+from{
+opacity:0;
+transform:scale(.8) translateY(30px);
+}
+to{
+opacity:1;
+transform:none;
+}
 }
 
-
-/* ДОПОЛНИТЕЛЬНО */
-
-.small-note{
-  color:#73798c;
-  font-size:11px;
-  line-height:1.6;
-}
+/* ТИШИНА */
 
 body.silent *{
-  animation:none!important;
-  transition:none!important;
+animation:none!important;
+transition:none!important;
 }
 
+/* СВЕТЛАЯ ТЕМА */
+
 body.light{
-  --bg:#e9eaff;
-  --text:#202235;
-  --card:#ffffffdd;
-  --card2:#f2f2ff;
-  --line:#d4d5e7;
-  --muted:#666a80;
-  background:
-    radial-gradient(circle at 20% 0%,#8e85ff55,transparent 30%),
-    #e9eaff;
+--bg:#e9eaff;
+--text:#202235;
+--card:#ffffffdd;
+--card2:#f2f2ff;
+--line:#d4d5e7;
+--muted:#666a80;
+background:
+radial-gradient(circle at 20% 0%,#8e85ff55,transparent 30%),
+#e9eaff;
 }
 
 body.light .hero{
-  background:#ffffffdd;
+background:#ffffffdd;
 }
 
 body.light .status,
 body.light .nav{
-  background:#ffffffdd;
+background:#ffffffdd;
 }
 
-@media(max-width:520px){
+.small-note{
+color:#73798c;
+font-size:11px;
+line-height:1.6;
+}
 
-  .buttons{
-    grid-template-columns:1fr;
-  }
+@media(max-width:600px){
 
-  .grid{
-    grid-template-columns:1fr 1fr;
-  }
+.buttons{
+grid-template-columns:1fr;
+}
 
-  .hero{
-    padding:23px;
-  }
+.grid{
+grid-template-columns:1fr 1fr;
+}
 
-  .moods{
-    gap:4px;
-  }
+.hero{
+padding:23px;
+}
 
-  .mood-labels{
-    font-size:9px;
-  }
+.moods{
+gap:4px;
+}
+
+.mood small{
+font-size:8px;
+}
+
+.nav{
+grid-template-columns:repeat(6,1fr);
+}
+
+.nav button{
+font-size:8px;
+}
+
+.nav button span{
+font-size:17px;
+}
+
+}
+
+@media(max-width:390px){
+
+.nav button span{
+font-size:15px;
+}
+
+.nav button{
+font-size:7px;
+}
 
 }
 </style>
@@ -1300,8 +1317,15 @@ body.light .nav{
 <div class="app">
 
 <header>
-  <div class="logo">рядом<span>.</span></div>
-  <div class="status">🌙 безопасное пространство</div>
+
+<div class="logo">
+рядом<span>.</span>
+</div>
+
+<div class="status">
+🌙 безопасное пространство
+</div>
+
 </header>
 
 
@@ -1309,34 +1333,35 @@ body.light .nav{
 
 <div class="profile">
 
-  <img
-    id="avatar"
-    class="avatar"
-    alt=""
-    style="display:none"
-  >
+<img
+id="avatar"
+class="avatar"
+alt=""
+style="display:none"
+>
 
-  <div id="avatarEmoji" class="avatar">
-    🌙
-  </div>
+<div id="avatarEmoji" class="avatar">
+🌙
+</div>
 
-  <div class="profile-info">
+<div class="profile-info">
 
-    <b id="userName">
-      Привет, незнакомец 💜
-    </b>
+<b id="userName">
+Привет, незнакомец 💜
+</b>
 
-    <small id="profileMood">
-      Здесь можно просто побыть собой.
-    </small>
+<small id="profileMood">
+Здесь можно просто побыть собой.
+</small>
 
-  </div>
+</div>
 
-  <button
-    class="btn secondary"
-    onclick="openProfile()">
-    ⚙️
-  </button>
+<button
+class="btn secondary"
+onclick="openProfile()"
+>
+⚙️
+</button>
 
 </div>
 
@@ -1347,162 +1372,267 @@ body.light .nav{
 
 <div class="hero">
 
-  <h1>
-    Ты не обязан справляться со всем один.
-  </h1>
+<h1>
+Ты не обязан справляться со всем один.
+</h1>
 
-  <p>
-    Это место для подростков, где можно выдохнуть,
-    разобраться в своих чувствах, найти поддержку
-    и сделать маленький шаг.
-  </p>
+<p>
+Это место для подростков, где можно выдохнуть,
+разобраться в своих чувствах, найти поддержку
+и сделать маленький шаг.
+</p>
 
-  <div class="buttons">
+<div class="buttons">
 
-    <button
-      class="btn primary"
-      onclick="showSection('tools')">
-      ✨ Мне сейчас тяжело
-    </button>
+<button
+class="btn primary"
+onclick="showSection('tools')"
+>
+✨ Мне сейчас тяжело
+</button>
 
-    <button
-      class="btn danger"
-      onclick="emergency()">
-      🆘 Мне небезопасно
-    </button>
+<button
+class="btn danger"
+onclick="emergency()"
+>
+🆘 Мне небезопасно
+</button>
 
-  </div>
+</div>
 
 </div>
 
 
-<!-- НОВЫЙ ТРЕКЕР -->
+<!-- ТРЕКЕР -->
 
 <div class="title">
-  <h2>🌈 Как ты себя чувствуешь?</h2>
-  <small id="moodValue">нормально</small>
+
+<h2>
+🎚️ Трекер настроения
+</h2>
+
+<small id="moodLabel">
+выбери настроение
+</small>
+
 </div>
 
-<div class="mood-tracker card">
+<div class="card">
 
-  <div
-    class="mood-face"
-    id="moodFace">
-    😐
-  </div>
+<div class="mood-result" id="sliderEmoji">
+😐
+</div>
 
-  <div class="mood-scale">
+<div
+style="text-align:center;color:var(--muted);font-size:13px"
+id="sliderText"
+>
+Как ты себя чувствуешь?
+</div>
 
-    <span>😞</span>
+<div class="mood-slider-wrap">
 
-    <input
-      type="range"
-      id="moodSlider"
-      min="1"
-      max="10"
-      value="5"
-      oninput="updateMoodTracker(this.value)"
-    >
+<input
+type="range"
+min="0"
+max="100"
+value="50"
+class="mood-slider"
+id="moodSlider"
+oninput="changeSliderMood()"
+>
 
-    <span>🤩</span>
+<div class="slider-labels">
+<span>😞 плохо</span>
+<span>😐 нормально</span>
+<span>😊 отлично</span>
+</div>
 
-  </div>
-
-  <div class="mood-labels">
-    <span>очень плохо</span>
-    <span>отлично</span>
-  </div>
-
-  <p id="moodDescription">
-    Выбери то, что ближе к твоему состоянию сейчас.
-  </p>
-
-  <button
-    class="btn primary full"
-    onclick="saveMoodTracker()">
-    💜 Сохранить настроение
-  </button>
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>💌 Напоминание</h2>
+<h2>Как ты сейчас?</h2>
+<small>быстрый выбор</small>
+</div>
+
+<div class="card">
+
+<div class="moods">
+
+<button class="mood"
+onclick="setMood(this,'очень тяжело','😞')">
+<span>😞</span>
+<small>тяжело</small>
+</button>
+
+<button class="mood"
+onclick="setMood(this,'грустно','😔')">
+<span>😔</span>
+<small>грустно</small>
+</button>
+
+<button class="mood"
+onclick="setMood(this,'нормально','😐')">
+<span>😐</span>
+<small>нормально</small>
+</button>
+
+<button class="mood"
+onclick="setMood(this,'хорошо','🙂')">
+<span>🙂</span>
+<small>хорошо</small>
+</button>
+
+<button class="mood"
+onclick="setMood(this,'отлично','😊')">
+<span>😊</span>
+<small>отлично</small>
+</button>
+
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>💌 Напоминание</h2>
 </div>
 
 <div class="card" id="supportBox">
-  Ты имеешь право на плохой день.
+Ты имеешь право на плохой день.
 </div>
 
 
 <div class="title">
-  <h2>Что тебе сейчас нужно?</h2>
+<h2>Что тебе сейчас нужно?</h2>
 </div>
 
 <div class="grid">
 
-  <div class="card click" onclick="topic('anxiety')">
-    <div class="icon">😰</div>
-    <b>Успокоиться</b>
-    <p>Тревога и напряжение</p>
-  </div>
+<div class="card click" onclick="topic('anxiety')">
+<div class="icon">😰</div>
+<b>Успокоиться</b>
+<p>Тревога и напряжение</p>
+</div>
 
-  <div class="card click" onclick="topic('emotions')">
-    <div class="icon">💭</div>
-    <b>Понять себя</b>
-    <p>Разобраться в чувствах</p>
-  </div>
+<div class="card click" onclick="topic('emotions')">
+<div class="icon">💭</div>
+<b>Понять себя</b>
+<p>Разобраться в чувствах</p>
+</div>
 
-  <div class="card click" onclick="topic('lonely')">
-    <div class="icon">🫂</div>
-    <b>Одиночество</b>
-    <p>Когда хочется кого-то рядом</p>
-  </div>
+<div class="card click" onclick="topic('lonely')">
+<div class="icon">🫂</div>
+<b>Одиночество</b>
+<p>Когда хочется кого-то рядом</p>
+</div>
 
-  <div class="card click" onclick="topic('sleep')">
-    <div class="icon">🌙</div>
-    <b>Уснуть</b>
-    <p>Если мысли не останавливаются</p>
-  </div>
+<div class="card click" onclick="topic('sleep')">
+<div class="icon">🌙</div>
+<b>Уснуть</b>
+<p>Если мысли не останавливаются</p>
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>🌱 Посты</h2>
+<h2>🌱 Посты</h2>
 </div>
 
 <div class="posts">
 
-  <div class="post">
-    <div class="emoji">🌱</div>
-    <h3>Твой темп — нормальный</h3>
-    <p>Ты не обязан успевать всё одновременно.</p>
-  </div>
+<div class="post">
+<div class="emoji">🌱</div>
+<h3>Твой темп — нормальный</h3>
+<p>Ты не обязан успевать всё одновременно.</p>
+</div>
 
-  <div class="post">
-    <div class="emoji">🫶</div>
-    <h3>Можно попросить помощи</h3>
-    <p>Просить поддержки — не слабость.</p>
-  </div>
+<div class="post">
+<div class="emoji">🫶</div>
+<h3>Можно попросить помощи</h3>
+<p>Просить поддержки — не слабость.</p>
+</div>
 
-  <div class="post">
-    <div class="emoji">☁️</div>
-    <h3>Плохой день закончится</h3>
-    <p>Состояние может измениться.</p>
-  </div>
+<div class="post">
+<div class="emoji">☁️</div>
+<h3>Плохой день закончится</h3>
+<p>Состояние может измениться.</p>
+</div>
 
-  <div class="post">
-    <div class="emoji">🌈</div>
-    <h3>Ты больше своего настроения</h3>
-    <p>Одна эмоция не определяет тебя.</p>
-  </div>
+<div class="post">
+<div class="emoji">🌈</div>
+<h3>Ты больше своего настроения</h3>
+<p>Одна эмоция не определяет тебя.</p>
+</div>
 
-  <div class="post">
-    <div class="emoji">🪴</div>
-    <h3>Маленькие шаги считаются</h3>
-    <p>Сегодня достаточно одного.</p>
-  </div>
+<div class="post">
+<div class="emoji">🪴</div>
+<h3>Маленькие шаги считаются</h3>
+<p>Сегодня достаточно одного.</p>
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>🐾 Твой маленький друг</h2>
+</div>
+
+<div class="card pet">
+
+<div class="pet-stage">
+
+<div
+class="pet-body"
+id="petBody"
+>
+
+<div class="ear l"></div>
+<div class="ear r"></div>
+
+<div class="eye l"></div>
+<div class="eye r"></div>
+
+<div class="mouth"></div>
+
+<div class="heart">
+💜
+</div>
+
+</div>
+
+</div>
+
+<div
+class="pet-message"
+id="petMessage"
+>
+Мне хочется поиграть 🥺
+</div>
+
+<div
+class="pet-status"
+id="petStatus"
+>
+Не забудь заглянуть ко мне.
+</div>
+
+<div class="xp">
+<i id="petXp"></i>
+</div>
+
+<br>
+
+<button
+class="btn primary"
+onclick="petAction()"
+>
+🎮 Поиграть с питомцем
+</button>
 
 </div>
 
@@ -1515,176 +1645,193 @@ body.light .nav{
 
 <div class="hero">
 
-  <h1>✨ Комната спокойствия</h1>
+<h1>
+✨ Комната спокойствия
+</h1>
 
-  <p>
-    Не нужно ничего доказывать.
-    Можно просто немного побыть здесь.
-  </p>
+<p>
+Не нужно ничего доказывать.
+Можно просто немного побыть здесь.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>🫂 Побудь со мной</h2>
+<h2>🫂 Побудь здесь</h2>
 </div>
 
 <div class="card" style="text-align:center">
 
-  <p>
-    60 секунд ничего не решай.
-    Просто посиди и подыши.
-  </p>
+<p>
+60 секунд ничего не решай.
+Просто посиди и подыши.
+</p>
 
-  <div class="timer" id="timer">60</div>
+<div class="timer" id="timer">
+60
+</div>
 
-  <button
-    class="btn primary full"
-    onclick="startStay()">
-    Побыть здесь
-  </button>
+<button
+class="btn primary full"
+onclick="startStay()"
+>
+Побыть здесь
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>🌬️ Дышим вместе</h2>
+<h2>🌬️ Дышим вместе</h2>
 </div>
 
 <div class="card breath">
 
-  <p>
-    Следуй за кругом.
-    Не нужно делать слишком глубокий вдох.
-  </p>
+<p>
+Следуй за кругом. Не нужно делать слишком глубокий вдох.
+</p>
 
-  <div
-    class="breath-circle"
-    id="breathCircle">
+<div
+class="breath-circle"
+id="breathCircle"
+>
+<span id="breathText">
+готов?
+</span>
+</div>
 
-    <span id="breathText">
-      готов?
-    </span>
-
-  </div>
-
-  <button
-    class="btn primary full"
-    onclick="startBreathing()">
-    Начать
-  </button>
+<button
+class="btn primary full"
+onclick="startBreathing()"
+>
+Начать
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>💌 Конверт поддержки</h2>
+<h2>💌 Конверт поддержки</h2>
 </div>
 
 <div class="card">
 
-  <div
-    class="envelope"
-    onclick="openEnvelope()">
+<div
+class="envelope"
+onclick="openEnvelope()"
+>
 
-    <div class="envelope-icon">✉️</div>
+<div class="envelope-icon">
+✉️
+</div>
 
-    <h3>Открой письмо</h3>
+<h3>
+Открой письмо
+</h3>
 
-    <p>
-      Внутри может быть именно то,
-      что тебе сейчас нужно.
-    </p>
+<p>
+Внутри может быть именно то,
+что тебе сейчас нужно.
+</p>
 
-  </div>
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>🕯️ Виртуальная свеча</h2>
+<h2>🕯️ Виртуальная свеча</h2>
 </div>
 
 <div class="card" style="text-align:center">
 
-  <div class="candle">
-    <div class="flame" id="flame"></div>
-  </div>
+<div class="candle">
 
-  <p>
-    Можно просто посмотреть на огонь
-    и сделать несколько спокойных вдохов.
-  </p>
+<div
+class="flame"
+id="flame"
+></div>
 
-  <button
-    class="btn secondary"
-    onclick="toggleCandle()">
-    🕯️ Задуть / зажечь
-  </button>
+</div>
+
+<p>
+Можно просто посмотреть на огонь
+и сделать несколько спокойных вдохов.
+</p>
+
+<button
+class="btn secondary"
+onclick="toggleCandle()"
+>
+🕯️ Задуть / зажечь
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>🎨 Рисовалка эмоций</h2>
+<h2>🎨 Рисовалка эмоций</h2>
 </div>
 
 <div class="card">
 
-  <p>
-    Не нужно уметь рисовать.
-    Просто нарисуй то, что чувствуешь.
-  </p>
+<p>
+Не нужно уметь рисовать.
+Просто нарисуй то, что чувствуешь.
+</p>
 
-  <div class="canvas-wrap">
+<div class="canvas-wrap">
 
-    <canvas id="canvas"></canvas>
+<canvas id="canvas"></canvas>
 
-    <div class="draw-tools">
+<div class="draw-tools">
 
-      <button onclick="setBrush(3)">
-        тонко
-      </button>
+<button onclick="setBrush(3)">
+тонко
+</button>
 
-      <button onclick="setBrush(8)">
-        средне
-      </button>
+<button onclick="setBrush(8)">
+средне
+</button>
 
-      <button onclick="setBrush(16)">
-        толсто
-      </button>
+<button onclick="setBrush(16)">
+толсто
+</button>
 
-      <button onclick="clearCanvas()">
-        очистить
-      </button>
+<button onclick="clearCanvas()">
+очистить
+</button>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>📔 Дневник</h2>
+<h2>📔 Дневник</h2>
 </div>
 
 <div class="card">
 
-  <textarea
-    id="journal"
-    placeholder="Напиши то, что сейчас хочется сказать..."></textarea>
+<textarea
+id="journal"
+placeholder="Напиши то, что сейчас хочется сказать..."
+></textarea>
 
-  <button
-    class="btn primary full"
-    style="margin-top:9px"
-    onclick="saveJournal()">
-    💾 Сохранить
-  </button>
+<button
+class="btn primary full"
+style="margin-top:9px"
+onclick="saveJournal()"
+>
+💾 Сохранить
+</button>
 
-  <p class="small-note">
-    Запись хранится только в этом браузере.
-  </p>
+<p class="small-note">
+Запись хранится только в этом браузере.
+</p>
 
 </div>
 
@@ -1697,216 +1844,255 @@ body.light .nav{
 
 <div class="hero">
 
-  <h1>🌳 Дерево настроения</h1>
+<h1>
+🌳 Дерево настроения
+</h1>
 
-  <p>
-    Каждая отметка о себе добавляет новый листик.
-  </p>
+<p>
+Каждая отметка о себе добавляет новый листик.
+</p>
 
 </div>
 
 <div class="title">
 
-  <h2>Твоё дерево</h2>
+<h2>
+Твоё дерево
+</h2>
 
-  <small id="treeCount">
-    0 листиков
-  </small>
+<small id="treeCount">
+0 листиков
+</small>
 
 </div>
 
 <div class="card" style="text-align:center">
 
-  <div
-    class="tree"
-    id="treeVisual">
+<div
+class="tree"
+id="treeVisual"
+>
 
-    <div class="trunk"></div>
-    <div class="crown"></div>
+<div class="trunk"></div>
+<div class="crown"></div>
 
-  </div>
+</div>
 
-  <button
-    class="btn green full"
-    onclick="addTreeLeaf()">
-    🌿 Добавить листик
-  </button>
+<button
+class="btn green full"
+onclick="addTreeLeaf()"
+>
+🌿 Добавить листик
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>🐾 Твой маленький друг</h2>
-</div>
-
-<div class="card pet">
-
-  <div class="pet-stage">
-
-    <div
-      class="pet-body"
-      id="petBody">
-
-      <div class="ear l"></div>
-      <div class="ear r"></div>
-
-      <div class="eye l"></div>
-      <div class="eye r"></div>
-
-      <div class="mouth"></div>
-
-      <div class="heart">
-        💜
-      </div>
-
-    </div>
-
-  </div>
-
-  <h3 id="petStatus">
-    Мне хорошо, когда ты рядом 🥺
-  </h3>
-
-  <p id="petText">
-    Поиграй со мной немного.
-  </p>
-
-  <button
-    class="btn primary"
-    onclick="petAction()">
-    🫶 Поиграть
-  </button>
-
-</div>
-
-
-<div class="title">
-  <h2>🎁 Достижение</h2>
+<h2>🎁 Достижения</h2>
 </div>
 
 <div class="card">
 
-  <h3 id="achievementTitle">
-    🔒 Первый шаг
-  </h3>
+<h3 id="achievementTitle">
+🔒 Первый шаг
+</h3>
 
-  <p id="achievementText">
-    Выбери настроение, чтобы открыть достижение.
-  </p>
+<p id="achievementText">
+Выбери настроение, чтобы открыть достижение.
+</p>
 
 </div>
 
 </section>
 
 
-<!-- БЕЗОПАСНОСТЬ -->
+<!-- ПОМОЩЬ -->
 
 <section id="help" class="section">
 
 <div class="hero">
 
-  <h1>🛟 Ты заслуживаешь помощи.</h1>
+<h1>
+🛟 Ты заслуживаешь помощи.
+</h1>
 
-  <p>
-    Если прямо сейчас тебе небезопасно,
-    не оставайся один/одна.
-    Найди безопасного взрослого или человека,
-    которому доверяешь.
-  </p>
+<p>
+Если прямо сейчас тебе небезопасно,
+не оставайся один/одна.
+Найди безопасного взрослого или другого человека рядом.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>🆘 Непосредственная опасность</h2>
+<h2>📞 Телефон доверия</h2>
 </div>
 
 <div class="card">
 
-  <div class="alert">
+<div class="help-number">
 
-    Если есть непосредственная угроза твоей безопасности,
-    перейди туда, где есть люди, которым ты доверяешь,
-    и скажи, что тебе нужна помощь.
+<div style="font-size:52px">
+💜
+</div>
 
-  </div>
+<h2>
+Детский телефон доверия
+</h2>
 
-  <a
-    href="tel:112"
-    class="btn danger full"
-    style="
-      display:block;
-      text-align:center;
-      text-decoration:none;
-      margin-top:12px;
-    ">
-    📞 Позвонить 112
-  </a>
+<p>
+Если тебе тяжело, страшно, одиноко
+или просто хочется поговорить —
+можно обратиться за поддержкой.
+</p>
+
+<div class="number">
+8-800-2000-122
+</div>
+
+<p>
+Бесплатный телефон доверия для детей,
+подростков и родителей.
+</p>
+
+<a
+href="tel:88002000122"
+class="btn primary full"
+style="display:block;text-decoration:none"
+>
+📞 Позвонить
+</a>
+
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>💬 Что можно сказать?</h2>
+<h2>🆘 Если опасность прямо сейчас</h2>
 </div>
 
 <div class="card">
 
-  <div
-    class="message"
-    onclick="copyMessage(this)">
-    «Мне сейчас очень тяжело. Можешь побыть со мной?»
-  </div>
+<div class="alert">
 
-  <div
-    class="message"
-    onclick="copyMessage(this)">
-    «Мне нужна помощь, но мне сложно объяснить почему.»
-  </div>
+<b>
+Если ты думаешь, что можешь навредить себе
+или тебе прямо сейчас угрожает опасность:
+</b>
 
-  <div
-    class="message"
-    onclick="copyMessage(this)">
-    «Я боюсь оставаться один/одна. Побудь рядом.»
-  </div>
+<br><br>
+
+• перейди туда, где есть люди;<br>
+• позови безопасного взрослого;<br>
+• не оставайся один/одна;<br>
+• попроси вызвать экстренную помощь.
+
+</div>
+
+<a
+href="tel:112"
+class="btn danger full"
+style="
+display:block;
+text-align:center;
+text-decoration:none;
+margin-top:12px;
+font-size:17px;
+"
+>
+🚨 Позвонить 112
+</a>
+
+<p class="small-note">
+112 — единый номер экстренных служб в России.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>🛡️ Буллинг</h2>
+<h2>💬 Что можно сказать взрослому?</h2>
+</div>
+
+<div class="card">
+
+<div
+class="message"
+onclick="copyMessage(this)"
+>
+«Мне сейчас очень тяжело. Можешь побыть со мной?»
+</div>
+
+<div
+class="message"
+onclick="copyMessage(this)"
+>
+«Мне нужна помощь, но мне сложно объяснить почему.»
+</div>
+
+<div
+class="message"
+onclick="copyMessage(this)"
+>
+«Я боюсь оставаться один/одна. Побудь рядом.»
+</div>
+
+<div
+class="message"
+onclick="copyMessage(this)"
+>
+«Я не знаю, что делать. Мне нужна поддержка.»
+</div>
+
+</div>
+
+
+<div class="title">
+<h2>🛡️ Если тебя травят</h2>
 </div>
 
 <div class="grid">
 
-  <div
-    class="card click"
-    onclick="topic('bullying')">
+<div
+class="card click"
+onclick="topic('bullying')"
+>
+<div class="icon">
+🛡️
+</div>
 
-    <div class="icon">🛡️</div>
+<b>
+Буллинг
+</b>
 
-    <b>Буллинг</b>
+<p>
+Ты не виноват в том,
+что тебя травят.
+</p>
 
-    <p>
-      Ты не виноват в том,
-      что тебя травят.
-    </p>
+</div>
 
-  </div>
+<div
+class="card click"
+onclick="topic('cyber')"
+>
 
-  <div
-    class="card click"
-    onclick="topic('cyber')">
+<div class="icon">
+📱
+</div>
 
-    <div class="icon">📱</div>
+<b>
+Кибербуллинг
+</b>
 
-    <b>Кибербуллинг</b>
+<p>
+Что делать при травле онлайн.
+</p>
 
-    <p>
-      Что делать при травле онлайн.
-    </p>
-
-  </div>
+</div>
 
 </div>
 
@@ -1919,118 +2105,210 @@ body.light .nav{
 
 <div class="hero">
 
-  <h1>📱 Забота о себе</h1>
+<h1>
+📱 Забота о себе
+</h1>
 
-  <p>
-    Музыка, сон, настроение
-    и другие инструменты.
-  </p>
+<p>
+Музыка, сон, настроение
+и другие спокойные инструменты.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>🎧 Спокойная музыка</h2>
+<h2>🎧 Музыка</h2>
 </div>
 
 <div class="card music">
 
-  <a
-    href="https://music.yandex.ru/"
-    target="_blank">
-    🎵 Открыть Яндекс Музыку
-  </a>
+<a
+href="https://music.yandex.ru/"
+target="_blank"
+>
+🎵 Яндекс Музыка
+</a>
 
-  <a
-    href="https://vk.com/music"
-    target="_blank">
-    🎧 Открыть VK Музыку
-  </a>
+<a
+href="https://vk.com/music"
+target="_blank"
+>
+🎶 VK Музыка
+</a>
 
-  <p class="small-note">
-    Музыка открывается во внешнем сервисе.
-  </p>
+<a
+href="https://t.me/"
+target="_blank"
+>
+🌙 Telegram
+</a>
+
+<p class="small-note">
+Открываются внешние сервисы.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>🍎 iPhone</h2>
+<h2>🍎 iPhone</h2>
 </div>
 
 <a
-  class="resource"
-  href="https://www.apple.com/health/"
-  target="_blank">
+class="resource"
+href="https://www.apple.com/health/"
+target="_blank"
+>
 
-  <div class="resource-icon">
-    ❤️
-  </div>
+<div class="resource-icon">
+❤️
+</div>
 
-  <div>
-    <b>Apple Health</b>
-    <small>
-      Сон, активность и самочувствие
-    </small>
-  </div>
+<div>
+<b>
+Apple Health
+</b>
+
+<small>
+Сон, активность и самочувствие
+</small>
+
+</div>
 
 </a>
 
 
 <div class="title">
-  <h2>🤖 Android</h2>
+<h2>🤖 Android</h2>
 </div>
 
 <a
-  class="resource"
-  href="https://play.google.com/store/"
-  target="_blank">
+class="resource"
+href="https://play.google.com/store/"
+target="_blank"
+>
 
-  <div class="resource-icon">
-    ▶️
-  </div>
+<div class="resource-icon">
+▶️
+</div>
 
-  <div>
-    <b>Google Play</b>
-    <small>
-      Приложения для заботы о себе
-    </small>
-  </div>
+<div>
+<b>
+Google Play
+</b>
+
+<small>
+Приложения для заботы о себе
+</small>
+
+</div>
 
 </a>
 
 
 <div class="title">
-  <h2>🔇 Режим тишины</h2>
+<h2>🔇 Режим тишины</h2>
 </div>
 
 <div class="card">
 
-  <p>
-    Выключает анимации
-    и делает интерфейс спокойнее.
-  </p>
+<p>
+Выключает большую часть анимаций
+и делает интерфейс спокойнее.
+</p>
 
-  <button
-    class="btn secondary full"
-    onclick="toggleSilent()">
-    🔇 Включить / выключить
-  </button>
+<button
+class="btn secondary full"
+onclick="toggleSilent()"
+>
+🔇 Включить / выключить
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>🌗 Светлый режим</h2>
+<h2>🌗 Тема</h2>
 </div>
 
 <div class="card">
 
-  <button
-    class="btn secondary full"
-    onclick="toggleLight()">
-    🌗 Переключить тему
-  </button>
+<button
+class="btn secondary full"
+onclick="toggleLight()"
+>
+🌗 Переключить тему
+</button>
+
+</div>
+
+</section>
+
+
+<!-- МОЙ ДЕНЬ -->
+
+<section id="day" class="section">
+
+<div class="hero">
+
+<h1>
+📅 Мой день
+</h1>
+
+<p>
+Три маленьких вопроса вместо огромного списка дел.
+</p>
+
+</div>
+
+
+<div class="title">
+<h2>1. Что я чувствую?</h2>
+</div>
+
+<div class="card">
+
+<textarea
+id="dayFeel"
+placeholder="Например: тревогу, усталость, спокойствие..."
+></textarea>
+
+</div>
+
+
+<div class="title">
+<h2>2. Что мне сейчас нужно?</h2>
+</div>
+
+<div class="card">
+
+<textarea
+id="dayNeed"
+placeholder="Отдых? Разговор? Тишина? Поддержка?"
+></textarea>
+
+</div>
+
+
+<div class="title">
+<h2>3. Что я могу сделать сегодня?</h2>
+</div>
+
+<div class="card">
+
+<textarea
+id="dayDo"
+placeholder="Один маленький шаг..."
+></textarea>
+
+<button
+class="btn green full"
+style="margin-top:9px"
+onclick="saveDay()"
+>
+💾 Сохранить мой день
+</button>
 
 </div>
 
@@ -2043,146 +2321,151 @@ body.light .nav{
 
 <div class="hero">
 
-  <h1>🫶 Ещё немного поддержки.</h1>
+<h1>
+🫶 Ещё немного поддержки.
+</h1>
 
-  <p>
-    Здесь не нужно быть идеальным.
-  </p>
+<p>
+Здесь не нужно быть идеальным.
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>💌 Случайная поддержка</h2>
+<h2>💌 Случайная поддержка</h2>
 </div>
 
 <div class="card" style="text-align:center">
 
-  <div style="font-size:40px">
-    💜
-  </div>
+<div style="font-size:40px">
+💜
+</div>
 
-  <h3 id="randomText">
-    Ты можешь идти маленькими шагами.
-  </h3>
+<h3 id="randomText">
+Ты можешь идти маленькими шагами.
+</h3>
 
-  <button
-    class="btn primary"
-    onclick="randomSupport()">
-    ✨ Ещё одну
-  </button>
+<button
+class="btn primary"
+onclick="randomSupport()"
+>
+✨ Ещё одну
+</button>
 
 </div>
 
 
 <div class="title">
-  <h2>❓ Частые вопросы</h2>
+<h2>❓ Частые вопросы</h2>
 </div>
 
 <div class="faq">
 
-  <div class="faq-item">
+<div class="faq-item">
 
-    <button
-      class="faq-q"
-      onclick="faq(this)">
-      Почему я тревожусь? ＋
-    </button>
+<button
+class="faq-q"
+onclick="faq(this)"
+>
+Почему я тревожусь? ＋
+</button>
 
-    <div class="faq-a">
-      Тревога может появляться из-за стресса,
-      усталости, конфликтов, изменений
-      или неопределённости.
-      Это не означает, что с тобой что-то не так.
-    </div>
+<div class="faq-a">
+Тревога может появляться из-за стресса,
+усталости, конфликтов, изменений или неопределённости.
+Это не означает, что с тобой что-то не так.
+</div>
 
-  </div>
-
-
-  <div class="faq-item">
-
-    <button
-      class="faq-q"
-      onclick="faq(this)">
-      Нормально ли плакать? ＋
-    </button>
-
-    <div class="faq-a">
-      Да. Плач может быть естественной реакцией
-      на сильные эмоции и напряжение.
-    </div>
-
-  </div>
+</div>
 
 
-  <div class="faq-item">
+<div class="faq-item">
 
-    <button
-      class="faq-q"
-      onclick="faq(this)">
-      Как попросить помощи? ＋
-    </button>
+<button
+class="faq-q"
+onclick="faq(this)"
+>
+Нормально ли плакать? ＋
+</button>
 
-    <div class="faq-a">
-      Можно начать очень просто:
-      «Мне сейчас тяжело, и мне нужна помощь».
-      Не обязательно сразу всё объяснять.
-    </div>
+<div class="faq-a">
+Да. Плач может быть естественной реакцией
+на сильные эмоции и напряжение.
+</div>
 
-  </div>
+</div>
+
+
+<div class="faq-item">
+
+<button
+class="faq-q"
+onclick="faq(this)"
+>
+Как попросить помощи? ＋
+</button>
+
+<div class="faq-a">
+Можно начать очень просто:
+«Мне сейчас тяжело, и мне нужна помощь».
+Не обязательно сразу всё объяснять.
+</div>
+
+</div>
 
 </div>
 
 
 <div class="title">
-  <h2>🌱 Маленькое правило</h2>
+<h2>🌱 Маленькое правило</h2>
 </div>
 
 <div class="card">
 
-  <p>
-    Сегодня не обязательно изменить
-    всю жизнь.
-  </p>
+<p>
+Сегодня не обязательно изменить всю жизнь.
+Иногда достаточно:
+</p>
 
-  <p>
-    💧 выпить воды<br>
-    🌬️ сделать несколько спокойных выдохов<br>
-    🫂 написать кому-нибудь<br>
-    🌙 немного отдохнуть
-  </p>
+<p>
+💧 выпить воды<br>
+🌬️ сделать несколько спокойных выдохов<br>
+🫂 написать кому-нибудь<br>
+🌙 немного отдохнуть
+</p>
 
 </div>
 
 
 <div class="title">
-  <h2>👨‍👩‍👧 Для взрослых рядом</h2>
+<h2>👨‍👩‍👧 Для взрослых рядом</h2>
 </div>
 
 <div class="card">
 
-  <p>
-    Если рядом с вами подросток,
-    которому тяжело, сначала попробуйте
-    выслушать его без осуждения.
-  </p>
+<p>
+Если рядом с вами подросток, которому тяжело,
+сначала попробуйте выслушать его без осуждения.
+</p>
 
-  <p>
-    «Я рядом».<br>
-    «Я тебя слышу».<br>
-    «Ты можешь рассказать мне».<br>
-    «Давай разберёмся вместе».
-  </p>
+<p>
+«Я рядом».<br>
+«Я тебя слышу».<br>
+«Ты можешь рассказать мне».<br>
+«Давай разберёмся вместе».
+</p>
 
 </div>
 
 
-<p class="small-note" style="margin-top:30px">
-
-  «Рядом» — информационный проект поддержки.
-  Он не ставит диагнозы и не заменяет врача,
-  психолога или экстренную помощь.
-
+<p
+class="small-note"
+style="margin-top:30px"
+>
+«Рядом» — информационный проект поддержки.
+Он не ставит диагнозы и не заменяет врача,
+психолога или экстренную помощь.
 </p>
 
 </section>
@@ -2194,1317 +2477,1105 @@ body.light .nav{
 
 <nav class="nav">
 
-  <button
-    class="active"
-    onclick="showSection('home',this)">
-    <span>⌂</span>
-    Главная
-  </button>
+<button
+class="active"
+onclick="showSection('home',this)"
+>
+<span>⌂</span>
+Главная
+</button>
 
-  <button
-    onclick="showSection('tools',this)">
-    <span>✨</span>
-    Помощь
-  </button>
+<button
+onclick="showSection('tools',this)"
+>
+<span>✨</span>
+Помощь
+</button>
 
-  <button
-    onclick="showSection('tree',this)">
-    <span>🌳</span>
-    Дерево
-  </button>
+<button
+onclick="showSection('tree',this)"
+>
+<span>🌳</span>
+Дерево
+</button>
 
-  <button
-    onclick="showSection('help',this)">
-    <span>🛟</span>
-    Безопасность
-  </button>
+<button
+onclick="showSection('help',this)"
+>
+<span>🛟</span>
+Безопасность
+</button>
 
-  <button
-    onclick="showSection('useful',this)">
-    <span>📱</span>
-    Полезное
-  </button>
+<button
+onclick="showSection('useful',this)"
+>
+<span>📱</span>
+Полезное
+</button>
+
+<button
+onclick="showSection('more',this)"
+>
+<span>🫶</span>
+Ещё
+</button>
 
 </nav>
 
 
-<!-- СЕКРЕТНАЯ КНОПКА -->
+<!-- СЕКРЕТ -->
 
 <button
-  class="secret-button"
-  onclick="openSecret()">
-  🌙
+class="secret-button"
+onclick="openSecret()"
+>
+🌙
 </button>
 
+<div
+class="secret-story"
+id="secretStory"
+>
 
-<!-- СЕКРЕТНАЯ ИСТОРИЯ -->
+<div class="secret-card">
+
+<button
+class="close"
+onclick="closeSecret()"
+>
+×
+</button>
+
+<div style="font-size:55px">
+🌙
+</div>
+
+<h2>
+Небольшая секретная история
+</h2>
+
+<p>
+Этот сайт создал <b>17-летний подросток</b>.
+</p>
+
+<p>
+Не потому, что у него есть ответы на всё.
+А потому, что иногда самому подростку
+очень хочется услышать простое:
+</p>
 
 <div
-  class="secret-story"
-  id="secretStory">
+style="
+padding:18px;
+border-radius:20px;
+background:#7169ff14;
+border:1px solid #7169ff35;
+font-weight:bold;
+"
+>
+«Ты не один.
+Давай попробуем справиться
+с этим вместе.»
+</div>
 
-  <div class="secret-card">
+<p>
+Этот проект появился из желания сделать место,
+куда подросток может зайти без страха,
+осуждения и необходимости притворяться,
+что всё хорошо.
+</p>
 
-    <button
-      class="close"
-      onclick="closeSecret()">
-      ×
-    </button>
+<div style="font-size:30px">
+💜
+</div>
 
-    <div style="font-size:55px">
-      🌙
-    </div>
+<small>
+Сделано подростком для подростков.
+</small>
 
-    <h2>
-      Небольшая секретная история
-    </h2>
-
-    <p>
-      Этот сайт создал
-      <b>17-летний подросток</b>.
-    </p>
-
-    <p>
-      Не потому, что у него есть ответы
-      на всё. А потому, что иногда самому
-      подростку очень хочется услышать:
-    </p>
-
-    <div style="
-      padding:18px;
-      border-radius:20px;
-      background:#7169ff14;
-      border:1px solid #7169ff35;
-      font-weight:bold;
-    ">
-      «Ты не один.
-      Давай попробуем справиться
-      с этим вместе.»
-    </div>
-
-    <p>
-      Этот проект появился из желания
-      сделать место, куда подросток
-      может зайти без страха,
-      осуждения и необходимости
-      притворяться, что всё хорошо.
-    </p>
-
-    <div style="font-size:30px">
-      💜
-    </div>
-
-    <small>
-      Сделано подростком для подростков.
-    </small>
-
-  </div>
+</div>
 
 </div>
 
 
-<!-- ОБЫЧНОЕ МОДАЛЬНОЕ ОКНО -->
+<!-- МОДАЛЬНОЕ ОКНО -->
 
 <div
-  class="modal"
-  id="modal">
+class="modal"
+id="modal"
+>
 
-  <div class="sheet">
+<div class="sheet">
 
-    <button
-      class="close"
-      onclick="closeModal()">
-      Закрыть
-    </button>
+<button
+class="close"
+onclick="closeModal()"
+>
+Закрыть
+</button>
 
-    <div id="modalContent"></div>
-
-  </div>
+<div id="modalContent"></div>
 
 </div>
-
-
-<!-- НОВОЕ ОКНО ТРЕКЕРА -->
-
-<div
-  class="mood-support"
-  id="moodSupport">
-
-  <div class="mood-support-card">
-
-    <div class="mood-support-icon">
-      🫂
-    </div>
-
-    <h2>
-      Всё настолько плохо?
-    </h2>
-
-    <p>
-      Поделись своими переживаниями
-      и мыслями. Не обязательно подбирать
-      правильные слова — можешь просто
-      написать то, что сейчас внутри.
-    </p>
-
-    <div class="mood-support-buttons">
-
-      <button
-        class="btn primary"
-        onclick="openMoodJournal()">
-        💭 Рассказать, что происходит
-      </button>
-
-      <button
-        class="btn secondary"
-        onclick="closeMoodSupport()">
-        🌙 Пока просто побуду здесь
-      </button>
-
-    </div>
-
-  </div>
 
 </div>
 
 
 <div
-  class="toast"
-  id="toast">
+class="toast"
+id="toast"
+>
 </div>
 
 
 <script>
 
-/* =========================
-   ЗВЁЗДЫ
-========================= */
+/* ЗВЁЗДЫ */
 
-const stars =
-  document.getElementById("stars");
+const stars=document.getElementById("stars");
 
 for(let i=0;i<120;i++){
 
-  const s =
-    document.createElement("i");
+const s=document.createElement("i");
 
-  s.className="star";
+s.className="star";
 
-  s.style.left =
-    Math.random()*100+"%";
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+s.style.animationDelay=Math.random()*5+"s";
 
-  s.style.top =
-    Math.random()*100+"%";
-
-  s.style.animationDelay =
-    Math.random()*5+"s";
-
-  stars.appendChild(s);
+stars.appendChild(s);
 
 }
 
 
+/* ПАДАЮЩИЕ ЗВЁЗДЫ */
+
 setInterval(()=>{
 
-  if(
-    document.body
-    .classList
-    .contains("silent")
-  ) return;
+if(document.body.classList.contains("silent"))
+return;
 
-  const x =
-    document.createElement("div");
+const x=document.createElement("div");
 
-  x.className="shooting";
+x.className="shooting";
 
-  x.style.left =
-    (50+Math.random()*50)+"%";
+x.style.left=(50+Math.random()*50)+"%";
+x.style.top=Math.random()*45+"%";
 
-  x.style.top =
-    Math.random()*45+"%";
+document.body.appendChild(x);
 
-  document.body.appendChild(x);
-
-  setTimeout(
-    ()=>x.remove(),
-    1600
-  );
+setTimeout(()=>{
+x.remove();
+},1600);
 
 },7000);
 
 
-/* =========================
-   НАВИГАЦИЯ
-========================= */
+/* НАВИГАЦИЯ */
 
 function showSection(id,button){
 
-  document
-    .querySelectorAll(".section")
-    .forEach(x=>{
-      x.classList.remove("active");
-    });
+document.querySelectorAll(".section")
+.forEach(x=>x.classList.remove("active"));
 
-  const section =
-    document.getElementById(id);
+document.getElementById(id)
+.classList.add("active");
 
-  if(section){
-    section.classList.add("active");
-  }
+document.querySelectorAll(".nav button")
+.forEach(x=>x.classList.remove("active"));
 
-  document
-    .querySelectorAll(".nav button")
-    .forEach(x=>{
-      x.classList.remove("active");
-    });
+if(button)
+button.classList.add("active");
 
-  if(button){
-    button.classList.add("active");
-  }
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
 }
 
 
-/* =========================
-   ПРОФИЛЬ
-========================= */
+/* ПРОФИЛЬ */
 
 function openProfile(){
 
-  document.getElementById(
-    "modalContent"
-  ).innerHTML=`
+document.getElementById("modalContent").innerHTML=`
 
-    <h2>👤 Мой профиль</h2>
+<h2>👤 Мой профиль</h2>
 
-    <img
-      id="preview"
-      class="photo-preview"
-      src="${localStorage.getItem("avatar")||""}"
-      style="${
-        localStorage.getItem("avatar")
-        ? ""
-        : "display:none"
-      }">
+<img
+id="preview"
+class="photo-preview"
+src="${localStorage.getItem("avatar")||""}"
+style="${localStorage.getItem("avatar")?"":"display:none"}"
+>
 
-    <div class="profile-form">
+<div class="profile-form">
 
-      <input
-        id="nameInput"
-        placeholder="Как тебя называть?"
-        value="${
-          localStorage.getItem("name")||""
-        }">
+<input
+id="nameInput"
+placeholder="Как тебя называть?"
+value="${localStorage.getItem("name")||""}"
+>
 
-      <input
-        id="photoInput"
-        type="file"
-        accept="image/*"
-        onchange="previewPhoto(event)">
+<input
+id="photoInput"
+type="file"
+accept="image/*"
+onchange="previewPhoto(event)"
+>
 
-      <button
-        class="btn primary"
-        onclick="saveProfile()">
-        💾 Сохранить
-      </button>
+<button
+class="btn primary"
+onclick="saveProfile()"
+>
+💾 Сохранить
+</button>
 
-    </div>
+</div>
 
-    <p class="small-note">
-      Имя и фотография сохраняются
-      только в этом браузере.
-    </p>
-  `;
+<p class="small-note">
+Имя и фотография сохраняются только
+в этом браузере.
+</p>
+`;
 
-  document
-    .getElementById("modal")
-    .classList.add("show");
+document.getElementById("modal")
+.classList.add("show");
 
 }
 
 
 function previewPhoto(e){
 
-  const file =
-    e.target.files[0];
+const file=e.target.files[0];
 
-  if(!file) return;
+if(!file)
+return;
 
-  const reader =
-    new FileReader();
+const reader=new FileReader();
 
-  reader.onload=()=>{
+reader.onload=()=>{
 
-    document.getElementById(
-      "preview"
-    ).src=reader.result;
+const preview=document.getElementById("preview");
 
-    document.getElementById(
-      "preview"
-    ).style.display="block";
+preview.src=reader.result;
+preview.style.display="block";
 
-  };
+};
 
-  reader.readAsDataURL(file);
+reader.readAsDataURL(file);
 
 }
 
 
 function saveProfile(){
 
-  const name =
-    document
-      .getElementById("nameInput")
-      .value
-      .trim();
+const name=
+document.getElementById("nameInput")
+.value.trim();
 
-  if(name){
-    localStorage.setItem(
-      "name",
-      name
-    );
-  }
+if(name)
+localStorage.setItem("name",name);
 
-  const preview =
-    document.getElementById(
-      "preview"
-    );
+const preview=
+document.getElementById("preview");
 
-  if(
-    preview.src &&
-    preview.style.display!=="none" &&
-    preview.src.startsWith("data:")
-  ){
+if(
+preview.src &&
+preview.style.display!=="none" &&
+preview.src.startsWith("data:")
+){
 
-    localStorage.setItem(
-      "avatar",
-      preview.src
-    );
+localStorage.setItem(
+"avatar",
+preview.src
+);
 
-  }
+}
 
-  loadProfile();
+loadProfile();
 
-  closeModal();
+closeModal();
 
-  toast("Профиль сохранён 💜");
+toast("Профиль сохранён 💜");
 
 }
 
 
 function loadProfile(){
 
-  const name =
-    localStorage.getItem("name");
+const name=
+localStorage.getItem("name");
 
-  if(name){
+if(name){
 
-    document.getElementById(
-      "userName"
-    ).textContent =
-      "Привет, "+name+" 💜";
+document.getElementById("userName")
+.textContent=
+"Привет, "+name+" 💜";
 
-  }
+}
 
-  const avatar =
-    localStorage.getItem("avatar");
+const avatar=
+localStorage.getItem("avatar");
 
-  if(avatar){
+if(avatar){
 
-    document.getElementById(
-      "avatar"
-    ).src=avatar;
+document.getElementById("avatar").src=avatar;
 
-    document.getElementById(
-      "avatar"
-    ).style.display="block";
+document.getElementById("avatar")
+.style.display="block";
 
-    document.getElementById(
-      "avatarEmoji"
-    ).style.display="none";
+document.getElementById("avatarEmoji")
+.style.display="none";
 
-  }
+}
 
 }
 
 loadProfile();
 
 
-/* =========================
-   ТРЕКЕР НАСТРОЕНИЯ
-========================= */
+/* НАСТРОЕНИЕ */
 
-const moodData={
+const moodMessages={
 
-  1:{
-    emoji:"😭",
-    label:"очень плохо",
-    text:
-      "Похоже, сейчас тебе действительно непросто. Не обязательно оставаться с этим одному."
-  },
+"очень тяжело":
+"Сегодня можно просто пережить этот день. Маленькими шагами.",
 
-  2:{
-    emoji:"😢",
-    label:"плохо",
-    text:
-      "Похоже, сегодня тяжёлый день. Можно немного остановиться и позаботиться о себе."
-  },
+"грустно":
+"Тебе не обязательно заставлять себя быть весёлым.",
 
-  3:{
-    emoji:"😞",
-    label:"тяжеловато",
-    text:
-      "Что-то тебя тревожит. Попробуй дать себе немного времени."
-  },
+"нормально":
+"Иногда нормальный день — уже хороший результат.",
 
-  4:{
-    emoji:"😔",
-    label:"не очень",
-    text:
-      "Не лучший момент — и это нормально. Давай попробуем сделать его немного легче."
-  },
+"хорошо":
+"Рад, что сегодня немного легче 🌱",
 
-  5:{
-    emoji:"😐",
-    label:"нормально",
-    text:
-      "Нейтральное состояние тоже состояние. Не нужно заставлять себя чувствовать что-то другое."
-  },
-
-  6:{
-    emoji:"🙂",
-    label:"неплохо",
-    text:
-      "Кажется, становится немного легче 🌱"
-  },
-
-  7:{
-    emoji:"😊",
-    label:"хорошо",
-    text:
-      "Рад, что сейчас тебе немного лучше."
-  },
-
-  8:{
-    emoji:"😄",
-    label:"хорошо",
-    text:
-      "Похоже, сегодня есть хорошие моменты ✨"
-  },
-
-  9:{
-    emoji:"🥰",
-    label:"очень хорошо",
-    text:
-      "Пусть это хорошее состояние немного побудет с тобой."
-  },
-
-  10:{
-    emoji:"🤩",
-    label:"отлично",
-    text:
-      "Сегодня отличный день! Запомни это ощущение 💜"
-  }
+"отлично":
+"Сохрани это ощущение. Ты заслуживаешь хороших моментов."
 
 };
 
 
-let currentMood=5;
+function setMood(el,text,emoji){
 
+document.querySelectorAll(".mood")
+.forEach(x=>x.classList.remove("active"));
 
-function updateMoodTracker(value){
+el.classList.add("active");
 
-  currentMood =
-    Number(value);
+document.getElementById("moodLabel")
+.textContent=emoji+" "+text;
 
-  const data =
-    moodData[currentMood];
+document.getElementById("supportBox")
+.textContent=moodMessages[text];
 
-  const face =
-    document.getElementById(
-      "moodFace"
-    );
+document.getElementById("profileMood")
+.textContent="Сегодня: "+emoji+" "+text;
 
-  const label =
-    document.getElementById(
-      "moodValue"
-    );
+localStorage.setItem("mood",text);
 
-  const description =
-    document.getElementById(
-      "moodDescription"
-    );
+addTreeLeaf(emoji);
 
-  face.textContent =
-    data.emoji;
+updateAchievement();
 
-  label.textContent =
-    data.label;
+if(text==="очень тяжело" || text==="грустно"){
 
-  description.textContent =
-    data.text;
+showMoodSupport();
 
-  face.classList.remove(
-    "changed"
-  );
+}
 
-  void face.offsetWidth;
-
-  face.classList.add(
-    "changed"
-  );
+toast("Настроение сохранено ❤️");
 
 }
 
 
-function saveMoodTracker(){
+/* ПОЛЗУНОК */
 
-  localStorage.setItem(
-    "moodTracker",
-    currentMood
-  );
+function changeSliderMood(){
 
-  localStorage.setItem(
-    "moodTrackerDate",
-    new Date().toISOString()
-  );
+const slider=
+document.getElementById("moodSlider");
 
-  document.getElementById(
-    "profileMood"
-  ).textContent =
-    "Сегодня: "+
-    moodData[currentMood].emoji+
-    " "+
-    moodData[currentMood].label;
+const value=
+Number(slider.value);
 
+let emoji;
+let text;
 
-  if(currentMood<=2){
+if(value<=20){
 
-    openMoodSupport();
+emoji="😞";
+text="Очень тяжело";
 
-  }else{
+}
+else if(value<=40){
 
-    toast(
-      "Настроение сохранено "+
-      moodData[currentMood].emoji
-    );
+emoji="😔";
+text="Грустно";
 
-    addTreeLeaf(
-      moodData[currentMood].emoji
-    );
+}
+else if(value<=60){
 
-  }
+emoji="😐";
+text="Нормально";
+
+}
+else if(value<=80){
+
+emoji="🙂";
+text="Хорошо";
+
+}
+else{
+
+emoji="😊";
+text="Отлично";
+
+}
+
+document.getElementById("sliderEmoji")
+.textContent=emoji;
+
+document.getElementById("sliderText")
+.textContent=text;
+
+if(value<=20){
+
+showMoodSupport();
+
+}
+
+localStorage.setItem("sliderMood",value);
 
 }
 
 
-function loadMoodTracker(){
+function showMoodSupport(){
 
-  const saved =
-    Number(
-      localStorage.getItem(
-        "moodTracker"
-      )
-    );
+document.getElementById("modalContent").innerHTML=`
 
-  if(
-    saved>=1 &&
-    saved<=10
-  ){
+<div style="text-align:center">
 
-    const slider =
-      document.getElementById(
-        "moodSlider"
-      );
+<div style="font-size:60px">
+💜
+</div>
 
-    slider.value=saved;
+<h2>
+Всё настолько плохо?
+</h2>
 
-    updateMoodTracker(saved);
+<p>
+Поделись своими переживаниями и мыслями.
+Я постараюсь помочь.
+</p>
 
-  }
+<textarea
+id="moodThought"
+placeholder="Напиши, что сейчас происходит..."
+style="margin-top:10px"
+></textarea>
 
-}
+<button
+class="btn primary full"
+style="margin-top:10px"
+onclick="saveMoodThought()"
+>
+💌 Поделиться
+</button>
 
-loadMoodTracker();
+<button
+class="btn secondary full"
+style="margin-top:8px"
+onclick="closeModal()"
+>
+Я пока просто побуду здесь
+</button>
 
+</div>
+`;
 
-/* =========================
-   ОКНО ПОДДЕРЖКИ
-========================= */
-
-function openMoodSupport(){
-
-  document
-    .getElementById("moodSupport")
-    .classList
-    .add("show");
-
-}
-
-
-function closeMoodSupport(){
-
-  document
-    .getElementById("moodSupport")
-    .classList
-    .remove("show");
+document.getElementById("modal")
+.classList.add("show");
 
 }
 
 
-function openMoodJournal(){
+function saveMoodThought(){
 
-  closeMoodSupport();
+const text=
+document.getElementById("moodThought")
+.value.trim();
 
-  showSection("tools");
+if(text){
 
-  setTimeout(()=>{
+localStorage.setItem("moodThought",text);
 
-    const journal =
-      document.getElementById(
-        "journal"
-      );
+}
 
-    if(journal){
+closeModal();
 
-      journal.focus();
-
-      journal.placeholder =
-        "Напиши всё, что сейчас происходит. Здесь можно говорить честно...";
-
-      journal.scrollIntoView({
-        behavior:"smooth",
-        block:"center"
-      });
-
-    }
-
-  },350);
+toast(
+"Спасибо, что поделился/поделилась 💜"
+);
 
 }
 
 
-/* =========================
-   ТЕМЫ
-========================= */
+/* ТЕМЫ */
 
 const topics={
 
-  anxiety:[
-    "😰 Тревога",
-    "Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
-  ],
+anxiety:[
+"😰 Тревога",
+"Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
+],
 
-  emotions:[
-    "💭 Эмоции",
-    "Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
-  ],
+emotions:[
+"💭 Эмоции",
+"Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
+],
 
-  lonely:[
-    "🫂 Одиночество",
-    "Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
-  ],
+lonely:[
+"🫂 Одиночество",
+"Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
+],
 
-  sleep:[
-    "🌙 Сон",
-    "Если мысли не дают уснуть, приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
-  ],
+sleep:[
+"🌙 Сон",
+"Если мысли не дают уснуть, приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
+],
 
-  bullying:[
-    "🛡️ Буллинг",
-    "Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
-  ],
+bullying:[
+"🛡️ Буллинг",
+"Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
+],
 
-  cyber:[
-    "📱 Кибербуллинг",
-    "При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
-  ]
+cyber:[
+"📱 Кибербуллинг",
+"При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
+]
 
 };
 
 
 function topic(id){
 
-  document.getElementById(
-    "modalContent"
-  ).innerHTML=`
+document.getElementById("modalContent").innerHTML=`
 
-    <h2>${topics[id][0]}</h2>
+<h2>${topics[id][0]}</h2>
 
-    <p>${topics[id][1]}</p>
+<p>
+${topics[id][1]}
+</p>
 
-    <button
-      class="btn primary full"
-      onclick="closeModal()">
-      Я понял
-    </button>
-  `;
+<button
+class="btn primary full"
+onclick="closeModal()"
+>
+Я понял
+</button>
 
-  document
-    .getElementById("modal")
-    .classList
-    .add("show");
+`;
+
+document.getElementById("modal")
+.classList.add("show");
 
 }
 
 
-/* =========================
-   ЭКСТРЕННАЯ ПОМОЩЬ
-========================= */
+/* ЭКСТРЕННАЯ ПОМОЩЬ */
 
 function emergency(){
 
-  document.getElementById(
-    "modalContent"
-  ).innerHTML=`
+document.getElementById("modalContent").innerHTML=`
 
-    <h2>
-      🛟 Сейчас главное — безопасность
-    </h2>
+<h2>
+🛟 Сейчас главное — безопасность
+</h2>
 
-    <div class="alert">
+<div class="alert">
 
-      Если ты думаешь, что можешь
-      навредить себе или тебе угрожает
-      непосредственная опасность,
-      не оставайся один/одна.
+Если ты думаешь, что можешь навредить себе
+или тебе угрожает непосредственная опасность,
+не оставайся один/одна.
 
-      Перейди к безопасному человеку
-      и скажи, что тебе нужна помощь.
+Перейди к безопасному человеку
+и скажи, что тебе нужна помощь.
 
-    </div>
+</div>
 
-    <p>
-      Можно просто показать ему
-      этот экран, если сложно говорить.
-    </p>
+<p>
+Можно просто показать ему этот экран,
+если сложно говорить.
+</p>
 
-    <a
-      href="tel:112"
-      class="btn danger full"
-      style="
-        display:block;
-        text-align:center;
-        text-decoration:none;
-      ">
-      📞 Позвонить 112
-    </a>
-  `;
+<a
+href="tel:112"
+class="btn danger full"
+style="
+display:block;
+text-align:center;
+text-decoration:none;
+"
+>
+📞 Позвонить 112
+</a>
 
-  document
-    .getElementById("modal")
-    .classList
-    .add("show");
+<br>
+
+<a
+href="tel:88002000122"
+class="btn primary full"
+style="
+display:block;
+text-align:center;
+text-decoration:none;
+"
+>
+💜 Позвонить на телефон доверия
+</a>
+`;
+
+document.getElementById("modal")
+.classList.add("show");
 
 }
 
 
-/* =========================
-   ПАУЗА
-========================= */
+/* ПОБЫТЬ ЗДЕСЬ */
 
 let stayInterval;
 
 function startStay(){
 
-  clearInterval(stayInterval);
+clearInterval(stayInterval);
 
-  let n=60;
+let n=60;
 
-  document.getElementById(
-    "timer"
-  ).textContent=n;
+document.getElementById("timer")
+.textContent=n;
 
-  stayInterval =
-    setInterval(()=>{
+stayInterval=setInterval(()=>{
 
-      n--;
+n--;
 
-      document.getElementById(
-        "timer"
-      ).textContent=n;
+document.getElementById("timer")
+.textContent=n;
 
-      if(n<=0){
+if(n<=0){
 
-        clearInterval(
-          stayInterval
-        );
+clearInterval(stayInterval);
 
-        document.getElementById(
-          "timer"
-        ).textContent="❤️";
+document.getElementById("timer")
+.textContent="❤️";
 
-        toast(
-          "Ты сделал маленькую паузу."
-        );
+toast(
+"Ты сделал маленькую паузу."
+);
 
-      }
+}
 
-    },1000);
+},1000);
 
 }
 
 
-/* =========================
-   ДЫХАНИЕ
-========================= */
+/* ДЫХАНИЕ */
 
 let breathing=false;
 
 function startBreathing(){
 
-  if(breathing)return;
+if(breathing)
+return;
 
-  breathing=true;
+breathing=true;
 
-  const circle =
-    document.getElementById(
-      "breathCircle"
-    );
+const circle=
+document.getElementById("breathCircle");
 
-  const text =
-    document.getElementById(
-      "breathText"
-    );
+const text=
+document.getElementById("breathText");
 
-  let count=0;
+let count=0;
 
-  function cycle(){
+function cycle(){
 
-    if(count>=4){
+if(count>=4){
 
-      text.textContent =
-        "готово ❤️";
+text.textContent="готово ❤️";
 
-      circle.classList.remove(
-        "expand"
-      );
+circle.classList.remove("expand");
 
-      breathing=false;
+breathing=false;
 
-      return;
-    }
+return;
 
-    text.textContent="вдох";
+}
 
-    circle.classList.add(
-      "expand"
-    );
+text.textContent="вдох";
 
-    setTimeout(()=>{
+circle.classList.add("expand");
 
-      text.textContent="выдох";
+setTimeout(()=>{
 
-      circle.classList.remove(
-        "expand"
-      );
+text.textContent="выдох";
 
-      setTimeout(()=>{
+circle.classList.remove("expand");
 
-        count++;
+setTimeout(()=>{
 
-        cycle();
+count++;
 
-      },4000);
+cycle();
 
-    },4000);
+},4000);
 
-  }
+},4000);
 
-  cycle();
+}
+
+cycle();
 
 }
 
 
-/* =========================
-   ПИСЬМА
-========================= */
+/* ПИСЬМА */
 
 const letters=[
 
-  "Ты не обязан быть сильным каждую минуту.",
+"Ты не обязан быть сильным каждую минуту.",
 
-  "Попросить помощи — это тоже способ позаботиться о себе.",
+"Попросить помощи — это тоже способ позаботиться о себе.",
 
-  "Один плохой день не определяет всю твою жизнь.",
+"Один плохой день не определяет всю твою жизнь.",
 
-  "Ты заслуживаешь того, чтобы к тебе относились бережно.",
+"Ты заслуживаешь того, чтобы к тебе относились бережно.",
 
-  "Можно остановиться. Можно отдохнуть.",
+"Можно остановиться. Можно отдохнуть.",
 
-  "Ты можешь идти очень медленно.",
+"Ты можешь идти очень медленно.",
 
-  "Даже если сейчас трудно это представить, чувства могут измениться."
+"Даже если сейчас трудно это представить, чувства могут измениться."
 
 ];
 
 
 function openEnvelope(){
 
-  const text =
-    letters[
-      Math.floor(
-        Math.random()*letters.length
-      )
-    ];
+const text=
+letters[
+Math.floor(Math.random()*letters.length)
+];
 
-  document.getElementById(
-    "modalContent"
-  ).innerHTML=`
+document.getElementById("modalContent").innerHTML=`
 
-    <div style="text-align:center">
+<div style="text-align:center">
 
-      <div style="font-size:65px">
-        💌
-      </div>
+<div style="font-size:65px">
+💌
+</div>
 
-      <h2>Для тебя</h2>
+<h2>
+Для тебя
+</h2>
 
-      <p>${text}</p>
+<p>
+${text}
+</p>
 
-      <button
-        class="btn primary"
-        onclick="openEnvelope()">
-        💌 Другое письмо
-      </button>
+<button
+class="btn primary"
+onclick="openEnvelope()"
+>
+💌 Другое письмо
+</button>
 
-    </div>
-  `;
+</div>
 
-  document
-    .getElementById("modal")
-    .classList
-    .add("show");
+`;
+
+document.getElementById("modal")
+.classList.add("show");
 
 }
 
 
-/* =========================
-   СВЕЧА
-========================= */
+/* СВЕЧА */
 
 function toggleCandle(){
 
-  const flame =
-    document.getElementById(
-      "flame"
-    );
+const flame=
+document.getElementById("flame");
 
-  if(
-    flame.style.display==="none"
-  ){
+if(flame.style.display==="none"){
 
-    flame.style.display="block";
+flame.style.display="block";
 
-    toast(
-      "🕯️ Свеча зажжена"
-    );
+toast("🕯️ Свеча зажжена");
 
-  }else{
+}
+else{
 
-    flame.style.display="none";
+flame.style.display="none";
 
-    toast(
-      "🌙 Стало тише"
-    );
+toast("🌙 Стало тише");
 
-  }
+}
 
 }
 
 
-/* =========================
-   ПИТОМЕЦ
-========================= */
+/* ПИТОМЕЦ */
 
-let petXP =
-  Number(
-    localStorage.getItem(
-      "petXP"
-    )||30
-  );
+let petXP=
+Number(localStorage.getItem("petXP")||40);
 
-let lastPet =
-  Number(
-    localStorage.getItem(
-      "lastPet"
-    )||Date.now()
-  );
-
+let petLast=
+Number(localStorage.getItem("petLast")||Date.now());
 
 function updatePet(){
 
-  const days =
-    (Date.now()-lastPet) /
-    (1000*60*60);
+const days=
+(Math.max(0,Date.now()-petLast))
+/86400000;
 
-  const body =
-    document.getElementById(
-      "petBody"
-    );
+const pet=
+document.getElementById("petBody");
 
-  const status =
-    document.getElementById(
-      "petStatus"
-    );
+const message=
+document.getElementById("petMessage");
 
-  const text =
-    document.getElementById(
-      "petText"
-    );
+const status=
+document.getElementById("petStatus");
 
-  if(days>24){
+if(days>=3){
 
-    body.classList.add(
-      "pet-sad"
-    );
+pet.classList.add("sad");
 
-    status.textContent =
-      "Мне тебя не хватало... 🥺";
+message.textContent=
+"Мне немного грустно без тебя... 🥺";
 
-    text.textContent =
-      "Поиграй со мной немного, и мне станет веселее.";
+status.textContent=
+"Питомец давно тебя не видел.";
 
-  }else if(days>6){
+}
+else if(days>=1){
 
-    body.classList.remove(
-      "pet-sad"
-    );
+pet.classList.add("sad");
 
-    status.textContent =
-      "Я немного скучал 💜";
+message.textContent=
+"Я скучал по тебе 💭";
 
-    text.textContent =
-      "Спасибо, что снова заглянул.";
+status.textContent=
+"Загляни ко мне, когда сможешь.";
 
-  }else{
+}
+else{
 
-    body.classList.remove(
-      "pet-sad"
-    );
+pet.classList.remove("sad");
 
-    status.textContent =
-      "Мне хорошо, когда ты рядом 🥺";
+message.textContent=
+"Я рад тебя видеть! 💜";
 
-    text.textContent =
-      "Поиграй со мной немного.";
-
-  }
+status.textContent=
+"Спасибо, что заглянул.";
 
 }
 
+document.getElementById("petXp")
+.style.width=petXP+"%";
+
+}
 
 function petAction(){
 
-  petXP+=10;
+petXP+=15;
 
-  if(petXP>100){
-    petXP=100;
-  }
+if(petXP>100)
+petXP=100;
 
-  localStorage.setItem(
-    "petXP",
-    petXP
-  );
+petLast=Date.now();
 
-  lastPet=Date.now();
+localStorage.setItem("petXP",petXP);
+localStorage.setItem("petLast",petLast);
 
-  localStorage.setItem(
-    "lastPet",
-    lastPet
-  );
+updatePet();
 
-  updatePet();
-
-  toast(
-    "🐾 Питомец счастлив!"
-  );
+toast("Питомец счастлив! 🐾💜");
 
 }
 
 updatePet();
 
 
-/* =========================
-   ДЕРЕВО
-========================= */
+/* ДЕРЕВО */
 
-let leaves =
-  Number(
-    localStorage.getItem(
-      "leaves"
-    )||0
-  );
+let leaves=
+Number(localStorage.getItem("leaves")||0);
 
 
 function updateTree(){
 
-  let word="листиков";
+let word=
+leaves===1
+?"листик":
+leaves>1&&leaves<5
+?"листика":
+"листиков";
 
-  if(leaves===1){
-    word="листик";
-  }else if(
-    leaves>1 &&
-    leaves<5
-  ){
-    word="листика";
-  }
-
-  document.getElementById(
-    "treeCount"
-  ).textContent =
-    leaves+" "+word;
+document.getElementById("treeCount")
+.textContent=
+leaves+" "+word;
 
 }
 
 
-function addTreeLeaf(
-  emoji="🌿"
-){
+function addTreeLeaf(emoji="🌿"){
 
-  leaves++;
+leaves++;
 
-  localStorage.setItem(
-    "leaves",
-    leaves
-  );
+localStorage.setItem("leaves",leaves);
 
-  const tree =
-    document.getElementById(
-      "treeVisual"
-    );
+const tree=
+document.getElementById("treeVisual");
 
-  const leaf =
-    document.createElement(
-      "div"
-    );
+const leaf=
+document.createElement("div");
 
-  leaf.className="leaf";
+leaf.className="leaf";
 
-  leaf.textContent=emoji;
+leaf.textContent=emoji;
 
-  leaf.style.left =
-    (28+Math.random()*44)+"%";
+leaf.style.left=
+(28+Math.random()*44)+"%";
 
-  leaf.style.bottom =
-    (130+Math.random()*90)+"px";
+leaf.style.bottom=
+(130+Math.random()*90)+"px";
 
-  tree.appendChild(leaf);
+tree.appendChild(leaf);
 
-  updateTree();
-
-  updateAchievement();
+updateTree();
+updateAchievement();
 
 }
-
 
 updateTree();
 
 
+/* ДОСТИЖЕНИЯ */
+
 function updateAchievement(){
 
-  const title =
-    document.getElementById(
-      "achievementTitle"
-    );
+const title=
+document.getElementById("achievementTitle");
 
-  const text =
-    document.getElementById(
-      "achievementText"
-    );
+const text=
+document.getElementById("achievementText");
 
-  if(
-    localStorage.getItem(
-      "moodTracker"
-    )
-  ){
+if(localStorage.getItem("firstMood")){
 
-    title.textContent =
-      "🌱 Первый шаг открыт";
+title.textContent=
+"🌱 Первый шаг открыт";
 
-    text.textContent =
-      "Ты уже уделил немного внимания своему состоянию.";
+text.textContent=
+"Ты уже уделил немного внимания своему состоянию.";
 
-  }
+}
 
-  if(leaves>=5){
+if(leaves>=5){
 
-    title.textContent =
-      "🌳 Маленький сад";
+title.textContent=
+"🌳 Маленький сад";
 
-    text.textContent =
-      "На твоём дереве уже 5 листиков.";
+text.textContent=
+"На твоём дереве уже 5 листиков.";
 
-  }
+}
 
-  if(leaves>=15){
+if(leaves>=15){
 
-    title.textContent =
-      "🌲 Тихий лес";
+title.textContent=
+"🌲 Тихий лес";
 
-    text.textContent =
-      "15 листиков. Ты продолжаешь заботиться о себе.";
+text.textContent=
+"15 листиков. Ты продолжаешь заботиться о себе.";
 
-  }
+}
 
 }
 
 updateAchievement();
 
 
-/* =========================
-   ДНЕВНИК
-========================= */
+/* ДНЕВНИК */
 
-if(
-  localStorage.getItem("journal")
-){
+if(localStorage.getItem("journal")){
 
-  document.getElementById(
-    "journal"
-  ).value =
-    localStorage.getItem(
-      "journal"
-    );
+document.getElementById("journal")
+.value=
+localStorage.getItem("journal");
 
 }
 
 
 function saveJournal(){
 
-  const text =
-    document.getElementById(
-      "journal"
-    ).value;
+const text=
+document.getElementById("journal")
+.value;
 
-  localStorage.setItem(
-    "journal",
-    text
-  );
+localStorage.setItem("journal",text);
 
-  toast(
-    "Запись сохранена 💜"
-  );
+toast("Запись сохранена 💜");
 
 }
 
 
-/* =========================
-   РИСОВАЛКА
-========================= */
+/* МОЙ ДЕНЬ */
 
-const canvas =
-  document.getElementById(
-    "canvas"
-  );
+function saveDay(){
 
-const ctx =
-  canvas.getContext("2d");
+localStorage.setItem(
+"dayFeel",
+document.getElementById("dayFeel").value
+);
+
+localStorage.setItem(
+"dayNeed",
+document.getElementById("dayNeed").value
+);
+
+localStorage.setItem(
+"dayDo",
+document.getElementById("dayDo").value
+);
+
+toast("Мой день сохранён 🌱");
+
+}
+
+
+document.getElementById("dayFeel").value=
+localStorage.getItem("dayFeel")||"";
+
+document.getElementById("dayNeed").value=
+localStorage.getItem("dayNeed")||"";
+
+document.getElementById("dayDo").value=
+localStorage.getItem("dayDo")||"";
+
+
+/* РИСОВАЛКА */
+
+const canvas=
+document.getElementById("canvas");
+
+const ctx=
+canvas.getContext("2d");
 
 let drawing=false;
 let brush=8;
@@ -3512,364 +3583,342 @@ let brush=8;
 
 function resizeCanvas(){
 
-  const rect =
-    canvas.getBoundingClientRect();
+const rect=
+canvas.getBoundingClientRect();
 
-  canvas.width =
-    rect.width*
-    devicePixelRatio;
+canvas.width=
+rect.width*devicePixelRatio;
 
-  canvas.height =
-    300*
-    devicePixelRatio;
+canvas.height=
+300*devicePixelRatio;
 
-  ctx.scale(
-    devicePixelRatio,
-    devicePixelRatio
-  );
+ctx.scale(
+devicePixelRatio,
+devicePixelRatio
+);
 
-  ctx.lineCap="round";
-  ctx.lineJoin="round";
+ctx.lineCap="round";
+ctx.lineJoin="round";
 
 }
-
 
 resizeCanvas();
 
 window.addEventListener(
-  "resize",
-  resizeCanvas
+"resize",
+resizeCanvas
 );
 
 
 function position(e){
 
-  const r =
-    canvas.getBoundingClientRect();
+const r=
+canvas.getBoundingClientRect();
 
-  const point =
-    e.touches
-      ? e.touches[0]
-      : e;
+const point=
+e.touches
+?e.touches[0]
+:e;
 
-  return{
-    x:point.clientX-r.left,
-    y:point.clientY-r.top
-  };
+return{
+
+x:point.clientX-r.left,
+
+y:point.clientY-r.top
+
+};
 
 }
 
 
 function startDraw(e){
 
-  e.preventDefault();
+e.preventDefault();
 
-  drawing=true;
+drawing=true;
 
-  const p =
-    position(e);
+const p=
+position(e);
 
-  ctx.beginPath();
+ctx.beginPath();
 
-  ctx.moveTo(
-    p.x,
-    p.y
-  );
+ctx.moveTo(
+p.x,
+p.y
+);
 
 }
 
 
 function draw(e){
 
-  if(!drawing)return;
+if(!drawing)
+return;
 
-  e.preventDefault();
+e.preventDefault();
 
-  const p =
-    position(e);
+const p=
+position(e);
 
-  ctx.lineWidth =
-    brush;
+ctx.lineWidth=brush;
+ctx.strokeStyle="#766cff";
 
-  ctx.strokeStyle =
-    "#766cff";
+ctx.lineTo(
+p.x,
+p.y
+);
 
-  ctx.lineTo(
-    p.x,
-    p.y
-  );
-
-  ctx.stroke();
+ctx.stroke();
 
 }
 
 
 canvas.addEventListener(
-  "mousedown",
-  startDraw
+"mousedown",
+startDraw
 );
 
 canvas.addEventListener(
-  "mousemove",
-  draw
+"mousemove",
+draw
 );
 
 window.addEventListener(
-  "mouseup",
-  ()=>{
-    drawing=false;
-  }
+"mouseup",
+()=>{
+drawing=false;
+}
 );
 
 canvas.addEventListener(
-  "touchstart",
-  startDraw,
-  {passive:false}
+"touchstart",
+startDraw,
+{passive:false}
 );
 
 canvas.addEventListener(
-  "touchmove",
-  draw,
-  {passive:false}
+"touchmove",
+draw,
+{passive:false}
 );
 
 canvas.addEventListener(
-  "touchend",
-  ()=>{
-    drawing=false;
-  }
+"touchend",
+()=>{
+drawing=false;
+}
 );
 
 
 function setBrush(n){
 
-  brush=n;
+brush=n;
 
 }
 
 
 function clearCanvas(){
 
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
 
 }
 
 
-/* =========================
-   КОПИРОВАНИЕ
-========================= */
+/* КОПИРОВАНИЕ */
 
 function copyMessage(el){
 
-  const text =
-    el.textContent.trim();
+const text=
+el.textContent.trim();
 
-  if(
-    navigator.clipboard
-  ){
+if(navigator.clipboard){
 
-    navigator.clipboard.writeText(
-      text
-    );
+navigator.clipboard
+.writeText(text);
 
-    toast(
-      "Фраза скопирована ❤️"
-    );
+toast(
+"Фраза скопирована ❤️"
+);
 
-  }else{
+}
+else{
 
-    toast(text);
+toast(text);
 
-  }
+}
 
 }
 
 
-/* =========================
-   RANDOM SUPPORT
-========================= */
+/* ПОДДЕРЖКА */
 
 const supports=[
 
-  "Ты не обязан решать всё сегодня.",
+"Ты не обязан решать всё сегодня.",
 
-  "Можно попросить помощи.",
+"Можно попросить помощи.",
 
-  "Ты имеешь право отдыхать.",
+"Ты имеешь право отдыхать.",
 
-  "Один тяжёлый день не определяет твою жизнь.",
+"Один тяжёлый день не определяет твою жизнь.",
 
-  "Не нужно быть идеальным.",
+"Не нужно быть идеальным.",
 
-  "Ты можешь идти маленькими шагами.",
+"Ты можешь идти маленькими шагами.",
 
-  "Твои чувства заслуживают внимания.",
+"Твои чувства заслуживают внимания.",
 
-  "Можно сделать паузу.",
+"Можно сделать паузу.",
 
-  "Ты больше, чем одна эмоция.",
+"Ты больше, чем одна эмоция.",
 
-  "Ты заслуживаешь доброго отношения к себе."
+"Ты заслуживаешь доброго отношения к себе."
 
 ];
 
 
 function randomSupport(){
 
-  document.getElementById(
-    "randomText"
-  ).textContent =
-    supports[
-      Math.floor(
-        Math.random()*supports.length
-      )
-    ];
+document.getElementById("randomText")
+.textContent=
+supports[
+Math.floor(Math.random()*supports.length)
+];
 
 }
 
 
-/* =========================
-   FAQ
-========================= */
+/* FAQ */
 
 function faq(button){
 
-  button
-    .parentElement
-    .classList
-    .toggle("open");
+button.parentElement
+.classList.toggle("open");
 
 }
 
 
-/* =========================
-   ТИШИНА
-========================= */
+/* ТИШИНА */
 
 function toggleSilent(){
 
-  document.body
-    .classList
-    .toggle("silent");
+document.body
+.classList.toggle("silent");
 
-  toast(
-    document.body
-      .classList
-      .contains("silent")
-      ? "🔇 Тишина включена"
-      : "✨ Анимации включены"
-  );
+toast(
+document.body.classList.contains("silent")
+?"🔇 Тишина включена"
+:"✨ Анимации включены"
+);
 
 }
 
 
-/* =========================
-   СВЕТЛАЯ ТЕМА
-========================= */
+/* СВЕТЛАЯ ТЕМА */
 
 function toggleLight(){
 
-  document.body
-    .classList
-    .toggle("light");
+document.body
+.classList.toggle("light");
 
 }
 
 
-/* =========================
-   МОДАЛКА
-========================= */
+/* МОДАЛКА */
 
 function closeModal(){
 
-  document.getElementById(
-    "modal"
-  ).classList.remove(
-    "show"
-  );
+document.getElementById("modal")
+.classList.remove("show");
 
 }
 
 
-/* =========================
-   СЕКРЕТ
-========================= */
+/* СЕКРЕТ */
 
 function openSecret(){
 
-  document.getElementById(
-    "secretStory"
-  ).classList.add(
-    "show"
-  );
+document.getElementById("secretStory")
+.classList.add("show");
 
 }
 
 
 function closeSecret(){
 
-  document.getElementById(
-    "secretStory"
-  ).classList.remove(
-    "show"
-  );
+document.getElementById("secretStory")
+.classList.remove("show");
 
 }
 
 
-/* =========================
-   TOAST
-========================= */
+/* TOAST */
 
 function toast(text){
 
-  const t =
-    document.getElementById(
-      "toast"
-    );
+const t=
+document.getElementById("toast");
 
-  t.textContent=text;
+t.textContent=text;
 
-  t.classList.add("show");
+t.classList.add("show");
 
-  clearTimeout(
-    window.toastTimer
-  );
+clearTimeout(window.toastTimer);
 
-  window.toastTimer =
-    setTimeout(()=>{
+window.toastTimer=
+setTimeout(()=>{
 
-      t.classList.remove(
-        "show"
-      );
+t.classList.remove("show");
 
-    },2200);
+},2200);
 
 }
 
 
-/* =========================
-   ESC
-========================= */
+/* ESC */
 
 document.addEventListener(
-  "keydown",
-  e=>{
+"keydown",
+e=>{
 
-    if(e.key==="Escape"){
+if(e.key==="Escape"){
 
-      closeModal();
-      closeSecret();
-      closeMoodSupport();
+closeModal();
+closeSecret();
 
-    }
+}
 
-  }
+}
+);
+
+
+/* ЗАКРЫТИЕ МОДАЛКИ ПО ФОНУ */
+
+document.getElementById("modal")
+.addEventListener(
+"click",
+e=>{
+
+if(e.target.id==="modal")
+closeModal();
+
+}
+);
+
+document.getElementById("secretStory")
+.addEventListener(
+"click",
+e=>{
+
+if(e.target.id==="secretStory")
+closeSecret();
+
+}
 );
 
 </script>
