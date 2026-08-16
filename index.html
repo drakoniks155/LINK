@@ -1,2907 +1,1343 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
-<title>Blink</title>
-
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-
-<style>
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#080808;
-  color:white;
-  font-family:Arial,sans-serif;
-}
-
-button,input,textarea,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-#map{
-  position:absolute;
-  inset:0;
-  z-index:1;
-}
-
-.topbar{
-  position:absolute;
-  z-index:1000;
-  top:12px;
-  left:12px;
-  right:12px;
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  pointer-events:none;
-}
-
-.badge{
-  background:rgba(5,5,5,.9);
-  backdrop-filter:blur(15px);
-  border:1px solid #333;
-  border-radius:18px;
-  padding:10px 14px;
-  box-shadow:0 8px 30px rgba(0,0,0,.5);
-}
-
-.brand{
-  font-weight:900;
-  letter-spacing:1px;
-}
-
-.status{
-  font-size:12px;
-}
-
-.dot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#777;
-  margin-right:6px;
-}
-
-.dot.live{
-  background:#4cff8a;
-  box-shadow:0 0 12px #4cff8a;
-}
-
-.map-controls{
-  position:absolute;
-  z-index:2000;
-  right:14px;
-  top:125px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.map-btn{
-  width:50px;
-  height:50px;
-  border:1px solid #333;
-  border-radius:16px;
-  background:#050505;
-  color:white;
-  font-size:22px;
-  box-shadow:0 8px 25px rgba(0,0,0,.55);
-}
-
-.map-btn:active{
-  transform:scale(.94);
-}
-
-.bottom{
-  position:absolute;
-  z-index:3000;
-  bottom:10px;
-  left:10px;
-  right:10px;
-  background:rgba(8,8,8,.96);
-  border:1px solid #333;
-  border-radius:24px;
-  padding:7px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-}
-
-.nav{
-  border:0;
-  background:transparent;
-  color:#888;
-  border-radius:17px;
-  padding:8px 3px;
-}
-
-.nav.active{
-  background:white;
-  color:black;
-}
-
-.nav .icon{
-  display:block;
-  font-size:19px;
-}
-
-.nav .txt{
-  display:block;
-  font-size:10px;
-  font-weight:bold;
-}
-
-.panel{
-  position:absolute;
-  inset:0;
-  z-index:5000;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:flex-end;
-  backdrop-filter:blur(4px);
-}
-
-.sheet{
-  width:100%;
-  max-height:90dvh;
-  overflow-y:auto;
-  background:#0d0d0d;
-  border:1px solid #292929;
-  border-radius:28px 28px 0 0;
-  padding:18px 16px 30px;
-}
-
-.handle{
-  width:42px;
-  height:4px;
-  background:#444;
-  border-radius:10px;
-  margin:0 auto 16px;
-}
-
-.close{
-  float:right;
-  border:0;
-  background:#222;
-  color:white;
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  font-size:22px;
-}
-
-h1,h2,h3{
-  margin-top:5px;
-}
-
-.field{
-  margin:12px 0;
-}
-
-.field label{
-  display:block;
-  color:#aaa;
-  font-size:12px;
-  margin-bottom:6px;
-}
-
-input,textarea,select{
-  width:100%;
-  background:#171717;
-  color:white;
-  border:1px solid #333;
-  border-radius:14px;
-  padding:12px;
-  outline:none;
-}
-
-textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
-.btn{
-  width:100%;
-  border:0;
-  border-radius:15px;
-  padding:13px;
-  background:white;
-  color:black;
-  font-weight:900;
-  margin-top:8px;
-}
-
-.btn.secondary{
-  background:#222;
-  color:white;
-  border:1px solid #333;
-}
-
-.btn.danger{
-  background:#351515;
-  color:#ff8b8b;
-  border:1px solid #552222;
-}
-
-.row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.grow{
-  flex:1;
-}
-
-.profile{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin:15px 0;
-}
-
-.avatar{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#222;
-  border:2px solid white;
-}
-
-.avatar.small{
-  width:46px;
-  height:46px;
-  border-width:1px;
-}
-
-.code{
-  color:#888;
-  font-size:12px;
-  margin-top:3px;
-}
-
-.friend{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid #252525;
-}
-
-.empty{
-  text-align:center;
-  color:#888;
-  padding:25px;
-}
-
-.note{
-  color:#777;
-  font-size:12px;
-  line-height:1.5;
-}
-
-.request{
-  background:#151515;
-  border:1px solid #292929;
-  border-radius:16px;
-  padding:12px;
-  margin:8px 0;
-}
-
-.place{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 0;
-  border-bottom:1px solid #252525;
-}
-
-.place-icon{
-  width:45px;
-  height:45px;
-  min-width:45px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#171717;
-  border:1px solid #333;
-  border-radius:14px;
-  font-size:21px;
-}
-
-.toast{
-  position:absolute;
-  z-index:9000;
-  left:50%;
-  bottom:95px;
-  transform:translateX(-50%);
-  background:white;
-  color:black;
-  padding:11px 15px;
-  border-radius:14px;
-  font-size:13px;
-  font-weight:800;
-  max-width:90%;
-  text-align:center;
-}
-
-.auth-screen{
-  position:fixed;
-  inset:0;
-  z-index:10000;
-  background:#080808;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.auth-box{
-  width:100%;
-  max-width:420px;
-  background:#0e0e0e;
-  border:1px solid #292929;
-  border-radius:28px;
-  padding:25px;
-  box-shadow:0 20px 70px rgba(0,0,0,.7);
-}
-
-.logo{
-  font-size:30px;
-  font-weight:900;
-  text-align:center;
-  margin-bottom:5px;
-}
-
-.auth-sub{
-  text-align:center;
-  color:#777;
-  font-size:13px;
-  margin-bottom:25px;
-}
-
-.auth-tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:5px;
-  background:#171717;
-  border-radius:15px;
-  padding:4px;
-  margin-bottom:15px;
-}
-
-.auth-tab{
-  border:0;
-  background:transparent;
-  color:#777;
-  padding:10px;
-  border-radius:12px;
-}
-
-.auth-tab.active{
-  background:white;
-  color:black;
-  font-weight:bold;
-}
-
-.error{
-  background:#321616;
-  color:#ff9b9b;
-  border:1px solid #562525;
-  border-radius:13px;
-  padding:10px;
-  font-size:12px;
-  margin:10px 0;
-  display:none;
-}
-
-.loading{
-  opacity:.6;
-  pointer-events:none;
-}
-
-.user-marker{
-  width:48px;
-  height:48px;
-  border:3px solid white;
-  border-radius:50%;
-  background:#222;
-  box-shadow:0 4px 20px rgba(0,0,0,.6);
-  position:relative;
-}
-
-.user-marker img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
-}
-
-.user-ring{
-  position:absolute;
-  inset:-8px;
-  border:2px solid white;
-  border-radius:50%;
-  animation:pulse 1.7s infinite;
-}
-
-@keyframes pulse{
-  50%{
-    transform:scale(1.2);
-    opacity:.1;
-  }
-}
-
-.friend-marker{
-  width:46px;
-  height:46px;
-  border:3px solid white;
-  border-radius:50%;
-  background:#222;
-  box-shadow:0 4px 20px rgba(0,0,0,.6);
-  overflow:hidden;
-}
-
-.friend-marker img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.place-marker{
-  width:44px;
-  height:44px;
-  border:2px solid white;
-  border-radius:50%;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  box-shadow:0 5px 20px rgba(0,0,0,.65);
-}
-
-@media(min-width:700px){
-  .bottom{
-    width:520px;
-    left:50%;
-    right:auto;
-    transform:translateX(-50%);
-  }
-
-  .panel{
-    align-items:center;
-    justify-content:center;
-  }
-
-  .sheet{
-    width:520px;
-    border-radius:28px;
-    max-height:80vh;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>BLINK — Друзья всегда на связи</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        /* Глобальные сбросы и базовые стили */
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Inter, Arial, sans-serif;
+            background: #090909;
+            color: #fff;
+        }
+        button, input { font: inherit; }
+        button {
+            cursor: pointer;
+            border: 0;
+        }
+        .hidden { display: none !important; }
+
+        /* Основной контейнер приложения */
+        #app {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Экран авторизации */
+        #auth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: radial-gradient(circle at 50% 20%, #191919, #080808 65%);
+        }
+        .auth-card {
+            width: min(590px, 94vw);
+            padding: 34px;
+            border: 1px solid #333;
+            border-radius: 34px;
+            background: #101010;
+            box-shadow: 0 30px 80px #000;
+        }
+        .logo {
+            text-align: center;
+            font-weight: 900;
+            font-size: 46px;
+            letter-spacing: -2px;
+        }
+        .logo span { color: #ffc400; }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 19px;
+            margin: 10px 0 30px;
+        }
+
+        /* Вкладки входа/регистрации */
+        .tabs {
+            display: flex;
+            background: #1a1a1a;
+            border-radius: 22px;
+            padding: 5px;
+            margin-bottom: 24px;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 16px;
+            border-radius: 17px;
+            background: transparent;
+            color: #888;
+            font-weight: 800;
+        }
+        .tabs button.active {
+            background: #fff;
+            color: #111;
+        }
+
+        /* Поля формы */
+        .field { margin: 15px 0; }
+        .field label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+        .field input, .modal input {
+            width: 100%;
+            padding: 17px 18px;
+            border: 1px solid #363636;
+            border-radius: 18px;
+            background: #171717;
+            color: #fff;
+            outline: none;
+        }
+        .field input:focus, .modal input:focus { border-color: #fff; }
+
+        /* Основная кнопка */
+        .primary {
+            width: 100%;
+            padding: 17px;
+            border-radius: 18px;
+            background: #fff;
+            color: #111;
+            font-weight: 900;
+            font-size: 18px;
+            margin-top: 12px;
+        }
+
+        /* Сообщения об ошибках и успехе */
+        .error {
+            background: #3a1618;
+            border: 1px solid #6b292d;
+            color: #ff9b9f;
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+        .success {
+            background: #142e1a;
+            border: 1px solid #2e7040;
+            color: #a6e9b5;
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        /* Основной экран с картой */
+        #main {
+            position: relative;
+            background: #111;
+        }
+        #map {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Стили для элементов управления картой */
+        .leaflet-control-zoom {
+            margin-top: 90px !important;
+            margin-right: 15px !important;
+        }
+        .leaflet-control-zoom a {
+            background: #111 !important;
+            color: #fff !important;
+            border: 1px solid #333 !important;
+        }
+        .leaflet-control-attribution { font-size: 9px; }
+
+        /* Верхняя панель */
+        .top {
+            position: absolute;
+            z-index: 1000;
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .pill {
+            pointer-events: auto;
+            background: #0d0d0df2;
+            border: 1px solid #333;
+            border-radius: 30px;
+            padding: 13px 18px;
+            box-shadow: 0 12px 35px #0008;
+            font-weight: 800;
+        }
+        .gps-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #777;
+            margin-right: 9px;
+        }
+        .gps-dot.ok {
+            background: #34d058;
+            box-shadow: 0 0 10px #34d058;
+        }
+        .logo-pill { font-size: 23px; }
+        .logo-pill span { color: #ffc400; }
+
+        /* Кнопки карты */
+        .map-actions {
+            position: absolute;
+            right: 16px;
+            top: 105px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .map-btn {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: #0d0d0df2;
+            color: #fff;
+            border: 1px solid #333;
+            font-size: 25px;
+            box-shadow: 0 12px 25px #0008;
+        }
+        .map-btn.active { outline: 2px solid #ffc400; }
+
+        /* Нижняя навигационная панель */
+        .bottom {
+            position: absolute;
+            z-index: 1000;
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            height: 84px;
+            background: #0d0d0df5;
+            border: 1px solid #333;
+            border-radius: 30px;
+            display: flex;
+            padding: 7px;
+            box-shadow: 0 15px 45px #0009;
+        }
+        .nav {
+            flex: 1;
+            border-radius: 23px;
+            background: transparent;
+            color: #888;
+            font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .nav .ico { font-size: 24px; }
+        .nav.active {
+            background: #fff;
+            color: #111;
+        }
+        .badge {
+            position: absolute;
+            background: #ff3b30;
+            color: #fff;
+            font-size: 11px;
+            border-radius: 20px;
+            padding: 3px 6px;
+            margin-left: 28px;
+            margin-top: -28px;
+        }
+
+        /* Всплывающие панели */
+        .panel {
+            position: absolute;
+            z-index: 1100;
+            inset: 0;
+            background: #090909;
+            overflow: auto;
+            padding: 20px 18px 120px;
+        }
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .panel h2 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .close {
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            width: 45px;
+            height: 45px;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+
+        /* Карточки */
+        .card {
+            background: #121212;
+            border: 1px solid #2d2d2d;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .muted { color: #888; }
+        .code {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 7px;
+        }
+        .small-btn {
+            background: #fff;
+            color: #111;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+        }
+        .danger {
+            background: #351719;
+            color: #ff9a9f;
+        }
+
+        /* Элементы друзей */
+        .friend {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #242424;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 900;
+        }
+        .friend-info { flex: 1; }
+        .friend-name { font-weight: 900; }
+        .friend-code {
+            color: #888;
+            font-size: 13px;
+        }
+        .request-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .request-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 800;
+        }
+        .accept {
+            background: #fff;
+            color: #111;
+        }
+        .reject {
+            background: #242424;
+            color: #fff;
+        }
+
+        /* Модальное окно */
+        .modal-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: #0009;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+        .modal {
+            width: min(480px, 94vw);
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 25px;
+            padding: 22px;
+        }
+        .modal h3 { margin-top: 0; }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 900;
+        }
+
+        /* Уведомления (тосты) */
+        .toast {
+            position: fixed;
+            z-index: 5000;
+            left: 50%;
+            bottom: 115px;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #111;
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-weight: 800;
+            max-width: 90vw;
+            text-align: center;
+            box-shadow: 0 15px 40px #0009;
+        }
+
+        /* Подписи на карте */
+        .place-label {
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 4px 7px;
+        }
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+            background: #111;
+            color: #fff;
+        }
+        .leaflet-popup-content { margin: 12px; }
+
+        /* Состояние загрузки */
+        .loading {
+            position: absolute;
+            z-index: 2500;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: #080808dd;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid #333;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            margin: auto auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 500px) {
+            .auth-card { padding: 25px; }
+            .logo { font-size: 40px; }
+            .subtitle { font-size: 16px; }
+            .bottom { height: 78px; }
+            .nav { font-size: 12px; }
+            .map-actions { top: 100px; }
+            .top { top: 14px; }
+            .pill { padding: 11px 14px; }
+            .logo-pill { font-size: 20px; }
+        }
+    </style>
 </head>
-
 <body>
+<div id="app">
+    <!-- Экран авторизации -->
+    <section id="auth" class="screen">
+        <div class="auth-card">
+            <div class="logo"><span>⚡</span> BLINK</div>
+            <div class="subtitle">Друзья рядом. В реальном времени.</div>
+            <div class="tabs">
+                <button id="loginTab" class="active">Вход</button>
+                <button id="registerTab">Регистрация</button>
+            </div>
+            <div id="authMsg" class="hidden"></div>
+            <div id="usernameField" class="field hidden">
+                <label>Имя пользователя</label>
+                <input id="username" maxlength="30" placeholder="Например, Никс">
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input id="email" type="email" autocomplete="email" placeholder="example@mail.com">
+            </div>
+            <div class="field">
+                <label>Пароль</label>
+                <input id="password" type="password" autocomplete="current-password" placeholder="Минимум 6 символов">
+            </div>
+            <button id="authBtn" class="primary">Войти</button>
+        </div>
+    </section>
 
-<div id="authScreen" class="auth-screen">
-  <div class="auth-box">
+    <!-- Основной экран -->
+    <section id="main" class="screen hidden">
+        <div id="map"></div>
 
-    <div class="logo">⚡ BLINK</div>
+        <!-- Верхняя панель -->
+        <div class="top">
+            <div class="pill logo-pill"><span>⚡</span> BLINK</div>
+            <div class="pill">
+                <span id="gpsDot" class="gps-dot"></span>
+                <span id="gpsText">GPS не запущен</span>
+            </div>
+        </div>
 
-    <div class="auth-sub">
-      Друзья рядом. В реальном времени.
+        <!-- Кнопки управления картой -->
+        <div class="map-actions">
+            <button class="map-btn" id="zoomIn">+</button>
+            <button class="map-btn" id="zoomOut">−</button>
+            <button class="map-btn" id="locateBtn">🎯</button>
+            <button class="map-btn" id="addPlaceBtn">📍</button>
+            <button class="map-btn" id="hybridBtn">🗺️</button>
+        </div>
+
+        <!-- Нижняя навигация -->
+        <div class="bottom">
+            <button class="nav active" data-panel="mapPanel"><span class="ico">🗺️</span>Карта</button>
+            <button class="nav" data-panel="friendsPanel"><span class="ico">👥</span><span class="badge hidden" id="requestBadge">0</span>Друзья</button>
+            <button class="nav" data-panel="profilePanel"><span class="ico">👤</span>Профиль</button>
+            <button class="nav" data-panel="settingsPanel"><span class="ico">⚙️</span>Настройки</button>
+        </div>
+
+        <!-- Панели -->
+        <div id="friendsPanel" class="panel hidden"></div>
+        <div id="profilePanel" class="panel hidden"></div>
+        <div id="settingsPanel" class="panel hidden"></div>
+    </section>
+
+    <!-- Модальное окно -->
+    <div id="modalWrap" class="modal-wrap hidden">
+        <div class="modal" id="modal"></div>
     </div>
 
-    <div class="auth-tabs">
-      <button id="loginTab" class="auth-tab active">
-        Вход
-      </button>
+    <!-- Уведомление (тост) -->
+    <div id="toast" class="toast hidden"></div>
 
-      <button id="registerTab" class="auth-tab">
-        Регистрация
-      </button>
+    <!-- Индикатор загрузки -->
+    <div id="loading" class="loading hidden">
+        <div>
+            <div class="spinner"></div>
+            <div id="loadingText">Загрузка…</div>
+        </div>
     </div>
-
-    <div id="authError" class="error"></div>
-
-    <div id="registerNameField" class="field" style="display:none">
-      <label>Имя</label>
-      <input
-        id="authName"
-        maxlength="30"
-        placeholder="Твоё имя"
-      >
-    </div>
-
-    <div class="field">
-      <label>Email</label>
-      <input
-        id="authEmail"
-        type="email"
-        autocomplete="email"
-        placeholder="example@mail.com"
-      >
-    </div>
-
-    <div class="field">
-      <label>Пароль</label>
-      <input
-        id="authPassword"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Минимум 6 символов"
-      >
-    </div>
-
-    <button id="authButton" class="btn">
-      Войти
-    </button>
-
-  </div>
 </div>
 
-<div id="map"></div>
-
-<div class="topbar">
-
-  <div class="badge brand">
-    ⚡ BLINK
-  </div>
-
-  <div class="badge status">
-    <span id="statusDot" class="dot"></span>
-    <span id="statusText">Ожидание GPS</span>
-  </div>
-
-</div>
-
-<div class="map-controls">
-
-  <button class="map-btn" onclick="centerMe()">
-    🎯
-  </button>
-
-  <button class="map-btn" onclick="zoomIn()">
-    +
-  </button>
-
-  <button class="map-btn" onclick="zoomOut()">
-    −
-  </button>
-
-  <button class="map-btn" onclick="showPlaces()">
-    📍
-  </button>
-
-</div>
-
-<div class="bottom">
-
-  <button class="nav active" data-page="map">
-    <span class="icon">🗺️</span>
-    <span class="txt">Карта</span>
-  </button>
-
-  <button class="nav" data-page="friends">
-    <span class="icon">👥</span>
-    <span class="txt">Друзья</span>
-  </button>
-
-  <button class="nav" data-page="profile">
-    <span class="icon">👤</span>
-    <span class="txt">Профиль</span>
-  </button>
-
-  <button class="nav" data-page="settings">
-    <span class="icon">⚙️</span>
-    <span class="txt">Настройки</span>
-  </button>
-
-</div>
-
-<div id="panel" class="panel" style="display:none">
-  <div id="sheet" class="sheet"></div>
-</div>
-
-<div id="toast" class="toast" style="display:none"></div>
-
+<!-- Подключение библиотек -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // Конфигурация Supabase
+    const SUPABASE_URL = 'https://pfglyeeiydnnfrkjkglk.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_mqY9TwP0DuU3_b8kNswqYg_SQT1rEKt';
+    const { createClient } = supabase;
+    const db = createClient(SUABASE_URL, SUPABASE_KEY);
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+    // Глобальные переменные состояния
+    let user = null,
+        profile = null,
+        map = null,
+        meMarker = null,
+        accuracyCircle = null;
+    let friends = [],
+        incoming = [],
+        friendMarkers = new Map(),
+        placeMarkers = new Map();
+    let locationWatch = null,
+        locationChannel = null,
+        requestChannel = null,
+        addPlaceMode = false,
+        lastPosition = null;
+    let imageryLayer = null,
+        labelsLayer = null,
+        streetLayer = null,
+        hybrid = true;
 
-const SUPABASE_URL =
-  "https://pfglyeeiydnnfrkjkglk.supabase.co";
+    // Вспомогательные функции
+    const $ = id => document.getElementById(id);
 
-const SUPABASE_KEY =
-  "sb_publishable_mqY9TwP0DuU3_b8kNswqYg_SQT1rEKt";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentUser = null;
-let myProfile = null;
-
-let myMarker = null;
-let myPosition = null;
-let watchId = null;
-
-let friendMarkers = {};
-let placeMarkers = {};
-
-let friends = [];
-let incomingRequests = [];
-let savedPlaces = [];
-
-
-/* =========================================================
-   MAP
-========================================================= */
-
-const map =
-  L.map("map").setView(
-    [44.8,20.45],
-    6
-  );
-
-const satellite =
-  L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom:19,
-      attribution:"© Esri"
+    function esc(v) {
+        return String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
     }
-  );
 
-const labels =
-  L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png",
-    {
-      maxZoom:20,
-      attribution:"© OpenStreetMap © CARTO"
+    function toast(msg, ms = 3000) {
+        const el = $('toast');
+        el.textContent = msg;
+        el.classList.remove('hidden');
+        clearTimeout(window.__toast);
+        window.__toast = setTimeout(() => el.classList.add('hidden'), ms);
     }
-  );
 
-satellite.addTo(map);
-labels.addTo(map);
+    function setLoading(on, text = 'Загрузка…') {
+        $('loadingText').textContent = text;
+        $('loading').classList.toggle('hidden', !on);
+    }
 
+    function authMessage(msg, type = 'error') {
+        const el = $('authMsg');
+        el.className = type;
+        el.textContent = msg;
+    }
 
-/* =========================================================
-   HELPERS
-========================================================= */
+    function clearAuthMessage() {
+        const el = $('authMsg');
+        el.className = 'hidden';
+        el.textContent = '';
+    }
 
-function escapeHtml(value){
-  return String(value ?? "").replace(
-    /[&<>"']/g,
-    c => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-    }[c])
-  );
-}
+    function initials(name) {
+        return (name || '?').trim().slice(0, 2).toUpperCase();
+    }
 
+    function validCode(c) {
+        return /^\d{4}$/.test(c);
+    }
 
-function avatar(src){
+    function randomCode() {
+        return String(Math.floor(1000 + Math.random() * 9000));
+    }
 
-  if(src){
-    return src;
-  }
+    // Управление вкладками авторизации
+    let registerMode = false;
 
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
-        <rect width="160" height="160" fill="#222"/>
-        <text x="80" y="108"
-          text-anchor="middle"
-          font-size="70"
-          fill="white">👤</text>
-      </svg>`
-    );
-}
+    function setAuthMode(reg) {
+        registerMode = reg;
+        $('loginTab').classList.toggle('active', !reg);
+        $('registerTab').classList.toggle('active', reg);
+        $('usernameField').classList.toggle('hidden', !reg);
+        $('authBtn').textContent = reg ? 'Создать аккаунт' : 'Войти';
+        clearAuthMessage();
+    }
 
+    // Обработка клика по кнопке авторизации
+    $('loginTab').onclick = () => setAuthMode(false);
+    $('registerTab').onclick = () => setAuthMode(true);
+    $('authBtn').onclick = handleAuth;
 
-function toast(text){
+    async function handleAuth() {
+        const email = $('email').value.trim(),
+            password = $('password').value,
+            username = $('username').value.trim();
 
-  const box =
-    document.getElementById("toast");
+        if (!email || !password) {
+            authMessage('Заполни email и пароль.');
+            return;
+        }
+        if (password.length < 6) {
+            authMessage('Пароль должен содержать минимум 6 символов.');
+            return;
+        }
+        if (registerMode && !username) {
+            authMessage('Укажи имя пользователя.');
+            return;
+        }
 
-  box.textContent = text;
-  box.style.display = "block";
+        setLoading(true, registerMode ? 'Создание аккаунта…' : 'Вход…');
+        clearAuthMessage();
 
-  clearTimeout(window.blinkToast);
-
-  window.blinkToast =
-    setTimeout(() => {
-      box.style.display = "none";
-    },2500);
-}
-
-
-function setStatus(text,live=false){
-
-  document.getElementById(
-    "statusText"
-  ).textContent = text;
-
-  document.getElementById(
-    "statusDot"
-  ).classList.toggle(
-    "live",
-    live
-  );
-}
-
-
-/* =========================================================
-   AUTH UI
-========================================================= */
-
-let authMode = "login";
-
-
-function setAuthMode(mode){
-
-  authMode = mode;
-
-  const loginTab =
-    document.getElementById("loginTab");
-
-  const registerTab =
-    document.getElementById("registerTab");
-
-  const nameField =
-    document.getElementById("registerNameField");
-
-  const button =
-    document.getElementById("authButton");
-
-  loginTab.classList.toggle(
-    "active",
-    mode === "login"
-  );
-
-  registerTab.classList.toggle(
-    "active",
-    mode === "register"
-  );
-
-  nameField.style.display =
-    mode === "register"
-      ? "block"
-      : "none";
-
-  button.textContent =
-    mode === "register"
-      ? "Создать аккаунт"
-      : "Войти";
-
-  clearAuthError();
-}
-
-
-function showAuthError(message){
-
-  const box =
-    document.getElementById("authError");
-
-  box.textContent = message;
-  box.style.display = "block";
-}
-
-
-function clearAuthError(){
-
-  document.getElementById(
-    "authError"
-  ).style.display = "none";
-}
-
-
-document.getElementById(
-  "loginTab"
-).onclick = () =>
-  setAuthMode("login");
-
-
-document.getElementById(
-  "registerTab"
-).onclick = () =>
-  setAuthMode("register");
-
-
-document.getElementById(
-  "authButton"
-).onclick = authenticate;
-
-
-async function authenticate(){
-
-  clearAuthError();
-
-  const email =
-    document.getElementById(
-      "authEmail"
-    ).value.trim();
-
-  const password =
-    document.getElementById(
-      "authPassword"
-    ).value;
-
-  const button =
-    document.getElementById(
-      "authButton"
-    );
-
-  if(!email || !password){
-
-    showAuthError(
-      "Заполни email и пароль."
-    );
-
-    return;
-  }
-
-  button.classList.add("loading");
-
-  try{
-
-    if(authMode === "register"){
-
-      const username =
-        document.getElementById(
-          "authName"
-        ).value.trim() || "Пользователь";
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.signUp({
-          email,
-          password,
-          options:{
-            data:{
-              username
+        try {
+            if (registerMode) {
+                const { data, error } = await db.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { username } }
+                });
+                if (error) throw error;
+                if (!data.session) {
+                    setLoading(false);
+                    authMessage('Аккаунт создан. Подтверди email, затем войди.', 'success');
+                    return;
+                }
+                user = data.user;
+            } else {
+                const { data, error } = await db.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                user = data.user;
             }
-          }
+            await enterApp();
+        } catch (e) {
+            console.error(e);
+            authMessage(humanError(e));
+            setLoading(false);
+        }
+    }
+
+    function humanError(e) {
+        const m = e?.message || String(e);
+        if (/Invalid login credentials/i.test(m)) return 'Неверный email или пароль.';
+        if (/Email not confirmed/i.test(m)) return 'Сначала подтверди email.';
+        if (/permission denied|row-level security|42501/i.test(m)) return 'Нет доступа к данным. Проверь RLS-политики Supabase.';
+        return m;
+    }
+
+    // Создание/получение профиля пользователя
+    async function ensureProfile() {
+        const { data, error } = await db.from('profiles').select('*').eq('id', user.id).maybeSingle();
+        if (error) throw error;
+        if (data) { profile = data; return data; }
+
+        let lastErr = null;
+        for (let i = 0; i < 8; i++) {
+            const code = randomCode();
+            const row = {
+                id: user.id,
+                username: user.user_metadata?.username || user.email?.split('@')[0] || 'Пользователь',
+                friend_code: code,
+                notifications_enabled: true,
+                location_sharing_enabled: true
+            };
+            const r = await db.from('profiles').upsert(row, { onConflict: 'id' }).select().single();
+            if (!r.error) { profile = r.data; return profile; }
+            lastErr = r.error;
+        }
+        throw lastErr || new Error('Не удалось создать профиль');
+    }
+
+    // Вход в приложение
+    async function enterApp() {
+        setLoading(true, 'Подключение BLINK…');
+        try {
+            await ensureProfile();
+            showMain();
+            initMap();
+            await Promise.all([loadFriends(), loadIncoming(), loadFriendLocations(), loadPlaces()]);
+            startLocation();
+            subscribeRealtime();
+            renderProfile();
+            setLoading(false);
+        } catch (e) {
+            console.error(e);
+            setLoading(false);
+            showMain();
+            initMap();
+            toast('Ошибка загрузки: ' + humanError(e), 5000);
+        }
+    }
+
+    function showMain() {
+        $('auth').classList.add('hidden');
+        $('main').classList.remove('hidden');
+    }
+
+    function showAuth() {
+        $('main').classList.add('hidden');
+        $('auth').classList.remove('hidden');
+        stopLocation();
+        unsubscribeRealtime();
+    }
+
+    // Инициализация карты
+    function initMap() {
+        if (map) return;
+        map = L.map('map', { zoomControl: false, worldCopyJump: true }).setView([50, 15], 4);
+
+        imageryLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '© Esri'
+        });
+        streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        });
+        labelsLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            opacity: .95,
+            attribution: '© Esri'
         });
 
-      if(error){
-        throw error;
-      }
+        imageryLayer.addTo(map);
+        labelsLayer.addTo(map);
 
-      if(!data.session){
+        // Обработчики кнопок управления
+        $('zoomIn').onclick = () => map.zoomIn();
+        $('zoomOut').onclick = () => map.zoomOut();
+        $('locateBtn').onclick = () => locateMe();
+        $('hybridBtn').onclick = toggleHybrid;
+        $('addPlaceBtn').onclick = toggleAddPlace;
 
-        showAuthError(
-          "Аккаунт создан. Проверь почту и подтверди email, затем войди."
+        // Клик по карте для добавления места
+        map.on('click', async e => {
+            if (addPlaceMode) {
+                await savePlaceAt(e.latlng.lat, e.latlng.lng);
+                addPlaceMode = false;
+                $('addPlaceBtn').classList.remove('active');
+            }
+        });
+    }
+
+    // Переключение гибридного/обычного режима карты
+    function toggleHybrid() {
+        hybrid = !hybrid;
+        if (hybrid) {
+            if (map.hasLayer(streetLayer)) map.removeLayer(streetLayer);
+            if (!map.hasLayer(imageryLayer)) imageryLayer.addTo(map);
+            if (!map.hasLayer(labelsLayer)) labelsLayer.addTo(map);
+            toast('Гибридная карта включена');
+        } else {
+            if (map.hasLayer(imageryLayer)) map.removeLayer(imageryLayer);
+            if (map.hasLayer(labelsLayer)) map.removeLayer(labelsLayer);
+            if (!map.hasLayer(streetLayer)) streetLayer.addTo(map);
+            toast('Обычная карта включена');
+        }
+    }
+
+    // Определение местоположения пользователя
+    function locateMe() {
+        if (lastPosition) {
+            map.flyTo([lastPosition.lat, lastPosition.lng], 17, { duration: 1 });
+        } else {
+            toast('Жду GPS…');
+            startLocation();
+        }
+    }
+
+    // Запуск отслеживания GPS
+    function startLocation() {
+        if (!navigator.geolocation) {
+            $('gpsText').textContent = 'GPS недоступен';
+            return;
+        }
+        if (locationWatch !== null) return;
+
+        $('gpsText').textContent = 'Запуск GPS…';
+        locationWatch = navigator.geolocation.watchPosition(
+            async pos => {
+                const c = pos.coords;
+                lastPosition = {
+                    lat: c.latitude,
+                    lng: c.longitude,
+                    accuracy: c.accuracy,
+                    speed: c.speed,
+                    heading: c.heading
+                };
+                updateMeMarker(c.latitude, c.longitude, c.accuracy);
+                $('gpsDot').classList.add('ok');
+                $('gpsText').textContent = 'GPS включён';
+                try {
+                    await updateMyLocation(c);
+                } catch (e) {
+                    console.warn('Не удалось записать GPS:', e);
+                }
+            },
+            err => {
+                console.warn(err);
+                $('gpsDot').classList.remove('ok');
+                $('gpsText').textContent = err.code === 1 ? 'GPS запрещён' : 'GPS недоступен';
+            },
+            { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
         );
+    }
 
-        return;
-      }
+    function stopLocation() {
+        if (locationWatch !== null) {
+            navigator.geolocation.clearWatch(locationWatch);
+            locationWatch = null;
+        }
+    }
 
-    }else{
-
-      const {
-        error
-      } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
+    // Обновление маркера пользователя на карте
+    function updateMeMarker(lat, lng, accuracy) {
+        const icon = L.divIcon({
+            className: '',
+            html: '<div style="width:22px;height:22px;border-radius:50%;background:#fff;border:5px solid #111;box-shadow:0 0 0 7px #fff4,0 0 25px #fff"></div>',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
         });
 
-      if(error){
-        throw error;
-      }
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    showAuthError(
-      error.message ||
-      "Не удалось выполнить вход."
-    );
-
-  }finally{
-
-    button.classList.remove(
-      "loading"
-    );
-
-  }
-}
-
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-async function checkAuth(){
-
-  const {
-    data
-  } =
-    await supabaseClient.auth.getSession();
-
-  if(data.session){
-
-    currentUser =
-      data.session.user;
-
-    await initializeApp();
-
-  }else{
-
-    document.getElementById(
-      "authScreen"
-    ).style.display = "flex";
-
-  }
-}
-
-
-supabaseClient.auth.onAuthStateChange(
-  async (event,session) => {
-
-    if(
-      session &&
-      !currentUser
-    ){
-
-      currentUser =
-        session.user;
-
-      await initializeApp();
-
-    }
-
-    if(event === "SIGNED_OUT"){
-
-      currentUser = null;
-      myProfile = null;
-
-      document.getElementById(
-        "authScreen"
-      ).style.display = "flex";
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
-async function loadProfile(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id",currentUser.id)
-      .maybeSingle();
-
-  if(error){
-    throw error;
-  }
-
-  myProfile = data;
-
-  /*
-    Если профиль ещё не создан триггером,
-    создаём его сами.
-  */
-
-  if(!myProfile){
-
-    const username =
-      currentUser.user_metadata?.username ||
-      currentUser.email?.split("@")[0] ||
-      "Пользователь";
-
-    const friendCode =
-      String(
-        Math.floor(
-          1000 +
-          Math.random()*9000
-        )
-      );
-
-    const {
-      data:newProfile,
-      error:createError
-    } =
-      await supabaseClient
-        .from("profiles")
-        .insert({
-          id:currentUser.id,
-          username,
-          friend_code:friendCode,
-          notifications_enabled:true,
-          location_sharing_enabled:true
-        })
-        .select()
-        .single();
-
-    if(createError){
-      throw createError;
-    }
-
-    myProfile =
-      newProfile;
-  }
-
-  return myProfile;
-}
-
-
-/* =========================================================
-   FRIENDS
-========================================================= */
-
-async function loadFriends(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("friendships")
-      .select("*")
-      .or(
-        `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
-      );
-
-  if(error){
-    console.error("friendships:",error);
-    friends = [];
-    return;
-  }
-
-  const ids =
-    (data || []).map(row =>
-      row.user_id === currentUser.id
-        ? row.friend_id
-        : row.user_id
-    );
-
-  if(!ids.length){
-
-    friends = [];
-    return;
-  }
-
-  const {
-    data:profiles,
-    error:profileError
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select(
-        "id,username,friend_code,avatar_url,bio"
-      )
-      .in("id",ids);
-
-  if(profileError){
-
-    console.error(
-      "friend profiles:",
-      profileError
-    );
-
-    friends = [];
-    return;
-  }
-
-  friends =
-    profiles || [];
-
-  await loadFriendLocations();
-}
-
-
-async function loadFriendLocations(){
-
-  Object.values(friendMarkers)
-    .forEach(marker => {
-
-      if(map.hasLayer(marker)){
-        map.removeLayer(marker);
-      }
-
-    });
-
-  friendMarkers = {};
-
-  if(!friends.length){
-    return;
-  }
-
-  const ids =
-    friends.map(friend =>
-      friend.id
-    );
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("locations")
-      .select("*")
-      .in("user_id",ids);
-
-  if(error){
-
-    console.error(
-      "locations:",
-      error
-    );
-
-    return;
-  }
-
-  (data || []).forEach(location => {
-
-    const friend =
-      friends.find(
-        f => f.id === location.user_id
-      );
-
-    if(!friend){
-      return;
-    }
-
-    const marker =
-      L.marker(
-        [
-          location.latitude,
-          location.longitude
-        ],
-        {
-          icon:friendIcon(
-            friend.avatar_url
-          ),
-          zIndexOffset:800
+        if (!meMarker) {
+            meMarker = L.marker([lat, lng], { icon, zIndexOffset: 1000 })
+                .addTo(map)
+                .bindPopup('<b>Вы</b><br>Моё местоположение');
+            map.flyTo([lat, lng], 16, { duration: 1 });
+        } else {
+            meMarker.setLatLng([lat, lng]);
         }
-      ).addTo(map);
 
-    marker.bindPopup(`
-      <b>${escapeHtml(friend.username)}</b>
-      <br>
-      Код: ${escapeHtml(friend.friend_code)}
-      <br>
-      🚀 ${
-        Number(location.speed || 0).toFixed(1)
-      } км/ч
-    `);
-
-    friendMarkers[friend.id] =
-      marker;
-  });
-}
-
-
-function friendIcon(photo){
-
-  return L.divIcon({
-
-    className:"",
-
-    html:
-      `<div class="friend-marker">
-        <img src="${avatar(photo)}">
-      </div>`,
-
-    iconSize:[46,46],
-    iconAnchor:[23,23]
-
-  });
-}
-
-
-/* =========================================================
-   SEND FRIEND REQUEST
-========================================================= */
-
-async function sendFriendRequest(){
-
-  const input =
-    document.getElementById(
-      "friendCodeInput"
-    );
-
-  const code =
-    input.value.trim();
-
-  if(!/^\d{4}$/.test(code)){
-
-    toast(
-      "Код должен состоять из 4 цифр."
-    );
-
-    return;
-  }
-
-  if(
-    myProfile &&
-    code === myProfile.friend_code
-  ){
-
-    toast(
-      "Нельзя добавить самого себя."
-    );
-
-    return;
-  }
-
-  try{
-
-    /*
-      Сначала находим пользователя
-      по 4-значному коду.
-    */
-
-    const {
-      data:profile,
-      error:profileError
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select("id,username,friend_code")
-        .eq("friend_code",code)
-        .maybeSingle();
-
-    if(profileError){
-      throw profileError;
+        if (!accuracyCircle) {
+            accuracyCircle = L.circle([lat, lng], {
+                radius: accuracy || 20,
+                color: '#fff',
+                weight: 1,
+                fillOpacity: .04
+            }).addTo(map);
+        } else {
+            accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy || 20);
+        }
     }
 
-    if(!profile){
-
-      toast(
-        "Пользователь с таким кодом не найден."
-      );
-
-      return;
+    // Обновление местоположения в базе данных
+    async function updateMyLocation(c) {
+        const args = {
+            p_latitude: c.latitude,
+            p_longitude: c.longitude,
+            p_accuracy: c.accuracy || 0,
+            p_speed: c.speed || 0,
+            p_heading: c.heading || 0
+        };
+        const r = await db.rpc('update_my_location', args);
+        if (r.error) {
+            const fallback = await db.from('locations').upsert({
+                user_id: user.id,
+                latitude: c.latitude,
+                longitude: c.longitude,
+                accuracy: c.accuracy || 0,
+                speed: c.speed || 0,
+                heading: c.heading || 0,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id' });
+            if (fallback.error) throw r.error;
+        }
     }
 
-    /*
-      Проверяем, нет ли уже дружбы.
-    */
-
-    const {
-      data:existingFriendship
-    } =
-      await supabaseClient
-        .from("friendships")
-        .select("id")
-        .or(
-          `and(user_id.eq.${currentUser.id},friend_id.eq.${profile.id}),and(user_id.eq.${profile.id},friend_id.eq.${currentUser.id})`
-        )
-        .maybeSingle();
-
-    if(existingFriendship){
-
-      toast(
-        "Вы уже друзья."
-      );
-
-      return;
+    // Обёртка для вызова RPC-функций
+    async function rpc(name, args = {}) {
+        const r = await db.rpc(name, args);
+        if (r.error) throw r.error;
+        return r.data;
     }
 
-    /*
-      Проверяем существующую заявку.
-    */
-
-    const {
-      data:existingRequest
-    } =
-      await supabaseClient
-        .from("friend_requests")
-        .select("id,status")
-        .eq("sender_id",currentUser.id)
-        .eq("receiver_id",profile.id)
-        .eq("status","pending")
-        .maybeSingle();
-
-    if(existingRequest){
-
-      toast(
-        "Заявка уже отправлена."
-      );
-
-      return;
+    // Загрузка списка друзей
+    async function loadFriends() {
+        try {
+            friends = await rpc('get_my_friends') || [];
+        } catch (e) {
+            console.warn('get_my_friends:', e);
+            friends = [];
+        }
+        renderFriends();
     }
 
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("friend_requests")
-        .insert({
-          sender_id:currentUser.id,
-          receiver_id:profile.id,
-          status:"pending"
+    // Загрузка входящих заявок
+    async function loadIncoming() {
+        try {
+            incoming = await rpc('get_incoming_requests') || [];
+        } catch (e) {
+            console.warn('get_incoming_requests:', e);
+            incoming = [];
+        }
+        renderFriends();
+        updateBadge();
+    }
+
+    // Загрузка местоположений друзей
+    async function loadFriendLocations() {
+        try {
+            const rows = await rpc('get_friend_locations') || [];
+            const seen = new Set();
+            rows.forEach(r => {
+                seen.add(r.user_id);
+                updateFriendMarker(r);
+            });
+            for (const [id, m] of friendMarkers) {
+                if (!seen.has(id)) {
+                    map.removeLayer(m);
+                    friendMarkers.delete(id);
+                }
+            }
+        } catch (e) {
+            console.warn('get_friend_locations:', e);
+        }
+    }
+
+    // Обновление маркера друга
+    function updateFriendMarker(r) {
+        const icon = L.divIcon({
+            className: '',
+            html: '<div style="width:28px;height:28px;border-radius:50%;background:#ffc400;border:4px solid #111;box-shadow:0 0 0 5px #ffc40055,0 4px 15px #000"></div>',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
         });
 
-    if(error){
-      throw error;
-    }
-
-    toast(
-      "Заявка отправлена!"
-    );
-
-    input.value = "";
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Не удалось отправить заявку."
-    );
-  }
-}
-
-
-/* =========================================================
-   LOAD REQUESTS
-========================================================= */
-
-async function loadIncomingRequests(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("friend_requests")
-      .select("*")
-      .eq("receiver_id",currentUser.id)
-      .eq("status","pending")
-      .order(
-        "created_at",
-        {ascending:false}
-      );
-
-  if(error){
-
-    console.error(
-      "requests:",
-      error
-    );
-
-    incomingRequests = [];
-    return;
-  }
-
-  incomingRequests =
-    data || [];
-}
-
-
-/* =========================================================
-   ACCEPT REQUEST
-========================================================= */
-
-async function acceptRequest(id){
-
-  try{
-
-    const {
-      data:request,
-      error:requestError
-    } =
-      await supabaseClient
-        .from("friend_requests")
-        .select("*")
-        .eq("id",id)
-        .eq("receiver_id",currentUser.id)
-        .single();
-
-    if(requestError){
-      throw requestError;
-    }
-
-    /*
-      Создаём две записи:
-      A -> B
-      B -> A
-
-      Это позволяет обоим пользователям
-      легко находить друг друга.
-    */
-
-    const {
-      error:friendError
-    } =
-      await supabaseClient
-        .from("friendships")
-        .insert([
-          {
-            user_id:currentUser.id,
-            friend_id:request.sender_id
-          },
-          {
-            user_id:request.sender_id,
-            friend_id:currentUser.id
-          }
-        ]);
-
-    if(friendError){
-
-      /*
-        Если UNIQUE уже существует,
-        всё равно обновляем заявку.
-      */
-
-      console.warn(
-        "friendship insert:",
-        friendError
-      );
-    }
-
-    const {
-      error:updateError
-    } =
-      await supabaseClient
-        .from("friend_requests")
-        .update({
-          status:"accepted",
-          updated_at:new Date().toISOString()
-        })
-        .eq("id",id)
-        .eq("receiver_id",currentUser.id);
-
-    if(updateError){
-      throw updateError;
-    }
-
-    toast(
-      "Теперь вы друзья!"
-    );
-
-    await loadFriends();
-    await loadIncomingRequests();
-
-    showFriends();
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Не удалось принять заявку."
-    );
-  }
-}
-
-
-/* =========================================================
-   REJECT REQUEST
-========================================================= */
-
-async function rejectRequest(id){
-
-  try{
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("friend_requests")
-        .update({
-          status:"rejected",
-          updated_at:new Date().toISOString()
-        })
-        .eq("id",id)
-        .eq("receiver_id",currentUser.id);
-
-    if(error){
-      throw error;
-    }
-
-    await loadIncomingRequests();
-
-    showFriends();
-
-    toast(
-      "Заявка отклонена."
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Не удалось отклонить заявку."
-    );
-  }
-}
-
-
-/* =========================================================
-   REMOVE FRIEND
-========================================================= */
-
-async function removeFriend(friendId){
-
-  if(
-    !confirm(
-      "Удалить этого человека из друзей?"
-    )
-  ){
-    return;
-  }
-
-  try{
-
-    await supabaseClient
-      .from("friendships")
-      .delete()
-      .or(
-        `and(user_id.eq.${currentUser.id},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${currentUser.id})`
-      );
-
-    await loadFriends();
-
-    showFriends();
-
-    toast(
-      "Друг удалён."
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Ошибка удаления."
-    );
-  }
-}
-
-
-/* =========================================================
-   FRIENDS PANEL
-========================================================= */
-
-async function showFriends(){
-
-  await loadFriends();
-  await loadIncomingRequests();
-
-  let requestsHTML = "";
-
-  incomingRequests.forEach(request => {
-
-    requestsHTML += `
-      <div class="request">
-
-        <b>Новая заявка</b>
-
-        <div class="note">
-          Пользователь хочет добавить тебя в друзья.
-        </div>
-
-        <div class="row">
-
-          <button
-            class="btn"
-            onclick="acceptRequest('${request.id}')"
-          >
-            Принять
-          </button>
-
-          <button
-            class="btn secondary"
-            onclick="rejectRequest('${request.id}')"
-          >
-            Отклонить
-          </button>
-
-        </div>
-
-      </div>
-    `;
-
-  });
-
-  let friendsHTML = "";
-
-  friends.forEach(friend => {
-
-    friendsHTML += `
-      <div class="friend">
-
-        <img
-          class="avatar small"
-          src="${avatar(friend.avatar_url)}"
-        >
-
-        <div class="grow">
-
-          <b>
-            ${escapeHtml(friend.username)}
-          </b>
-
-          <div class="code">
-            Код: ${escapeHtml(friend.friend_code)}
-          </div>
-
-        </div>
-
-        <button
-          class="btn danger"
-          style="width:auto;margin:0;padding:9px 12px"
-          onclick="removeFriend('${friend.id}')"
-        >
-          ×
-        </button>
-
-      </div>
-    `;
-
-  });
-
-  if(!friendsHTML){
-
-    friendsHTML = `
-      <div class="empty">
-        Пока нет друзей.
-      </div>
-    `;
-  }
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-    <h2>👥 Друзья</h2>
-
-    <div class="field">
-
-      <label>
-        Добавить друга по 4-значному коду
-      </label>
-
-      <div class="row">
-
-        <input
-          id="friendCodeInput"
-          maxlength="4"
-          inputmode="numeric"
-          placeholder="1234"
-        >
-
-        <button
-          class="btn"
-          style="width:auto;white-space:nowrap"
-          onclick="sendFriendRequest()"
-        >
-          Добавить
-        </button>
-
-      </div>
-
-    </div>
-
-    ${
-      requestsHTML
-        ? `<h3>📨 Заявки</h3>${requestsHTML}`
-        : ""
-    }
-
-    <h3>Мои друзья</h3>
-
-    ${friendsHTML}
-
-    <p class="note">
-      Координаты друзей отображаются на карте,
-      когда они разрешили геолокацию.
-    </p>
-
-  `);
-}
-
-
-/* =========================================================
-   LOCATION
-========================================================= */
-
-async function updateMyLocation(position){
-
-  if(!currentUser){
-    return;
-  }
-
-  const c =
-    position.coords;
-
-  const latitude =
-    c.latitude;
-
-  const longitude =
-    c.longitude;
-
-  const accuracy =
-    Number(c.accuracy || 0);
-
-  const speed =
-    Number.isFinite(c.speed)
-      ? Math.max(0,c.speed)
-      : 0;
-
-  const heading =
-    Number.isFinite(c.heading)
-      ? c.heading
-      : null;
-
-  myPosition = {
-    latitude,
-    longitude,
-    accuracy,
-    speed,
-    heading
-  };
-
-  updateMyMarker();
-
-  setStatus(
-    "GPS • онлайн",
-    true
-  );
-
-  /*
-    Сохраняем координаты в Supabase.
-  */
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("locations")
-      .upsert(
-        {
-          user_id:currentUser.id,
-          latitude,
-          longitude,
-          accuracy,
-          speed,
-          heading,
-          updated_at:new Date().toISOString()
-        },
-        {
-          onConflict:"user_id"
+        let m = friendMarkers.get(r.user_id);
+        if (!m) {
+            m = L.marker([r.latitude, r.longitude], { icon }).addTo(map);
+            friendMarkers.set(r.user_id, m);
+        } else {
+            m.setLatLng([r.latitude, r.longitude]);
         }
-      );
 
-  if(error){
-
-    console.error(
-      "LOCATION SAVE:",
-      error
-    );
-
-  }
-}
-
-
-function updateMyMarker(){
-
-  if(!myPosition){
-    return;
-  }
-
-  const lat =
-    myPosition.latitude;
-
-  const lng =
-    myPosition.longitude;
-
-  if(!myMarker){
-
-    myMarker =
-      L.marker(
-        [lat,lng],
-        {
-          icon:userIcon(),
-          zIndexOffset:1000
-        }
-      ).addTo(map);
-
-    myMarker.bindPopup(
-      "<b>Ты</b><br>Твоё текущее местоположение."
-    );
-
-    map.setView(
-      [lat,lng],
-      16
-    );
-
-  }else{
-
-    myMarker.setLatLng(
-      [lat,lng]
-    );
-  }
-}
-
-
-function userIcon(){
-
-  return L.divIcon({
-
-    className:"",
-
-    html:`
-      <div class="user-marker">
-
-        <div class="user-ring"></div>
-
-        <img src="${avatar(
-          myProfile?.avatar_url
-        )}">
-
-      </div>
-    `,
-
-    iconSize:[48,48],
-    iconAnchor:[24,24]
-
-  });
-}
-
-
-function startGPS(){
-
-  if(
-    !navigator.geolocation
-  ){
-
-    setStatus(
-      "GPS не поддерживается",
-      false
-    );
-
-    return;
-  }
-
-  if(watchId !== null){
-
-    navigator.geolocation.clearWatch(
-      watchId
-    );
-  }
-
-  setStatus(
-    "Получаем GPS…",
-    false
-  );
-
-  watchId =
-    navigator.geolocation.watchPosition(
-
-      updateMyLocation,
-
-      error => {
-
-        console.error(
-          "GPS:",
-          error
+        m.bindPopup(
+            `<b>${esc(r.username || 'Друг')}</b><br>Код: ${esc(r.friend_code || '----')}<br><span style="color:#888">Обновлено: ${new Date(r.updated_at || Date.now()).toLocaleTimeString('ru-RU')}</span>`
         );
-
-        if(error.code === 1){
-
-          setStatus(
-            "Разреши геолокацию",
-            false
-          );
-
-          toast(
-            "Разреши браузеру доступ к геолокации."
-          );
-
-        }else{
-
-          setStatus(
-            "GPS недоступен",
-            false
-          );
-        }
-      },
-
-      {
-        enableHighAccuracy:true,
-        maximumAge:3000,
-        timeout:15000
-      }
-    );
-}
-
-
-/* =========================================================
-   REALTIME LOCATIONS
-========================================================= */
-
-function subscribeLocations(){
-
-  supabaseClient
-    .channel("blink-locations")
-    .on(
-      "postgres_changes",
-      {
-        event:"*",
-        schema:"public",
-        table:"locations"
-      },
-      async () => {
-
-        await loadFriends();
-      }
-    )
-    .subscribe();
-}
-
-
-/* =========================================================
-   PLACES
-========================================================= */
-
-const placeTypes = {
-
-  home:{
-    name:"Дом",
-    icon:"🏠"
-  },
-
-  work:{
-    name:"Работа",
-    icon:"💼"
-  },
-
-  school:{
-    name:"Школа",
-    icon:"🎓"
-  },
-
-  other:{
-    name:"Другое",
-    icon:"📍"
-  }
-
-};
-
-
-async function loadPlaces(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("saved_places")
-      .select("*")
-      .eq("user_id",currentUser.id)
-      .order(
-        "created_at",
-        {ascending:false}
-      );
-
-  if(error){
-
-    console.error(
-      "places:",
-      error
-    );
-
-    savedPlaces = [];
-
-    return;
-  }
-
-  savedPlaces =
-    data || [];
-
-  renderPlaces();
-}
-
-
-function renderPlaces(){
-
-  Object.values(placeMarkers)
-    .forEach(marker => {
-
-      if(map.hasLayer(marker)){
-        map.removeLayer(marker);
-      }
-
-    });
-
-  placeMarkers = {};
-
-  savedPlaces.forEach(place => {
-
-    const type =
-      placeTypes[place.type] ||
-      placeTypes.other;
-
-    const marker =
-      L.marker(
-        [
-          place.latitude,
-          place.longitude
-        ],
-        {
-          icon:placeIcon(
-            place.type
-          ),
-          zIndexOffset:500
-        }
-      ).addTo(map);
-
-    marker.bindPopup(`
-      <b>${escapeHtml(place.name)}</b>
-      <br>
-      ${type.icon} ${type.name}
-    `);
-
-    placeMarkers[place.id] =
-      marker;
-  });
-}
-
-
-function placeIcon(type){
-
-  const data =
-    placeTypes[type] ||
-    placeTypes.other;
-
-  return L.divIcon({
-
-    className:"",
-
-    html:
-      `<div class="place-marker">
-        ${data.icon}
-      </div>`,
-
-    iconSize:[44,44],
-    iconAnchor:[22,22]
-
-  });
-}
-
-
-function startAddPlace(){
-
-  closePanel();
-
-  toast(
-    "Нажми на карте место, которое хочешь сохранить."
-  );
-
-  map.once(
-    "click",
-    event => {
-
-      openAddPlaceForm(
-        event.latlng.lat,
-        event.latlng.lng
-      );
-
     }
-  );
-}
 
+    // Отправка заявки в друзья
+    async function sendFriendRequest() {
+        const code = $('friendCodeInput').value.trim();
+        if (!validCode(code)) {
+            toast('Введи ровно 4 цифры');
+            return;
+        }
+        try {
+            setLoading(true, 'Отправка заявки…');
+            await rpc('send_friend_request_by_code', { p_friend_code: code });
+            toast('Заявка отправлена');
+            $('friendCodeInput').value = '';
+            await loadIncoming();
+        } catch (e) {
+            toast(humanError(e), 4500);
+        } finally {
+            setLoading(false);
+        }
+    }
 
-function openAddPlaceForm(
-  latitude,
-  longitude
-){
+    // Принятие заявки
+    async function acceptRequest(id) {
+        try {
+            await rpc('accept_friend_request', { p_request_id: id });
+            toast('Друг добавлен');
+            await loadFriends();
+            await loadIncoming();
+            await loadFriendLocations();
+        } catch (e) {
+            toast(humanError(e), 4500);
+        }
+    }
 
-  openPanel(`
+    // Отклонение заявки
+    async function rejectRequest(id) {
+        try {
+            await rpc('reject_friend_request', { p_request_id: id });
+            toast('Заявка отклонена');
+            await loadIncoming();
+        } catch (e) {
+            toast(humanError(e), 4500);
+        }
+    }
 
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
+    // Удаление друга
+    async function removeFriend(id) {
+        if (!confirm('Удалить этого друга?')) return;
+        try {
+            await rpc('remove_friend', { p_friend_id: id });
+            toast('Друг удалён');
+            await loadFriends();
+            await loadFriendLocations();
+        } catch (e) {
+            toast(humanError(e), 4500);
+        }
+    }
 
-    <h2>📍 Добавить место</h2>
+    // Отрисовка панели друзей
+    function renderFriends() {
+        const p = $('friendsPanel');
+        if (p.classList.contains('hidden')) return;
 
-    <div class="field">
+        p.innerHTML = `
+            <div class="panel-head">
+                <h2>Друзья</h2>
+                <button class="close" onclick="closePanels()">×</button>
+            </div>
+            <div class="card">
+                <div class="muted">Твой 4-значный код</div>
+                <div class="row" style="margin-top:7px">
+                    <div class="code">${esc(profile?.friend_code || '----')}</div>
+                    <button class="small-btn" onclick="copyCode()">Копировать</button>
+                </div>
+                <div class="muted" style="margin-top:7px">Отправь этот код другу, чтобы он добавил тебя.</div>
+            </div>
+            <div class="card">
+                <div class="muted" style="margin-bottom:9px">Добавить друга</div>
+                <div class="row">
+                    <input id="friendCodeInput" inputmode="numeric" maxlength="4" placeholder="1234" style="flex:1;padding:13px;border-radius:13px;background:#181818;border:1px solid #333;color:#fff">
+                    <button class="small-btn" onclick="sendFriendRequest()">Отправить</button>
+                </div>
+            </div>
+            ${incoming.length ? `<h3>Входящие заявки (${incoming.length})</h3>
+            ${incoming.map(r => `
+                <div class="card">
+                    <div class="friend">
+                        <div class="avatar">${initials(r.username)}</div>
+                        <div class="friend-info">
+                            <div class="friend-name">${esc(r.username || 'Пользователь')}</div>
+                            <div class="friend-code">Код: ${esc(r.friend_code || '----')}</div>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="accept" onclick="acceptRequest('${esc(r.id)}')">Принять</button>
+                        <button class="reject" onclick="rejectRequest('${esc(r.id)}')">Отклонить</button>
+                    </div>
+                </div>
+            `).join('')}` : ''}
+            <h3>Мои друзья (${friends.length})</h3>
+            ${friends.length ? friends.map(f => `
+                <div class="card">
+                    <div class="friend">
+                        <div class="avatar">${initials(f.username)}</div>
+                        <div class="friend-info">
+                            <div class="friend-name">${esc(f.username || 'Пользователь')}</div>
+                            <div class="friend-code">Код: ${esc(f.friend_code || '----')}</div>
+                        </div>
+                        <button class="small-btn danger" onclick="removeFriend('${esc(f.id)}')">×</button>
+                    </div>
+                </div>
+            `).join('') : '<div class="card muted">Пока нет друзей. Добавь человека по его 4-значному коду.</div>'}
+        `;
+    }
 
-      <label>Название</label>
+    function updateBadge() {
+        const n = incoming.length;
+        const badge = $('requestBadge');
+        badge.textContent = n;
+        badge.classList.toggle('hidden', !n);
+    }
 
-      <input
-        id="placeName"
-        maxlength="50"
-        placeholder="Например, мой дом"
-      >
+    async function copyCode() {
+        try {
+            await navigator.clipboard.writeText(profile.friend_code);
+            toast('Код скопирован');
+        } catch {
+            toast(profile.friend_code);
+        }
+    }
 
-    </div>
+    // Загрузка сохранённых мест
+    async function loadPlaces() {
+        const r = await db.from('saved_places').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+        if (r.error) {
+            console.warn('saved_places:', r.error);
+            return;
+        }
+        r.data.forEach(addPlaceMarker);
+    }
 
-    <div class="field">
-
-      <label>Тип</label>
-
-      <select id="placeType">
-
-        <option value="home">
-          🏠 Дом
-        </option>
-
-        <option value="work">
-          💼 Работа
-        </option>
-
-        <option value="school">
-          🎓 Школа
-        </option>
-
-        <option value="other">
-          📍 Другое
-        </option>
-
-      </select>
-
-    </div>
-
-    <button
-      class="btn"
-      onclick="
-        savePlace(
-          ${latitude},
-          ${longitude}
-        )
-      "
-    >
-      Сохранить
-    </button>
-
-  `);
-}
-
-
-async function savePlace(
-  latitude,
-  longitude
-){
-
-  const name =
-    document.getElementById(
-      "placeName"
-    ).value.trim();
-
-  const type =
-    document.getElementById(
-      "placeType"
-    ).value;
-
-  if(!name){
-
-    toast(
-      "Введи название места."
-    );
-
-    return;
-  }
-
-  try{
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("saved_places")
-        .insert({
-          user_id:currentUser.id,
-          name,
-          type,
-          latitude,
-          longitude
+    function addPlaceMarker(p) {
+        const icon = L.divIcon({
+            className: '',
+            html: '<div style="font-size:25px">📍</div>',
+            iconSize: [28, 28],
+            iconAnchor: [14, 28]
         });
-
-    if(error){
-      throw error;
+        const m = L.marker([p.latitude, p.longitude], { icon })
+            .addTo(map)
+            .bindPopup(`<b>${esc(p.name)}</b><br><span style="color:#888">${esc(p.type || 'Место')}</span>`);
+        placeMarkers.set(p.id, m);
     }
 
-    await loadPlaces();
-
-    closePanel();
-
-    map.setView(
-      [latitude,longitude],
-      Math.max(
-        map.getZoom(),
-        16
-      )
-    );
-
-    toast(
-      "Место сохранено."
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Не удалось сохранить место."
-    );
-  }
-}
-
-
-async function deletePlace(id){
-
-  try{
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("saved_places")
-        .delete()
-        .eq("id",id)
-        .eq("user_id",currentUser.id);
-
-    if(error){
-      throw error;
+    function toggleAddPlace() {
+        addPlaceMode = !addPlaceMode;
+        $('addPlaceBtn').classList.toggle('active', addPlaceMode);
+        toast(addPlaceMode ? 'Нажми на карту там, где сохранить место' : 'Добавление места отменено');
     }
 
-    await loadPlaces();
-
-    showPlaces();
-
-    toast(
-      "Место удалено."
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Ошибка удаления."
-    );
-  }
-}
-
-
-async function showPlaces(){
-
-  await loadPlaces();
-
-  let html = "";
-
-  savedPlaces.forEach(place => {
-
-    const type =
-      placeTypes[place.type] ||
-      placeTypes.other;
-
-    html += `
-
-      <div class="place">
-
-        <div class="place-icon">
-          ${type.icon}
-        </div>
-
-        <div class="grow">
-
-          <b>
-            ${escapeHtml(place.name)}
-          </b>
-
-          <div class="code">
-            ${type.name}
-          </div>
-
-        </div>
-
-        <button
-          class="btn secondary"
-          style="width:auto;margin:0"
-          onclick="
-            focusPlace(
-              '${place.id}'
-            )
-          "
-        >
-          👁️
-        </button>
-
-        <button
-          class="btn danger"
-          style="width:auto;margin:0"
-          onclick="
-            deletePlace(
-              '${place.id}'
-            )
-          "
-        >
-          ×
-        </button>
-
-      </div>
-
-    `;
-
-  });
-
-  if(!html){
-
-    html = `
-      <div class="empty">
-        У тебя пока нет сохранённых мест.
-      </div>
-    `;
-  }
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-    <h2>📍 Мои места</h2>
-
-    <button
-      class="btn"
-      onclick="startAddPlace()"
-    >
-      ＋ Добавить место
-    </button>
-
-    <div style="margin-top:12px">
-      ${html}
-    </div>
-
-  `);
-}
-
-
-function focusPlace(id){
-
-  const place =
-    savedPlaces.find(
-      p => p.id === id
-    );
-
-  if(!place){
-    return;
-  }
-
-  closePanel();
-
-  map.setView(
-    [
-      place.latitude,
-      place.longitude
-    ],
-    17
-  );
-
-  setTimeout(() => {
-
-    if(placeMarkers[id]){
-      placeMarkers[id].openPopup();
+    async function savePlaceAt(lat, lng) {
+        openModal(`
+            <h3>Новое место</h3>
+            <input id="placeName" placeholder="Название места">
+            <input id="placeType" style="margin-top:10px" placeholder="Тип: дом, кафе, школа…">
+            <div class="modal-actions">
+                <button class="reject" onclick="closeModal()">Отмена</button>
+                <button class="accept" onclick="confirmPlace(${lat}, ${lng})">Сохранить</button>
+            </div>
+        `);
     }
 
-  },300);
-}
-
-
-/* =========================================================
-   PROFILE PANEL
-========================================================= */
-
-function showProfile(){
-
-  const profile =
-    myProfile || {};
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-    <h2>👤 Профиль</h2>
-
-    <div class="profile">
-
-      <img
-        class="avatar"
-        src="${avatar(profile.avatar_url)}"
-      >
-
-      <div>
-
-        <b>
-          ${escapeHtml(
-            profile.username || "Пользователь"
-          )}
-        </b>
-
-        <div class="code">
-          Мой код:
-          <b>
-            ${escapeHtml(
-              profile.friend_code || "----"
-            )}
-          </b>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="field">
-
-      <label>
-        Имя
-      </label>
-
-      <input
-        id="profileName"
-        maxlength="30"
-        value="${escapeHtml(
-          profile.username || ""
-        )}"
-      >
-
-    </div>
-
-    <div class="field">
-
-      <label>
-        О себе
-      </label>
-
-      <textarea
-        id="profileBio"
-        maxlength="200"
-        placeholder="Расскажи немного о себе..."
-      >${escapeHtml(
-        profile.bio || ""
-      )}</textarea>
-
-    </div>
-
-    <button
-      class="btn"
-      onclick="saveProfile()"
-    >
-      Сохранить профиль
-    </button>
-
-    <div
-      style="
-        margin-top:15px;
-        padding:15px;
-        background:#171717;
-        border:1px solid #292929;
-        border-radius:17px;
-      "
-    >
-
-      <div class="code">
-        ТВОЙ 4-ЗНАЧНЫЙ КОД
-      </div>
-
-      <div
-        style="
-          font-size:34px;
-          font-weight:900;
-          letter-spacing:7px;
-          margin-top:5px;
-        "
-      >
-        ${escapeHtml(
-          profile.friend_code || "----"
-        )}
-      </div>
-
-      <div class="note">
-        Отправь этот код другу,
-        чтобы он мог найти тебя.
-      </div>
-
-    </div>
-
-  `);
-}
-
-
-async function saveProfile(){
-
-  const username =
-    document.getElementById(
-      "profileName"
-    ).value.trim() ||
-    "Пользователь";
-
-  const bio =
-    document.getElementById(
-      "profileBio"
-    ).value.trim();
-
-  try{
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .update({
-          username,
-          bio,
-          updated_at:new Date().toISOString()
-        })
-        .eq("id",currentUser.id)
-        .select()
-        .single();
-
-    if(error){
-      throw error;
+    async function confirmPlace(lat, lng) {
+        const name = $('placeName').value.trim();
+        const type = $('placeType').value.trim() || 'Место';
+        if (!name) {
+            toast('Введи название');
+            return;
+        }
+        const r = await db.from('saved_places').insert({
+            user_id: user.id,
+            name,
+            type,
+            latitude: lat,
+            longitude: lng
+        }).select().single();
+        if (r.error) {
+            toast(humanError(r.error), 4500);
+            return;
+        }
+        addPlaceMarker(r.data);
+        closeModal();
+        toast('Место сохранено');
     }
 
-    myProfile =
-      data;
-
-    toast(
-      "Профиль сохранён."
-    );
-
-    closePanel();
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      error.message ||
-      "Не удалось сохранить профиль."
-    );
-  }
-}
-
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-function showSettings(){
-
-  openPanel(`
-
-    <button
-      class="close"
-      onclick="closePanel()"
-    >
-      ×
-    </button>
-
-    <h2>⚙️ Настройки</h2>
-
-    <button
-      class="btn secondary"
-      onclick="centerMe()"
-    >
-      🎯 Моё местоположение
-    </button>
-
-    <button
-      class="btn secondary"
-      onclick="startAddPlace()"
-    >
-      📍 Добавить место
-    </button>
-
-    <button
-      class="btn secondary"
-      onclick="showPlaces()"
-    >
-      📍 Мои места
-    </button>
-
-    <button
-      class="btn danger"
-      onclick="logout()"
-    >
-      Выйти из аккаунта
-    </button>
-
-    <p class="note">
-      Blink обновляет твою геопозицию
-      через GPS и сохраняет её в Supabase,
-      чтобы друзья могли видеть твоё движение.
-    </p>
-
-  `);
-}
-
-
-async function logout(){
-
-  if(
-    watchId !== null
-  ){
-
-    navigator.geolocation.clearWatch(
-      watchId
-    );
-
-    watchId = null;
-  }
-
-  await supabaseClient.auth.signOut();
-
-  location.reload();
-}
-
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-function openPanel(html){
-
-  document.getElementById(
-    "sheet"
-  ).innerHTML =
-    '<div class="handle"></div>' +
-    html;
-
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "flex";
-}
-
-
-function closePanel(){
-
-  document.getElementById(
-    "panel"
-  ).style.display =
-    "none";
-}
-
-
-document.getElementById(
-  "panel"
-).onclick =
-  event => {
-
-    if(
-      event.target.id === "panel"
-    ){
-
-      closePanel();
+    // Профиль
+    function renderProfile() {
+        const p = $('profilePanel');
+        p.innerHTML = `
+            <div class="panel-head">
+                <h2>Профиль</h2>
+                <button class="close" onclick="closePanels()">×</button>
+            </div>
+            <div class="card">
+                <div class="friend">
+                    <div class="avatar">${initials(profile?.username)}</div>
+                    <div>
+                        <div class="friend-name">${esc(profile?.username || 'Пользователь')}</div>
+                        <div class="friend-code">${esc(user?.email || '')}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="muted">Мой код</div>
+                <div class="code" style="margin-top:8px">${esc(profile?.friend_code || '----')}</div>
+            </div>
+        `;
     }
-  };
 
+    // Настройки
+    function renderSettings() {
+        const p = $('settingsPanel');
+        p.innerHTML = `
+            <div class="panel-head">
+                <h2>Настройки</h2>
+                <button class="close" onclick="closePanels()">×</button>
+            </div>
+            <div class="card">
+                <div class="row">
+                    <div>
+                        <b>Показывать местоположение</b>
+                        <div class="muted">Друзья смогут видеть твою позицию.</div>
+                    </div>
+                    <button class="small-btn" id="sharingBtn" onclick="toggleSharing()">${profile?.location_sharing_enabled === false ? 'Выкл' : 'Вкл'}</button>
+                </div>
+            </div>
+            <div class="card">
+                <button class="primary" onclick="logout()">Выйти из аккаунта</button>
+            </div>
+        `;
+    }
 
-/* =========================================================
-   MAP
-========================================================= */
+    async function toggleSharing() {
+        const value = profile?.location_sharing_enabled === false;
+        const r = await db.from('profiles').update({
+            location_sharing_enabled: value,
+            updated_at: new Date().toISOString()
+        }).eq('id', user.id);
+        if (r.error) {
+            toast(humanError(r.error));
+            return;
+        }
+        profile.location_sharing_enabled = value;
+        renderSettings();
+        toast(value ? 'Местоположение включено' : 'Местоположение выключено');
+    }
 
-function zoomIn(){
-  map.zoomIn();
-}
+    async function logout() {
+        await db.auth.signOut();
+        user = null;
+        profile = null;
+        showAuth();
+        setAuthMode(false);
+    }
 
-function zoomOut(){
-  map.zoomOut();
-}
-
-function centerMe(){
-
-  closePanel();
-
-  if(!myPosition){
-
-    toast(
-      "GPS ещё не получил твоё местоположение."
-    );
-
-    return;
-  }
-
-  map.setView(
-    [
-      myPosition.latitude,
-      myPosition.longitude
-    ],
-    17
-  );
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-document
-  .querySelectorAll(".nav")
-  .forEach(button => {
-
-    button.onclick = async () => {
-
-      document
-        .querySelectorAll(".nav")
-        .forEach(
-          b => b.classList.remove("active")
+    // Управление панелями
+    function openPanel(id) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+        if (id === 'friendsPanel') renderFriends();
+        if (id === 'profilePanel') renderProfile();
+        if (id === 'settingsPanel') renderSettings();
+        if (id !== 'mapPanel') $(id).classList.remove('hidden');
+        document.querySelectorAll('.nav').forEach(n =>
+            n.classList.toggle('active', n.dataset.panel === id || (id === 'mapPanel' && n.dataset.panel === 'mapPanel'))
         );
+    }
 
-      button.classList.add("active");
+    function closePanels() {
+        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.nav').forEach(n => n.classList.toggle('active', n.dataset.panel === 'mapPanel'));
+    }
 
-      const page =
-        button.dataset.page;
+    document.querySelectorAll('.nav').forEach(n => n.onclick = () => openPanel(n.dataset.panel));
 
-      if(page === "map"){
+    // Модальное окно
+    function openModal(html) {
+        $('modal').innerHTML = html;
+        $('modalWrap').classList.remove('hidden');
+    }
 
-        closePanel();
-      }
+    function closeModal() {
+        $('modalWrap').classList.add('hidden');
+    }
 
-      if(page === "friends"){
-
-        await showFriends();
-      }
-
-      if(page === "profile"){
-
-        showProfile();
-      }
-
-      if(page === "settings"){
-
-        showSettings();
-      }
-
+    $('modalWrap').onclick = e => {
+        if (e.target === $('modalWrap')) closeModal();
     };
 
-  });
+    // Подписка на изменения в реальном времени
+    function subscribeRealtime() {
+        unsubscribeRealtime();
 
+        locationChannel = db.channel('blink-locations')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'locations'
+            }, payload => {
+                if (payload.new?.user_id !== user?.id) loadFriendLocations();
+            })
+            .subscribe((status, err) => {
+                if (status === 'SUBSCRIBED') console.log('✅ Realtime locations');
+                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn('Realtime locations:', status, err);
+            });
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+        requestChannel = db.channel('blink-requests')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'friend_requests'
+            }, payload => {
+                loadIncoming();
+                loadFriends();
+            })
+            .subscribe((status, err) => {
+                if (status === 'SUBSCRIBED') console.log('✅ Realtime requests');
+                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn('Realtime requests:', status, err);
+            });
+    }
 
-async function initializeApp(){
-
-  try{
-
-    document.getElementById(
-      "authScreen"
-    ).style.display =
-      "none";
-
-    await loadProfile();
-
-    await loadFriends();
-
-    await loadIncomingRequests();
-
-    await loadPlaces();
-
-    startGPS();
-
-    subscribeLocations();
-
-    /*
-      Периодически обновляем координаты друзей.
-      Это дополнительная страховка к Realtime.
-    */
-
-    setInterval(
-      async () => {
-
-        if(currentUser){
-
-          await loadFriends();
-
+    function unsubscribeRealtime() {
+        if (locationChannel) {
+            db.removeChannel(locationChannel);
+            locationChannel = null;
         }
+        if (requestChannel) {
+            db.removeChannel(requestChannel);
+            requestChannel = null;
+        }
+    }
 
-      },
-      10000
-    );
+    // Обработка изменений состояния аутентификации
+    db.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user && !user) {
+            user = session.user;
+            try {
+                await ensureProfile();
+                await enterApp();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        if (!session) {
+            user = null;
+            profile = null;
+        }
+    });
 
-  }catch(error){
-
-    console.error(
-      "BLINK INIT ERROR:",
-      error
-    );
-
-    document.getElementById(
-      "authScreen"
-    ).style.display =
-      "flex";
-
-    showAuthError(
-      "Не удалось загрузить Blink: " +
-      (error.message || "неизвестная ошибка")
-    );
-  }
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-checkAuth();
-
+    // Автоматический вход при наличии сессии
+    (async () => {
+        const { data } = await db.auth.getSession();
+        if (data.session) {
+            user = data.session.user;
+            await enterApp();
+        }
+    })();
 </script>
-
 </body>
 </html>
