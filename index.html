@@ -2,61 +2,46 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080a11">
-<title>Рядом — поддержка</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b12">
+
+<title>Рядом — пространство поддержки</title>
 
 <style>
-:root{
---bg:#080a11;
---card:#11141d;
---card2:#181b27;
---line:#292e3d;
---text:#f8f8fb;
---muted:#a4a8b7;
---violet:#8c82ff;
---pink:#e887aa;
---blue:#71c8df;
---green:#72d6aa;
---red:#e9556e;
+*{
+box-sizing:border-box;
 }
 
-*{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
+html{
+scroll-behavior:smooth;
+}
 
 body{
 margin:0;
+font-family:Arial,Helvetica,sans-serif;
 background:
-radial-gradient(circle at 10% 0%,#766bff22,transparent 30%),
-radial-gradient(circle at 100% 80%,#ec729b1c,transparent 32%),
-var(--bg);
-color:var(--text);
-font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+radial-gradient(circle at 10% 0%,#7d70ff22,transparent 30%),
+radial-gradient(circle at 100% 80%,#ee719b1b,transparent 30%),
+#080b12;
+color:#f7f7fb;
 overflow-x:hidden;
 }
-
-button,a{
-font:inherit;
--webkit-tap-highlight-color:transparent;
-}
-
-button{color:inherit}
 
 body:before{
 content:"";
 position:fixed;
 inset:0;
 pointer-events:none;
-opacity:.14;
+opacity:.12;
 background-image:radial-gradient(#fff 1px,transparent 1px);
-background-size:42px 42px;
-z-index:-2;
-animation:stars 20s linear infinite;
+background-size:45px 45px;
+animation:stars 18s linear infinite;
 }
 
 @keyframes stars{
-to{transform:translateY(42px)}
+to{
+transform:translateY(45px);
+}
 }
 
 .orb{
@@ -64,92 +49,82 @@ position:fixed;
 width:280px;
 height:280px;
 border-radius:50%;
-filter:blur(90px);
-opacity:.3;
+filter:blur(100px);
+opacity:.28;
 pointer-events:none;
 z-index:-1;
 }
 
-.orb.one{
-background:#766cff;
-left:-140px;
+.orb1{
+background:#796dff;
+left:-150px;
 top:100px;
-animation:orb1 12s ease-in-out infinite alternate;
+animation:move1 12s infinite alternate ease-in-out;
 }
 
-.orb.two{
-background:#ed709b;
-right:-140px;
-bottom:80px;
-animation:orb2 14s ease-in-out infinite alternate;
+.orb2{
+background:#ed719c;
+right:-150px;
+bottom:100px;
+animation:move2 14s infinite alternate ease-in-out;
 }
 
-@keyframes orb1{
-to{transform:translate(160px,110px)}
+@keyframes move1{
+to{
+transform:translate(150px,120px);
+}
 }
 
-@keyframes orb2{
-to{transform:translate(-130px,-100px)}
+@keyframes move2{
+to{
+transform:translate(-150px,-100px);
+}
 }
 
 .app{
-width:min(850px,100%);
+max-width:850px;
 margin:auto;
 padding:18px 15px 120px;
 }
 
-.screen{
-display:none;
-animation:appear .45s ease;
-}
-
-.screen.active{display:block}
-
-@keyframes appear{
-from{
-opacity:0;
-transform:translateY(14px);
-}
-to{
-opacity:1;
-transform:none;
-}
-}
-
-.top{
+header{
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
 margin-bottom:18px;
 }
 
 .logo{
-font-size:31px;
+font-size:30px;
 font-weight:900;
-letter-spacing:-1.5px;
 }
 
 .logo span{
-color:var(--violet);
+color:#8d83ff;
 }
 
 .badge{
 padding:8px 12px;
+border:1px solid #292e3d;
 border-radius:14px;
-border:1px solid var(--line);
-background:#12151de8;
-color:var(--muted);
+background:#12151ddd;
 font-size:12px;
+color:#a4a8b6;
+}
+
+section{
+margin-bottom:25px;
 }
 
 .hero{
-position:relative;
+padding:30px;
+border-radius:30px;
+border:1px solid #363b4c;
+background:
+linear-gradient(145deg,#1d1b34,#11141c);
+box-shadow:0 25px 70px #0008;
 overflow:hidden;
-padding:28px;
-border:1px solid #363b4d;
-border-radius:31px;
-background:linear-gradient(145deg,#1d1b32,#11141c 72%);
-box-shadow:0 25px 75px #0008;
+position:relative;
 }
 
 .hero:after{
@@ -157,43 +132,45 @@ content:"";
 position:absolute;
 width:180px;
 height:180px;
-border-radius:50%;
-border:1px solid #ffffff10;
 right:-80px;
 top:-80px;
+border-radius:50%;
+border:1px solid #ffffff10;
 box-shadow:
 0 0 0 35px #ffffff04,
 0 0 0 70px #ffffff02;
 }
 
 .hero h1{
-font-size:clamp(29px,7vw,43px);
+font-size:clamp(30px,7vw,45px);
 line-height:1.03;
-margin:0 0 13px;
-max-width:700px;
+margin:0 0 14px;
 }
 
 .hero p{
-margin:0;
-color:#b9bdc9;
+color:#b8bcc8;
 line-height:1.65;
-max-width:700px;
+margin:0;
 }
 
-.actions{
+.buttons{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
 margin-top:20px;
 }
 
+button{
+font-family:inherit;
+}
+
 .btn{
 border:0;
 border-radius:17px;
 padding:15px;
-font-weight:850;
+font-weight:bold;
 cursor:pointer;
-transition:.22s;
+transition:.25s;
 }
 
 .btn:hover{
@@ -201,23 +178,19 @@ transform:translateY(-3px);
 }
 
 .primary{
-background:linear-gradient(100deg,#8277ff,#bc78ff);
-box-shadow:0 14px 32px #8177ff25;
+background:linear-gradient(100deg,#8177ff,#bd78ff);
+color:white;
 }
 
 .danger{
-background:linear-gradient(100deg,#e9536c,#bd579c);
+background:linear-gradient(100deg,#e9536d,#bc579c);
+color:white;
 }
 
 .dark{
 background:#20232e;
-border:1px solid #353949;
-}
-
-.green{
-background:#19382f;
-border:1px solid #345f50;
-color:#aaf0d0;
+color:white;
+border:1px solid #343949;
 }
 
 .title{
@@ -232,61 +205,22 @@ font-size:19px;
 margin:0;
 }
 
-.title span{
-font-size:12px;
-color:#777b89;
+.title small{
+color:#777c8b;
 }
 
-.card,
-.mood-card,
-.journal,
-.info,
-.breath,
-.mini{
+.card{
 background:#11141cdd;
-border:1px solid var(--line);
-border-radius:23px;
-}
-
-.mood-card{
+border:1px solid #292e3d;
+border-radius:22px;
 padding:18px;
-}
-
-.mood-card p{
-margin:0;
-color:#afb3bf;
-}
-
-.moods{
-display:flex;
-gap:7px;
-margin-top:15px;
-}
-
-.mood{
-flex:1;
-border:1px solid #2b303e;
-background:#191c25;
-border-radius:16px;
-padding:10px 3px;
-cursor:pointer;
-font-size:22px;
 transition:.25s;
 }
 
-.mood small{
-display:block;
-font-size:9px;
-color:#7f8390;
-margin-top:4px;
-}
-
-.mood:hover,
-.mood.active{
-background:#292651;
-border-color:var(--violet);
-transform:translateY(-5px);
-box-shadow:0 10px 25px #8177ff20;
+.card:hover{
+transform:translateY(-4px);
+border-color:#8076ff;
+box-shadow:0 15px 35px #0008;
 }
 
 .grid{
@@ -295,18 +229,8 @@ grid-template-columns:repeat(2,1fr);
 gap:10px;
 }
 
-.card{
-min-height:120px;
-text-align:left;
-padding:17px;
+.click{
 cursor:pointer;
-transition:.25s;
-}
-
-.card:hover{
-transform:translateY(-4px);
-border-color:#766dff;
-box-shadow:0 15px 35px #0007;
 }
 
 .icon{
@@ -318,16 +242,45 @@ display:block;
 margin-top:8px;
 }
 
-.card small{
+.card p{
+color:#9499a8;
+font-size:13px;
+line-height:1.5;
+}
+
+.moods{
+display:flex;
+gap:7px;
+}
+
+.mood{
+flex:1;
+border:1px solid #292e3d;
+background:#171a23;
+border-radius:17px;
+padding:11px 4px;
+cursor:pointer;
+font-size:23px;
+transition:.25s;
+}
+
+.mood small{
 display:block;
-color:#9094a1;
-margin-top:5px;
-line-height:1.4;
+font-size:9px;
+color:#888c99;
+margin-top:4px;
+}
+
+.mood:hover,
+.mood.active{
+transform:translateY(-5px);
+background:#2a2751;
+border-color:#8b82ff;
 }
 
 .posts{
 display:flex;
-gap:11px;
+gap:10px;
 overflow-x:auto;
 scrollbar-width:none;
 }
@@ -337,20 +290,11 @@ display:none;
 }
 
 .post{
-min-width:250px;
+min-width:245px;
+background:#11141c;
+border:1px solid #292e3d;
+border-radius:22px;
 padding:18px;
-border:1px solid var(--line);
-border-radius:23px;
-background:linear-gradient(145deg,#191c27,#10131a);
-transition:.25s;
-}
-
-.post:hover{
-transform:translateY(-3px);
-}
-
-.post-icon{
-font-size:30px;
 }
 
 .post h3{
@@ -359,71 +303,21 @@ margin:10px 0 7px;
 
 .post p{
 margin:0;
-color:#aeb1bd;
+color:#aeb2bf;
 font-size:14px;
 line-height:1.55;
 }
 
 .info{
+background:#11141c;
+border:1px solid #292e3d;
+border-radius:22px;
 padding:18px;
-color:#c5c8d0;
+color:#bfc3ce;
 line-height:1.65;
 }
 
-.resource{
-width:100%;
-display:flex;
-align-items:center;
-gap:13px;
-padding:16px;
-margin-bottom:10px;
-border-radius:19px;
-background:#11141c;
-border:1px solid var(--line);
-color:#fff;
-text-decoration:none;
-text-align:left;
-cursor:pointer;
-transition:.2s;
-}
-
-.resource:hover{
-transform:translateX(4px);
-border-color:var(--violet);
-}
-
-.resource-icon{
-font-size:27px;
-}
-
-.resource small{
-display:block;
-color:#8e92a0;
-margin-top:3px;
-}
-
-.tags{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-}
-
-.tag{
-padding:9px 13px;
-border-radius:99px;
-border:1px solid var(--line);
-background:#151821;
-color:#c7cad4;
-cursor:pointer;
-}
-
-.tag.active{
-background:#292650;
-border-color:var(--violet);
-}
-
 .breath{
-padding:22px;
 text-align:center;
 }
 
@@ -437,12 +331,12 @@ place-items:center;
 background:
 radial-gradient(
 circle,
-#aaa3ff,
-#6d62d7 48%,
-#302d6b 70%,
-transparent 71%
+#aaa4ff,
+#6c61d4 50%,
+#302d69 72%,
+transparent 73%
 );
-box-shadow:0 0 65px #8177ff50;
+box-shadow:0 0 60px #8177ff55;
 transition:transform 4s ease-in-out;
 }
 
@@ -450,63 +344,35 @@ transition:transform 4s ease-in-out;
 transform:scale(1.35);
 }
 
-.breath-text{
-font-weight:900;
-}
-
 textarea{
 width:100%;
-min-height:130px;
-margin-top:12px;
+min-height:140px;
+background:#0b0e14;
+border:1px solid #292e3d;
+border-radius:17px;
 padding:14px;
-border-radius:16px;
-border:1px solid #2b303e;
-background:#0c0e13;
-color:#fff;
-resize:vertical;
+color:white;
 outline:none;
+resize:vertical;
 }
 
 textarea:focus{
-border-color:var(--violet);
-}
-
-.statgrid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:9px;
-}
-
-.stat{
-padding:15px;
-border:1px solid var(--line);
-border-radius:18px;
-background:#11141c;
-text-align:center;
-}
-
-.stat strong{
-display:block;
-font-size:22px;
-}
-
-.stat small{
-color:#888c9a;
+border-color:#8177ff;
 }
 
 .progress{
 height:8px;
-background:#222632;
-border-radius:99px;
+background:#222633;
+border-radius:50px;
 overflow:hidden;
-margin:14px 0;
+margin-top:15px;
 }
 
 .progress i{
 display:block;
 height:100%;
 width:0;
-background:linear-gradient(90deg,var(--violet),var(--pink));
+background:linear-gradient(90deg,#8177ff,#e887aa);
 transition:.5s;
 }
 
@@ -516,31 +382,64 @@ gap:9px;
 }
 
 .faq-item{
-border:1px solid var(--line);
-border-radius:18px;
 background:#11141c;
+border:1px solid #292e3d;
+border-radius:18px;
 overflow:hidden;
 }
 
-.faq-question{
+.faq-q{
 width:100%;
-border:0;
 background:none;
-padding:17px;
+border:0;
+color:white;
 text-align:left;
+padding:17px;
+font-weight:bold;
 cursor:pointer;
-font-weight:800;
 }
 
-.faq-answer{
+.faq-a{
 display:none;
 padding:0 17px 17px;
-color:#adb0bc;
+color:#aeb2bf;
 line-height:1.6;
 }
 
-.faq-item.open .faq-answer{
+.faq-item.open .faq-a{
 display:block;
+}
+
+.resource{
+display:flex;
+gap:13px;
+align-items:center;
+width:100%;
+padding:16px;
+margin-bottom:10px;
+border-radius:19px;
+border:1px solid #292e3d;
+background:#11141c;
+color:white;
+text-decoration:none;
+cursor:pointer;
+text-align:left;
+transition:.2s;
+}
+
+.resource:hover{
+transform:translateX(4px);
+border-color:#8177ff;
+}
+
+.resource-icon{
+font-size:27px;
+}
+
+.resource small{
+display:block;
+color:#888c99;
+margin-top:3px;
 }
 
 .nav{
@@ -555,7 +454,7 @@ gap:4px;
 padding:7px;
 border:1px solid #303544;
 border-radius:23px;
-background:#10131bee;
+background:#10131eee;
 backdrop-filter:blur(18px);
 box-shadow:0 20px 50px #0009;
 z-index:20;
@@ -563,7 +462,7 @@ z-index:20;
 
 .nav button{
 border:0;
-background:transparent;
+background:none;
 color:#777b8b;
 border-radius:16px;
 padding:7px 3px;
@@ -579,7 +478,7 @@ margin-bottom:2px;
 
 .nav button.active{
 background:#29274e;
-color:#fff;
+color:white;
 }
 
 .modal{
@@ -590,7 +489,7 @@ display:none;
 align-items:flex-end;
 justify-content:center;
 padding:10px;
-z-index:40;
+z-index:50;
 }
 
 .modal.show{
@@ -602,8 +501,8 @@ width:min(820px,100%);
 max-height:90vh;
 overflow:auto;
 padding:23px;
-border:1px solid #363b4d;
-border-radius:29px;
+border-radius:28px;
+border:1px solid #383d4e;
 background:#11141c;
 animation:sheet .3s ease;
 }
@@ -611,7 +510,7 @@ animation:sheet .3s ease;
 @keyframes sheet{
 from{
 opacity:0;
-transform:translateY(45px);
+transform:translateY(40px);
 }
 to{
 opacity:1;
@@ -623,6 +522,7 @@ transform:none;
 float:right;
 border:0;
 background:#252936;
+color:white;
 padding:9px 12px;
 border-radius:12px;
 cursor:pointer;
@@ -630,38 +530,27 @@ cursor:pointer;
 
 .sheet h2{
 font-size:27px;
-margin:4px 60px 15px 0;
+margin:5px 60px 15px 0;
 }
 
 .sheet p{
-color:#c3c6cf;
+color:#c1c5d0;
 line-height:1.65;
 }
 
-.rednote{
+.red{
 padding:16px;
 border-radius:17px;
-background:#2b171d;
-border:1px solid #5b2933;
-color:#d4c4c8;
+background:#2a171d;
+border:1px solid #5c2933;
+color:#d7c7cb;
 line-height:1.6;
-}
-
-.modal-buttons{
-display:grid;
-gap:9px;
-margin-top:15px;
-}
-
-.modal-buttons a{
-text-decoration:none;
-text-align:center;
 }
 
 .toast{
 position:fixed;
 left:50%;
-bottom:102px;
+bottom:105px;
 transform:translate(-50%,20px);
 opacity:0;
 background:#252936;
@@ -678,23 +567,20 @@ transform:translate(-50%,0);
 }
 
 .footer{
-color:#676b79;
 font-size:11px;
-line-height:1.55;
-margin-top:24px;
+color:#696e7b;
+line-height:1.6;
+margin-top:25px;
 }
 
 @media(max-width:470px){
-.actions{
+
+.buttons{
 grid-template-columns:1fr;
 }
 
 .grid{
-gap:8px;
-}
-
-.card{
-padding:14px;
+grid-template-columns:1fr 1fr;
 }
 
 .mood{
@@ -704,25 +590,27 @@ font-size:20px;
 .nav button{
 font-size:9px;
 }
+
 }
 </style>
 </head>
 
 <body>
 
-<div class="orb one"></div>
-<div class="orb two"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 
 <main class="app">
 
+<header>
+<div class="logo">рядом<span>.</span></div>
+<div class="badge">14–18 · анонимно</div>
+</header>
+
+
 <!-- ГЛАВНАЯ -->
 
-<section class="screen active" id="home">
-
-<div class="top">
-<div class="logo">рядом<span>.</span></div>
-<div class="badge">анонимно</div>
-</div>
+<section id="home">
 
 <div class="hero">
 
@@ -731,69 +619,68 @@ font-size:9px;
 </h1>
 
 <p>
-Спокойное пространство для подростков.
-Здесь можно выдохнуть, разобраться в чувствах,
-почитать поддержку и найти безопасный следующий шаг.
+Здесь можно выдохнуть, разобраться в своих эмоциях,
+найти поддержку и сделать маленький безопасный шаг.
 </p>
 
-<div class="actions">
+<div class="buttons">
 
-<button
-class="btn primary"
-onclick="showScreen('tools')">
+<button class="btn primary"
+onclick="scrollToBlock('tools')">
 ✨ Мне сейчас тяжело
 </button>
 
-<button
-class="btn danger"
-onclick="openTopic('urgent')">
+<button class="btn danger"
+onclick="urgent()">
 🆘 Мне небезопасно
 </button>
 
 </div>
+
 </div>
 
 
 <div class="title">
 <h2>Как ты сейчас?</h2>
-<span id="moodStatus">не выбрано</span>
+<small id="moodText">не выбрано</small>
 </div>
 
-<div class="mood-card">
+<div class="card">
 
-<p>
-Выбери настроение.
+<div style="color:#aeb2bf">
+Можно выбрать любое настроение.
 Здесь нет неправильных ответов.
-</p>
+</div>
 
-<div class="moods">
+<div class="moods" style="margin-top:15px">
 
-<button class="mood" onclick="setMood(this,'тяжело')">
+<button class="mood" onclick="mood(this,'тяжело')">
 😞
 <small>тяжело</small>
 </button>
 
-<button class="mood" onclick="setMood(this,'не очень')">
-😕
-<small>не очень</small>
+<button class="mood" onclick="mood(this,'грустно')">
+😔
+<small>грустно</small>
 </button>
 
-<button class="mood" onclick="setMood(this,'нормально')">
+<button class="mood" onclick="mood(this,'нормально')">
 😐
 <small>нормально</small>
 </button>
 
-<button class="mood" onclick="setMood(this,'хорошо')">
+<button class="mood" onclick="mood(this,'хорошо')">
 🙂
 <small>хорошо</small>
 </button>
 
-<button class="mood" onclick="setMood(this,'отлично')">
+<button class="mood" onclick="mood(this,'отлично')">
 😊
 <small>отлично</small>
 </button>
 
 </div>
+
 </div>
 
 
@@ -803,91 +690,100 @@ onclick="openTopic('urgent')">
 
 <div class="grid">
 
-<button class="card" onclick="openTopic('anxiety')">
+<div class="card click" onclick="openTopic('anxiety')">
 <div class="icon">😰</div>
 <b>Успокоиться</b>
-<small>Тревога, паника и напряжение</small>
-</button>
+<p>Тревога, стресс, паника</p>
+</div>
 
-<button class="card" onclick="openTopic('emotions')">
+<div class="card click" onclick="openTopic('emotions')">
 <div class="icon">💭</div>
 <b>Разобраться</b>
-<small>Понять свои чувства</small>
-</button>
+<p>Понять свои чувства</p>
+</div>
 
-<button class="card" onclick="openTopic('sleep')">
+<div class="card click" onclick="openTopic('sleep')">
 <div class="icon">🌙</div>
 <b>Заснуть</b>
-<small>Если мысли не дают спать</small>
-</button>
+<p>Если мысли не останавливаются</p>
+</div>
 
-<button class="card" onclick="openTopic('listen')">
-<div class="icon">❤️</div>
-<b>Поговорить</b>
-<small>Когда хочется, чтобы выслушали</small>
-</button>
-
-<button class="card" onclick="openTopic('anger')">
+<div class="card click" onclick="openTopic('anger')">
 <div class="icon">😡</div>
 <b>Злость</b>
-<small>Когда всё слишком сильно бесит</small>
-</button>
+<p>Когда всё раздражает</p>
+</div>
 
-<button class="card" onclick="openTopic('empty')">
+<div class="card click" onclick="openTopic('empty')">
 <div class="icon">🧊</div>
 <b>Пустота</b>
-<small>Если ничего не чувствуешь</small>
-</button>
+<p>Если ничего не чувствуешь</p>
+</div>
+
+<div class="card click" onclick="openTopic('listen')">
+<div class="icon">❤️</div>
+<b>Поговорить</b>
+<p>Когда хочется, чтобы выслушали</p>
+</div>
 
 </div>
 
 
 <div class="title">
-<h2>Небольшие посты</h2>
-<span>листай →</span>
+<h2>Посты поддержки</h2>
+<small>листай →</small>
 </div>
 
 <div class="posts">
 
 <article class="post">
-<div class="post-icon">🌱</div>
-<h3>Не обязательно быть сильным</h3>
-<p>Можно устать. Можно заплакать. Можно попросить помощи.</p>
+<div>🌱</div>
+<h3>Можно устать</h3>
+<p>
+Тебе не обязательно быть сильным каждый день.
+</p>
 </article>
 
 <article class="post">
-<div class="post-icon">☁️</div>
-<h3>Плохой день не определяет тебя</h3>
-<p>То, что ты чувствуешь сегодня, не обязательно останется навсегда.</p>
+<div>☁️</div>
+<h3>Плохой день пройдёт</h3>
+<p>
+Один тяжёлый день не определяет твою жизнь.
+</p>
 </article>
 
 <article class="post">
-<div class="post-icon">🫶</div>
-<h3>Ты имеешь значение</h3>
-<p>Даже если сейчас тебе трудно в это поверить.</p>
+<div>🫶</div>
+<h3>Ты важен</h3>
+<p>
+Твои чувства заслуживают внимания.
+</p>
 </article>
 
 <article class="post">
-<div class="post-icon">🌙</div>
-<h3>Можно начать с маленького</h3>
-<p>Не нужно решить всю жизнь сегодня. Достаточно одного безопасного шага.</p>
+<div>🌙</div>
+<h3>Не нужно спешить</h3>
+<p>
+Иногда лучший шаг — просто сделать паузу.
+</p>
 </article>
 
 <article class="post">
-<div class="post-icon">🪴</div>
-<h3>Сравнивать себя не обязательно</h3>
-<p>У каждого человека свой темп. Тебе не нужно быть похожим на других.</p>
+<div>🌈</div>
+<h3>После дождя бывает свет</h3>
+<p>
+Сейчас может быть трудно, но состояние может измениться.
+</p>
 </article>
 
-</div>
+<article class="post">
+<div>🪴</div>
+<h3>Твой темп — нормальный</h3>
+<p>
+Не нужно сравнивать свою жизнь с чужой.
+</p>
+</article>
 
-
-<div class="title">
-<h2>Фраза для тебя</h2>
-</div>
-
-<div class="info" id="quote">
-Ты уже сделал маленький шаг, просто открыв эту страницу. ❤️
 </div>
 
 </section>
@@ -895,104 +791,73 @@ onclick="openTopic('urgent')">
 
 <!-- ИНСТРУМЕНТЫ -->
 
-<section class="screen" id="tools">
-
-<div class="top">
-<div class="logo">инструменты<span>.</span></div>
-</div>
-
-<div class="hero">
-
-<h1>
-Давай сделаем этот момент немного легче.
-</h1>
-
-<p>
-Выбери любое упражнение.
-Можно остановиться в любой момент.
-</p>
-
-</div>
-
+<section id="tools">
 
 <div class="title">
-<h2>Быстрые упражнения</h2>
+<h2>✨ Инструменты</h2>
 </div>
 
 <div class="grid">
 
-<button class="card" onclick="startBreathing()">
+<div class="card click" onclick="breathing()">
 <div class="icon">🌬️</div>
 <b>Дыхание</b>
-<small>Медленно успокоить тело</small>
-</button>
+<p>Спокойное дыхательное упражнение</p>
+</div>
 
-<button class="card" onclick="openTopic('grounding')">
+<div class="card click" onclick="grounding()">
 <div class="icon">🌍</div>
 <b>5–4–3–2–1</b>
-<small>Вернуться в настоящий момент</small>
-</button>
-
-<button class="card" onclick="openTopic('anger')">
-<div class="icon">😡</div>
-<b>Злость</b>
-<small>Сделать паузу</small>
-</button>
-
-<button class="card" onclick="openTopic('empty')">
-<div class="icon">🧊</div>
-<b>Пустота</b>
-<small>Вернуть внимание к себе</small>
-</button>
-
+<p>Вернуться в настоящий момент</p>
 </div>
 
-
-<div class="title">
-<h2>Мини-тест</h2>
-<span id="testCount">0 / 5</span>
+<div class="card click" onclick="dailyTask()">
+<div class="icon">🧩</div>
+<b>Задание дня</b>
+<p>Маленький шаг для себя</p>
 </div>
 
-<div class="mini">
-
-<div id="testQuestion">
-Последние несколько дней тебе было трудно расслабиться?
-</div>
-
-<div class="actions" style="margin-top:14px">
-
-<button class="btn dark" onclick="answerTest(true)">
-Да
-</button>
-
-<button class="btn dark" onclick="answerTest(false)">
-Нет
-</button>
-
-</div>
-
-<div class="progress">
-<i id="testProgress"></i>
-</div>
-
-<div
-id="testResult"
-style="color:#aeb1bd">
+<div class="card click" onclick="randomSupport()">
+<div class="icon">💌</div>
+<b>Поддержка</b>
+<p>Получить случайную фразу</p>
 </div>
 
 </div>
 
 
 <div class="title">
-<h2>Дневник</h2>
-<span>только на этом устройстве</span>
+<h2>🌬️ Дыхание</h2>
 </div>
 
-<div class="journal" style="padding:18px">
+<div class="card breath">
 
-<div style="color:#b5b8c3">
-Напиши всё как есть. Это место только для тебя.
+<div id="breathCircle" class="circle">
+<div id="breathText">
+Готов?
 </div>
+</div>
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="startBreath()">
+Начать
+</button>
+
+</div>
+
+
+<div class="title">
+<h2>📔 Дневник</h2>
+</div>
+
+<div class="card">
+
+<p>
+Напиши то, что сейчас происходит внутри.
+Запись остаётся в браузере на этом устройстве.
+</p>
 
 <textarea
 id="journal"
@@ -1003,38 +868,26 @@ placeholder="Сегодня я чувствую...">
 class="btn primary"
 style="width:100%;margin-top:10px"
 onclick="saveJournal()">
-💾 Сохранить
+💾 Сохранить запись
 </button>
-
-<div
-id="saved"
-style="color:#777b88;font-size:12px;margin-top:10px">
-Запись сохраняется только на этом устройстве.
-</div>
 
 </div>
 
 
 <div class="title">
-<h2>Настроение за неделю</h2>
+<h2>📊 Настроение</h2>
 </div>
 
-<div class="statgrid">
+<div class="card">
 
-<div class="stat">
-<strong id="statDays">0</strong>
-<small>отметок</small>
+<div style="font-size:25px" id="moodHistory">
+— — — — —
 </div>
 
-<div class="stat">
-<strong id="statGood">0</strong>
-<small>хороших дней</small>
-</div>
-
-<div class="stat">
-<strong id="statMood">—</strong>
-<small>последнее</small>
-</div>
+<p>
+Твои отметки помогают замечать изменения,
+но не являются медицинской диагностикой.
+</p>
 
 </div>
 
@@ -1043,70 +896,54 @@ style="color:#777b88;font-size:12px;margin-top:10px">
 
 <!-- ПОМОЩЬ -->
 
-<section class="screen" id="help">
-
-<div class="top">
-<div class="logo">помощь<span>.</span></div>
-</div>
+<section id="help">
 
 <div class="hero">
 
 <h1>
-Если сейчас очень тяжело — помощь существует.
+🛟 Ты заслуживаешь помощи.
 </h1>
 
 <p>
-Если ты боишься, что можешь навредить себе
-или другому человеку, не оставайся один.
-Перейди к безопасному человеку и скажи,
-что тебе нужна помощь.
+Если сейчас тебе небезопасно,
+не оставайся один.
+Позови взрослого или другого безопасного человека.
 </p>
 
 </div>
 
 
 <div class="title">
-<h2>Срочная помощь</h2>
+<h2>Если опасность прямо сейчас</h2>
 </div>
-
 
 <a class="resource" href="tel:112">
 
 <div class="resource-icon">📞</div>
 
 <div>
-<b>112 — экстренная помощь</b>
-<small>Если опасность прямо сейчас</small>
+<b>Позвонить 112</b>
+<small>Экстренная помощь</small>
 </div>
 
 </a>
 
 
-<button class="resource" onclick="openTopic('adult')">
+<div class="resource click"
+onclick="openTopic('adult')">
 
 <div class="resource-icon">🧑‍🤝‍🧑</div>
 
 <div>
 <b>Позвать взрослого</b>
-<small>Как сказать, что тебе плохо</small>
+<small>Что сказать, если страшно начать разговор</small>
 </div>
 
-</button>
-
-
-<button class="resource" onclick="openTopic('suicide')">
-
-<div class="resource-icon">🆘</div>
-
-<div>
-<b>Мысли о смерти</b>
-<small>Что делать прямо сейчас</small>
 </div>
 
-</button>
 
-
-<button class="resource" onclick="openTopic('selfharm')">
+<div class="resource click"
+onclick="openTopic('selfharm')">
 
 <div class="resource-icon">❤️</div>
 
@@ -1115,43 +952,72 @@ style="color:#777b88;font-size:12px;margin-top:10px">
 <small>Безопасные первые шаги</small>
 </div>
 
-</button>
+</div>
+
+
+<div class="resource click"
+onclick="openTopic('suicide')">
+
+<div class="resource-icon">🆘</div>
+
+<div>
+<b>Мысли о самоубийстве</b>
+<small>Что делать, если такие мысли появились</small>
+</div>
+
+</div>
 
 
 <div class="title">
-<h2>Если тебя обижают</h2>
+<h2>Если тебя травят</h2>
 </div>
 
 <div class="grid">
 
-<button class="card" onclick="openTopic('bullying')">
-<div class="icon">🛡️</div>
-<b>Буллинг</b>
-<small>Что делать, если тебя травят</small>
-</button>
+<div class="card click"
+onclick="openTopic('bullying')">
 
-<button class="card" onclick="openTopic('parents')">
-<div class="icon">🏠</div>
-<b>Проблемы дома</b>
-<small>Как найти безопасного взрослого</small>
-</button>
+<div class="icon">🛡️</div>
+
+<b>Буллинг</b>
+
+<p>
+Как реагировать и кому рассказать
+</p>
+
+</div>
+
+
+<div class="card click"
+onclick="openTopic('online')">
+
+<div class="icon">📱</div>
+
+<b>Кибербуллинг</b>
+
+<p>
+Что делать с угрозами и травлей онлайн
+</p>
+
+</div>
 
 </div>
 
 
 <div class="title">
-<h2>Очень важно</h2>
+<h2>Помни</h2>
 </div>
 
 <div class="info">
 
-Если один взрослый не смог тебя понять,
+Если один человек тебя не услышал,
 это не значит, что помощи нет.
 
-Попробуй другого человека:
-родителя, родственника, школьного психолога,
-учителя или другого взрослого,
-которому ты доверяешь.
+Попробуй обратиться к другому
+безопасному взрослому:
+родителю, родственнику,
+учителю, школьному психологу
+или другому человеку, которому доверяешь.
 
 </div>
 
@@ -1160,20 +1026,16 @@ style="color:#777b88;font-size:12px;margin-top:10px">
 
 <!-- ПОЛЕЗНОЕ -->
 
-<section class="screen" id="useful">
-
-<div class="top">
-<div class="logo">полезное<span>.</span></div>
-</div>
+<section id="useful">
 
 <div class="hero">
 
 <h1>
-Забота о себе
+📱 Забота о себе
 </h1>
 
 <p>
-Простые инструменты для сна,
+Полезные инструменты для сна,
 настроения, привычек и самочувствия.
 </p>
 
@@ -1186,14 +1048,14 @@ style="color:#777b88;font-size:12px;margin-top:10px">
 
 <a
 class="resource"
-href="https://support.apple.com/ru-ru/guide/iphone/iph6a6decb13/26/ios/26"
+href="https://www.apple.com/health/"
 target="_blank">
 
 <div class="resource-icon">🍎</div>
 
 <div>
 <b>Apple «Здоровье»</b>
-<small>Настроение, эмоции, сон и здоровье</small>
+<small>Сон, здоровье и самочувствие</small>
 </div>
 
 </a>
@@ -1212,14 +1074,14 @@ target="_blank">
 
 <div>
 <b>Google Play</b>
-<small>Приложения для сна, настроения и привычек</small>
+<small>Приложения для сна, привычек и настроения</small>
 </div>
 
 </a>
 
 
 <div class="title">
-<h2>Расслабление</h2>
+<h2>🧘 Расслабление</h2>
 </div>
 
 <a
@@ -1227,47 +1089,45 @@ class="resource"
 href="https://www.headspace.com/"
 target="_blank">
 
-<div class="resource-icon">🧘</div>
+<div class="resource-icon">🌿</div>
 
 <div>
 <b>Headspace</b>
-<small>Сон, медитации и расслабление</small>
+<small>Медитации и упражнения на расслабление</small>
 </div>
 
 </a>
 
 
 <div class="title">
-<h2>Что выбрать?</h2>
+<h2>🎧 Атмосфера</h2>
 </div>
 
-<div class="tags">
+<div class="grid">
 
-<button class="tag" onclick="filterApps(this,'sleep')">
-🌙 Сон
-</button>
-
-<button class="tag" onclick="filterApps(this,'mood')">
-🙂 Настроение
-</button>
-
-<button class="tag" onclick="filterApps(this,'habits')">
-🌱 Привычки
-</button>
-
-<button class="tag" onclick="filterApps(this,'calm')">
-🧘 Спокойствие
-</button>
-
+<div class="card click" onclick="sound('🌧️ Дождь')">
+<div class="icon">🌧️</div>
+<b>Дождь</b>
+<p>Спокойный фон</p>
 </div>
 
+<div class="card click" onclick="sound('🌊 Море')">
+<div class="icon">🌊</div>
+<b>Море</b>
+<p>Волны и отдых</p>
+</div>
 
-<div class="info" style="margin-top:15px">
+<div class="card click" onclick="sound('🌲 Лес')">
+<div class="icon">🌲</div>
+<b>Лес</b>
+<p>Природа</p>
+</div>
 
-Не обязательно скачивать много приложений.
-Выбери то, которое тебе действительно удобно.
-
-Приложения не заменяют помощь специалиста.
+<div class="card click" onclick="sound('🔥 Костёр')">
+<div class="icon">🔥</div>
+<b>Костёр</b>
+<p>Тёплая атмосфера</p>
+</div>
 
 </div>
 
@@ -1276,59 +1136,56 @@ target="_blank">
 
 <!-- ЕЩЁ -->
 
-<section class="screen" id="more">
-
-<div class="top">
-<div class="logo">ещё<span>.</span></div>
-</div>
+<section id="more">
 
 <div class="hero">
 
 <h1>
-Здесь можно задавать любые вопросы.
+💬 Здесь можно спросить.
 </h1>
 
 <p>
-Даже те, которые кажутся странными,
-стыдными или неудобными.
+Даже если вопрос кажется странным,
+стыдным или неудобным.
 </p>
 
 </div>
 
 
 <div class="title">
-<h2>Случайная поддержка</h2>
+<h2>💌 Фраза для тебя</h2>
 </div>
 
-<div class="info" id="randomQuote">
+<div class="info" id="supportText">
 Ты не обязан знать все ответы прямо сейчас.
 </div>
 
 <button
 class="btn primary"
 style="width:100%;margin-top:10px"
-onclick="randomQuote()">
-✨ Другая фраза
+onclick="randomSupport()">
+✨ Ещё одну
 </button>
 
 
 <div class="title">
-<h2>Частые вопросы</h2>
+<h2>❓ Частые вопросы</h2>
 </div>
 
 <div class="faq">
 
+
 <div class="faq-item">
 
-<button class="faq-question" onclick="faq(this)">
-Почему я так много тревожусь? ＋
+<button class="faq-q" onclick="faq(this)">
+Почему я тревожусь? ＋
 </button>
 
-<div class="faq-answer">
-Тревога может появляться из-за стресса,
-учёбы, отношений, перемен, усталости
-или множества причин одновременно.
-Ты не слабый из-за того, что тревожишься.
+<div class="faq-a">
+Тревога может быть реакцией организма
+на стресс, изменения, усталость,
+конфликты и множество других вещей.
+Это не делает тебя слабым.
 </div>
 
 </div>
@@ -1336,15 +1193,14 @@ onclick="randomQuote()">
 
 <div class="faq-item">
 
-<button class="faq-question" onclick="faq(this)">
-Нормально ли иногда ничего не чувствовать? ＋
+<button class="faq-q" onclick="faq(this)">
+Нормально ли иногда плакать? ＋
 </button>
 
-<div class="faq-answer">
-Такое может происходить после сильного
-стресса или переутомления. Если состояние
-долго не проходит или мешает жизни,
-лучше поговорить со взрослым или специалистом.
+<div class="faq-a">
+Да. Слёзы могут быть способом организма
+выпустить напряжение. Тебе не нужно
+стыдиться своих эмоций.
 </div>
 
 </div>
@@ -1352,15 +1208,15 @@ onclick="randomQuote()">
 
 <div class="faq-item">
 
-<button class="faq-question" onclick="faq(this)">
+<button class="faq-q" onclick="faq(this)">
 Как попросить помощи? ＋
 </button>
 
-<div class="faq-answer">
+<div class="faq-a">
 Можно сказать:
-«Мне сейчас тяжело. Мне нужна помощь.
-Пожалуйста, побудь со мной».
-Не обязательно объяснять всё сразу.
+«Мне сейчас тяжело. Я не знаю,
+что делать. Можешь побыть рядом?»
+Не обязательно сразу всё объяснять.
 </div>
 
 </div>
@@ -1368,14 +1224,14 @@ onclick="randomQuote()">
 
 <div class="faq-item">
 
-<button class="faq-question" onclick="faq(this)">
-А если меня не поймут? ＋
+<button class="faq-q" onclick="faq(this)">
+Что делать, если меня не понимают? ＋
 </button>
 
-<div class="faq-answer">
-Попробуй другого безопасного взрослого.
-Если один человек тебя не услышал,
-это не означает, что твои чувства не важны.
+<div class="faq-a">
+Попробуй рассказать другому безопасному
+взрослому. Иногда нужен человек,
+который сможет выслушать спокойно.
 </div>
 
 </div>
@@ -1383,14 +1239,13 @@ onclick="randomQuote()">
 
 <div class="faq-item">
 
-<button class="faq-question" onclick="faq(this)">
+<button class="faq-q" onclick="faq(this)">
 Я постоянно сравниваю себя с другими. ＋
 </button>
 
-<div class="faq-answer">
-Социальные сети показывают только часть жизни
-других людей. Твой путь не обязан выглядеть
-как чей-то ещё.
+<div class="faq-a">
+Социальные сети показывают только часть
+чужой жизни. У тебя свой темп и свой путь.
 </div>
 
 </div>
@@ -1399,20 +1254,22 @@ onclick="randomQuote()">
 
 
 <div class="title">
-<h2>Для родителей</h2>
+<h2>👨‍👩‍👧 Для родителей</h2>
 </div>
 
 <div class="info">
 
-Если вы родитель или другой взрослый рядом
-с подростком, самое полезное — сначала
-выслушать, а не сразу пытаться исправить ситуацию.
+Если вы взрослый рядом с подростком,
+попробуйте сначала выслушать,
+а не сразу искать решение.
 
-Можно сказать:
+Фразы, которые могут помочь:
 
 «Я рядом».
 
 «Я тебя слышу».
+
+«Ты можешь рассказать мне».
 
 «Давай разберёмся вместе».
 
@@ -1421,13 +1278,11 @@ onclick="randomQuote()">
 
 <div class="footer">
 
-Этот сайт создан как информационное пространство
-поддержки и не заменяет врача, психолога
-или экстренную помощь.
+Этот сайт предназначен для информационной поддержки
+и не заменяет врача, психолога или экстренную помощь.
 
-Если существует непосредственная опасность,
-обратись к безопасному человеку рядом
-и в местную экстренную службу.
+При непосредственной опасности обратись
+к безопасному взрослому и в местную экстренную службу.
 
 </div>
 
@@ -1436,41 +1291,30 @@ onclick="randomQuote()">
 </main>
 
 
-<!-- НАВИГАЦИЯ -->
-
 <nav class="nav">
 
 <button class="active"
-data-screen="home"
-onclick="showScreen('home')">
+onclick="go('home',this)">
 <span>⌂</span>
 Главная
 </button>
 
-<button
-data-screen="tools"
-onclick="showScreen('tools')">
+<button onclick="go('tools',this)">
 <span>✨</span>
 Инструменты
 </button>
 
-<button
-data-screen="help"
-onclick="showScreen('help')">
+<button onclick="go('help',this)">
 <span>🛟</span>
 Помощь
 </button>
 
-<button
-data-screen="useful"
-onclick="showScreen('useful')">
+<button onclick="go('useful',this)">
 <span>📱</span>
 Полезное
 </button>
 
-<button
-data-screen="more"
-onclick="showScreen('more')">
+<button onclick="go('more',this)">
 <span>🫶</span>
 Ещё
 </button>
@@ -1478,18 +1322,12 @@ onclick="showScreen('more')">
 </nav>
 
 
-<!-- МОДАЛЬНОЕ ОКНО -->
-
-<div
-class="modal"
-id="modal"
+<div class="modal" id="modal"
 onclick="if(event.target===this)closeModal()">
 
 <div class="sheet">
 
-<button
-class="close"
-onclick="closeModal()">
+<button class="close" onclick="closeModal()">
 Закрыть
 </button>
 
@@ -1509,103 +1347,88 @@ const topics={
 
 anxiety:{
 title:"😰 Тревога",
-text:"Тревогу не обязательно победить. Сейчас задача — сделать ближайшие минуты немного легче.",
-body:"Поставь ноги на пол. Сделай спокойный выдох. Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь. Если можешь — выпей воды и побудь рядом с безопасным человеком."
+text:"Тревогу не обязательно победить прямо сейчас.",
+body:"Поставь ноги на пол. Сделай спокойный выдох. Назови несколько вещей вокруг себя. Если можешь — выпей воды и побудь рядом с безопасным человеком."
 },
 
 emotions:{
-title:"💭 Разобраться в чувствах",
-text:"Иногда трудно понять, что именно ты чувствуешь. Это нормально.",
-body:"Попробуй фразу: «Сейчас мне ___, потому что ___». Подойдут любые слова: грусть, злость, страх, стыд, одиночество, усталость или растерянность."
+title:"💭 Разобраться в эмоциях",
+text:"Иногда трудно понять, что именно происходит внутри.",
+body:"Попробуй закончить фразу: «Сейчас я чувствую ___, потому что ___». Не существует неправильного ответа."
 },
 
 sleep:{
-title:"🌙 Не могу уснуть",
-text:"Не нужно заставлять себя уснуть мгновенно.",
-body:"Приглуши свет, убери яркий экран, расслабь плечи и попробуй медленно дышать. Если мысли не отпускают — запиши их и скажи себе, что вернёшься к ним завтра."
-},
-
-listen:{
-title:"❤️ Хочется поговорить",
-text:"Тебе не обязательно сразу искать решение.",
-body:"Можно сказать: «Мне сейчас тяжело. Можешь просто побыть со мной и послушать? Мне не нужны советы». Просить поддержки — нормально."
+title:"🌙 Если не получается уснуть",
+text:"Не нужно заставлять себя уснуть.",
+body:"Приглуши свет, убери яркий экран, расслабь плечи и попробуй медленно дышать. Можно записать мысли, которые мешают уснуть."
 },
 
 anger:{
-title:"😡 Злость",
+title:"😡 Когда очень злишься",
 text:"Злость сама по себе не делает тебя плохим человеком.",
-body:"Возьми паузу. Отойди от конфликта, сделай несколько спокойных выдохов, пройдись или запиши мысли. Не причиняй вред себе или другим."
+body:"Сделай паузу и отойди от конфликта. Можно пройтись, записать мысли или сделать несколько спокойных выдохов."
 },
 
 empty:{
-title:"🧊 Пустота",
-text:"После сильного стресса внутри иногда становится очень тихо.",
-body:"Попробуй тёплый напиток, душ, плед, музыку или прогулку. Если такое состояние долго не проходит — поговори со взрослым или специалистом."
+title:"🧊 Когда внутри пусто",
+text:"Иногда после сильного стресса эмоции словно выключаются.",
+body:"Попробуй воду, душ, музыку, прогулку или разговор с человеком, которому доверяешь."
 },
 
-grounding:{
-title:"🌍 Упражнение 5–4–3–2–1",
-text:"Попробуй вернуть внимание в настоящий момент.",
-body:"Назови 5 вещей, которые видишь. 4 вещи, которых можешь коснуться. 3 звука, которые слышишь. 2 запаха. 1 вкус или ощущение во рту."
+listen:{
+title:"❤️ Хочется, чтобы тебя выслушали",
+text:"Тебе не обязательно сразу искать решение.",
+body:"Можно сказать: «Мне сейчас тяжело. Можешь просто побыть рядом и послушать?»"
 },
 
 adult:{
-title:"🧑‍🤝‍🧑 Как попросить взрослого о помощи",
+title:"🧑‍🤝‍🧑 Как сказать взрослому",
 text:"Не нужно придумывать идеальную речь.",
-body:"Можно сказать: «Мне последнее время очень тяжело. Я не справляюсь один/одна. Мне нужна помощь. Пожалуйста, побудь со мной». Если тебя не услышали — попробуй другого безопасного взрослого."
+body:"Попробуй: «Мне последнее время очень тяжело. Я не справляюсь один/одна. Мне нужна помощь. Пожалуйста, побудь со мной»."
 },
 
 bullying:{
 title:"🛡️ Если тебя травят",
 text:"Буллинг — не твоя вина.",
-body:"Не оставайся с этим один. Сохрани сообщения или другие доказательства, если это безопасно, и расскажи взрослому, которому доверяешь. Если есть непосредственная угроза — уйди в безопасное место и попроси помощи."
+body:"Расскажи безопасному взрослому. Если это происходит онлайн, сохрани сообщения или другие доказательства, если это безопасно."
 },
 
-parents:{
-title:"🏠 Если дома тяжело",
-text:"Тебе не нужно решать опасную ситуацию самостоятельно.",
-body:"Найди безопасного взрослого вне ситуации: родственника, учителя, школьного психолога или другого человека, которому доверяешь. Если тебе прямо сейчас угрожает опасность — перейди в безопасное место и обратись в экстренную службу."
+online:{
+title:"📱 Кибербуллинг",
+text:"Тебе не нужно терпеть угрозы или травлю.",
+body:"Можно заблокировать человека, пожаловаться на контент и рассказать взрослому. Если есть реальная угроза безопасности — обратись за помощью."
 },
 
 selfharm:{
-title:"🛟 Если хочется навредить себе",
-text:"Ты заслуживаешь помощи и не обязан проходить через это один.",
-body:"Отойди от предметов или мест, которыми можно причинить себе вред. Перейди туда, где есть безопасные люди. Скажи взрослому прямо, что боишься навредить себе. При непосредственной опасности обратись в местную экстренную службу."
+title:"❤️ Если хочется навредить себе",
+text:"Пожалуйста, не оставайся с этим один/одна.",
+body:"Перейди туда, где есть безопасные люди, и скажи взрослому прямо, что тебе страшно навредить себе. Если опасность непосредственная — обратись в экстренную службу."
 },
 
 suicide:{
-title:"🆘 Если появляются мысли о самоубийстве",
-text:"Пожалуйста, не оставайся с этим один/одна.",
-body:"Если есть риск, что ты можешь навредить себе прямо сейчас, перейди к безопасному человеку и скажи, что тебе нужна помощь. Обратись к родителю, родственнику, школьному психологу или другому безопасному взрослому. При непосредственной опасности обратись в местную экстренную службу."
-},
-
-urgent:{
-title:"🆘 Сейчас главное — безопасность",
-text:"Если тебе очень плохо или ты боишься, что можешь навредить себе, не оставайся один/одна.",
-body:"Перейди туда, где есть безопасный взрослый или другой человек. Скажи прямо: «Мне сейчас очень плохо. Мне нужна помощь». При непосредственной опасности обратись в местную экстренную службу."
+title:"🆘 Если появились мысли о самоубийстве",
+text:"Ты заслуживаешь помощи прямо сейчас.",
+body:"Не оставайся один/одна. Перейди к безопасному человеку и скажи, что тебе нужна помощь. При непосредственной опасности обратись в местную экстренную службу."
 }
 
 };
 
 
-function showScreen(id){
+function go(id,button){
 
 document
-.querySelectorAll(".screen")
-.forEach(x=>x.classList.remove("active"));
+.querySelectorAll("main section")
+.forEach(s=>s.style.display="none");
 
 document
 .getElementById(id)
-.classList.add("active");
+.style.display="block";
 
 document
 .querySelectorAll(".nav button")
-.forEach(x=>{
-x.classList.toggle(
-"active",
-x.dataset.screen===id
-);
-});
+.forEach(b=>b.classList.remove("active"));
+
+button.classList.add("active");
 
 window.scrollTo({
 top:0,
@@ -1615,144 +1438,96 @@ behavior:"smooth"
 }
 
 
-function setMood(el,text){
+function scrollToBlock(id){
+
+document
+.getElementById(id)
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+function mood(element,text){
 
 document
 .querySelectorAll(".mood")
 .forEach(x=>x.classList.remove("active"));
 
-el.classList.add("active");
+element.classList.add("active");
 
 document
-.getElementById("moodStatus")
+.getElementById("moodText")
 .textContent=text;
-
-localStorage.setItem(
-"lastMood",
-text
-);
 
 let history=
 JSON.parse(
-localStorage.getItem("moodHistory")||"[]"
+localStorage.getItem("moods")||"[]"
 );
 
-history.push({
-mood:text,
-date:new Date().toLocaleDateString()
-});
+history.push(text);
 
-if(history.length>30){
-history=history.slice(-30);
+if(history.length>7){
+history.shift();
 }
 
 localStorage.setItem(
-"moodHistory",
+"moods",
 JSON.stringify(history)
 );
 
-updateStats();
-
-toast("Настроение отмечено ❤️");
-
-}
-
-
-function updateStats(){
-
-let history=
-JSON.parse(
-localStorage.getItem("moodHistory")||"[]"
-);
-
 document
-.getElementById("statDays")
-.textContent=history.length;
+.getElementById("moodHistory")
+.textContent=
+history.join(" ");
 
-let good=
-history.filter(
-x=>x.mood==="хорошо"||x.mood==="отлично"
-).length;
-
-document
-.getElementById("statGood")
-.textContent=good;
-
-let last=
-localStorage.getItem("lastMood");
-
-document
-.getElementById("statMood")
-.textContent=last||"—";
+toast("Настроение сохранено ❤️");
 
 }
 
 
 function openTopic(key){
 
-const item=topics[key];
+let t=topics[key];
 
-if(!item)return;
-
-const emergency=
-key==="urgent"||
-key==="suicide"||
-key==="selfharm";
-
+if(!t)return;
 
 document
 .getElementById("modalContent")
 .innerHTML=`
 
-<h2>${item.title}</h2>
+<h2>${t.title}</h2>
 
-<p><b>${item.text}</b></p>
+<p><b>${t.text}</b></p>
 
-<p>${item.body}</p>
+<p>${t.body}</p>
 
 ${
-emergency
+key==="selfharm"||
+key==="suicide"
 ?
 `
-
-<div class="rednote">
-
+<div class="red">
 Если тебе угрожает непосредственная опасность,
 не оставайся один/одна.
-
 Перейди к безопасному человеку
 и попроси его остаться рядом.
-
 </div>
 
-<div class="modal-buttons">
+<div style="margin-top:15px">
 
 <a
 href="tel:112"
-class="btn danger">
+class="btn danger"
+style="display:block;text-align:center;text-decoration:none">
 📞 Позвонить 112
 </a>
 
-<button
-class="btn dark"
-onclick="closeModal()">
-🧑‍🤝‍🧑 Я попробую позвать взрослого
-</button>
-
 </div>
-
 `
 :
-`
-
-<button
-class="btn primary"
-style="width:100%;margin-top:15px"
-onclick="closeModal()">
-Понятно ❤️
-</button>
-
-`
+""
 }
 
 `;
@@ -1760,6 +1535,13 @@ onclick="closeModal()">
 document
 .getElementById("modal")
 .classList.add("show");
+
+}
+
+
+function urgent(){
+
+openTopic("suicide");
 
 }
 
@@ -1773,9 +1555,9 @@ document
 }
 
 
-let breathing=false;
+let breathingRunning=false;
 
-function startBreathing(){
+function breathing(){
 
 document
 .getElementById("modalContent")
@@ -1784,23 +1566,23 @@ document
 <h2>🌬️ Дыхание</h2>
 
 <p>
-Попробуй несколько спокойных циклов.
-Не нужно делать глубокий вдох —
-дыши так, как комфортно.
+Медленно вдохни, затем спокойно выдохни.
+Не делай слишком глубокий вдох.
+Тебе должно быть комфортно.
 </p>
 
 <div class="breath">
 
-<div class="circle" id="breathCircle">
-<div class="breath-text" id="breathText">
+<div class="circle" id="modalCircle">
+<span id="modalBreathText">
 Готов?
-</div>
+</span>
 </div>
 
 <button
 class="btn primary"
 style="width:100%"
-onclick="runBreathing()">
+onclick="startModalBreath()">
 Начать
 </button>
 
@@ -1814,46 +1596,46 @@ document
 }
 
 
-function runBreathing(){
+function startModalBreath(){
 
-if(breathing)return;
+if(breathingRunning)return;
 
-breathing=true;
+breathingRunning=true;
 
-const circle=
-document.getElementById("breathCircle");
+let circle=
+document.getElementById("modalCircle");
 
-const text=
-document.getElementById("breathText");
+let text=
+document.getElementById("modalBreathText");
 
 let count=0;
 
 function cycle(){
 
-if(count>=5){
+if(count>=4){
 
 text.textContent="Готово ❤️";
 
-circle.classList.remove("expand");
-
-breathing=false;
+breathingRunning=false;
 
 return;
+
 }
 
-text.textContent="Спокойный вдох";
+text.textContent="Вдох";
 
 circle.classList.add("expand");
 
 setTimeout(()=>{
 
-text.textContent="Медленный выдох";
+text.textContent="Выдох";
 
 circle.classList.remove("expand");
 
 setTimeout(()=>{
 
 count++;
+
 cycle();
 
 },4000);
@@ -1867,100 +1649,125 @@ cycle();
 }
 
 
-const questions=[
-"Последние несколько дней тебе было трудно расслабиться?",
-"Тебе часто бывает сложно уснуть из-за мыслей?",
-"Ты часто чувствуешь напряжение без понятной причины?",
-"Тебе стало сложнее получать удовольствие от привычных вещей?",
-"Тебе хотелось бы поговорить с кем-то о том, что происходит?"
-];
+function startBreath(){
 
-let questionIndex=0;
-let yesAnswers=0;
+let circle=
+document.getElementById("breathCircle");
 
-function answerTest(answer){
+let text=
+document.getElementById("breathText");
 
-if(answer)yesAnswers++;
+text.textContent="Вдох";
 
-questionIndex++;
+circle.classList.add("expand");
 
-if(questionIndex>=questions.length){
+setTimeout(()=>{
 
-document
-.getElementById("testQuestion")
-.textContent="Тест завершён ❤️";
+text.textContent="Выдох";
 
-document
-.getElementById("testCount")
-.textContent="5 / 5";
+circle.classList.remove("expand");
 
-document
-.getElementById("testProgress")
-.style.width="100%";
+setTimeout(()=>{
 
-let message="";
+text.textContent="Готово ❤️";
 
-if(yesAnswers<=1){
-message="Похоже, сейчас у тебя не так много признаков сильного напряжения. Но только ты знаешь, как тебе на самом деле.";
-}
-else if(yesAnswers<=3){
-message="Похоже, тебе сейчас может быть непросто. Попробуй упражнения выше и поговори с человеком, которому доверяешь.";
-}
-else{
-message="Похоже, сейчас тебе действительно тяжело. Не оставайся с этим один/одна — попробуй поговорить с безопасным взрослым или специалистом.";
-}
+},4000);
 
-document
-.getElementById("testResult")
-.textContent=message;
-
-return;
-}
-
-document
-.getElementById("testQuestion")
-.textContent=questions[questionIndex];
-
-document
-.getElementById("testCount")
-.textContent=
-(questionIndex)+" / 5";
-
-document
-.getElementById("testProgress")
-.style.width=
-(questionIndex/5*100)+"%";
+},4000);
 
 }
 
 
-function saveJournal(){
+function grounding(){
 
-const text=
-document
-.getElementById("journal")
-.value
-.trim();
+openCustom(
+"🌍 5–4–3–2–1",
+`
+<p>
+Посмотри вокруг и назови:
+</p>
 
-if(!text){
+<p>
+<b>5</b> вещей, которые видишь.<br>
+<b>4</b> вещи, которых можешь коснуться.<br>
+<b>3</b> звука, которые слышишь.<br>
+<b>2</b> запаха.<br>
+<b>1</b> вкус или ощущение во рту.
+</p>
 
-toast("Сначала что-нибудь напиши");
-
-return;
-
-}
-
-localStorage.setItem(
-"journal",
-text
+<p>
+Это упражнение помогает вернуть внимание
+к настоящему моменту.
+</p>
+`
 );
 
-document
-.getElementById("saved")
-.textContent=
-"Сохранено только на этом устройстве ❤️";
+}
 
-toast("Запись сохранена");
+
+function dailyTask(){
+
+const tasks=[
+"Выпей стакан воды.",
+"Выйди на 5 минут на воздух.",
+"Напиши человеку, которому доверяешь.",
+"Посмотри в окно и сделай 5 спокойных вдохов.",
+"Убери телефон на 10 минут.",
+"Послушай одну любимую песню.",
+"Сделай растяжку на 2 минуты.",
+"Запиши одну вещь, за которую благодарен сегодня."
+];
+
+let task=
+tasks[
+Math.floor(Math.random()*tasks.length)
+];
+
+openCustom(
+"🧩 Маленькое задание",
+`<p style="font-size:20px"><b>${task}</b></p>
+<p>Не обязательно делать идеально.
+Даже маленький шаг — это шаг.</p>`
+);
+
+}
+
+
+function randomSupport(){
+
+const phrases=[
+"Ты не обязан решать всю жизнь сегодня.",
+"Можно попросить помощи.",
+"Твои чувства имеют значение.",
+"Ты не должен быть сильным каждую минуту.",
+"Можно сделать паузу.",
+"Ты имеешь право на отдых.",
+"Один тяжёлый день не определяет тебя.",
+"Ты можешь идти маленькими шагами.",
+"Не нужно сравнивать себя с другими.",
+"Ты заслуживаешь заботы."
+];
+
+let phrase=
+phrases[
+Math.floor(Math.random()*phrases.length)
+];
+
+document
+.getElementById("supportText")
+.textContent=phrase;
+
+toast("❤️");
+
+}
+
+
+function sound(name){
+
+toast(
+name+
+" — настоящий звук можно подключить отдельными аудиофайлами"
+);
 
 }
 
@@ -1975,78 +1782,69 @@ button
 }
 
 
-const quotes=[
-"Ты не обязан решать всю жизнь сегодня.",
-"Просить помощи — это не слабость.",
-"Можно идти маленькими шагами.",
-"Твои чувства имеют значение.",
-"Плохой день не делает тебя плохим человеком.",
-"Ты заслуживаешь спокойствия и заботы.",
-"Не обязательно быть сильным каждую минуту.",
-"То, что сейчас тяжело, не означает, что так будет всегда.",
-"Можно сделать паузу.",
-"Ты имеешь право сказать: «Мне нужна помощь»."
-];
+function saveJournal(){
+
+let text=
+document
+.getElementById("journal")
+.value
+.trim();
+
+if(!text){
+
+toast("Напиши хотя бы пару слов");
+
+return;
+
+}
+
+localStorage.setItem(
+"journal",
+text
+);
+
+toast("Запись сохранена ❤️");
+
+}
 
 
-function randomQuote(){
-
-const random=
-quotes[
-Math.floor(
-Math.random()*quotes.length
-)
-];
+function openCustom(title,body){
 
 document
-.getElementById("randomQuote")
-.textContent=random;
+.getElementById("modalContent")
+.innerHTML=`
 
-}
+<h2>${title}</h2>
 
+${body}
 
-function filterApps(button,type){
+<button
+class="btn primary"
+style="width:100%;margin-top:15px"
+onclick="closeModal()">
+Понятно ❤️
+</button>
+
+`;
 
 document
-.querySelectorAll(".tag")
-.forEach(x=>x.classList.remove("active"));
-
-button.classList.add("active");
-
-let text="";
-
-if(type==="sleep"){
-text="Для сна попробуй спокойный вечерний режим, приглушённый свет и упражнения на расслабление.";
-}
-
-if(type==="mood"){
-text="Для настроения полезно отмечать состояние каждый день и замечать, что влияет на него.";
-}
-
-if(type==="habits"){
-text="Для привычек начни с одной маленькой цели: вода, прогулка, сон или короткий отдых.";
-}
-
-if(type==="calm"){
-text="Для успокоения попробуй дыхание, заземление, музыку или спокойную прогулку.";
-}
-
-toast(text);
+.getElementById("modal")
+.classList.add("show");
 
 }
 
 
 function toast(text){
 
-const element=
+let t=
 document.getElementById("toast");
 
-element.textContent=text;
+t.textContent=text;
 
-element.classList.add("show");
+t.classList.add("show");
 
 setTimeout(()=>{
-element.classList.remove("show");
+t.classList.remove("show");
 },2200);
 
 }
@@ -2054,34 +1852,30 @@ element.classList.remove("show");
 
 window.addEventListener("load",()=>{
 
-const mood=
-localStorage.getItem("lastMood");
-
-if(mood){
-
-document
-.getElementById("moodStatus")
-.textContent=mood;
-
-}
-
-const journal=
+let saved=
 localStorage.getItem("journal");
 
-if(journal){
+if(saved){
 
 document
 .getElementById("journal")
-.value=journal;
-
-document
-.getElementById("saved")
-.textContent=
-"Есть сохранённая запись на этом устройстве";
+.value=saved;
 
 }
 
-updateStats();
+let moods=
+JSON.parse(
+localStorage.getItem("moods")||"[]"
+);
+
+if(moods.length){
+
+document
+.getElementById("moodHistory")
+.textContent=
+moods.join(" ");
+
+}
 
 });
 
