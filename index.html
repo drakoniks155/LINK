@@ -2,1306 +2,1460 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070914">
-<title>Рядом — пространство поддержки</title>
+<meta name="description" content="Рядом — спокойное пространство поддержки для подростков.">
+<title>рядом. — безопасное пространство</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html{
-scroll-behavior:smooth;
+  scroll-behavior:smooth;
 }
 
 :root{
---bg:#060813;
---card:#111526e8;
---card2:#191e32;
---line:#303750;
---text:#f7f7ff;
---muted:#9da3b8;
---purple:#8d82ff;
---pink:#df82b1;
---green:#71d2a6;
---danger:#e9637d;
---blue:#6fa9ff;
+  --bg:#060813;
+  --bg2:#0b0f1e;
+  --card:#111526dd;
+  --card2:#191e32;
+  --line:#2c334d;
+  --text:#f5f6ff;
+  --muted:#999fb5;
+  --purple:#8d82ff;
+  --purple2:#b078ff;
+  --pink:#df82b1;
+  --green:#71d2a6;
+  --danger:#e9637d;
+  --orange:#ff9b5c;
 }
 
 body{
-margin:0;
-color:var(--text);
-font-family:Arial,sans-serif;
-background:
-radial-gradient(circle at 20% 0%,#766cff38,transparent 30%),
-radial-gradient(circle at 90% 40%,#dc76a526,transparent 30%),
-radial-gradient(circle at 40% 100%,#4c8dff1c,transparent 35%),
-var(--bg);
-min-height:100vh;
-overflow-x:hidden;
-transition:background .8s ease,color .5s ease;
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%,#766cff35,transparent 30%),
+    radial-gradient(circle at 90% 25%,#df82b126,transparent 30%),
+    radial-gradient(circle at 40% 100%,#4c8dff1b,transparent 35%),
+    var(--bg);
+  overflow-x:hidden;
 }
 
-button,input,textarea{
-font-family:inherit;
+button,
+input,
+textarea{
+  font-family:inherit;
 }
 
 button{
-cursor:pointer;
+  cursor:pointer;
 }
 
-button:active{
-transform:scale(.97);
+a{
+  -webkit-tap-highlight-color:transparent;
 }
+
+button,
+a{
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
 
 #stars{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:-5;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-10;
 }
 
 .star{
-position:absolute;
-width:2px;
-height:2px;
-border-radius:50%;
-background:white;
-animation:twinkle 3s infinite alternate;
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  background:#fff;
+  opacity:.3;
+  animation:twinkle 3s infinite alternate;
 }
 
 @keyframes twinkle{
-from{
-opacity:.1;
-transform:scale(.7);
-}
-to{
-opacity:1;
-transform:scale(1.7);
-}
-}
-
-.shooting{
-position:fixed;
-width:110px;
-height:2px;
-background:linear-gradient(90deg,transparent,#fff,transparent);
-transform:rotate(-30deg);
-animation:shoot 1.5s linear forwards;
-z-index:-1;
-}
-
-@keyframes shoot{
-from{
-opacity:0;
-transform:translate(0,0) rotate(-30deg);
-}
-20%{
-opacity:1;
-}
-to{
-opacity:0;
-transform:translate(-500px,300px) rotate(-30deg);
-}
+  from{
+    opacity:.12;
+    transform:scale(.7);
+  }
+  to{
+    opacity:1;
+    transform:scale(1.7);
+  }
 }
 
 .bubble{
-position:fixed;
-width:90px;
-height:90px;
-border-radius:50%;
-background:#8277ff12;
-filter:blur(2px);
-pointer-events:none;
-z-index:-2;
-animation:bubble 15s linear infinite;
+  position:fixed;
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  background:#8277ff12;
+  filter:blur(2px);
+  pointer-events:none;
+  z-index:-5;
+  animation:bubble 18s linear infinite;
 }
 
 @keyframes bubble{
-from{
-transform:translateY(110vh);
+  from{
+    transform:translateY(110vh) translateX(0);
+  }
+  to{
+    transform:translateY(-120vh) translateX(120px);
+  }
 }
-to{
-transform:translateY(-120vh) translateX(100px);
+
+.shooting{
+  position:fixed;
+  width:120px;
+  height:2px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    #fff,
+    transparent
+  );
+  transform:rotate(-30deg);
+  animation:shoot 1.5s linear forwards;
+  z-index:-1;
 }
+
+@keyframes shoot{
+  from{
+    opacity:0;
+    transform:translate(0,0) rotate(-30deg);
+  }
+  20%{
+    opacity:1;
+  }
+  to{
+    opacity:0;
+    transform:translate(-500px,300px) rotate(-30deg);
+  }
 }
+
+/* =========================
+   APP
+========================= */
 
 .app{
-width:min(920px,100%);
-margin:auto;
-padding:18px 14px 120px;
+  width:min(920px,100%);
+  margin:auto;
+  padding:18px 14px 120px;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
 }
 
 .logo{
-font-size:30px;
-font-weight:900;
-letter-spacing:-1px;
+  font-size:31px;
+  font-weight:900;
+  letter-spacing:-1.5px;
 }
 
 .logo span{
-color:var(--purple);
+  color:var(--orange);
 }
 
 .status{
-font-size:10px;
-color:#aeb3c5;
-border:1px solid var(--line);
-background:#111526bb;
-padding:9px 12px;
-border-radius:20px;
-backdrop-filter:blur(15px);
+  font-size:10px;
+  color:#aeb3c5;
+  border:1px solid var(--line);
+  background:#111526bb;
+  padding:9px 12px;
+  border-radius:20px;
+  backdrop-filter:blur(15px);
 }
+
+/* =========================
+   PROFILE
+========================= */
 
 .profile{
-display:flex;
-align-items:center;
-gap:14px;
-margin-bottom:15px;
-padding:13px;
-border-radius:22px;
-background:var(--card);
-border:1px solid var(--line);
-backdrop-filter:blur(15px);
-animation:profileIn .7s ease;
-}
-
-@keyframes profileIn{
-from{
-opacity:0;
-transform:translateY(-15px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:15px;
+  padding:13px;
+  border-radius:22px;
+  background:var(--card);
+  border:1px solid var(--line);
+  backdrop-filter:blur(18px);
+  box-shadow:0 15px 40px #0003;
 }
 
 .avatar{
-width:58px;
-height:58px;
-border-radius:20px;
-object-fit:cover;
-background:#242a43;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:27px;
+  width:58px;
+  height:58px;
+  flex-shrink:0;
+  border-radius:20px;
+  object-fit:cover;
+  background:#242a43;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
 }
 
 .profile-info{
-flex:1;
+  flex:1;
+  min-width:0;
 }
 
 .profile-info b{
-display:block;
-font-size:17px;
+  display:block;
+  font-size:17px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .profile-info small{
-color:var(--muted);
+  color:var(--muted);
 }
+
+.profile-edit{
+  border:0;
+  color:white;
+  background:#20253a;
+  border:1px solid var(--line);
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  font-size:17px;
+}
+
+/* =========================
+   HERO
+========================= */
 
 .hero{
-position:relative;
-overflow:hidden;
-padding:30px 25px;
-border-radius:32px;
-background:
-radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
-linear-gradient(145deg,#181c38ee,#0c1020ee);
-border:1px solid var(--line);
-box-shadow:0 25px 80px #0008;
-animation:heroIn .8s ease;
-}
-
-@keyframes heroIn{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  position:relative;
+  overflow:hidden;
+  padding:30px 25px;
+  border-radius:32px;
+  background:
+    radial-gradient(circle at 90% 0%,#8c82ff25,transparent 35%),
+    linear-gradient(145deg,#181c38ee,#0c1020ee);
+  border:1px solid var(--line);
+  box-shadow:0 25px 80px #0008;
 }
 
 .hero:before{
-content:"";
-position:absolute;
-width:180px;
-height:180px;
-border-radius:50%;
-border:1px solid #fff2;
-right:-70px;
-top:-70px;
-box-shadow:
-0 0 0 35px #fff1,
-0 0 0 70px #fff08;
-animation:moon 8s ease-in-out infinite alternate;
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  border:1px solid #fff2;
+  right:-70px;
+  top:-70px;
+  box-shadow:
+    0 0 0 35px #fff1,
+    0 0 0 70px #fff08;
+  animation:moon 8s ease-in-out infinite alternate;
 }
 
 @keyframes moon{
-to{
-transform:rotate(30deg) scale(1.15);
-}
+  to{
+    transform:rotate(30deg) scale(1.15);
+  }
 }
 
 .hero h1{
-font-size:clamp(31px,8vw,53px);
-line-height:1;
-margin:0 0 15px;
-letter-spacing:-2px;
-max-width:700px;
-position:relative;
-z-index:2;
+  position:relative;
+  z-index:1;
+  font-size:clamp(31px,8vw,53px);
+  line-height:1;
+  margin:0 0 15px;
+  letter-spacing:-2px;
+  max-width:700px;
 }
 
 .hero p{
-color:#b8bdce;
-line-height:1.7;
-max-width:650px;
-position:relative;
-z-index:2;
+  position:relative;
+  z-index:1;
+  color:#b8bdce;
+  line-height:1.7;
+  max-width:650px;
 }
 
+/* =========================
+   BUTTONS
+========================= */
+
 .buttons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:9px;
-margin-top:22px;
-position:relative;
-z-index:3;
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:22px;
 }
 
 .btn{
-border:0;
-color:white;
-border-radius:17px;
-padding:14px;
-font-weight:bold;
-transition:
-transform .25s,
-filter .25s,
-box-shadow .25s;
+  border:0;
+  color:white;
+  border-radius:17px;
+  padding:14px;
+  font-weight:bold;
+  transition:.25s;
 }
 
 .btn:hover{
-transform:translateY(-3px);
-filter:brightness(1.1);
-box-shadow:0 10px 30px #0004;
+  transform:translateY(-3px);
+  filter:brightness(1.1);
+}
+
+.btn:active{
+  transform:scale(.97);
 }
 
 .primary{
-background:linear-gradient(110deg,#7b71ff,#bd79ff);
+  background:linear-gradient(110deg,#7b71ff,#bd79ff);
 }
 
 .secondary{
-background:#20253a;
-border:1px solid #363c58;
+  background:#20253a;
+  border:1px solid #363c58;
 }
 
 .green{
-background:linear-gradient(110deg,#4dbb91,#79d8ac);
+  background:linear-gradient(110deg,#4dbb91,#79d8ac);
 }
 
 .danger{
-background:linear-gradient(110deg,#e95771,#bd619c);
+  background:linear-gradient(110deg,#e95771,#bd619c);
 }
 
-.blue{
-background:linear-gradient(110deg,#568ff4,#78b5ff);
+.orange{
+  background:linear-gradient(110deg,#ff8858,#ffb36b);
 }
 
 .full{
-width:100%;
+  width:100%;
 }
 
+/* =========================
+   TELEGRAM
+========================= */
+
+.telegram-card{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:14px;
+  padding:17px;
+  border-radius:23px;
+  background:
+    radial-gradient(circle at 100% 0%,#8d82ff28,transparent 45%),
+    linear-gradient(135deg,#151a30,#101426);
+  border:1px solid #343b5a;
+  box-shadow:0 15px 45px #0004;
+  animation:telegramFloat 5s ease-in-out infinite;
+}
+
+.telegram-card:before{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  right:-60px;
+  top:-70px;
+  border-radius:50%;
+  background:#8d82ff18;
+  filter:blur(5px);
+}
+
+@keyframes telegramFloat{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-3px);
+  }
+}
+
+.telegram-icon{
+  position:relative;
+  z-index:1;
+  width:52px;
+  height:52px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:17px;
+  font-size:27px;
+  background:linear-gradient(135deg,#766cff,#a58cff);
+  box-shadow:0 8px 25px #766cff44;
+  animation:telegramIcon 3s ease-in-out infinite;
+}
+
+@keyframes telegramIcon{
+  0%,100%{
+    transform:rotate(0deg) scale(1);
+  }
+  50%{
+    transform:rotate(-5deg) scale(1.06);
+  }
+}
+
+.telegram-info{
+  position:relative;
+  z-index:1;
+  flex:1;
+  min-width:0;
+}
+
+.telegram-info b{
+  display:block;
+  font-size:15px;
+}
+
+.telegram-info p{
+  margin:5px 0 0;
+  color:#999fb5;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.telegram-btn{
+  position:relative;
+  z-index:1;
+  flex-shrink:0;
+  color:white;
+  text-decoration:none;
+  padding:11px 14px;
+  border-radius:14px;
+  font-size:12px;
+  font-weight:bold;
+  background:linear-gradient(110deg,#766cff,#a279ff);
+  box-shadow:0 7px 20px #766cff35;
+  transition:.25s;
+}
+
+.telegram-btn:hover{
+  transform:translateY(-3px) scale(1.03);
+  filter:brightness(1.1);
+}
+
+/* =========================
+   TITLES
+========================= */
+
 .title{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin:28px 2px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:26px 2px 12px;
 }
 
 .title h2{
-margin:0;
-font-size:19px;
+  margin:0;
+  font-size:19px;
 }
 
 .title small{
-color:var(--muted);
+  color:var(--muted);
 }
+
+/* =========================
+   CARDS
+========================= */
 
 .card{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:23px;
-padding:18px;
-backdrop-filter:blur(18px);
-box-shadow:0 15px 45px #0003;
-animation:cardIn .5s ease;
-}
-
-@keyframes cardIn{
-from{
-opacity:0;
-transform:translateY(10px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:23px;
+  padding:18px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 15px 45px #0003;
 }
 
 .grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 .click{
-cursor:pointer;
-transition:.25s;
+  cursor:pointer;
+  transition:.25s;
 }
 
 .click:hover{
-transform:translateY(-5px);
-border-color:var(--purple);
+  transform:translateY(-5px);
+  border-color:var(--purple);
 }
 
 .icon{
-font-size:30px;
+  font-size:30px;
 }
 
 .card b{
-display:block;
-margin-top:7px;
+  display:block;
+  margin-top:7px;
 }
 
 .card p{
-color:var(--muted);
-line-height:1.6;
-font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+  font-size:13px;
 }
 
-.moods{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:7px;
+/* =========================
+   MOOD
+========================= */
+
+.mood-box{
+  text-align:center;
 }
 
-.mood{
-color:white;
-background:var(--card2);
-border:1px solid var(--line);
-border-radius:17px;
-padding:10px 2px;
-transition:.2s;
+.mood-face{
+  font-size:58px;
+  margin:8px 0;
+  transition:.3s;
 }
 
-.mood span{
-display:block;
-font-size:25px;
+.mood-current{
+  font-weight:bold;
+  font-size:17px;
 }
 
-.mood small{
-color:var(--muted);
-font-size:9px;
-}
-
-.mood:hover,
-.mood.active{
-transform:translateY(-4px);
-background:#2b2851;
-border-color:var(--purple);
-}
-
-.posts{
-display:flex;
-gap:10px;
-overflow-x:auto;
-scrollbar-width:none;
-padding-bottom:4px;
-}
-
-.post{
-min-width:245px;
-padding:18px;
-background:var(--card);
-border:1px solid var(--line);
-border-radius:23px;
-transition:.3s;
-}
-
-.post:hover{
-transform:translateY(-6px) rotate(-1deg);
-border-color:#7169ff88;
-}
-
-.post .emoji{
-font-size:30px;
-}
-
-.post p{
-color:var(--muted);
-line-height:1.5;
-font-size:13px;
-}
-
-/* НАСТРОЕНИЕ */
-
-.mood-slider-wrap{
-padding:15px 5px 5px;
+.mood-description{
+  color:var(--muted);
+  font-size:12px;
+  margin:7px 0 18px;
 }
 
 .mood-slider{
-width:100%;
-appearance:none;
-height:11px;
-border-radius:20px;
-background:linear-gradient(
-90deg,
-#e9637d,
-#df9a82,
-#d8c46f,
-#71c99c,
-#70a7ff
-);
-outline:none;
+  width:100%;
+  height:10px;
+  appearance:none;
+  border-radius:20px;
+  outline:none;
+  background:linear-gradient(
+    90deg,
+    #e9637d,
+    #e9b05f,
+    #71d2a6,
+    #8d82ff
+  );
 }
 
 .mood-slider::-webkit-slider-thumb{
-appearance:none;
-width:30px;
-height:30px;
-border-radius:50%;
-background:white;
-border:5px solid #8d82ff;
-box-shadow:0 4px 20px #0007;
+  appearance:none;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:white;
+  border:4px solid #8177ff;
+  box-shadow:0 4px 20px #0007;
 }
 
 .mood-slider::-moz-range-thumb{
-width:25px;
-height:25px;
-border-radius:50%;
-background:white;
-border:5px solid #8d82ff;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:white;
+  border:4px solid #8177ff;
+  box-shadow:0 4px 20px #0007;
 }
 
-.slider-labels{
-display:flex;
-justify-content:space-between;
-font-size:11px;
-color:var(--muted);
-margin-top:10px;
+.mood-scale{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:10px;
 }
 
-.mood-result{
-text-align:center;
-font-size:25px;
-font-weight:bold;
-margin:15px 0 5px;
+/* =========================
+   POSTS
+========================= */
+
+.posts{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:3px;
 }
 
-/* ПИТОМЕЦ */
+.posts::-webkit-scrollbar{
+  display:none;
+}
+
+.post{
+  min-width:245px;
+  padding:18px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:23px;
+  transition:.3s;
+}
+
+.post:hover{
+  transform:translateY(-5px);
+  border-color:#655dd0;
+}
+
+.post .emoji{
+  font-size:30px;
+}
+
+.post p{
+  color:var(--muted);
+  line-height:1.5;
+  font-size:13px;
+}
+
+/* =========================
+   PET
+========================= */
 
 .pet{
-text-align:center;
+  text-align:center;
 }
 
 .pet-stage{
-height:230px;
-display:flex;
-justify-content:center;
-align-items:center;
-background:radial-gradient(circle,#8277ff1d,transparent 60%);
-border-radius:20px;
-position:relative;
-overflow:hidden;
+  height:230px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle,#8277ff1d,transparent 60%);
+  border-radius:20px;
+  overflow:hidden;
 }
 
 .pet-body{
-width:125px;
-height:105px;
-background:linear-gradient(145deg,#958aff,#6459d1);
-border-radius:55%;
-position:relative;
-box-shadow:0 20px 45px #756bff55;
-animation:petfloat 3s infinite ease-in-out;
-transition:.5s;
+  width:125px;
+  height:105px;
+  background:linear-gradient(145deg,#958aff,#6459d1);
+  border-radius:55%;
+  position:relative;
+  box-shadow:0 20px 45px #756bff55;
+  animation:petfloat 3s infinite ease-in-out;
+  transition:.4s;
 }
 
 .pet-body.sad{
-background:linear-gradient(145deg,#70758f,#4d526b);
-box-shadow:0 15px 30px #3c415c55;
+  background:linear-gradient(145deg,#7779a7,#555875);
+  box-shadow:0 15px 35px #44476655;
 }
 
 @keyframes petfloat{
-50%{
-transform:translateY(-12px);
-}
+  50%{
+    transform:translateY(-12px);
+  }
 }
 
 .ear{
-position:absolute;
-top:-18px;
-width:45px;
-height:45px;
-background:#766bdd;
-border-radius:15px 35px 10px 35px;
+  position:absolute;
+  top:-18px;
+  width:45px;
+  height:45px;
+  background:#766bdd;
+  border-radius:15px 35px 10px 35px;
 }
 
-.sad .ear{
-background:#555b76;
+.pet-body.sad .ear{
+  background:#5f638f;
 }
 
 .ear.l{
-left:5px;
-transform:rotate(-20deg);
+  left:5px;
+  transform:rotate(-20deg);
 }
 
 .ear.r{
-right:5px;
-transform:rotate(20deg) scaleX(-1);
+  right:5px;
+  transform:rotate(20deg) scaleX(-1);
 }
 
 .eye{
-position:absolute;
-top:38px;
-width:12px;
-height:16px;
-background:white;
-border-radius:50%;
+  position:absolute;
+  top:38px;
+  width:12px;
+  height:16px;
+  background:white;
+  border-radius:50%;
 }
 
 .eye:after{
-content:"";
-position:absolute;
-width:5px;
-height:7px;
-background:#16182a;
-border-radius:50%;
-left:4px;
-top:5px;
+  content:"";
+  position:absolute;
+  width:5px;
+  height:7px;
+  background:#16182a;
+  border-radius:50%;
+  left:4px;
+  top:5px;
 }
 
 .eye.l{
-left:32px;
+  left:32px;
 }
 
 .eye.r{
-right:32px;
+  right:32px;
 }
 
 .mouth{
-position:absolute;
-top:64px;
-left:50%;
-transform:translateX(-50%);
-width:22px;
-height:11px;
-border-bottom:3px solid white;
-border-radius:50%;
+  position:absolute;
+  top:64px;
+  left:50%;
+  transform:translateX(-50%);
+  width:22px;
+  height:11px;
+  border-bottom:3px solid white;
+  border-radius:50%;
 }
 
-.sad .mouth{
-border-bottom:0;
-border-top:3px solid white;
-top:70px;
+.pet-body.sad .mouth{
+  top:70px;
+  border-bottom:0;
+  border-top:3px solid white;
 }
 
 .heart{
-position:absolute;
-right:-16px;
-top:15px;
-animation:heartbeat 1.8s infinite;
+  position:absolute;
+  right:-16px;
+  top:15px;
+  animation:heartbeat 1.8s infinite;
+}
+
+.pet-tear{
+  display:none;
+  position:absolute;
+  top:53px;
+  right:28px;
+  font-size:14px;
+  animation:tear 2s infinite;
+}
+
+.pet-body.sad .pet-tear{
+  display:block;
+}
+
+@keyframes tear{
+  0%,100%{
+    opacity:.2;
+    transform:translateY(0);
+  }
+  50%{
+    opacity:1;
+    transform:translateY(6px);
+  }
 }
 
 @keyframes heartbeat{
-50%{
-transform:scale(1.3);
-}
-}
-
-.pet-message{
-font-size:15px;
-font-weight:bold;
-margin:8px 0;
+  50%{
+    transform:scale(1.3);
+  }
 }
 
 .pet-status{
-font-size:11px;
-color:var(--muted);
+  margin-top:10px;
+  color:#b8bdce;
+  font-size:13px;
 }
 
-.xp{
-height:8px;
-background:#292e46;
-border-radius:20px;
-overflow:hidden;
-margin-top:10px;
+.pet-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;
+  margin-top:10px;
 }
 
-.xp i{
-display:block;
-height:100%;
-width:30%;
-background:linear-gradient(90deg,#7d73ff,#e58db9);
-transition:.5s;
+.pet-actions button{
+  padding:11px 4px;
+  color:white;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:14px;
 }
 
-/* ДЫХАНИЕ */
+.pet-xp{
+  height:8px;
+  background:#292e46;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+.pet-xp i{
+  display:block;
+  height:100%;
+  width:45%;
+  background:linear-gradient(90deg,#7d73ff,#e58db9);
+  transition:.5s;
+}
+
+/* =========================
+   BREATH
+========================= */
 
 .breath{
-text-align:center;
+  text-align:center;
 }
 
 .breath-circle{
-width:155px;
-height:155px;
-margin:25px auto;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:
-radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
-box-shadow:0 0 70px #8177ff55;
-transition:transform 4s ease-in-out;
+  width:155px;
+  height:155px;
+  margin:25px auto;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle,#aaa4ff,#6f64d8 50%,#302c69 72%,transparent 73%);
+  box-shadow:0 0 70px #8177ff55;
+  transition:transform 4s ease-in-out;
 }
 
 .breath-circle.expand{
-transform:scale(1.3);
+  transform:scale(1.3);
 }
 
-/* ДЕРЕВО */
+/* =========================
+   TREE
+========================= */
 
 .tree{
-height:300px;
-position:relative;
-overflow:hidden;
-display:flex;
-justify-content:center;
-align-items:flex-end;
-border-radius:20px;
-background:
-radial-gradient(circle,#8277ff15,transparent 60%);
+  height:280px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  border-radius:20px;
+  background:radial-gradient(circle,#8277ff15,transparent 60%);
 }
 
 .trunk{
-position:absolute;
-bottom:15px;
-width:25px;
-height:135px;
-border-radius:20px;
-background:linear-gradient(90deg,#654a3e,#a8785d);
+  position:absolute;
+  bottom:15px;
+  width:25px;
+  height:135px;
+  border-radius:20px;
+  background:linear-gradient(90deg,#654a3e,#a8785d);
 }
 
 .crown{
-position:absolute;
-bottom:130px;
-width:190px;
-height:120px;
-border-radius:50%;
-background:#507b65;
-box-shadow:
--55px 20px 0 #426b58,
-55px 22px 0 #628d73,
-0 -25px 0 #639678;
+  position:absolute;
+  bottom:130px;
+  width:190px;
+  height:120px;
+  border-radius:50%;
+  background:#507b65;
+  box-shadow:
+    -55px 20px 0 #426b58,
+    55px 22px 0 #628d73,
+    0 -25px 0 #639678;
 }
 
 .leaf{
-position:absolute;
-font-size:22px;
-animation:leaf 3s infinite alternate ease-in-out;
+  position:absolute;
+  font-size:22px;
+  animation:leaf 3s infinite alternate ease-in-out;
 }
 
 @keyframes leaf{
-to{
-transform:translateY(-7px) rotate(8deg);
-}
+  to{
+    transform:translateY(-7px) rotate(8deg);
+  }
 }
 
-/* ДНЕВНИК */
+/* =========================
+   DRAWING
+========================= */
 
 textarea{
-width:100%;
-min-height:150px;
-resize:vertical;
-border-radius:18px;
-padding:14px;
-color:white;
-background:#090c15;
-border:1px solid var(--line);
-outline:none;
+  width:100%;
+  min-height:150px;
+  resize:vertical;
+  border-radius:18px;
+  padding:14px;
+  color:white;
+  background:#090c15;
+  border:1px solid var(--line);
+  outline:none;
 }
-
-textarea:focus{
-border-color:var(--purple);
-box-shadow:0 0 25px #8177ff15;
-}
-
-/* РИСОВАЛКА */
 
 .canvas-wrap{
-background:#080b14;
-padding:8px;
-border-radius:20px;
+  background:#080b14;
+  padding:8px;
+  border-radius:20px;
 }
 
 canvas{
-width:100%;
-height:300px;
-background:white;
-border-radius:14px;
-display:block;
-touch-action:none;
+  width:100%;
+  height:300px;
+  background:white;
+  border-radius:14px;
+  display:block;
+  touch-action:none;
 }
 
 .draw-tools{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:7px;
-margin-top:8px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:8px;
 }
 
-.draw-tools button,
-.filter-btn{
-padding:10px 3px;
-color:white;
-background:var(--card2);
-border:1px solid var(--line);
-border-radius:13px;
+.draw-tools button{
+  padding:10px 3px;
+  color:white;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:13px;
 }
 
-/* СООБЩЕНИЯ */
-
-.message{
-padding:16px;
-background:var(--card2);
-border:1px solid var(--line);
-border-radius:18px;
-margin-bottom:8px;
-cursor:pointer;
-transition:.2s;
-}
-
-.message:hover{
-transform:translateX(5px);
-border-color:var(--purple);
-}
-
-/* РЕСУРСЫ */
+/* =========================
+   RESOURCES
+========================= */
 
 .resource{
-display:flex;
-gap:13px;
-align-items:center;
-color:white;
-text-decoration:none;
-background:var(--card);
-border:1px solid var(--line);
-border-radius:19px;
-padding:16px;
-margin-bottom:9px;
-transition:.2s;
+  display:flex;
+  gap:13px;
+  align-items:center;
+  color:white;
+  text-decoration:none;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:19px;
+  padding:16px;
+  margin-bottom:9px;
+  transition:.2s;
 }
 
 .resource:hover{
-transform:translateX(5px);
-border-color:var(--purple);
+  transform:translateX(5px);
+  border-color:var(--purple);
 }
 
 .resource-icon{
-font-size:29px;
+  font-size:29px;
 }
 
 .resource small{
-display:block;
-color:var(--muted);
-margin-top:4px;
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
 }
 
-/* МУЗЫКА */
+/* =========================
+   MUSIC
+========================= */
 
 .music{
-display:grid;
-gap:9px;
+  display:grid;
+  gap:9px;
 }
 
 .music a{
-display:block;
-padding:14px;
-color:white;
-text-decoration:none;
-border-radius:16px;
-background:#20253a;
-border:1px solid var(--line);
+  display:block;
+  padding:14px;
+  color:white;
+  text-decoration:none;
+  border-radius:16px;
+  background:#20253a;
+  border:1px solid var(--line);
+  transition:.2s;
 }
 
 .music a:hover{
-border-color:var(--purple);
+  border-color:var(--purple);
+  transform:translateX(4px);
 }
 
-/* СВЕЧА */
+/* =========================
+   CANDLE
+========================= */
 
 .candle{
-width:70px;
-height:100px;
-margin:20px auto;
-background:linear-gradient(
-90deg,
-#e9e1c4,
-#fff4ce,
-#cfc69f
-);
-border-radius:10px 10px 7px 7px;
-position:relative;
-box-shadow:0 0 25px #ffe7a644;
+  width:70px;
+  height:100px;
+  margin:20px auto;
+  background:linear-gradient(
+    90deg,
+    #e9e1c4,
+    #fff4ce,
+    #cfc69f
+  );
+  border-radius:10px 10px 7px 7px;
+  position:relative;
+  box-shadow:0 0 25px #ffe7a644;
 }
 
 .flame{
-width:27px;
-height:42px;
-position:absolute;
-left:22px;
-top:-39px;
-background:linear-gradient(#fff,#ffb13b,#ff6d36);
-border-radius:50% 50% 45% 45%;
-box-shadow:0 0 35px #ffae3d;
-animation:flame .7s infinite alternate;
+  width:27px;
+  height:42px;
+  position:absolute;
+  left:22px;
+  top:-39px;
+  background:linear-gradient(#fff,#ffb13b,#ff6d36);
+  border-radius:50% 50% 45% 45%;
+  box-shadow:0 0 35px #ffae3d;
+  animation:flame .7s infinite alternate;
 }
 
 @keyframes flame{
-to{
-transform:scale(.85) rotate(4deg);
-}
+  to{
+    transform:scale(.85) rotate(4deg);
+  }
 }
 
-/* КОНВЕРТ */
+/* =========================
+   ENVELOPE
+========================= */
 
 .envelope{
-text-align:center;
-padding:28px;
-border-radius:22px;
-background:linear-gradient(145deg,#25294b,#171b30);
-border:1px solid var(--line);
-cursor:pointer;
-transition:.3s;
+  text-align:center;
+  padding:28px;
+  border-radius:22px;
+  background:linear-gradient(145deg,#25294b,#171b30);
+  border:1px solid var(--line);
+  cursor:pointer;
+  transition:.3s;
 }
 
 .envelope:hover{
-transform:scale(1.02);
+  transform:scale(1.02);
 }
 
 .envelope-icon{
-font-size:65px;
-animation:env 2s infinite ease-in-out;
+  font-size:65px;
+  animation:env 2s infinite ease-in-out;
 }
 
 @keyframes env{
-50%{
-transform:translateY(-7px) rotate(2deg);
-}
+  50%{
+    transform:translateY(-7px) rotate(2deg);
+  }
 }
 
-/* ТАЙМЕР */
+/* =========================
+   TIMER
+========================= */
 
 .timer{
-font-size:60px;
-text-align:center;
-font-weight:900;
-margin:15px;
+  font-size:60px;
+  text-align:center;
+  font-weight:900;
+  margin:15px;
 }
 
-/* FAQ */
+/* =========================
+   FAQ
+========================= */
 
 .faq{
-display:grid;
-gap:8px;
+  display:grid;
+  gap:8px;
 }
 
 .faq-item{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:18px;
-overflow:hidden;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
 }
 
 .faq-q{
-width:100%;
-text-align:left;
-color:white;
-background:none;
-border:0;
-padding:17px;
-font-weight:bold;
+  width:100%;
+  text-align:left;
+  color:white;
+  background:none;
+  border:0;
+  padding:17px;
+  font-weight:bold;
 }
 
 .faq-a{
-display:none;
-padding:0 17px 17px;
-color:var(--muted);
-line-height:1.6;
+  display:none;
+  padding:0 17px 17px;
+  color:var(--muted);
+  line-height:1.6;
 }
 
 .faq-item.open .faq-a{
-display:block;
+  display:block;
 }
 
-/* ЭКСТРЕННАЯ ПОМОЩЬ */
+/* =========================
+   ALERT
+========================= */
 
 .alert{
-background:#301820;
-border:1px solid #63303c;
-padding:16px;
-border-radius:18px;
-line-height:1.6;
+  background:#301820;
+  border:1px solid #63303c;
+  padding:16px;
+  border-radius:18px;
+  line-height:1.6;
 }
 
-.help-number{
-text-align:center;
-padding:20px;
-border-radius:22px;
-background:
-radial-gradient(circle at 50% 0%,#8d82ff22,transparent 65%),
-#171b2e;
-border:1px solid #3b4160;
-transition:.3s;
-}
-
-.help-number:hover{
-transform:translateY(-4px);
-border-color:var(--purple);
-}
-
-.help-number .number{
-font-size:30px;
-font-weight:900;
-letter-spacing:1px;
-margin:7px 0;
-}
-
-/* МОДАЛЬНОЕ ОКНО */
+/* =========================
+   MODAL
+========================= */
 
 .modal{
-position:fixed;
-inset:0;
-display:none;
-align-items:flex-end;
-justify-content:center;
-padding:10px;
-background:#000d;
-z-index:100;
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:10px;
+  background:#000d;
+  z-index:100;
 }
 
 .modal.show{
-display:flex;
+  display:flex;
 }
 
 .sheet{
-width:min(850px,100%);
-max-height:92vh;
-overflow:auto;
-padding:23px;
-border-radius:29px;
-background:#101423;
-border:1px solid #3b415d;
-animation:sheet .3s ease;
+  width:min(850px,100%);
+  max-height:92vh;
+  overflow:auto;
+  padding:23px;
+  border-radius:29px;
+  background:#101423;
+  border:1px solid #3b415d;
+  animation:sheet .3s ease;
 }
 
 @keyframes sheet{
-from{
-opacity:0;
-transform:translateY(50px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  from{
+    opacity:0;
+    transform:translateY(50px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
 }
 
 .close{
-float:right;
-color:white;
-background:#252a40;
-border:0;
-border-radius:12px;
-padding:9px 12px;
+  float:right;
+  color:white;
+  background:#252a40;
+  border:0;
+  border-radius:12px;
+  padding:9px 12px;
 }
 
 .sheet p{
-color:#bdc2d1;
-line-height:1.65;
+  color:#bdc2d1;
+  line-height:1.65;
 }
 
-/* ПРОФИЛЬ */
+/* =========================
+   PROFILE FORM
+========================= */
 
 .profile-form{
-display:grid;
-gap:10px;
+  display:grid;
+  gap:10px;
 }
 
 .profile-form input{
-width:100%;
-padding:14px;
-border-radius:15px;
-border:1px solid var(--line);
-background:#090c15;
-color:white;
-outline:none;
+  width:100%;
+  padding:14px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:#090c15;
+  color:white;
+  outline:none;
 }
 
 .photo-preview{
-width:100px;
-height:100px;
-border-radius:30px;
-object-fit:cover;
-background:#242a43;
-display:block;
-margin:5px auto 10px;
+  width:100px;
+  height:100px;
+  border-radius:30px;
+  object-fit:cover;
+  background:#242a43;
+  display:block;
+  margin:5px auto 10px;
 }
 
-/* СЕКЦИИ */
+/* =========================
+   SECTIONS
+========================= */
 
 .section{
-display:none;
+  display:none;
+  opacity:0;
+  transform:translateY(15px);
 }
 
 .section.active{
-display:block;
-animation:sectionIn .35s ease;
+  display:block;
+  animation:sectionIn .35s ease forwards;
 }
 
 @keyframes sectionIn{
-from{
-opacity:0;
-transform:translateY(15px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
 }
 
-/* НАВИГАЦИЯ */
+/* =========================
+   NAV
+========================= */
 
 .nav{
-position:fixed;
-bottom:10px;
-left:50%;
-transform:translateX(-50%);
-width:min(900px,calc(100% - 20px));
-display:grid;
-grid-template-columns:repeat(6,1fr);
-padding:7px;
-gap:4px;
-background:#0d1120ee;
-border:1px solid #303650;
-border-radius:23px;
-backdrop-filter:blur(20px);
-z-index:50;
-box-shadow:0 15px 50px #0009;
+  position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(900px,calc(100% - 20px));
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  padding:7px;
+  gap:4px;
+  background:#0d1120ee;
+  border:1px solid #303650;
+  border-radius:23px;
+  backdrop-filter:blur(20px);
+  z-index:50;
+  box-shadow:0 15px 50px #0008;
 }
 
 .nav button{
-border:0;
-background:none;
-color:#777d94;
-padding:7px 2px;
-border-radius:16px;
-font-size:9px;
-transition:
-background .3s,
-color .3s,
-transform .3s;
+  border:0;
+  background:none;
+  color:#777d94;
+  padding:7px 2px;
+  border-radius:16px;
+  font-size:10px;
+  transition:.3s;
 }
 
 .nav button span{
-display:block;
-font-size:19px;
-margin-bottom:2px;
+  display:block;
+  font-size:19px;
+  transition:.3s;
 }
 
 .nav button.active{
-color:white;
-background:#29264e;
-transform:translateY(-3px);
+  color:white;
+  background:#29264e;
 }
 
-/* TOAST */
+.nav button.active span{
+  transform:translateY(-2px) scale(1.12);
+}
+
+/* =========================
+   TOAST
+========================= */
 
 .toast{
-position:fixed;
-left:50%;
-bottom:105px;
-transform:translate(-50%,20px);
-opacity:0;
-background:#252a40;
-border:1px solid #444b69;
-padding:12px 18px;
-border-radius:16px;
-z-index:200;
-transition:.25s;
-pointer-events:none;
+  position:fixed;
+  left:50%;
+  bottom:105px;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  background:#252a40;
+  border:1px solid #444b69;
+  padding:12px 18px;
+  border-radius:16px;
+  z-index:200;
+  transition:.25s;
+  text-align:center;
+  max-width:90%;
 }
 
 .toast.show{
-opacity:1;
-transform:translate(-50%,0);
+  opacity:1;
+  transform:translate(-50%,0);
 }
 
-/* СЕКРЕТ */
+/* =========================
+   SECRET
+========================= */
 
 .secret-button{
-position:fixed;
-right:13px;
-top:13px;
-width:38px;
-height:38px;
-border-radius:50%;
-border:1px solid #343952;
-background:#111526cc;
-color:#8d82ff;
-opacity:.2;
-z-index:80;
-transition:.4s;
+  position:fixed;
+  right:13px;
+  top:13px;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid #343952;
+  background:#111526cc;
+  color:#8d82ff;
+  opacity:.2;
+  z-index:80;
+  transition:.4s;
 }
 
 .secret-button:hover{
-opacity:1;
-transform:rotate(20deg) scale(1.1);
+  opacity:1;
+  transform:rotate(20deg) scale(1.1);
 }
 
 .secret-story{
-position:fixed;
-inset:0;
-background:#03040bcc;
-backdrop-filter:blur(15px);
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-z-index:500;
+  position:fixed;
+  inset:0;
+  background:#03040bcc;
+  backdrop-filter:blur(15px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:500;
 }
 
 .secret-story.show{
-display:flex;
+  display:flex;
 }
 
 .secret-card{
-position:relative;
-width:min(520px,100%);
-background:
-radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),
-#111525;
-border:1px solid #343a59;
-border-radius:30px;
-padding:30px;
-text-align:center;
-box-shadow:0 30px 100px #000c;
-animation:secretIn .5s ease;
+  position:relative;
+  width:min(520px,100%);
+  background:
+    radial-gradient(circle at 50% 0%,#8178ff22,transparent 45%),
+    #111525;
+  border:1px solid #343a59;
+  border-radius:30px;
+  padding:30px;
+  text-align:center;
+  box-shadow:0 30px 100px #000c;
+  animation:secretIn .5s ease;
 }
 
 @keyframes secretIn{
-from{
-opacity:0;
-transform:scale(.8) translateY(30px);
-}
-to{
-opacity:1;
-transform:none;
-}
+  from{
+    opacity:0;
+    transform:scale(.8) translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
 }
 
-/* ТИШИНА */
+/* =========================
+   MISC
+========================= */
+
+.message{
+  padding:16px;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:18px;
+  margin-bottom:8px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.message:hover{
+  transform:translateX(5px);
+  border-color:var(--purple);
+}
+
+.small-note{
+  color:#73798c;
+  font-size:11px;
+  line-height:1.6;
+}
 
 body.silent *{
-animation:none!important;
-transition:none!important;
+  animation:none!important;
+  transition:none!important;
 }
 
-/* СВЕТЛАЯ ТЕМА */
-
 body.light{
---bg:#e9eaff;
---text:#202235;
---card:#ffffffdd;
---card2:#f2f2ff;
---line:#d4d5e7;
---muted:#666a80;
-background:
-radial-gradient(circle at 20% 0%,#8e85ff55,transparent 30%),
-#e9eaff;
+  --bg:#e9eaff;
+  --text:#202235;
+  --card:#ffffffdd;
+  --card2:#f2f2ff;
+  --line:#d4d5e7;
+  --muted:#666a80;
+  background:
+    radial-gradient(circle at 20% 0%,#8e85ff55,transparent 30%),
+    #e9eaff;
 }
 
 body.light .hero{
-background:#ffffffdd;
+  background:#ffffffdd;
 }
 
 body.light .status,
 body.light .nav{
-background:#ffffffdd;
+  background:#ffffffdd;
 }
 
-.small-note{
-color:#73798c;
-font-size:11px;
-line-height:1.6;
+body.light .telegram-card{
+  background:#ffffffdd;
 }
 
-@media(max-width:600px){
+@media(max-width:520px){
 
-.buttons{
-grid-template-columns:1fr;
-}
+  .buttons{
+    grid-template-columns:1fr;
+  }
 
-.grid{
-grid-template-columns:1fr 1fr;
-}
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
 
-.hero{
-padding:23px;
-}
+  .hero{
+    padding:23px;
+  }
 
-.moods{
-gap:4px;
-}
+  .telegram-card{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
 
-.mood small{
-font-size:8px;
-}
+  .telegram-info{
+    flex:1;
+  }
 
-.nav{
-grid-template-columns:repeat(6,1fr);
-}
+  .telegram-btn{
+    width:100%;
+    text-align:center;
+    margin-top:3px;
+  }
 
-.nav button{
-font-size:8px;
-}
-
-.nav button span{
-font-size:17px;
-}
-
-}
-
-@media(max-width:390px){
-
-.nav button span{
-font-size:15px;
-}
-
-.nav button{
-font-size:7px;
-}
-
+  .pet-actions{
+    grid-template-columns:1fr 1fr 1fr;
+  }
 }
 </style>
 </head>
@@ -1317,2265 +1471,2402 @@ font-size:7px;
 <div class="app">
 
 <header>
-
-<div class="logo">
-рядом<span>.</span>
-</div>
-
-<div class="status">
-🌙 безопасное пространство
-</div>
-
+  <div class="logo">рядом<span>.</span></div>
+  <div class="status">🌙 безопасное пространство</div>
 </header>
-
 
 <!-- ПРОФИЛЬ -->
 
 <div class="profile">
 
-<img
-id="avatar"
-class="avatar"
-alt=""
-style="display:none"
->
+  <img
+    id="avatar"
+    class="avatar"
+    alt=""
+    style="display:none"
+  >
 
-<div id="avatarEmoji" class="avatar">
-🌙
-</div>
+  <div id="avatarEmoji" class="avatar">🌙</div>
 
-<div class="profile-info">
+  <div class="profile-info">
+    <b id="userName">Привет, незнакомец 💜</b>
+    <small id="profileMood">
+      Здесь можно просто побыть собой.
+    </small>
+  </div>
 
-<b id="userName">
-Привет, незнакомец 💜
-</b>
-
-<small id="profileMood">
-Здесь можно просто побыть собой.
-</small>
-
-</div>
-
-<button
-class="btn secondary"
-onclick="openProfile()"
->
-⚙️
-</button>
+  <button
+    class="profile-edit"
+    onclick="openProfile()">
+    ⚙️
+  </button>
 
 </div>
 
 
-<!-- ГЛАВНАЯ -->
+<!-- =========================
+     ГЛАВНАЯ
+========================= -->
 
 <section id="home" class="section active">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-Ты не обязан справляться со всем один.
-</h1>
+    <h1>Ты не обязан справляться со всем один.</h1>
 
-<p>
-Это место для подростков, где можно выдохнуть,
-разобраться в своих чувствах, найти поддержку
-и сделать маленький шаг.
-</p>
+    <p>
+      Это место для подростков, где можно выдохнуть,
+      разобраться в своих чувствах, найти поддержку
+      и сделать маленький шаг.
+    </p>
 
-<div class="buttons">
+    <div class="buttons">
 
-<button
-class="btn primary"
-onclick="showSection('tools')"
->
-✨ Мне сейчас тяжело
-</button>
+      <button
+        class="btn primary"
+        onclick="showSection('tools')">
+        ✨ Мне сейчас тяжело
+      </button>
 
-<button
-class="btn danger"
-onclick="emergency()"
->
-🆘 Мне небезопасно
-</button>
+      <button
+        class="btn danger"
+        onclick="emergency()">
+        🆘 Мне небезопасно
+      </button>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
 
-<!-- ТРЕКЕР -->
+  <!-- TELEGRAM -->
 
-<div class="title">
+  <div class="telegram-card">
 
-<h2>
-🎚️ Трекер настроения
-</h2>
+    <div class="telegram-icon">
+      ✈️
+    </div>
 
-<small id="moodLabel">
-выбери настроение
-</small>
+    <div class="telegram-info">
 
-</div>
+      <b>Мы теперь в Telegram</b>
 
-<div class="card">
+      <p>
+        Поддержка, спокойные посты и маленькие
+        напоминания, что ты не один.
+      </p>
 
-<div class="mood-result" id="sliderEmoji">
-😐
-</div>
+    </div>
 
-<div
-style="text-align:center;color:var(--muted);font-size:13px"
-id="sliderText"
->
-Как ты себя чувствуешь?
-</div>
+    <a
+      href="https://t.me/ryadom_online"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="telegram-btn">
+      Открыть канал
+    </a>
 
-<div class="mood-slider-wrap">
+  </div>
 
-<input
-type="range"
-min="0"
-max="100"
-value="50"
-class="mood-slider"
-id="moodSlider"
-oninput="changeSliderMood()"
->
 
-<div class="slider-labels">
-<span>😞 плохо</span>
-<span>😐 нормально</span>
-<span>😊 отлично</span>
-</div>
+  <!-- ТРЕКЕР НАСТРОЕНИЯ -->
 
-</div>
+  <div class="title">
+    <h2>💜 Как ты сейчас?</h2>
+    <small id="moodLabel">выбери состояние</small>
+  </div>
 
-</div>
+  <div class="card mood-box">
 
+    <div
+      class="mood-face"
+      id="moodFace">
+      😐
+    </div>
 
-<div class="title">
-<h2>Как ты сейчас?</h2>
-<small>быстрый выбор</small>
-</div>
+    <div
+      class="mood-current"
+      id="moodCurrent">
+      Нормально
+    </div>
 
-<div class="card">
+    <div
+      class="mood-description"
+      id="moodDescription">
+      Передвинь ползунок и выбери своё состояние.
+    </div>
+
+    <input
+      id="moodSlider"
+      class="mood-slider"
+      type="range"
+      min="0"
+      max="100"
+      value="50"
+      oninput="changeMood(this.value)"
+    >
+
+    <div class="mood-scale">
+      <span>😞 очень плохо</span>
+      <span>😐 нормально</span>
+      <span>😊 отлично</span>
+    </div>
+
+  </div>
+
+
+  <div class="title">
+    <h2>💌 Напоминание</h2>
+  </div>
+
+  <div class="card" id="supportBox">
+    Ты имеешь право на плохой день.
+  </div>
+
+
+  <div class="title">
+    <h2>Что тебе сейчас нужно?</h2>
+  </div>
+
+  <div class="grid">
+
+    <div class="card click" onclick="topic('anxiety')">
+      <div class="icon">😰</div>
+      <b>Успокоиться</b>
+      <p>Тревога и напряжение</p>
+    </div>
+
+    <div class="card click" onclick="topic('emotions')">
+      <div class="icon">💭</div>
+      <b>Понять себя</b>
+      <p>Разобраться в чувствах</p>
+    </div>
+
+    <div class="card click" onclick="topic('lonely')">
+      <div class="icon">🫂</div>
+      <b>Одиночество</b>
+      <p>Когда хочется кого-то рядом</p>
+    </div>
 
-<div class="moods">
+    <div class="card click" onclick="topic('sleep')">
+      <div class="icon">🌙</div>
+      <b>Уснуть</b>
+      <p>Если мысли не останавливаются</p>
+    </div>
 
-<button class="mood"
-onclick="setMood(this,'очень тяжело','😞')">
-<span>😞</span>
-<small>тяжело</small>
-</button>
+  </div>
+
 
-<button class="mood"
-onclick="setMood(this,'грустно','😔')">
-<span>😔</span>
-<small>грустно</small>
-</button>
-
-<button class="mood"
-onclick="setMood(this,'нормально','😐')">
-<span>😐</span>
-<small>нормально</small>
-</button>
-
-<button class="mood"
-onclick="setMood(this,'хорошо','🙂')">
-<span>🙂</span>
-<small>хорошо</small>
-</button>
+  <div class="title">
+    <h2>🌱 Посты</h2>
+  </div>
 
-<button class="mood"
-onclick="setMood(this,'отлично','😊')">
-<span>😊</span>
-<small>отлично</small>
-</button>
+  <div class="posts">
 
-</div>
+    <div class="post">
+      <div class="emoji">🌱</div>
+      <h3>Твой темп — нормальный</h3>
+      <p>
+        Ты не обязан успевать всё одновременно.
+      </p>
+    </div>
 
-</div>
+    <div class="post">
+      <div class="emoji">🫶</div>
+      <h3>Можно попросить помощи</h3>
+      <p>
+        Просить поддержки — не слабость.
+      </p>
+    </div>
 
+    <div class="post">
+      <div class="emoji">☁️</div>
+      <h3>Плохой день закончится</h3>
+      <p>
+        Состояние может измениться.
+      </p>
+    </div>
 
-<div class="title">
-<h2>💌 Напоминание</h2>
-</div>
+    <div class="post">
+      <div class="emoji">🌈</div>
+      <h3>Ты больше своего настроения</h3>
+      <p>
+        Одна эмоция не определяет тебя.
+      </p>
+    </div>
 
-<div class="card" id="supportBox">
-Ты имеешь право на плохой день.
-</div>
+    <div class="post">
+      <div class="emoji">🪴</div>
+      <h3>Маленькие шаги считаются</h3>
+      <p>
+        Сегодня достаточно одного.
+      </p>
+    </div>
 
+    <div class="post">
+      <div class="emoji">🌙</div>
+      <h3>Можно просто остановиться</h3>
+      <p>
+        Отдых — тоже часть пути.
+      </p>
+    </div>
 
-<div class="title">
-<h2>Что тебе сейчас нужно?</h2>
-</div>
+  </div>
 
-<div class="grid">
 
-<div class="card click" onclick="topic('anxiety')">
-<div class="icon">😰</div>
-<b>Успокоиться</b>
-<p>Тревога и напряжение</p>
-</div>
+  <div class="title">
+    <h2>🐾 Твой маленький друг</h2>
+  </div>
 
-<div class="card click" onclick="topic('emotions')">
-<div class="icon">💭</div>
-<b>Понять себя</b>
-<p>Разобраться в чувствах</p>
-</div>
+  <div class="card pet">
 
-<div class="card click" onclick="topic('lonely')">
-<div class="icon">🫂</div>
-<b>Одиночество</b>
-<p>Когда хочется кого-то рядом</p>
-</div>
+    <div class="pet-stage">
 
-<div class="card click" onclick="topic('sleep')">
-<div class="icon">🌙</div>
-<b>Уснуть</b>
-<p>Если мысли не останавливаются</p>
-</div>
+      <div
+        id="petBody"
+        class="pet-body">
 
-</div>
+        <div class="ear l"></div>
+        <div class="ear r"></div>
 
+        <div class="eye l"></div>
+        <div class="eye r"></div>
 
-<div class="title">
-<h2>🌱 Посты</h2>
-</div>
+        <div class="mouth"></div>
 
-<div class="posts">
+        <div class="heart">
+          💜
+        </div>
 
-<div class="post">
-<div class="emoji">🌱</div>
-<h3>Твой темп — нормальный</h3>
-<p>Ты не обязан успевать всё одновременно.</p>
-</div>
+        <div class="pet-tear">
+          💧
+        </div>
 
-<div class="post">
-<div class="emoji">🫶</div>
-<h3>Можно попросить помощи</h3>
-<p>Просить поддержки — не слабость.</p>
-</div>
+      </div>
 
-<div class="post">
-<div class="emoji">☁️</div>
-<h3>Плохой день закончится</h3>
-<p>Состояние может измениться.</p>
-</div>
+    </div>
 
-<div class="post">
-<div class="emoji">🌈</div>
-<h3>Ты больше своего настроения</h3>
-<p>Одна эмоция не определяет тебя.</p>
-</div>
+    <h3 id="petName">
+      Луми
+    </h3>
 
-<div class="post">
-<div class="emoji">🪴</div>
-<h3>Маленькие шаги считаются</h3>
-<p>Сегодня достаточно одного.</p>
-</div>
+    <div
+      class="pet-status"
+      id="petStatus">
+      Луми рад тебя видеть.
+    </div>
 
-</div>
+    <div class="pet-xp">
+      <i id="petXp"></i>
+    </div>
 
+    <div class="pet-actions">
 
-<div class="title">
-<h2>🐾 Твой маленький друг</h2>
-</div>
+      <button onclick="petAction('🫂 Луми обняли. Ему стало теплее.')">
+        🫂 Обнять
+      </button>
 
-<div class="card pet">
+      <button onclick="petAction('🎮 Луми поиграл с тобой!')">
+        🎮 Играть
+      </button>
 
-<div class="pet-stage">
+      <button onclick="petAction('🍓 Луми получил вкусняшку!')">
+        🍓 Покормить
+      </button>
 
-<div
-class="pet-body"
-id="petBody"
->
+    </div>
 
-<div class="ear l"></div>
-<div class="ear r"></div>
+    <p class="small-note">
+      Если долго не заходить и не взаимодействовать
+      с Луми, он может загрустить. Иногда ему
+      достаточно просто немного твоего внимания.
+    </p>
 
-<div class="eye l"></div>
-<div class="eye r"></div>
-
-<div class="mouth"></div>
-
-<div class="heart">
-💜
-</div>
-
-</div>
-
-</div>
-
-<div
-class="pet-message"
-id="petMessage"
->
-Мне хочется поиграть 🥺
-</div>
-
-<div
-class="pet-status"
-id="petStatus"
->
-Не забудь заглянуть ко мне.
-</div>
-
-<div class="xp">
-<i id="petXp"></i>
-</div>
-
-<br>
-
-<button
-class="btn primary"
-onclick="petAction()"
->
-🎮 Поиграть с питомцем
-</button>
-
-</div>
+  </div>
 
 </section>
 
 
-<!-- ПОМОЩЬ -->
+<!-- =========================
+     ПОМОЩЬ
+========================= -->
 
 <section id="tools" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-✨ Комната спокойствия
-</h1>
+    <h1>✨ Комната спокойствия</h1>
 
-<p>
-Не нужно ничего доказывать.
-Можно просто немного побыть здесь.
-</p>
+    <p>
+      Не нужно ничего доказывать.
+      Можно просто немного побыть здесь.
+    </p>
 
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🫂 Побудь здесь</h2>
-</div>
+  <div class="title">
+    <h2>🫂 Побудь со мной</h2>
+  </div>
 
-<div class="card" style="text-align:center">
+  <div class="card" style="text-align:center">
 
-<p>
-60 секунд ничего не решай.
-Просто посиди и подыши.
-</p>
+    <p>
+      60 секунд ничего не решай.
+      Просто посиди и подыши.
+    </p>
 
-<div class="timer" id="timer">
-60
-</div>
+    <div class="timer" id="timer">60</div>
 
-<button
-class="btn primary full"
-onclick="startStay()"
->
-Побыть здесь
-</button>
+    <button
+      class="btn primary full"
+      onclick="startStay()">
+      Побыть здесь
+    </button>
 
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🌬️ Дышим вместе</h2>
-</div>
+  <div class="title">
+    <h2>🌬️ Дышим вместе</h2>
+  </div>
 
-<div class="card breath">
+  <div class="card breath">
 
-<p>
-Следуй за кругом. Не нужно делать слишком глубокий вдох.
-</p>
+    <p>
+      Следуй за кругом.
+      Не нужно делать слишком глубокий вдох.
+    </p>
 
-<div
-class="breath-circle"
-id="breathCircle"
->
-<span id="breathText">
-готов?
-</span>
-</div>
+    <div
+      class="breath-circle"
+      id="breathCircle">
+      <span id="breathText">
+        готов?
+      </span>
+    </div>
 
-<button
-class="btn primary full"
-onclick="startBreathing()"
->
-Начать
-</button>
+    <button
+      class="btn primary full"
+      onclick="startBreathing()">
+      Начать
+    </button>
 
-</div>
-
-
-<div class="title">
-<h2>💌 Конверт поддержки</h2>
-</div>
-
-<div class="card">
-
-<div
-class="envelope"
-onclick="openEnvelope()"
->
-
-<div class="envelope-icon">
-✉️
-</div>
-
-<h3>
-Открой письмо
-</h3>
-
-<p>
-Внутри может быть именно то,
-что тебе сейчас нужно.
-</p>
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🕯️ Виртуальная свеча</h2>
-</div>
+  <div class="title">
+    <h2>💌 Конверт поддержки</h2>
+  </div>
 
-<div class="card" style="text-align:center">
+  <div class="card">
 
-<div class="candle">
+    <div
+      class="envelope"
+      onclick="openEnvelope()">
 
-<div
-class="flame"
-id="flame"
-></div>
+      <div class="envelope-icon">
+        ✉️
+      </div>
 
-</div>
+      <h3>
+        Открой письмо
+      </h3>
 
-<p>
-Можно просто посмотреть на огонь
-и сделать несколько спокойных вдохов.
-</p>
+      <p>
+        Внутри может быть именно то,
+        что тебе сейчас нужно.
+      </p>
 
-<button
-class="btn secondary"
-onclick="toggleCandle()"
->
-🕯️ Задуть / зажечь
-</button>
+    </div>
 
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🎨 Рисовалка эмоций</h2>
-</div>
+  <div class="title">
+    <h2>🕯️ Виртуальная свеча</h2>
+  </div>
 
-<div class="card">
+  <div class="card" style="text-align:center">
 
-<p>
-Не нужно уметь рисовать.
-Просто нарисуй то, что чувствуешь.
-</p>
+    <div class="candle">
+      <div
+        class="flame"
+        id="flame">
+      </div>
+    </div>
 
-<div class="canvas-wrap">
+    <p>
+      Можно просто посмотреть на огонь
+      и сделать несколько спокойных вдохов.
+    </p>
 
-<canvas id="canvas"></canvas>
+    <button
+      class="btn secondary"
+      onclick="toggleCandle()">
+      🕯️ Задуть / зажечь
+    </button>
 
-<div class="draw-tools">
-
-<button onclick="setBrush(3)">
-тонко
-</button>
-
-<button onclick="setBrush(8)">
-средне
-</button>
-
-<button onclick="setBrush(16)">
-толсто
-</button>
-
-<button onclick="clearCanvas()">
-очистить
-</button>
-
-</div>
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>📔 Дневник</h2>
-</div>
+  <div class="title">
+    <h2>🌧️ Сегодня можно просто поплакать</h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<textarea
-id="journal"
-placeholder="Напиши то, что сейчас хочется сказать..."
-></textarea>
+    <p>
+      Не каждую эмоцию нужно немедленно исправлять.
+      Иногда можно просто признать:
+      «Мне сейчас больно».
+    </p>
 
-<button
-class="btn primary full"
-style="margin-top:9px"
-onclick="saveJournal()"
->
-💾 Сохранить
-</button>
+    <button
+      class="btn secondary full"
+      onclick="cryMode()">
+      🌧️ Открыть спокойный режим
+    </button>
 
-<p class="small-note">
-Запись хранится только в этом браузере.
-</p>
+  </div>
 
-</div>
+
+  <div class="title">
+    <h2>🧩 Маленькое задание</h2>
+  </div>
+
+  <div class="card" style="text-align:center">
+
+    <div
+      style="font-size:50px"
+      id="taskIcon">
+      🌱
+    </div>
+
+    <h3 id="taskText">
+      Сделай сегодня что-нибудь маленькое для себя.
+    </h3>
+
+    <button
+      class="btn green full"
+      onclick="newTask()">
+      ✨ Другое
+    </button>
+
+  </div>
+
+
+  <div class="title">
+    <h2>🎨 Рисовалка эмоций</h2>
+  </div>
+
+  <div class="card">
+
+    <p>
+      Не нужно уметь рисовать.
+      Просто нарисуй то, что чувствуешь.
+    </p>
+
+    <div class="canvas-wrap">
+
+      <canvas id="canvas"></canvas>
+
+      <div class="draw-tools">
+
+        <button onclick="setBrush(3)">
+          тонко
+        </button>
+
+        <button onclick="setBrush(8)">
+          средне
+        </button>
+
+        <button onclick="setBrush(16)">
+          толсто
+        </button>
+
+        <button onclick="clearCanvas()">
+          очистить
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="title">
+    <h2>📔 Дневник</h2>
+  </div>
+
+  <div class="card">
+
+    <textarea
+      id="journal"
+      placeholder="Напиши то, что сейчас хочется сказать..."></textarea>
+
+    <button
+      class="btn primary full"
+      style="margin-top:9px"
+      onclick="saveJournal()">
+      💾 Сохранить
+    </button>
+
+    <p class="small-note">
+      Запись хранится только в этом браузере.
+    </p>
+
+  </div>
 
 </section>
 
 
-<!-- ДЕРЕВО -->
+<!-- =========================
+     ДЕРЕВО
+========================= -->
 
 <section id="tree" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-🌳 Дерево настроения
-</h1>
+    <h1>🌳 Дерево настроения</h1>
 
-<p>
-Каждая отметка о себе добавляет новый листик.
-</p>
+    <p>
+      Каждая отметка о себе добавляет новый листик.
+    </p>
 
-</div>
-
-<div class="title">
-
-<h2>
-Твоё дерево
-</h2>
-
-<small id="treeCount">
-0 листиков
-</small>
-
-</div>
-
-<div class="card" style="text-align:center">
-
-<div
-class="tree"
-id="treeVisual"
->
-
-<div class="trunk"></div>
-<div class="crown"></div>
-
-</div>
-
-<button
-class="btn green full"
-onclick="addTreeLeaf()"
->
-🌿 Добавить листик
-</button>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🎁 Достижения</h2>
-</div>
+  <div class="title">
 
-<div class="card">
+    <h2>
+      Твоё дерево
+    </h2>
 
-<h3 id="achievementTitle">
-🔒 Первый шаг
-</h3>
+    <small id="treeCount">
+      0 листиков
+    </small>
 
-<p id="achievementText">
-Выбери настроение, чтобы открыть достижение.
-</p>
+  </div>
 
-</div>
+
+  <div class="card" style="text-align:center">
+
+    <div
+      class="tree"
+      id="treeVisual">
+
+      <div class="trunk"></div>
+      <div class="crown"></div>
+
+    </div>
+
+    <button
+      class="btn green full"
+      onclick="addTreeLeaf()">
+      🌿 Добавить листик
+    </button>
+
+  </div>
+
+
+  <div class="title">
+    <h2>🎁 Достижение</h2>
+  </div>
+
+  <div class="card">
+
+    <h3 id="achievementTitle">
+      🔒 Первый шаг
+    </h3>
+
+    <p id="achievementText">
+      Выбери настроение, чтобы открыть достижение.
+    </p>
+
+  </div>
 
 </section>
 
 
-<!-- ПОМОЩЬ -->
+<!-- =========================
+     БЕЗОПАСНОСТЬ
+========================= -->
 
 <section id="help" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-🛟 Ты заслуживаешь помощи.
-</h1>
+    <h1>
+      🛟 Ты заслуживаешь помощи.
+    </h1>
 
-<p>
-Если прямо сейчас тебе небезопасно,
-не оставайся один/одна.
-Найди безопасного взрослого или другого человека рядом.
-</p>
+    <p>
+      Если прямо сейчас тебе небезопасно,
+      не оставайся один/одна.
+      Найди безопасного взрослого
+      или другого человека рядом.
+    </p>
 
-</div>
-
-
-<div class="title">
-<h2>📞 Телефон доверия</h2>
-</div>
-
-<div class="card">
-
-<div class="help-number">
-
-<div style="font-size:52px">
-💜
-</div>
-
-<h2>
-Детский телефон доверия
-</h2>
-
-<p>
-Если тебе тяжело, страшно, одиноко
-или просто хочется поговорить —
-можно обратиться за поддержкой.
-</p>
-
-<div class="number">
-8-800-2000-122
-</div>
-
-<p>
-Бесплатный телефон доверия для детей,
-подростков и родителей.
-</p>
-
-<a
-href="tel:88002000122"
-class="btn primary full"
-style="display:block;text-decoration:none"
->
-📞 Позвонить
-</a>
-
-</div>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🆘 Если опасность прямо сейчас</h2>
-</div>
+  <div class="title">
+    <h2>🆘 Непосредственная опасность</h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<div class="alert">
+    <div class="alert">
 
-<b>
-Если ты думаешь, что можешь навредить себе
-или тебе прямо сейчас угрожает опасность:
-</b>
+      Если есть непосредственная угроза
+      твоей безопасности, перейди туда,
+      где есть люди, которым ты доверяешь,
+      и скажи, что тебе нужна помощь.
 
-<br><br>
+    </div>
 
-• перейди туда, где есть люди;<br>
-• позови безопасного взрослого;<br>
-• не оставайся один/одна;<br>
-• попроси вызвать экстренную помощь.
+    <a
+      href="tel:112"
+      class="btn danger full"
+      style="
+        display:block;
+        text-align:center;
+        text-decoration:none;
+        margin-top:12px;
+      ">
+      📞 Позвонить 112
+    </a>
 
-</div>
-
-<a
-href="tel:112"
-class="btn danger full"
-style="
-display:block;
-text-align:center;
-text-decoration:none;
-margin-top:12px;
-font-size:17px;
-"
->
-🚨 Позвонить 112
-</a>
-
-<p class="small-note">
-112 — единый номер экстренных служб в России.
-</p>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>💬 Что можно сказать взрослому?</h2>
-</div>
+  <div class="title">
+    <h2>💬 Что можно сказать?</h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<div
-class="message"
-onclick="copyMessage(this)"
->
-«Мне сейчас очень тяжело. Можешь побыть со мной?»
-</div>
+    <div
+      class="message"
+      onclick="copyMessage(this)">
+      «Мне сейчас очень тяжело. Можешь побыть со мной?»
+    </div>
 
-<div
-class="message"
-onclick="copyMessage(this)"
->
-«Мне нужна помощь, но мне сложно объяснить почему.»
-</div>
+    <div
+      class="message"
+      onclick="copyMessage(this)">
+      «Мне нужна помощь, но мне сложно объяснить почему.»
+    </div>
 
-<div
-class="message"
-onclick="copyMessage(this)"
->
-«Я боюсь оставаться один/одна. Побудь рядом.»
-</div>
+    <div
+      class="message"
+      onclick="copyMessage(this)">
+      «Я боюсь оставаться один/одна. Побудь рядом.»
+    </div>
 
-<div
-class="message"
-onclick="copyMessage(this)"
->
-«Я не знаю, что делать. Мне нужна поддержка.»
-</div>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🛡️ Если тебя травят</h2>
-</div>
+  <div class="title">
+    <h2>🛡️ Если тебя травят</h2>
+  </div>
 
-<div class="grid">
+  <div class="grid">
 
-<div
-class="card click"
-onclick="topic('bullying')"
->
-<div class="icon">
-🛡️
-</div>
+    <div
+      class="card click"
+      onclick="topic('bullying')">
 
-<b>
-Буллинг
-</b>
+      <div class="icon">
+        🛡️
+      </div>
 
-<p>
-Ты не виноват в том,
-что тебя травят.
-</p>
+      <b>
+        Буллинг
+      </b>
 
-</div>
+      <p>
+        Ты не виноват в том,
+        что тебя травят.
+      </p>
 
-<div
-class="card click"
-onclick="topic('cyber')"
->
+    </div>
 
-<div class="icon">
-📱
-</div>
+    <div
+      class="card click"
+      onclick="topic('cyber')">
 
-<b>
-Кибербуллинг
-</b>
+      <div class="icon">
+        📱
+      </div>
 
-<p>
-Что делать при травле онлайн.
-</p>
+      <b>
+        Кибербуллинг
+      </b>
 
-</div>
+      <p>
+        Что делать при травле онлайн.
+      </p>
 
-</div>
+    </div>
+
+  </div>
+
+
+  <div class="title">
+    <h2>💜 Наш Telegram</h2>
+  </div>
+
+  <div class="card">
+
+    <p>
+      Если хочется получать новые посты
+      и напоминания о поддержке —
+      присоединяйся к нашему каналу.
+    </p>
+
+    <a
+      href="https://t.me/ryadom_online"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn primary full"
+      style="
+        display:block;
+        text-align:center;
+        text-decoration:none;
+      ">
+      ✈️ Открыть @ryadom_online
+    </a>
+
+  </div>
 
 </section>
 
 
-<!-- ПОЛЕЗНОЕ -->
+<!-- =========================
+     ПОЛЕЗНОЕ
+========================= -->
 
 <section id="useful" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-📱 Забота о себе
-</h1>
+    <h1>📱 Забота о себе</h1>
 
-<p>
-Музыка, сон, настроение
-и другие спокойные инструменты.
-</p>
+    <p>
+      Музыка, сон, настроение
+      и другие инструменты.
+    </p>
 
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🎧 Музыка</h2>
-</div>
+  <div class="title">
+    <h2>🎧 Спокойная музыка</h2>
+  </div>
 
-<div class="card music">
+  <div class="card music">
 
-<a
-href="https://music.yandex.ru/"
-target="_blank"
->
-🎵 Яндекс Музыка
-</a>
+    <a
+      href="https://music.yandex.ru/"
+      target="_blank"
+      rel="noopener noreferrer">
+      🎵 Открыть Яндекс Музыку
+    </a>
 
-<a
-href="https://vk.com/music"
-target="_blank"
->
-🎶 VK Музыка
-</a>
+    <a
+      href="https://t.me/ryadom_online"
+      target="_blank"
+      rel="noopener noreferrer">
+      🌙 Наш Telegram
+    </a>
 
-<a
-href="https://t.me/"
-target="_blank"
->
-🌙 Telegram
-</a>
+    <p class="small-note">
+      Ссылки открывают внешние сервисы.
+    </p>
 
-<p class="small-note">
-Открываются внешние сервисы.
-</p>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>🍎 iPhone</h2>
-</div>
+  <div class="title">
+    <h2>🍎 iPhone</h2>
+  </div>
 
-<a
-class="resource"
-href="https://www.apple.com/health/"
-target="_blank"
->
+  <a
+    class="resource"
+    href="https://www.apple.com/health/"
+    target="_blank"
+    rel="noopener noreferrer">
 
-<div class="resource-icon">
-❤️
-</div>
+    <div class="resource-icon">
+      ❤️
+    </div>
 
-<div>
-<b>
-Apple Health
-</b>
+    <div>
+      <b>
+        Apple Health
+      </b>
 
-<small>
-Сон, активность и самочувствие
-</small>
+      <small>
+        Сон, активность и самочувствие
+      </small>
+    </div>
 
-</div>
-
-</a>
-
-
-<div class="title">
-<h2>🤖 Android</h2>
-</div>
-
-<a
-class="resource"
-href="https://play.google.com/store/"
-target="_blank"
->
-
-<div class="resource-icon">
-▶️
-</div>
-
-<div>
-<b>
-Google Play
-</b>
-
-<small>
-Приложения для заботы о себе
-</small>
-
-</div>
-
-</a>
+  </a>
 
 
-<div class="title">
-<h2>🔇 Режим тишины</h2>
-</div>
+  <div class="title">
+    <h2>🤖 Android</h2>
+  </div>
 
-<div class="card">
+  <a
+    class="resource"
+    href="https://play.google.com/store/"
+    target="_blank"
+    rel="noopener noreferrer">
 
-<p>
-Выключает большую часть анимаций
-и делает интерфейс спокойнее.
-</p>
+    <div class="resource-icon">
+      ▶️
+    </div>
 
-<button
-class="btn secondary full"
-onclick="toggleSilent()"
->
-🔇 Включить / выключить
-</button>
+    <div>
+      <b>
+        Google Play
+      </b>
 
-</div>
+      <small>
+        Приложения для заботы о себе
+      </small>
+    </div>
+
+  </a>
 
 
-<div class="title">
-<h2>🌗 Тема</h2>
-</div>
+  <div class="title">
+    <h2>🔇 Режим тишины</h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<button
-class="btn secondary full"
-onclick="toggleLight()"
->
-🌗 Переключить тему
-</button>
+    <p>
+      Выключает анимации и делает
+      интерфейс спокойнее.
+    </p>
 
-</div>
+    <button
+      class="btn secondary full"
+      onclick="toggleSilent()">
+      🔇 Включить / выключить
+    </button>
+
+  </div>
+
+
+  <div class="title">
+    <h2>🌗 Светлый режим</h2>
+  </div>
+
+  <div class="card">
+
+    <button
+      class="btn secondary full"
+      onclick="toggleLight()">
+      🌗 Переключить тему
+    </button>
+
+  </div>
 
 </section>
 
 
-<!-- МОЙ ДЕНЬ -->
+<!-- =========================
+     МОЙ ДЕНЬ
+========================= -->
 
 <section id="day" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-📅 Мой день
-</h1>
+    <h1>
+      📅 Мой день
+    </h1>
 
-<p>
-Три маленьких вопроса вместо огромного списка дел.
-</p>
+    <p>
+      Три маленьких вопроса
+      вместо огромного списка дел.
+    </p>
 
-</div>
-
-
-<div class="title">
-<h2>1. Что я чувствую?</h2>
-</div>
-
-<div class="card">
-
-<textarea
-id="dayFeel"
-placeholder="Например: тревогу, усталость, спокойствие..."
-></textarea>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>2. Что мне сейчас нужно?</h2>
-</div>
+  <div class="title">
+    <h2>
+      1. Что я чувствую?
+    </h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<textarea
-id="dayNeed"
-placeholder="Отдых? Разговор? Тишина? Поддержка?"
-></textarea>
+    <textarea
+      id="dayFeel"
+      placeholder="Например: тревогу, усталость, спокойствие..."></textarea>
 
-</div>
+  </div>
 
 
-<div class="title">
-<h2>3. Что я могу сделать сегодня?</h2>
-</div>
+  <div class="title">
+    <h2>
+      2. Что мне сейчас нужно?
+    </h2>
+  </div>
 
-<div class="card">
+  <div class="card">
 
-<textarea
-id="dayDo"
-placeholder="Один маленький шаг..."
-></textarea>
+    <textarea
+      id="dayNeed"
+      placeholder="Отдых? Разговор? Тишина? Поддержка?"></textarea>
 
-<button
-class="btn green full"
-style="margin-top:9px"
-onclick="saveDay()"
->
-💾 Сохранить мой день
-</button>
+  </div>
 
-</div>
+
+  <div class="title">
+    <h2>
+      3. Что я могу сделать сегодня?
+    </h2>
+  </div>
+
+  <div class="card">
+
+    <textarea
+      id="dayDo"
+      placeholder="Один маленький шаг..."></textarea>
+
+    <button
+      class="btn green full"
+      style="margin-top:9px"
+      onclick="saveDay()">
+      💾 Сохранить мой день
+    </button>
+
+  </div>
 
 </section>
 
 
-<!-- ЕЩЁ -->
+<!-- =========================
+     ЕЩЁ
+========================= -->
 
 <section id="more" class="section">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-🫶 Ещё немного поддержки.
-</h1>
+    <h1>
+      🫶 Ещё немного поддержки.
+    </h1>
 
-<p>
-Здесь не нужно быть идеальным.
-</p>
+    <p>
+      Здесь не нужно быть идеальным.
+    </p>
 
-</div>
-
-
-<div class="title">
-<h2>💌 Случайная поддержка</h2>
-</div>
-
-<div class="card" style="text-align:center">
-
-<div style="font-size:40px">
-💜
-</div>
-
-<h3 id="randomText">
-Ты можешь идти маленькими шагами.
-</h3>
-
-<button
-class="btn primary"
-onclick="randomSupport()"
->
-✨ Ещё одну
-</button>
-
-</div>
+  </div>
 
 
-<div class="title">
-<h2>❓ Частые вопросы</h2>
-</div>
+  <div class="title">
+    <h2>
+      💌 Случайная поддержка
+    </h2>
+  </div>
 
-<div class="faq">
+  <div class="card" style="text-align:center">
 
-<div class="faq-item">
+    <div style="font-size:40px">
+      💜
+    </div>
 
-<button
-class="faq-q"
-onclick="faq(this)"
->
-Почему я тревожусь? ＋
-</button>
+    <h3 id="randomText">
+      Ты можешь идти маленькими шагами.
+    </h3>
 
-<div class="faq-a">
-Тревога может появляться из-за стресса,
-усталости, конфликтов, изменений или неопределённости.
-Это не означает, что с тобой что-то не так.
-</div>
+    <button
+      class="btn primary"
+      onclick="randomSupport()">
+      ✨ Ещё одну
+    </button>
 
-</div>
-
-
-<div class="faq-item">
-
-<button
-class="faq-q"
-onclick="faq(this)"
->
-Нормально ли плакать? ＋
-</button>
-
-<div class="faq-a">
-Да. Плач может быть естественной реакцией
-на сильные эмоции и напряжение.
-</div>
-
-</div>
+  </div>
 
 
-<div class="faq-item">
+  <div class="title">
+    <h2>
+      ❓ Частые вопросы
+    </h2>
+  </div>
 
-<button
-class="faq-q"
-onclick="faq(this)"
->
-Как попросить помощи? ＋
-</button>
+  <div class="faq">
 
-<div class="faq-a">
-Можно начать очень просто:
-«Мне сейчас тяжело, и мне нужна помощь».
-Не обязательно сразу всё объяснять.
-</div>
+    <div class="faq-item">
 
-</div>
+      <button
+        class="faq-q"
+        onclick="faq(this)">
+        Почему я тревожусь? ＋
+      </button>
 
-</div>
+      <div class="faq-a">
+        Тревога может появляться из-за стресса,
+        усталости, конфликтов, изменений
+        или неопределённости.
+        Это не означает, что с тобой что-то не так.
+      </div>
 
-
-<div class="title">
-<h2>🌱 Маленькое правило</h2>
-</div>
-
-<div class="card">
-
-<p>
-Сегодня не обязательно изменить всю жизнь.
-Иногда достаточно:
-</p>
-
-<p>
-💧 выпить воды<br>
-🌬️ сделать несколько спокойных выдохов<br>
-🫂 написать кому-нибудь<br>
-🌙 немного отдохнуть
-</p>
-
-</div>
+    </div>
 
 
-<div class="title">
-<h2>👨‍👩‍👧 Для взрослых рядом</h2>
-</div>
+    <div class="faq-item">
 
-<div class="card">
+      <button
+        class="faq-q"
+        onclick="faq(this)">
+        Нормально ли плакать? ＋
+      </button>
 
-<p>
-Если рядом с вами подросток, которому тяжело,
-сначала попробуйте выслушать его без осуждения.
-</p>
+      <div class="faq-a">
+        Да. Плач может быть естественной
+        реакцией на сильные эмоции
+        и напряжение.
+      </div>
 
-<p>
-«Я рядом».<br>
-«Я тебя слышу».<br>
-«Ты можешь рассказать мне».<br>
-«Давай разберёмся вместе».
-</p>
-
-</div>
+    </div>
 
 
-<p
-class="small-note"
-style="margin-top:30px"
->
-«Рядом» — информационный проект поддержки.
-Он не ставит диагнозы и не заменяет врача,
-психолога или экстренную помощь.
-</p>
+    <div class="faq-item">
+
+      <button
+        class="faq-q"
+        onclick="faq(this)">
+        Как попросить помощи? ＋
+      </button>
+
+      <div class="faq-a">
+        Можно начать очень просто:
+        «Мне сейчас тяжело, и мне нужна помощь».
+        Не обязательно сразу всё объяснять.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="title">
+    <h2>
+      🌱 Маленькое правило
+    </h2>
+  </div>
+
+  <div class="card">
+
+    <p>
+      Сегодня не обязательно изменить
+      всю жизнь.
+    </p>
+
+    <p>
+      💧 выпить воды<br>
+      🌬️ сделать несколько спокойных выдохов<br>
+      🫂 написать кому-нибудь<br>
+      🌙 немного отдохнуть
+    </p>
+
+  </div>
+
+
+  <div class="title">
+    <h2>
+      👨‍👩‍👧 Для взрослых рядом
+    </h2>
+  </div>
+
+  <div class="card">
+
+    <p>
+      Если рядом с вами подросток,
+      которому тяжело, сначала попробуйте
+      выслушать его без осуждения.
+    </p>
+
+    <p>
+      «Я рядом».<br>
+      «Я тебя слышу».<br>
+      «Ты можешь рассказать мне».<br>
+      «Давай разберёмся вместе».
+    </p>
+
+  </div>
+
+
+  <p
+    class="small-note"
+    style="margin-top:30px">
+
+    «Рядом» — информационный проект поддержки.
+    Он не ставит диагнозы и не заменяет врача,
+    психолога или экстренную помощь.
+
+  </p>
 
 </section>
 
 </div>
 
 
-<!-- НИЖНЕЕ МЕНЮ -->
+<!-- =========================
+     NAVIGATION
+========================= -->
 
 <nav class="nav">
 
-<button
-class="active"
-onclick="showSection('home',this)"
->
-<span>⌂</span>
-Главная
-</button>
+  <button
+    class="active"
+    onclick="showSection('home',this)">
+    <span>⌂</span>
+    Главная
+  </button>
 
-<button
-onclick="showSection('tools',this)"
->
-<span>✨</span>
-Помощь
-</button>
+  <button
+    onclick="showSection('tools',this)">
+    <span>✨</span>
+    Помощь
+  </button>
 
-<button
-onclick="showSection('tree',this)"
->
-<span>🌳</span>
-Дерево
-</button>
+  <button
+    onclick="showSection('tree',this)">
+    <span>🌳</span>
+    Дерево
+  </button>
 
-<button
-onclick="showSection('help',this)"
->
-<span>🛟</span>
-Безопасность
-</button>
+  <button
+    onclick="showSection('help',this)">
+    <span>🛟</span>
+    Безопасность
+  </button>
 
-<button
-onclick="showSection('useful',this)"
->
-<span>📱</span>
-Полезное
-</button>
-
-<button
-onclick="showSection('more',this)"
->
-<span>🫶</span>
-Ещё
-</button>
+  <button
+    onclick="showSection('useful',this)">
+    <span>📱</span>
+    Полезное
+  </button>
 
 </nav>
 
 
-<!-- СЕКРЕТ -->
+<!-- SECRET -->
 
 <button
-class="secret-button"
-onclick="openSecret()"
->
-🌙
+  class="secret-button"
+  onclick="openSecret()">
+  🌙
 </button>
 
 <div
-class="secret-story"
-id="secretStory"
->
+  class="secret-story"
+  id="secretStory">
 
-<div class="secret-card">
+  <div class="secret-card">
 
-<button
-class="close"
-onclick="closeSecret()"
->
-×
-</button>
+    <button
+      class="close"
+      onclick="closeSecret()">
+      ×
+    </button>
 
-<div style="font-size:55px">
-🌙
+    <div style="font-size:55px">
+      🌙
+    </div>
+
+    <h2>
+      Небольшая секретная история
+    </h2>
+
+    <p>
+      Этот сайт создал
+      <b>17-летний подросток</b>.
+    </p>
+
+    <p>
+      Не потому, что у него есть
+      ответы на всё.
+      А потому, что иногда самому
+      подростку очень хочется услышать
+      простое:
+    </p>
+
+    <div
+      style="
+        padding:18px;
+        border-radius:20px;
+        background:#7169ff14;
+        border:1px solid #7169ff35;
+        font-weight:bold;
+      ">
+
+      «Ты не один.
+      Давай попробуем справиться
+      с этим вместе.»
+
+    </div>
+
+    <p>
+      Этот проект появился из желания
+      сделать место, куда подросток
+      может зайти без страха,
+      осуждения и необходимости
+      притворяться, что всё хорошо.
+    </p>
+
+    <div style="font-size:30px">
+      💜
+    </div>
+
+    <small>
+      Сделано подростком для подростков.
+    </small>
+
+  </div>
+
 </div>
 
-<h2>
-Небольшая секретная история
-</h2>
 
-<p>
-Этот сайт создал <b>17-летний подросток</b>.
-</p>
-
-<p>
-Не потому, что у него есть ответы на всё.
-А потому, что иногда самому подростку
-очень хочется услышать простое:
-</p>
+<!-- MODAL -->
 
 <div
-style="
-padding:18px;
-border-radius:20px;
-background:#7169ff14;
-border:1px solid #7169ff35;
-font-weight:bold;
-"
->
-«Ты не один.
-Давай попробуем справиться
-с этим вместе.»
-</div>
+  class="modal"
+  id="modal">
 
-<p>
-Этот проект появился из желания сделать место,
-куда подросток может зайти без страха,
-осуждения и необходимости притворяться,
-что всё хорошо.
-</p>
+  <div class="sheet">
 
-<div style="font-size:30px">
-💜
-</div>
+    <button
+      class="close"
+      onclick="closeModal()">
+      Закрыть
+    </button>
 
-<small>
-Сделано подростком для подростков.
-</small>
+    <div id="modalContent"></div>
 
-</div>
-
-</div>
-
-
-<!-- МОДАЛЬНОЕ ОКНО -->
-
-<div
-class="modal"
-id="modal"
->
-
-<div class="sheet">
-
-<button
-class="close"
-onclick="closeModal()"
->
-Закрыть
-</button>
-
-<div id="modalContent"></div>
-
-</div>
+  </div>
 
 </div>
 
 
 <div
-class="toast"
-id="toast"
->
+  class="toast"
+  id="toast">
 </div>
 
 
 <script>
 
-/* ЗВЁЗДЫ */
+/* =========================
+   STARS
+========================= */
 
 const stars=document.getElementById("stars");
 
 for(let i=0;i<120;i++){
 
-const s=document.createElement("i");
+  const s=document.createElement("i");
 
-s.className="star";
+  s.className="star";
 
-s.style.left=Math.random()*100+"%";
-s.style.top=Math.random()*100+"%";
-s.style.animationDelay=Math.random()*5+"s";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDelay=Math.random()*5+"s";
 
-stars.appendChild(s);
-
+  stars.appendChild(s);
 }
 
 
-/* ПАДАЮЩИЕ ЗВЁЗДЫ */
+/* SHOOTING STARS */
 
 setInterval(()=>{
 
-if(document.body.classList.contains("silent"))
-return;
+  if(document.body.classList.contains("silent")){
+    return;
+  }
 
-const x=document.createElement("div");
+  const x=document.createElement("div");
 
-x.className="shooting";
+  x.className="shooting";
 
-x.style.left=(50+Math.random()*50)+"%";
-x.style.top=Math.random()*45+"%";
+  x.style.left=(50+Math.random()*50)+"%";
+  x.style.top=Math.random()*45+"%";
 
-document.body.appendChild(x);
+  document.body.appendChild(x);
 
-setTimeout(()=>{
-x.remove();
-},1600);
+  setTimeout(()=>{
+    x.remove();
+  },1600);
 
 },7000);
 
 
-/* НАВИГАЦИЯ */
+/* =========================
+   NAVIGATION
+========================= */
 
 function showSection(id,button){
 
-document.querySelectorAll(".section")
-.forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".section")
+    .forEach(x=>x.classList.remove("active"));
 
-document.getElementById(id)
-.classList.add("active");
+  const section=document.getElementById(id);
 
-document.querySelectorAll(".nav button")
-.forEach(x=>x.classList.remove("active"));
+  if(section){
+    section.classList.add("active");
+  }
 
-if(button)
-button.classList.add("active");
+  document.querySelectorAll(".nav button")
+    .forEach(x=>x.classList.remove("active"));
 
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+  if(button){
+    button.classList.add("active");
+  }
 
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 }
 
 
-/* ПРОФИЛЬ */
+/* =========================
+   PROFILE
+========================= */
 
 function openProfile(){
 
-document.getElementById("modalContent").innerHTML=`
+  const savedAvatar=
+    localStorage.getItem("avatar")||"";
 
-<h2>👤 Мой профиль</h2>
+  document.getElementById("modalContent").innerHTML=`
 
-<img
-id="preview"
-class="photo-preview"
-src="${localStorage.getItem("avatar")||""}"
-style="${localStorage.getItem("avatar")?"":"display:none"}"
->
+    <h2>👤 Мой профиль</h2>
 
-<div class="profile-form">
+    <img
+      id="preview"
+      class="photo-preview"
+      src="${savedAvatar}"
+      style="${savedAvatar?"":"display:none"}">
 
-<input
-id="nameInput"
-placeholder="Как тебя называть?"
-value="${localStorage.getItem("name")||""}"
->
+    <div class="profile-form">
 
-<input
-id="photoInput"
-type="file"
-accept="image/*"
-onchange="previewPhoto(event)"
->
+      <input
+        id="nameInput"
+        maxlength="30"
+        placeholder="Как тебя называть?"
+        value="${localStorage.getItem("name")||""}">
 
-<button
-class="btn primary"
-onclick="saveProfile()"
->
-💾 Сохранить
-</button>
+      <input
+        id="petNameInput"
+        maxlength="20"
+        placeholder="Имя питомца"
+        value="${localStorage.getItem("petName")||"Луми"}">
 
-</div>
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/*"
+        onchange="previewPhoto(event)">
 
-<p class="small-note">
-Имя и фотография сохраняются только
-в этом браузере.
-</p>
-`;
+      <button
+        class="btn primary"
+        onclick="saveProfile()">
+        💾 Сохранить профиль
+      </button>
 
-document.getElementById("modal")
-.classList.add("show");
+    </div>
 
+    <p class="small-note">
+      Имя и фотография сохраняются только
+      в этом браузере.
+    </p>
+  `;
+
+  document.getElementById("modal")
+    .classList.add("show");
 }
 
 
 function previewPhoto(e){
 
-const file=e.target.files[0];
+  const file=e.target.files[0];
 
-if(!file)
-return;
+  if(!file){
+    return;
+  }
 
-const reader=new FileReader();
+  const reader=new FileReader();
 
-reader.onload=()=>{
+  reader.onload=()=>{
 
-const preview=document.getElementById("preview");
+    const preview=document.getElementById("preview");
 
-preview.src=reader.result;
-preview.style.display="block";
+    preview.src=reader.result;
+    preview.style.display="block";
 
-};
+  };
 
-reader.readAsDataURL(file);
-
+  reader.readAsDataURL(file);
 }
 
 
 function saveProfile(){
 
-const name=
-document.getElementById("nameInput")
-.value.trim();
+  const name=
+    document.getElementById("nameInput")
+      .value.trim();
 
-if(name)
-localStorage.setItem("name",name);
+  const petName=
+    document.getElementById("petNameInput")
+      .value.trim();
 
-const preview=
-document.getElementById("preview");
+  if(name){
+    localStorage.setItem("name",name);
+  }
 
-if(
-preview.src &&
-preview.style.display!=="none" &&
-preview.src.startsWith("data:")
-){
+  if(petName){
+    localStorage.setItem("petName",petName);
+  }
 
-localStorage.setItem(
-"avatar",
-preview.src
-);
+  const preview=
+    document.getElementById("preview");
 
-}
+  if(
+    preview.src &&
+    preview.style.display!=="none" &&
+    preview.src.startsWith("data:")
+  ){
 
-loadProfile();
+    localStorage.setItem(
+      "avatar",
+      preview.src
+    );
 
-closeModal();
+  }
 
-toast("Профиль сохранён 💜");
+  loadProfile();
 
+  closeModal();
+
+  toast("Профиль сохранён 💜");
 }
 
 
 function loadProfile(){
 
-const name=
-localStorage.getItem("name");
+  const name=
+    localStorage.getItem("name");
 
-if(name){
+  if(name){
 
-document.getElementById("userName")
-.textContent=
-"Привет, "+name+" 💜";
+    document.getElementById("userName")
+      .textContent=
+      "Привет, "+name+" 💜";
 
-}
+  }
 
-const avatar=
-localStorage.getItem("avatar");
+  const avatar=
+    localStorage.getItem("avatar");
 
-if(avatar){
+  if(avatar){
 
-document.getElementById("avatar").src=avatar;
+    document.getElementById("avatar").src=avatar;
 
-document.getElementById("avatar")
-.style.display="block";
+    document.getElementById("avatar")
+      .style.display="block";
 
-document.getElementById("avatarEmoji")
-.style.display="none";
+    document.getElementById("avatarEmoji")
+      .style.display="none";
 
-}
+  }
+
+  const petName=
+    localStorage.getItem("petName");
+
+  if(petName){
+
+    document.getElementById("petName")
+      .textContent=petName;
+
+  }
 
 }
 
 loadProfile();
 
 
-/* НАСТРОЕНИЕ */
+/* =========================
+   MOOD
+========================= */
 
-const moodMessages={
+const moods=[
+  {
+    min:0,
+    max:15,
+    emoji:"😭",
+    title:"Очень тяжело",
+    description:"Похоже, тебе сейчас действительно непросто."
+  },
+  {
+    min:16,
+    max:30,
+    emoji:"😞",
+    title:"Плохо",
+    description:"Похоже, сегодня тебе нужна дополнительная поддержка."
+  },
+  {
+    min:31,
+    max:45,
+    emoji:"😔",
+    title:"Грустно",
+    description:"Можно не заставлять себя сразу становиться счастливым."
+  },
+  {
+    min:46,
+    max:60,
+    emoji:"😐",
+    title:"Нормально",
+    description:"Обычный день. Можно просто продолжать свой путь."
+  },
+  {
+    min:61,
+    max:75,
+    emoji:"🙂",
+    title:"Хорошо",
+    description:"Похоже, сегодня немного легче."
+  },
+  {
+    min:76,
+    max:90,
+    emoji:"😊",
+    title:"Отлично",
+    description:"Сохрани этот момент и наслаждайся им."
+  },
+  {
+    min:91,
+    max:100,
+    emoji:"🤩",
+    title:"Прекрасно",
+    description:"У тебя сегодня много хорошей энергии!"
+  }
+];
 
-"очень тяжело":
-"Сегодня можно просто пережить этот день. Маленькими шагами.",
+let moodWarningShown=false;
 
-"грустно":
-"Тебе не обязательно заставлять себя быть весёлым.",
+function getMood(value){
 
-"нормально":
-"Иногда нормальный день — уже хороший результат.",
-
-"хорошо":
-"Рад, что сегодня немного легче 🌱",
-
-"отлично":
-"Сохрани это ощущение. Ты заслуживаешь хороших моментов."
-
-};
-
-
-function setMood(el,text,emoji){
-
-document.querySelectorAll(".mood")
-.forEach(x=>x.classList.remove("active"));
-
-el.classList.add("active");
-
-document.getElementById("moodLabel")
-.textContent=emoji+" "+text;
-
-document.getElementById("supportBox")
-.textContent=moodMessages[text];
-
-document.getElementById("profileMood")
-.textContent="Сегодня: "+emoji+" "+text;
-
-localStorage.setItem("mood",text);
-
-addTreeLeaf(emoji);
-
-updateAchievement();
-
-if(text==="очень тяжело" || text==="грустно"){
-
-showMoodSupport();
-
-}
-
-toast("Настроение сохранено ❤️");
-
-}
-
-
-/* ПОЛЗУНОК */
-
-function changeSliderMood(){
-
-const slider=
-document.getElementById("moodSlider");
-
-const value=
-Number(slider.value);
-
-let emoji;
-let text;
-
-if(value<=20){
-
-emoji="😞";
-text="Очень тяжело";
-
-}
-else if(value<=40){
-
-emoji="😔";
-text="Грустно";
-
-}
-else if(value<=60){
-
-emoji="😐";
-text="Нормально";
-
-}
-else if(value<=80){
-
-emoji="🙂";
-text="Хорошо";
-
-}
-else{
-
-emoji="😊";
-text="Отлично";
-
-}
-
-document.getElementById("sliderEmoji")
-.textContent=emoji;
-
-document.getElementById("sliderText")
-.textContent=text;
-
-if(value<=20){
-
-showMoodSupport();
-
-}
-
-localStorage.setItem("sliderMood",value);
+  return moods.find(
+    m=>value>=m.min && value<=m.max
+  )||moods[3];
 
 }
 
 
-function showMoodSupport(){
+function changeMood(value){
 
-document.getElementById("modalContent").innerHTML=`
+  value=Number(value);
 
-<div style="text-align:center">
+  const mood=getMood(value);
 
-<div style="font-size:60px">
-💜
-</div>
+  document.getElementById("moodFace")
+    .textContent=mood.emoji;
 
-<h2>
-Всё настолько плохо?
-</h2>
+  document.getElementById("moodCurrent")
+    .textContent=mood.title;
 
-<p>
-Поделись своими переживаниями и мыслями.
-Я постараюсь помочь.
-</p>
+  document.getElementById("moodDescription")
+    .textContent=mood.description;
 
-<textarea
-id="moodThought"
-placeholder="Напиши, что сейчас происходит..."
-style="margin-top:10px"
-></textarea>
+  document.getElementById("moodLabel")
+    .textContent=mood.emoji+" "+mood.title;
 
-<button
-class="btn primary full"
-style="margin-top:10px"
-onclick="saveMoodThought()"
->
-💌 Поделиться
-</button>
+  document.getElementById("profileMood")
+    .textContent=
+    "Сегодня: "+mood.emoji+" "+mood.title;
 
-<button
-class="btn secondary full"
-style="margin-top:8px"
-onclick="closeModal()"
->
-Я пока просто побуду здесь
-</button>
+  localStorage.setItem(
+    "mood",
+    value
+  );
 
-</div>
-`;
+  addTreeLeaf(mood.emoji);
 
-document.getElementById("modal")
-.classList.add("show");
+  localStorage.setItem(
+    "firstMood",
+    "yes"
+  );
+
+  updateAchievement();
+
+  if(value<=30 && !moodWarningShown){
+
+    moodWarningShown=true;
+
+    setTimeout(()=>{
+
+      document.getElementById("modalContent")
+        .innerHTML=`
+
+          <div style="text-align:center">
+
+            <div style="font-size:65px">
+              🫂
+            </div>
+
+            <h2>
+              Всё настолько плохо?
+            </h2>
+
+            <p>
+              Поделись своими переживаниями
+              и мыслями. Я постараюсь помочь.
+            </p>
+
+            <button
+              class="btn primary full"
+              onclick="showSection('tools');closeModal()">
+              💭 Хочу выговориться
+            </button>
+
+            <button
+              class="btn secondary full"
+              style="margin-top:8px"
+              onclick="closeModal()">
+              Сейчас просто побуду здесь
+            </button>
+
+          </div>
+        `;
+
+      document.getElementById("modal")
+        .classList.add("show");
+
+    },250);
+
+  }
 
 }
 
 
-function saveMoodThought(){
+/* RESTORE MOOD */
 
-const text=
-document.getElementById("moodThought")
-.value.trim();
+const savedMood=
+  localStorage.getItem("mood");
 
-if(text){
+if(savedMood!==null){
 
-localStorage.setItem("moodThought",text);
+  document.getElementById("moodSlider")
+    .value=savedMood;
 
-}
+  changeMood(savedMood);
 
-closeModal();
-
-toast(
-"Спасибо, что поделился/поделилась 💜"
-);
-
+  moodWarningShown=true;
 }
 
 
-/* ТЕМЫ */
+/* =========================
+   TOPICS
+========================= */
 
 const topics={
 
-anxiety:[
-"😰 Тревога",
-"Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
-],
+  anxiety:[
+    "😰 Тревога",
+    "Тревога может ощущаться как напряжение, учащённое сердцебиение или беспокойные мысли. Попробуй поставить ноги на пол, сделать спокойный выдох и назвать несколько вещей, которые видишь вокруг."
+  ],
 
-emotions:[
-"💭 Эмоции",
-"Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
-],
+  emotions:[
+    "💭 Эмоции",
+    "Попробуй закончить фразу: «Я сейчас чувствую ___, потому что ___». Даже если ответ кажется странным — это нормально."
+  ],
 
-lonely:[
-"🫂 Одиночество",
-"Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
-],
+  lonely:[
+    "🫂 Одиночество",
+    "Можно чувствовать себя одиноко даже среди людей. Попробуй написать человеку, которому доверяешь: «Можешь немного со мной поговорить?»"
+  ],
 
-sleep:[
-"🌙 Сон",
-"Если мысли не дают уснуть, приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
-],
+  sleep:[
+    "🌙 Сон",
+    "Если мысли не дают уснуть, приглуши свет, убери яркий экран и попробуй несколько спокойных выдохов."
+  ],
 
-bullying:[
-"🛡️ Буллинг",
-"Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
-],
+  bullying:[
+    "🛡️ Буллинг",
+    "Если тебя травят — это не твоя вина. Расскажи безопасному взрослому и попроси помощи."
+  ],
 
-cyber:[
-"📱 Кибербуллинг",
-"При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
-]
+  cyber:[
+    "📱 Кибербуллинг",
+    "При травле онлайн можно заблокировать пользователя и пожаловаться на контент. Если есть реальная угроза безопасности, расскажи взрослому."
+  ]
 
 };
 
 
 function topic(id){
 
-document.getElementById("modalContent").innerHTML=`
+  document.getElementById("modalContent")
+    .innerHTML=`
 
-<h2>${topics[id][0]}</h2>
+      <h2>
+        ${topics[id][0]}
+      </h2>
 
-<p>
-${topics[id][1]}
-</p>
+      <p>
+        ${topics[id][1]}
+      </p>
 
-<button
-class="btn primary full"
-onclick="closeModal()"
->
-Я понял
-</button>
+      <button
+        class="btn primary full"
+        onclick="closeModal()">
+        Я понял
+      </button>
+    `;
 
-`;
-
-document.getElementById("modal")
-.classList.add("show");
-
+  document.getElementById("modal")
+    .classList.add("show");
 }
 
 
-/* ЭКСТРЕННАЯ ПОМОЩЬ */
+/* =========================
+   EMERGENCY
+========================= */
 
 function emergency(){
 
-document.getElementById("modalContent").innerHTML=`
+  document.getElementById("modalContent")
+    .innerHTML=`
 
-<h2>
-🛟 Сейчас главное — безопасность
-</h2>
+      <h2>
+        🛟 Сейчас главное — безопасность
+      </h2>
 
-<div class="alert">
+      <div class="alert">
+        Если ты думаешь, что можешь
+        навредить себе или тебе угрожает
+        непосредственная опасность,
+        не оставайся один/одна.
 
-Если ты думаешь, что можешь навредить себе
-или тебе угрожает непосредственная опасность,
-не оставайся один/одна.
+        Перейди к безопасному человеку
+        и скажи, что тебе нужна помощь.
+      </div>
 
-Перейди к безопасному человеку
-и скажи, что тебе нужна помощь.
+      <p>
+        Можно просто показать ему
+        этот экран, если сложно говорить.
+      </p>
 
-</div>
+      <a
+        href="tel:112"
+        class="btn danger full"
+        style="
+          display:block;
+          text-align:center;
+          text-decoration:none;
+        ">
+        📞 Позвонить 112
+      </a>
 
-<p>
-Можно просто показать ему этот экран,
-если сложно говорить.
-</p>
+      <button
+        class="btn secondary full"
+        style="margin-top:8px"
+        onclick="closeModal()">
+        Я рядом с безопасным человеком
+      </button>
+    `;
 
-<a
-href="tel:112"
-class="btn danger full"
-style="
-display:block;
-text-align:center;
-text-decoration:none;
-"
->
-📞 Позвонить 112
-</a>
-
-<br>
-
-<a
-href="tel:88002000122"
-class="btn primary full"
-style="
-display:block;
-text-align:center;
-text-decoration:none;
-"
->
-💜 Позвонить на телефон доверия
-</a>
-`;
-
-document.getElementById("modal")
-.classList.add("show");
-
+  document.getElementById("modal")
+    .classList.add("show");
 }
 
 
-/* ПОБЫТЬ ЗДЕСЬ */
+/* =========================
+   STAY
+========================= */
 
 let stayInterval;
 
 function startStay(){
 
-clearInterval(stayInterval);
+  clearInterval(stayInterval);
 
-let n=60;
+  let n=60;
 
-document.getElementById("timer")
-.textContent=n;
+  document.getElementById("timer")
+    .textContent=n;
 
-stayInterval=setInterval(()=>{
+  stayInterval=setInterval(()=>{
 
-n--;
+    n--;
 
-document.getElementById("timer")
-.textContent=n;
+    document.getElementById("timer")
+      .textContent=n;
 
-if(n<=0){
+    if(n<=0){
 
-clearInterval(stayInterval);
+      clearInterval(stayInterval);
 
-document.getElementById("timer")
-.textContent="❤️";
+      document.getElementById("timer")
+        .textContent="❤️";
 
-toast(
-"Ты сделал маленькую паузу."
-);
+      toast(
+        "Ты сделал маленькую паузу."
+      );
+
+    }
+
+  },1000);
 
 }
 
-},1000);
 
-}
-
-
-/* ДЫХАНИЕ */
+/* =========================
+   BREATHING
+========================= */
 
 let breathing=false;
 
 function startBreathing(){
 
-if(breathing)
-return;
+  if(breathing){
+    return;
+  }
 
-breathing=true;
+  breathing=true;
 
-const circle=
-document.getElementById("breathCircle");
+  const circle=
+    document.getElementById("breathCircle");
 
-const text=
-document.getElementById("breathText");
+  const text=
+    document.getElementById("breathText");
 
-let count=0;
+  let count=0;
 
-function cycle(){
+  function cycle(){
 
-if(count>=4){
+    if(count>=4){
 
-text.textContent="готово ❤️";
+      text.textContent="готово ❤️";
 
-circle.classList.remove("expand");
+      circle.classList.remove("expand");
 
-breathing=false;
+      breathing=false;
 
-return;
+      return;
+    }
 
+    text.textContent="вдох";
+
+    circle.classList.add("expand");
+
+    setTimeout(()=>{
+
+      text.textContent="выдох";
+
+      circle.classList.remove("expand");
+
+      setTimeout(()=>{
+
+        count++;
+
+        cycle();
+
+      },4000);
+
+    },4000);
+
+  }
+
+  cycle();
 }
 
-text.textContent="вдох";
 
-circle.classList.add("expand");
-
-setTimeout(()=>{
-
-text.textContent="выдох";
-
-circle.classList.remove("expand");
-
-setTimeout(()=>{
-
-count++;
-
-cycle();
-
-},4000);
-
-},4000);
-
-}
-
-cycle();
-
-}
-
-
-/* ПИСЬМА */
+/* =========================
+   LETTERS
+========================= */
 
 const letters=[
 
-"Ты не обязан быть сильным каждую минуту.",
+  "Ты не обязан быть сильным каждую минуту.",
 
-"Попросить помощи — это тоже способ позаботиться о себе.",
+  "Попросить помощи — это тоже способ позаботиться о себе.",
 
-"Один плохой день не определяет всю твою жизнь.",
+  "Один плохой день не определяет всю твою жизнь.",
 
-"Ты заслуживаешь того, чтобы к тебе относились бережно.",
+  "Ты заслуживаешь того, чтобы к тебе относились бережно.",
 
-"Можно остановиться. Можно отдохнуть.",
+  "Можно остановиться. Можно отдохнуть.",
 
-"Ты можешь идти очень медленно.",
+  "Ты можешь идти очень медленно. Главное — не требовать от себя невозможного.",
 
-"Даже если сейчас трудно это представить, чувства могут измениться."
+  "Даже если сейчас трудно это представить, чувства могут измениться."
 
 ];
 
 
 function openEnvelope(){
 
-const text=
-letters[
-Math.floor(Math.random()*letters.length)
-];
+  const text=
+    letters[
+      Math.floor(
+        Math.random()*letters.length
+      )
+    ];
 
-document.getElementById("modalContent").innerHTML=`
+  document.getElementById("modalContent")
+    .innerHTML=`
 
-<div style="text-align:center">
+      <div style="text-align:center">
 
-<div style="font-size:65px">
-💌
-</div>
+        <div style="font-size:65px">
+          💌
+        </div>
 
-<h2>
-Для тебя
-</h2>
+        <h2>
+          Для тебя
+        </h2>
 
-<p>
-${text}
-</p>
+        <p>
+          ${text}
+        </p>
 
-<button
-class="btn primary"
-onclick="openEnvelope()"
->
-💌 Другое письмо
-</button>
+        <button
+          class="btn primary"
+          onclick="openEnvelope()">
+          💌 Другое письмо
+        </button>
 
-</div>
+      </div>
+    `;
 
-`;
-
-document.getElementById("modal")
-.classList.add("show");
-
+  document.getElementById("modal")
+    .classList.add("show");
 }
 
 
-/* СВЕЧА */
+/* =========================
+   CANDLE
+========================= */
 
 function toggleCandle(){
 
-const flame=
-document.getElementById("flame");
+  const flame=
+    document.getElementById("flame");
 
-if(flame.style.display==="none"){
+  if(flame.style.display==="none"){
 
-flame.style.display="block";
+    flame.style.display="block";
 
-toast("🕯️ Свеча зажжена");
+    toast("🕯️ Свеча зажжена");
+
+  }else{
+
+    flame.style.display="none";
+
+    toast("🌙 Стало тише");
+
+  }
 
 }
-else{
 
-flame.style.display="none";
 
-toast("🌙 Стало тише");
+/* =========================
+   CRY MODE
+========================= */
+
+function cryMode(){
+
+  document.getElementById("modalContent")
+    .innerHTML=`
+
+      <div style="text-align:center">
+
+        <div style="font-size:60px">
+          🌧️
+        </div>
+
+        <h2>
+          Сегодня можно просто поплакать
+        </h2>
+
+        <p>
+          Тебе не обязательно сейчас
+          что-то исправлять.
+          Можно просто признать,
+          что тебе тяжело.
+        </p>
+
+        <p>
+          Сделай спокойный выдох.
+          Положи руку на грудь.
+          И скажи себе:
+        </p>
+
+        <div
+          style="
+            padding:18px;
+            border-radius:20px;
+            background:#20253a;
+          ">
+
+          «Мне сейчас трудно,
+          и я имею право это чувствовать».
+
+        </div>
+
+      </div>
+    `;
+
+  document.getElementById("modal")
+    .classList.add("show");
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+const tasks=[
+
+  ["🌱","Выпей стакан воды."],
+  ["🚶","Пройдись пять минут."],
+  ["🎧","Послушай любимую песню."],
+  ["💬","Напиши человеку, которому доверяешь."],
+  ["🌬️","Сделай пять спокойных выдохов."],
+  ["📵","Убери телефон на десять минут."],
+  ["🧘","Посиди спокойно две минуты."],
+  ["📝","Запиши одну мысль."],
+  ["🪟","Посмотри в окно."],
+  ["❤️","Сделай что-нибудь доброе для себя."]
+
+];
+
+
+function newTask(){
+
+  const t=
+    tasks[
+      Math.floor(
+        Math.random()*tasks.length
+      )
+    ];
+
+  document.getElementById("taskIcon")
+    .textContent=t[0];
+
+  document.getElementById("taskText")
+    .textContent=t[1];
+
+  toast(
+    "Новое маленькое задание 🌱"
+  );
 
 }
 
-}
 
+/* =========================
+   PET
+========================= */
 
-/* ПИТОМЕЦ */
+let xp=
+  Number(
+    localStorage.getItem("petXP")||45
+  );
 
-let petXP=
-Number(localStorage.getItem("petXP")||40);
+let lastPetAction=
+  Number(
+    localStorage.getItem("lastPetAction")||
+    Date.now()
+  );
 
-let petLast=
-Number(localStorage.getItem("petLast")||Date.now());
 
 function updatePet(){
 
-const days=
-(Math.max(0,Date.now()-petLast))
-/86400000;
+  const body=
+    document.getElementById("petBody");
 
-const pet=
-document.getElementById("petBody");
+  const status=
+    document.getElementById("petStatus");
 
-const message=
-document.getElementById("petMessage");
+  const xpBar=
+    document.getElementById("petXp");
 
-const status=
-document.getElementById("petStatus");
+  xpBar.style.width=
+    Math.max(5,xp)+"%";
 
-if(days>=3){
+  const hours=
+    (Date.now()-lastPetAction)/
+    (1000*60*60);
 
-pet.classList.add("sad");
+  if(hours>=24){
 
-message.textContent=
-"Мне немного грустно без тебя... 🥺";
+    body.classList.add("sad");
 
-status.textContent=
-"Питомец давно тебя не видел.";
+    status.textContent=
+      "Луми грустит... Ему не хватает твоего внимания 🥺";
 
-}
-else if(days>=1){
+  }else if(hours>=8){
 
-pet.classList.add("sad");
+    body.classList.add("sad");
 
-message.textContent=
-"Я скучал по тебе 💭";
+    status.textContent=
+      "Луми немного скучает по тебе.";
 
-status.textContent=
-"Загляни ко мне, когда сможешь.";
+  }else{
 
-}
-else{
+    body.classList.remove("sad");
 
-pet.classList.remove("sad");
+    status.textContent=
+      "Луми рад тебя видеть 💜";
 
-message.textContent=
-"Я рад тебя видеть! 💜";
-
-status.textContent=
-"Спасибо, что заглянул.";
+  }
 
 }
 
-document.getElementById("petXp")
-.style.width=petXP+"%";
 
+function petAction(message){
+
+  xp+=12;
+
+  if(xp>100){
+    xp=100;
+  }
+
+  localStorage.setItem(
+    "petXP",
+    xp
+  );
+
+  lastPetAction=Date.now();
+
+  localStorage.setItem(
+    "lastPetAction",
+    lastPetAction
+  );
+
+  updatePet();
+
+  toast(message);
 }
 
-function petAction(){
-
-petXP+=15;
-
-if(petXP>100)
-petXP=100;
-
-petLast=Date.now();
-
-localStorage.setItem("petXP",petXP);
-localStorage.setItem("petLast",petLast);
 
 updatePet();
 
-toast("Питомец счастлив! 🐾💜");
-
-}
-
-updatePet();
+setInterval(updatePet,60000);
 
 
-/* ДЕРЕВО */
+/* =========================
+   TREE
+========================= */
 
 let leaves=
-Number(localStorage.getItem("leaves")||0);
+  Number(
+    localStorage.getItem("leaves")||0
+  );
 
 
 function updateTree(){
 
-let word=
-leaves===1
-?"листик":
-leaves>1&&leaves<5
-?"листика":
-"листиков";
+  const word=
+    leaves===1
+      ?"листик"
+      :
+      leaves>1&&leaves<5
+        ?"листика"
+        :"листиков";
 
-document.getElementById("treeCount")
-.textContent=
-leaves+" "+word;
+  document.getElementById("treeCount")
+    .textContent=
+    leaves+" "+word;
 
 }
 
 
 function addTreeLeaf(emoji="🌿"){
 
-leaves++;
+  leaves++;
 
-localStorage.setItem("leaves",leaves);
+  localStorage.setItem(
+    "leaves",
+    leaves
+  );
 
-const tree=
-document.getElementById("treeVisual");
+  const tree=
+    document.getElementById("treeVisual");
 
-const leaf=
-document.createElement("div");
+  const leaf=
+    document.createElement("div");
 
-leaf.className="leaf";
+  leaf.className="leaf";
 
-leaf.textContent=emoji;
+  leaf.textContent=emoji;
 
-leaf.style.left=
-(28+Math.random()*44)+"%";
+  leaf.style.left=
+    (28+Math.random()*44)+"%";
 
-leaf.style.bottom=
-(130+Math.random()*90)+"px";
+  leaf.style.bottom=
+    (130+Math.random()*90)+"px";
 
-tree.appendChild(leaf);
+  tree.appendChild(leaf);
 
-updateTree();
-updateAchievement();
+  updateTree();
+
+  updateAchievement();
 
 }
 
+
 updateTree();
 
 
-/* ДОСТИЖЕНИЯ */
+/* =========================
+   ACHIEVEMENTS
+========================= */
 
 function updateAchievement(){
 
-const title=
-document.getElementById("achievementTitle");
+  const title=
+    document.getElementById(
+      "achievementTitle"
+    );
 
-const text=
-document.getElementById("achievementText");
+  const text=
+    document.getElementById(
+      "achievementText"
+    );
 
-if(localStorage.getItem("firstMood")){
+  if(
+    localStorage.getItem("firstMood")
+  ){
 
-title.textContent=
-"🌱 Первый шаг открыт";
+    title.textContent=
+      "🌱 Первый шаг открыт";
 
-text.textContent=
-"Ты уже уделил немного внимания своему состоянию.";
+    text.textContent=
+      "Ты уже уделил немного внимания своему состоянию.";
 
-}
+  }
 
-if(leaves>=5){
+  if(leaves>=5){
 
-title.textContent=
-"🌳 Маленький сад";
+    title.textContent=
+      "🌳 Маленький сад";
 
-text.textContent=
-"На твоём дереве уже 5 листиков.";
+    text.textContent=
+      "На твоём дереве уже 5 листиков.";
 
-}
+  }
 
-if(leaves>=15){
+  if(leaves>=15){
 
-title.textContent=
-"🌲 Тихий лес";
+    title.textContent=
+      "🌲 Тихий лес";
 
-text.textContent=
-"15 листиков. Ты продолжаешь заботиться о себе.";
+    text.textContent=
+      "15 листиков. Ты продолжаешь заботиться о себе.";
 
-}
+  }
 
 }
 
 updateAchievement();
 
 
-/* ДНЕВНИК */
+/* =========================
+   JOURNAL
+========================= */
 
 if(localStorage.getItem("journal")){
 
-document.getElementById("journal")
-.value=
-localStorage.getItem("journal");
+  document.getElementById("journal")
+    .value=
+    localStorage.getItem("journal");
 
 }
 
 
 function saveJournal(){
 
-const text=
-document.getElementById("journal")
-.value;
+  const text=
+    document.getElementById("journal")
+      .value;
 
-localStorage.setItem("journal",text);
+  localStorage.setItem(
+    "journal",
+    text
+  );
 
-toast("Запись сохранена 💜");
+  toast(
+    "Запись сохранена 💜"
+  );
 
 }
 
 
-/* МОЙ ДЕНЬ */
+/* =========================
+   DAY
+========================= */
 
 function saveDay(){
 
-localStorage.setItem(
-"dayFeel",
-document.getElementById("dayFeel").value
-);
+  localStorage.setItem(
+    "dayFeel",
+    document.getElementById("dayFeel").value
+  );
 
-localStorage.setItem(
-"dayNeed",
-document.getElementById("dayNeed").value
-);
+  localStorage.setItem(
+    "dayNeed",
+    document.getElementById("dayNeed").value
+  );
 
-localStorage.setItem(
-"dayDo",
-document.getElementById("dayDo").value
-);
+  localStorage.setItem(
+    "dayDo",
+    document.getElementById("dayDo").value
+  );
 
-toast("Мой день сохранён 🌱");
+  toast(
+    "Мой день сохранён 🌱"
+  );
 
 }
 
 
-document.getElementById("dayFeel").value=
-localStorage.getItem("dayFeel")||"";
+document.getElementById("dayFeel")
+  .value=
+  localStorage.getItem("dayFeel")||"";
 
-document.getElementById("dayNeed").value=
-localStorage.getItem("dayNeed")||"";
+document.getElementById("dayNeed")
+  .value=
+  localStorage.getItem("dayNeed")||"";
 
-document.getElementById("dayDo").value=
-localStorage.getItem("dayDo")||"";
+document.getElementById("dayDo")
+  .value=
+  localStorage.getItem("dayDo")||"";
 
 
-/* РИСОВАЛКА */
+/* =========================
+   CANVAS
+========================= */
 
 const canvas=
-document.getElementById("canvas");
+  document.getElementById("canvas");
 
 const ctx=
-canvas.getContext("2d");
+  canvas.getContext("2d");
 
 let drawing=false;
 let brush=8;
@@ -3583,343 +3874,383 @@ let brush=8;
 
 function resizeCanvas(){
 
-const rect=
-canvas.getBoundingClientRect();
+  const rect=
+    canvas.getBoundingClientRect();
 
-canvas.width=
-rect.width*devicePixelRatio;
+  canvas.width=
+    rect.width*devicePixelRatio;
 
-canvas.height=
-300*devicePixelRatio;
+  canvas.height=
+    300*devicePixelRatio;
 
-ctx.scale(
-devicePixelRatio,
-devicePixelRatio
-);
+  ctx.scale(
+    devicePixelRatio,
+    devicePixelRatio
+  );
 
-ctx.lineCap="round";
-ctx.lineJoin="round";
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
 
 }
+
 
 resizeCanvas();
 
 window.addEventListener(
-"resize",
-resizeCanvas
+  "resize",
+  resizeCanvas
 );
 
 
 function position(e){
 
-const r=
-canvas.getBoundingClientRect();
+  const r=
+    canvas.getBoundingClientRect();
 
-const point=
-e.touches
-?e.touches[0]
-:e;
+  const point=
+    e.touches
+      ?e.touches[0]
+      :e;
 
-return{
-
-x:point.clientX-r.left,
-
-y:point.clientY-r.top
-
-};
+  return{
+    x:point.clientX-r.left,
+    y:point.clientY-r.top
+  };
 
 }
 
 
 function startDraw(e){
 
-e.preventDefault();
+  e.preventDefault();
 
-drawing=true;
+  drawing=true;
 
-const p=
-position(e);
+  const p=
+    position(e);
 
-ctx.beginPath();
+  ctx.beginPath();
 
-ctx.moveTo(
-p.x,
-p.y
-);
+  ctx.moveTo(
+    p.x,
+    p.y
+  );
 
 }
 
 
 function draw(e){
 
-if(!drawing)
-return;
+  if(!drawing){
+    return;
+  }
 
-e.preventDefault();
+  e.preventDefault();
 
-const p=
-position(e);
+  const p=
+    position(e);
 
-ctx.lineWidth=brush;
-ctx.strokeStyle="#766cff";
+  ctx.lineWidth=brush;
 
-ctx.lineTo(
-p.x,
-p.y
-);
+  ctx.strokeStyle="#766cff";
 
-ctx.stroke();
+  ctx.lineTo(
+    p.x,
+    p.y
+  );
+
+  ctx.stroke();
 
 }
 
 
 canvas.addEventListener(
-"mousedown",
-startDraw
+  "mousedown",
+  startDraw
 );
 
 canvas.addEventListener(
-"mousemove",
-draw
+  "mousemove",
+  draw
 );
 
 window.addEventListener(
-"mouseup",
-()=>{
-drawing=false;
-}
+  "mouseup",
+  ()=>{
+    drawing=false;
+  }
 );
 
 canvas.addEventListener(
-"touchstart",
-startDraw,
-{passive:false}
+  "touchstart",
+  startDraw,
+  {passive:false}
 );
 
 canvas.addEventListener(
-"touchmove",
-draw,
-{passive:false}
+  "touchmove",
+  draw,
+  {passive:false}
 );
 
 canvas.addEventListener(
-"touchend",
-()=>{
-drawing=false;
-}
+  "touchend",
+  ()=>{
+    drawing=false;
+  }
 );
 
 
 function setBrush(n){
 
-brush=n;
+  brush=n;
 
 }
 
 
 function clearCanvas(){
 
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
 }
 
 
-/* КОПИРОВАНИЕ */
+/* =========================
+   COPY
+========================= */
 
 function copyMessage(el){
 
-const text=
-el.textContent.trim();
+  const text=
+    el.textContent.trim();
 
-if(navigator.clipboard){
+  if(navigator.clipboard){
 
-navigator.clipboard
-.writeText(text);
+    navigator.clipboard
+      .writeText(text)
+      .then(()=>{
+        toast(
+          "Фраза скопирована ❤️"
+        );
+      });
 
-toast(
-"Фраза скопирована ❤️"
-);
+  }else{
+
+    toast(text);
+
+  }
 
 }
-else{
-
-toast(text);
-
-}
-
-}
 
 
-/* ПОДДЕРЖКА */
+/* =========================
+   RANDOM SUPPORT
+========================= */
 
 const supports=[
 
-"Ты не обязан решать всё сегодня.",
+  "Ты не обязан решать всё сегодня.",
 
-"Можно попросить помощи.",
+  "Можно попросить помощи.",
 
-"Ты имеешь право отдыхать.",
+  "Ты имеешь право отдыхать.",
 
-"Один тяжёлый день не определяет твою жизнь.",
+  "Один тяжёлый день не определяет твою жизнь.",
 
-"Не нужно быть идеальным.",
+  "Не нужно быть идеальным.",
 
-"Ты можешь идти маленькими шагами.",
+  "Ты можешь идти маленькими шагами.",
 
-"Твои чувства заслуживают внимания.",
+  "Твои чувства заслуживают внимания.",
 
-"Можно сделать паузу.",
+  "Можно сделать паузу.",
 
-"Ты больше, чем одна эмоция.",
+  "Ты больше, чем одна эмоция.",
 
-"Ты заслуживаешь доброго отношения к себе."
+  "Ты заслуживаешь доброго отношения к себе.",
+
+  "Ты можешь начать сначала.",
+
+  "Даже маленький шаг — это движение вперёд."
 
 ];
 
 
 function randomSupport(){
 
-document.getElementById("randomText")
-.textContent=
-supports[
-Math.floor(Math.random()*supports.length)
-];
+  document.getElementById("randomText")
+    .textContent=
+    supports[
+      Math.floor(
+        Math.random()*supports.length
+      )
+    ];
 
 }
 
 
-/* FAQ */
+/* =========================
+   FAQ
+========================= */
 
 function faq(button){
 
-button.parentElement
-.classList.toggle("open");
+  button.parentElement
+    .classList.toggle("open");
 
 }
 
 
-/* ТИШИНА */
+/* =========================
+   SILENT
+========================= */
 
 function toggleSilent(){
 
-document.body
-.classList.toggle("silent");
+  document.body
+    .classList.toggle("silent");
 
-toast(
-document.body.classList.contains("silent")
-?"🔇 Тишина включена"
-:"✨ Анимации включены"
-);
+  toast(
+    document.body.classList.contains("silent")
+      ?"🔇 Тишина включена"
+      :"✨ Анимации включены"
+  );
 
 }
 
 
-/* СВЕТЛАЯ ТЕМА */
+/* =========================
+   LIGHT
+========================= */
 
 function toggleLight(){
 
-document.body
-.classList.toggle("light");
+  document.body
+    .classList.toggle("light");
 
 }
 
 
-/* МОДАЛКА */
+/* =========================
+   MODAL
+========================= */
 
 function closeModal(){
 
-document.getElementById("modal")
-.classList.remove("show");
+  document.getElementById("modal")
+    .classList.remove("show");
 
 }
 
 
-/* СЕКРЕТ */
+/* =========================
+   SECRET
+========================= */
 
 function openSecret(){
 
-document.getElementById("secretStory")
-.classList.add("show");
+  document.getElementById("secretStory")
+    .classList.add("show");
 
 }
 
 
 function closeSecret(){
 
-document.getElementById("secretStory")
-.classList.remove("show");
+  document.getElementById("secretStory")
+    .classList.remove("show");
 
 }
 
 
-/* TOAST */
+/* =========================
+   TOAST
+========================= */
 
 function toast(text){
 
-const t=
-document.getElementById("toast");
+  const t=
+    document.getElementById("toast");
 
-t.textContent=text;
+  t.textContent=text;
 
-t.classList.add("show");
+  t.classList.add("show");
 
-clearTimeout(window.toastTimer);
+  clearTimeout(
+    window.toastTimer
+  );
 
-window.toastTimer=
-setTimeout(()=>{
+  window.toastTimer=
+    setTimeout(()=>{
 
-t.classList.remove("show");
+      t.classList.remove("show");
 
-},2200);
+    },2200);
 
 }
 
 
-/* ESC */
+/* =========================
+   ESC
+========================= */
 
 document.addEventListener(
-"keydown",
-e=>{
+  "keydown",
+  e=>{
 
-if(e.key==="Escape"){
+    if(e.key==="Escape"){
 
-closeModal();
-closeSecret();
+      closeModal();
+      closeSecret();
 
-}
+    }
 
-}
+  }
 );
 
 
-/* ЗАКРЫТИЕ МОДАЛКИ ПО ФОНУ */
+/* =========================
+   CLOSE MODAL OUTSIDE
+========================= */
 
 document.getElementById("modal")
-.addEventListener(
-"click",
-e=>{
+  .addEventListener(
+    "click",
+    e=>{
 
-if(e.target.id==="modal")
-closeModal();
+      if(e.target.id==="modal"){
+        closeModal();
+      }
 
-}
-);
+    }
+  );
 
-document.getElementById("secretStory")
-.addEventListener(
-"click",
-e=>{
 
-if(e.target.id==="secretStory")
-closeSecret();
+/* =========================
+   INITIAL MESSAGE
+========================= */
 
-}
-);
+setTimeout(()=>{
+
+  if(!sessionStorage.getItem("welcomeShown")){
+
+    sessionStorage.setItem(
+      "welcomeShown",
+      "yes"
+    );
+
+    toast(
+      "Добро пожаловать в «рядом.» 💜"
+    );
+
+  }
+
+},1000);
 
 </script>
 
