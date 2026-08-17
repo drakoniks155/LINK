@@ -712,7 +712,7 @@ body::after{
     display:inline-block;
 }
 
-.profile-name{
+.profile-name-display{
     font-size:25px;
     font-weight:700;
     cursor:pointer;
@@ -722,11 +722,11 @@ body::after{
     display:inline-block;
 }
 
-.profile-name:hover{
+.profile-name-display:hover{
     background:rgba(255,255,255,.05);
 }
 
-.profile-name-edit{
+.profile-name-input{
     display:none;
     font-size:25px;
     font-weight:700;
@@ -740,16 +740,16 @@ body::after{
     outline:none;
 }
 
-.profile-name-edit:focus{
+.profile-name-input:focus{
     border-color:#a96cff;
     box-shadow:0 0 20px rgba(139,76,255,.15);
 }
 
-.profile-name-edit.show{
+.profile-name-input.show{
     display:inline-block;
 }
 
-.profile-name.hide{
+.profile-name-display.hide{
     display:none;
 }
 
@@ -780,7 +780,7 @@ body::after{
 .avatar-picker{
     width:100%;
     max-width:420px;
-    max-height:70vh;
+    max-height:75vh;
     background:#1a1520;
     border-radius:28px;
     padding:20px;
@@ -1176,7 +1176,7 @@ body::after{
         grid-template-columns:repeat(5,1fr);
     }
 
-    .profile-name-edit{
+    .profile-name-input{
         width:180px;
         font-size:20px;
     }
@@ -1449,11 +1449,11 @@ body::after{
     </div>
 
     <div class="profile-name-wrapper">
-        <div class="profile-name" id="profileNameDisplay" onclick="editName()">
+        <div class="profile-name-display" id="profileNameDisplay" onclick="editName()">
             Мой профиль
         </div>
         <input
-            class="profile-name-edit"
+            class="profile-name-input"
             id="profileNameInput"
             type="text"
             maxlength="30"
@@ -1853,23 +1853,31 @@ let petHappiness =
         localStorage.getItem("ryadom_pet") || 70
     );
 
+// Профиль пользователя
 let userProfile = {
     name: localStorage.getItem("ryadom_name") || "Мой профиль",
     avatar: localStorage.getItem("ryadom_avatar") || "🐉"
 };
 
+// Доступные аватары
 const AVATARS = [
     "🐉", "🦊", "🐱", "🐶", "🐺", "🦄",
     "🐼", "🐨", "🦁", "🐯", "🐸", "🐵",
     "🦋", "🐝", "🐞", "🦉", "🦅", "🐧",
     "🌙", "⭐", "🌸", "🌺", "🌻", "🌿",
     "🔥", "🌈", "☀️", "🌊", "🍄", "🎃",
-    "💎", "🪐", "🚀", "🌠", "🎨", "🧚"
+    "💎", "🪐", "🚀", "🌠", "🎨", "🧚",
+    "😺", "🐈", "🐕", "🦮", "🐩", "🐕‍🦺",
+    "🐇", "🐿️", "🦔", "🦇", "🦢", "🦩",
+    "🕊️", "🐦", "🐤", "🐣", "🐥", "🦜",
+    "🐸", "🐊", "🦎", "🐍", "🐢", "🐙",
+    "🦑", "🦐", "🦀", "🐡", "🐠", "🐟",
+    "🐬", "🐳", "🐋", "🦈", "🐊", "🦭"
 ];
 
 
 /* =========================
-   ПРОФИЛЬ
+   ПРОФИЛЬ - ЗАГРУЗКА
 ========================= */
 
 function loadProfile(){
@@ -1889,12 +1897,11 @@ function loadProfile(){
     nameEl.textContent =
         userProfile.name;
 
-    if(userProfile.name !== "Мой профиль"){
-        subEl.textContent =
-            "Привет, " + userProfile.name + "! 👋";
-    }else{
-        subEl.textContent =
-            "Это твоё личное пространство";
+    // Приветствие
+    if(userProfile.name && userProfile.name !== "Мой профиль"){
+        subEl.textContent = "Привет, " + userProfile.name + "! 👋";
+    } else {
+        subEl.textContent = "Это твоё личное пространство";
     }
 
     // Подсветка выбранного аватара в пикере
@@ -1908,6 +1915,10 @@ function loadProfile(){
         });
 }
 
+
+/* =========================
+   ПРОФИЛЬ - ИМЯ
+========================= */
 
 function editName(){
 
@@ -1958,6 +1969,10 @@ function saveName(){
     );
 }
 
+
+/* =========================
+   ПРОФИЛЬ - АВАТАР
+========================= */
 
 function openAvatarPicker(){
 
@@ -2738,7 +2753,7 @@ function showToast(text){
 
 
 /* =========================
-   LOAD PROFILE
+   ЗАГРУЗКА ВСЕГО
 ========================= */
 
 function loadMood(){
@@ -2811,17 +2826,13 @@ function loadMood(){
 
 
 /* =========================
-   START
+   СТАРТ
 ========================= */
 
 renderAvatarPicker();
-
 renderContent("all");
-
 updatePet();
-
 loadProfile();
-
 loadMood();
 
 </script>
