@@ -666,10 +666,17 @@ body::after{
     padding:20px 0 25px;
 }
 
-.avatar{
+.avatar-wrapper{
+    position:relative;
     width:105px;
     height:105px;
     margin:auto;
+    cursor:pointer;
+}
+
+.avatar{
+    width:105px;
+    height:105px;
     border-radius:35px;
     background:linear-gradient(135deg,#7639ff,#ff7518);
     display:flex;
@@ -677,16 +684,178 @@ body::after{
     justify-content:center;
     font-size:43px;
     box-shadow:0 15px 40px rgba(123,51,255,.25);
+    transition:transform .2s, box-shadow .2s;
+    user-select:none;
 }
 
-.profile-top h1{
+.avatar-wrapper:active .avatar{
+    transform:scale(.92);
+}
+
+.avatar-edit-hint{
+    position:absolute;
+    bottom:-8px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#1a1520;
+    padding:3px 12px;
+    border-radius:12px;
+    font-size:10px;
+    color:#a098a8;
+    border:1px solid rgba(255,255,255,.08);
+    white-space:nowrap;
+}
+
+.profile-name-wrapper{
     margin-top:15px;
-    font-size:25px;
+    position:relative;
+    display:inline-block;
 }
 
-.profile-top p{
+.profile-name{
+    font-size:25px;
+    font-weight:700;
+    cursor:pointer;
+    padding:2px 10px;
+    border-radius:10px;
+    transition:background .2s;
+    display:inline-block;
+}
+
+.profile-name:hover{
+    background:rgba(255,255,255,.05);
+}
+
+.profile-name-edit{
+    display:none;
+    font-size:25px;
+    font-weight:700;
+    background:transparent;
+    color:#fff;
+    border:2px solid #8b4cff;
+    border-radius:12px;
+    padding:4px 12px;
+    text-align:center;
+    width:250px;
+    outline:none;
+}
+
+.profile-name-edit:focus{
+    border-color:#a96cff;
+    box-shadow:0 0 20px rgba(139,76,255,.15);
+}
+
+.profile-name-edit.show{
+    display:inline-block;
+}
+
+.profile-name.hide{
+    display:none;
+}
+
+.profile-sub{
     color:#8f8796;
     margin-top:5px;
+    font-size:14px;
+}
+
+/* AVATAR PICKER */
+
+.avatar-picker-overlay{
+    position:fixed;
+    inset:0;
+    z-index:20000;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,.7);
+    backdrop-filter:blur(8px);
+    padding:20px;
+}
+
+.avatar-picker-overlay.show{
+    display:flex;
+}
+
+.avatar-picker{
+    width:100%;
+    max-width:420px;
+    max-height:70vh;
+    background:#1a1520;
+    border-radius:28px;
+    padding:20px;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 25px 80px rgba(0,0,0,.6);
+    animation:modalIn .3s ease;
+    overflow-y:auto;
+}
+
+.avatar-picker-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.avatar-picker-title h2{
+    font-size:19px;
+}
+
+.avatar-picker-close{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,.06);
+    color:#aaa;
+    font-size:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.avatar-grid{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+}
+
+.avatar-option{
+    aspect-ratio:1;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:2px solid transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    transition:.2s;
+    cursor:pointer;
+}
+
+.avatar-option:active{
+    transform:scale(.9);
+}
+
+.avatar-option.selected{
+    border-color:#8b4cff;
+    background:rgba(139,76,255,.15);
+    box-shadow:0 0 25px rgba(139,76,255,.15);
+}
+
+.avatar-option:hover{
+    background:rgba(255,255,255,.08);
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:scale(.95) translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
 }
 
 .profile-row{
@@ -876,18 +1045,6 @@ body::after{
     font-weight:750;
 }
 
-@keyframes modalIn{
-    from{
-        opacity:0;
-        transform:scale(.9) translateY(20px);
-    }
-
-    to{
-        opacity:1;
-        transform:scale(1) translateY(0);
-    }
-}
-
 /* BOTTOM NAV */
 
 .bottom-nav{
@@ -1013,6 +1170,15 @@ body::after{
     .people-step:nth-child(2n){
         width:84%;
         margin-left:4%;
+    }
+
+    .avatar-grid{
+        grid-template-columns:repeat(5,1fr);
+    }
+
+    .profile-name-edit{
+        width:180px;
+        font-size:20px;
     }
 }
 </style>
@@ -1275,15 +1441,29 @@ body::after{
 
 <section class="profile-top">
 
-    <div class="avatar">
-        🐉
+    <div class="avatar-wrapper" onclick="openAvatarPicker()">
+        <div class="avatar" id="profileAvatar">
+            🐉
+        </div>
+        <div class="avatar-edit-hint">✏️ нажми</div>
     </div>
 
-    <h1>
-        Мой профиль
-    </h1>
+    <div class="profile-name-wrapper">
+        <div class="profile-name" id="profileNameDisplay" onclick="editName()">
+            Мой профиль
+        </div>
+        <input
+            class="profile-name-edit"
+            id="profileNameInput"
+            type="text"
+            maxlength="30"
+            placeholder="Введи имя"
+            onblur="saveName()"
+            onkeydown="if(event.key==='Enter')saveName()"
+        >
+    </div>
 
-    <p>
+    <p class="profile-sub" id="profileSub">
         Это твоё личное пространство
     </p>
 
@@ -1527,6 +1707,40 @@ body::after{
 </div>
 
 
+<!-- AVATAR PICKER -->
+
+<div
+    class="avatar-picker-overlay"
+    id="avatarPicker"
+    onclick="closeAvatarPicker(event)"
+>
+
+    <div class="avatar-picker">
+
+        <div class="avatar-picker-title">
+
+            <h2>
+                Выбери аватар 🎨
+            </h2>
+
+            <button
+                class="avatar-picker-close"
+                onclick="closeAvatarPicker()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div class="avatar-grid" id="avatarGrid">
+            <!-- Генерируется скриптом -->
+        </div>
+
+    </div>
+
+</div>
+
+
 <!-- TOAST -->
 
 <div
@@ -1638,6 +1852,186 @@ let petHappiness =
     Number(
         localStorage.getItem("ryadom_pet") || 70
     );
+
+let userProfile = {
+    name: localStorage.getItem("ryadom_name") || "Мой профиль",
+    avatar: localStorage.getItem("ryadom_avatar") || "🐉"
+};
+
+const AVATARS = [
+    "🐉", "🦊", "🐱", "🐶", "🐺", "🦄",
+    "🐼", "🐨", "🦁", "🐯", "🐸", "🐵",
+    "🦋", "🐝", "🐞", "🦉", "🦅", "🐧",
+    "🌙", "⭐", "🌸", "🌺", "🌻", "🌿",
+    "🔥", "🌈", "☀️", "🌊", "🍄", "🎃",
+    "💎", "🪐", "🚀", "🌠", "🎨", "🧚"
+];
+
+
+/* =========================
+   ПРОФИЛЬ
+========================= */
+
+function loadProfile(){
+
+    const avatarEl =
+        document.getElementById("profileAvatar");
+
+    const nameEl =
+        document.getElementById("profileNameDisplay");
+
+    const subEl =
+        document.getElementById("profileSub");
+
+    avatarEl.textContent =
+        userProfile.avatar;
+
+    nameEl.textContent =
+        userProfile.name;
+
+    if(userProfile.name !== "Мой профиль"){
+        subEl.textContent =
+            "Привет, " + userProfile.name + "! 👋";
+    }else{
+        subEl.textContent =
+            "Это твоё личное пространство";
+    }
+
+    // Подсветка выбранного аватара в пикере
+    document
+        .querySelectorAll(".avatar-option")
+        .forEach(el=>{
+            el.classList.toggle(
+                "selected",
+                el.textContent === userProfile.avatar
+            );
+        });
+}
+
+
+function editName(){
+
+    const display =
+        document.getElementById("profileNameDisplay");
+
+    const input =
+        document.getElementById("profileNameInput");
+
+    display.classList.add("hide");
+    input.classList.add("show");
+
+    input.value =
+        userProfile.name;
+
+    input.focus();
+
+    input.select();
+}
+
+
+function saveName(){
+
+    const display =
+        document.getElementById("profileNameDisplay");
+
+    const input =
+        document.getElementById("profileNameInput");
+
+    const newName =
+        input.value.trim() || "Мой профиль";
+
+    userProfile.name =
+        newName;
+
+    localStorage.setItem(
+        "ryadom_name",
+        newName
+    );
+
+    display.classList.remove("hide");
+    input.classList.remove("show");
+
+    loadProfile();
+
+    showToast(
+        "Имя сохранено! 💜"
+    );
+}
+
+
+function openAvatarPicker(){
+
+    document
+        .getElementById("avatarPicker")
+        .classList.add("show");
+}
+
+
+function closeAvatarPicker(event){
+
+    if(
+        event &&
+        event.target !==
+        document.getElementById("avatarPicker")
+    ){
+        return;
+    }
+
+    document
+        .getElementById("avatarPicker")
+        .classList.remove("show");
+}
+
+
+function selectAvatar(emoji){
+
+    userProfile.avatar =
+        emoji;
+
+    localStorage.setItem(
+        "ryadom_avatar",
+        emoji
+    );
+
+    loadProfile();
+
+    closeAvatarPicker();
+
+    showToast(
+        "Аватар обновлён! ✨"
+    );
+}
+
+
+function renderAvatarPicker(){
+
+    const grid =
+        document.getElementById("avatarGrid");
+
+    grid.innerHTML = "";
+
+    AVATARS.forEach(emoji=>{
+
+        const btn =
+            document.createElement("button");
+
+        btn.className =
+            "avatar-option";
+
+        btn.textContent =
+            emoji;
+
+        if(emoji === userProfile.avatar){
+            btn.classList.add("selected");
+        }
+
+        btn.onclick =
+            ()=>selectAvatar(emoji);
+
+        grid.appendChild(btn);
+
+    });
+}
 
 
 /* =========================
@@ -2307,11 +2701,6 @@ function closeAIModal(event){
 
 function openContacts(){
 
-    /*
-       На Android/iOS браузер может предложить
-       открыть приложение контактов.
-    */
-
     window.location.href =
         "tel:";
 
@@ -2352,7 +2741,7 @@ function showToast(text){
    LOAD PROFILE
 ========================= */
 
-function loadProfile(){
+function loadMood(){
 
     const savedMood =
         localStorage.getItem("ryadom_mood");
@@ -2363,11 +2752,6 @@ function loadProfile(){
             "moodRange"
         ).value =
             savedMood;
-
-        /*
-           Не показываем никаких лишних
-           окон при загрузке.
-        */
 
         const value =
             Number(savedMood);
@@ -2430,11 +2814,15 @@ function loadProfile(){
    START
 ========================= */
 
+renderAvatarPicker();
+
 renderContent("all");
 
 updatePet();
 
 loadProfile();
+
+loadMood();
 
 </script>
 
