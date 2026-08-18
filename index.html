@@ -11,10 +11,6 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 
-/* =========================
-   основа
-========================= */
-
 *{
     box-sizing:border-box;
     margin:0;
@@ -27,12 +23,23 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     --card:#10141a;
     --card2:#171c23;
     --line:#252b34;
-    --text:#fff;
+    --text:#ffffff;
     --muted:#858c98;
     --purple:#9b4dff;
     --purple2:#7029df;
     --green:#39df79;
     --red:#ff5360;
+    --blue:#4e9cff;
+    --yellow:#ffc94d;
+}
+
+body.light{
+    --bg:#f4f5f8;
+    --card:#ffffff;
+    --card2:#eef0f4;
+    --line:#dfe2e7;
+    --text:#111318;
+    --muted:#737985;
 }
 
 html,
@@ -59,15 +66,11 @@ button{
     cursor:pointer;
 }
 
-/* =========================
-   приложение
-========================= */
-
 .app{
     position:relative;
     width:100%;
     height:100dvh;
-    max-width:520px;
+    max-width:540px;
     margin:auto;
     overflow:hidden;
     background:var(--bg);
@@ -78,7 +81,7 @@ button{
     inset:0;
     display:none;
     overflow-y:auto;
-    padding:18px 16px 105px;
+    padding:18px 16px 110px;
     background:var(--bg);
 }
 
@@ -90,7 +93,7 @@ button{
 @keyframes pageIn{
     from{
         opacity:0;
-        transform:translateY(7px);
+        transform:translateY(8px);
     }
 
     to{
@@ -99,9 +102,7 @@ button{
     }
 }
 
-/* =========================
-   карта
-========================= */
+/* карта */
 
 #mapPage{
     padding:0;
@@ -112,7 +113,7 @@ button{
     position:absolute;
     inset:0;
     z-index:1;
-    background:#11161c;
+    background:#101419;
 }
 
 .leaflet-control-attribution,
@@ -120,15 +121,14 @@ button{
     display:none;
 }
 
-/* верх */
-
 .top{
     position:absolute;
     z-index:1000;
     top:0;
     left:0;
     right:0;
-    padding:19px 17px 38px;
+
+    padding:18px 16px 40px;
 
     display:flex;
     justify-content:space-between;
@@ -137,7 +137,16 @@ button{
     background:linear-gradient(
         to bottom,
         rgba(7,9,13,.98),
-        rgba(7,9,13,.7),
+        rgba(7,9,13,.72),
+        transparent
+    );
+}
+
+body.light .top{
+    background:linear-gradient(
+        to bottom,
+        rgba(244,245,248,.98),
+        rgba(244,245,248,.7),
         transparent
     );
 }
@@ -152,7 +161,7 @@ button{
     align-items:center;
     gap:7px;
     margin-top:6px;
-    color:#b1b6bf;
+    color:#aeb5bf;
     font-size:12px;
 }
 
@@ -169,25 +178,22 @@ button{
     0%,100%{
         box-shadow:0 0 5px var(--green);
     }
-
     50%{
         box-shadow:0 0 18px var(--green);
     }
 }
-
-/* аватар */
 
 .top-avatar{
     width:46px;
     height:46px;
     border-radius:50%;
     border:2px solid var(--purple);
-    background:#25133d;
+    background:#26133e;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
-    font-size:19px;
+    font-size:18px;
     font-weight:bold;
 }
 
@@ -198,13 +204,11 @@ button{
     display:none;
 }
 
-/* кнопки карты */
-
 .map-buttons{
     position:absolute;
     z-index:1000;
     right:14px;
-    top:105px;
+    top:104px;
 
     display:flex;
     flex-direction:column;
@@ -212,16 +216,19 @@ button{
 }
 
 .map-buttons button{
-    width:43px;
-    height:43px;
+    width:44px;
+    height:44px;
     border-radius:14px;
-    background:rgba(13,17,22,.93);
+    background:rgba(13,17,22,.92);
     backdrop-filter:blur(15px);
-    font-size:23px;
+    font-size:21px;
     box-shadow:0 8px 25px rgba(0,0,0,.4);
 }
 
-/* добавить место */
+body.light .map-buttons button{
+    background:rgba(255,255,255,.92);
+    color:#111;
+}
 
 .add-place{
     position:absolute;
@@ -235,6 +242,7 @@ button{
 
     background:#fff;
     color:#111;
+
     font-size:13px;
     font-weight:bold;
 
@@ -242,16 +250,39 @@ button{
     white-space:nowrap;
 }
 
-/* карточка рядом */
+.quick-actions{
+    position:absolute;
+    z-index:1000;
+    left:14px;
+    top:105px;
+
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.quick-actions button{
+    width:44px;
+    height:44px;
+
+    border-radius:14px;
+
+    background:rgba(13,17,22,.92);
+    backdrop-filter:blur(15px);
+
+    font-size:19px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
 
 .near-card{
     position:absolute;
     z-index:1000;
     left:13px;
     right:13px;
-    bottom:92px;
+    bottom:91px;
 
-    padding:15px;
+    padding:14px;
 
     border-radius:23px;
 
@@ -263,11 +294,20 @@ button{
     box-shadow:0 15px 45px rgba(0,0,0,.4);
 }
 
+body.light .near-card{
+    background:rgba(255,255,255,.93);
+    color:#111;
+}
+
 .near-title{
     color:#dce0e5;
     font-weight:bold;
     font-size:14px;
-    margin-bottom:10px;
+    margin-bottom:8px;
+}
+
+body.light .near-title{
+    color:#222;
 }
 
 .near-title span{
@@ -308,9 +348,7 @@ button{
     background:var(--green);
 }
 
-/* =========================
-   маркер пользователя
-========================= */
+/* маркер */
 
 .user-marker-wrap{
     position:relative;
@@ -322,13 +360,15 @@ button{
     position:absolute;
     left:50%;
     top:50%;
+
     width:100px;
     height:100px;
+
     transform:translate(-50%,-50%);
 
     border-radius:50%;
 
-    background:rgba(155,77,255,.16);
+    background:rgba(155,77,255,.15);
     border:1px solid rgba(155,77,255,.35);
 
     animation:userPulse 2s infinite;
@@ -340,7 +380,7 @@ button{
 
 @keyframes userPulse{
     0%{
-        transform:translate(-50%,-50%) scale(.35);
+        transform:translate(-50%,-50%) scale(.3);
         opacity:.8;
     }
 
@@ -350,15 +390,17 @@ button{
     }
 
     100%{
-        transform:translate(-50%,-50%) scale(1.2);
+        transform:translate(-50%,-50%) scale(1.25);
         opacity:0;
     }
 }
 
 .user-dot{
     position:absolute;
+
     left:50%;
     top:50%;
+
     transform:translate(-50%,-50%);
 
     width:27px;
@@ -379,8 +421,10 @@ button{
 
 .user-online-label{
     position:absolute;
+
     left:50%;
-    top:calc(50% + 38px);
+    top:calc(50% + 39px);
+
     transform:translateX(-50%);
 
     padding:5px 10px;
@@ -388,6 +432,7 @@ button{
     border-radius:20px;
 
     background:rgba(10,13,17,.92);
+
     border:1px solid rgba(255,255,255,.08);
 
     color:#fff;
@@ -396,19 +441,14 @@ button{
     font-weight:bold;
 
     white-space:nowrap;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.35);
 }
 
-/* =========================
-   заголовки страниц
-========================= */
+/* страницы */
 
 .page-head{
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     padding:12px 2px 20px;
 }
 
@@ -426,23 +466,28 @@ button{
 .round-button{
     width:45px;
     height:45px;
+
     border-radius:50%;
+
     background:#281343;
+
     color:#c18cff;
-    font-size:25px;
+
+    font-size:23px;
 }
 
 .back-button{
     width:43px;
     height:43px;
+
     border-radius:13px;
+
     background:var(--card);
+
     font-size:30px;
 }
 
-/* =========================
-   поиск
-========================= */
+/* поиск */
 
 .search{
     height:51px;
@@ -454,6 +499,7 @@ button{
     padding:0 15px;
 
     background:var(--card);
+
     border:1px solid var(--line);
 
     border-radius:16px;
@@ -468,16 +514,14 @@ button{
     border:0;
     outline:0;
     background:transparent;
-    color:#fff;
+    color:var(--text);
 }
 
 .search input::placeholder{
     color:#737a85;
 }
 
-/* =========================
-   аватары
-========================= */
+/* аватары */
 
 .avatar{
     width:45px;
@@ -515,9 +559,7 @@ button{
     background:linear-gradient(135deg,#46dc8a,#176743);
 }
 
-/* =========================
-   друзья
-========================= */
+/* друзья */
 
 .friend{
     display:flex;
@@ -559,9 +601,7 @@ button{
     font-size:12px;
 }
 
-/* =========================
-   чаты
-========================= */
+/* чат */
 
 .chat{
     display:flex;
@@ -599,6 +639,7 @@ button{
 .unread{
     width:22px;
     height:22px;
+
     border-radius:50%;
 
     display:flex;
@@ -611,9 +652,7 @@ button{
     font-weight:bold;
 }
 
-/* =========================
-   профиль
-========================= */
+/* профиль */
 
 .profile-card{
     background:linear-gradient(
@@ -623,11 +662,16 @@ button{
     );
 
     border:1px solid var(--line);
+
     border-radius:24px;
 
     text-align:center;
 
     padding:25px 17px 0;
+}
+
+body.light .profile-card{
+    background:var(--card);
 }
 
 .profile-avatar{
@@ -655,13 +699,17 @@ button{
 .profile-avatar img{
     width:100%;
     height:100%;
+
     border-radius:50%;
+
     object-fit:cover;
+
     display:none;
 }
 
 .camera{
     position:absolute;
+
     right:-4px;
     bottom:1px;
 
@@ -671,6 +719,7 @@ button{
     border-radius:50%;
 
     background:#171c22;
+
     border:2px solid #07090d;
 }
 
@@ -693,13 +742,16 @@ button{
     margin-top:9px;
 
     color:#b1b6bf;
+
     font-size:13px;
 }
 
 .profile-online i{
     width:8px;
     height:8px;
+
     border-radius:50%;
+
     background:var(--green);
 }
 
@@ -734,6 +786,7 @@ button{
     background:var(--card);
 
     border:1px solid var(--line);
+
     border-radius:20px;
 
     overflow:hidden;
@@ -785,9 +838,7 @@ button{
     font-size:24px;
 }
 
-/* =========================
-   настройки
-========================= */
+/* настройки */
 
 .section-title{
     color:#7d8490;
@@ -916,10 +967,6 @@ button{
     transform:translateX(20px);
 }
 
-/* =========================
-   кнопки настроек
-========================= */
-
 .setting-button{
     width:100%;
     min-height:75px;
@@ -966,9 +1013,7 @@ button{
     font-weight:bold;
 }
 
-/* =========================
-   нижняя навигация
-========================= */
+/* навигация */
 
 .bottom-nav{
     position:absolute;
@@ -985,6 +1030,7 @@ button{
     grid-template-columns:repeat(4,1fr);
 
     background:rgba(12,16,21,.94);
+
     backdrop-filter:blur(20px);
 
     border:1px solid rgba(255,255,255,.07);
@@ -992,6 +1038,11 @@ button{
     border-radius:22px;
 
     box-shadow:0 15px 45px rgba(0,0,0,.55);
+}
+
+body.light .bottom-nav{
+    background:rgba(255,255,255,.94);
+    color:#111;
 }
 
 .nav{
@@ -1020,12 +1071,13 @@ button{
 }
 
 .nav.active span{
-    filter:drop-shadow(0 0 8px rgba(180,108,255,.9));
+    filter:drop-shadow(
+        0 0 8px
+        rgba(180,108,255,.9)
+    );
 }
 
-/* =========================
-   чат
-========================= */
+/* чат окно */
 
 .chat-modal{
     position:absolute;
@@ -1063,10 +1115,13 @@ button{
     background:#0b0e13;
 }
 
+body.light .chat-head{
+    background:#fff;
+}
+
 .chat-head > button{
     background:transparent;
     font-size:34px;
-    color:#aaa;
 }
 
 .chat-user{
@@ -1090,6 +1145,7 @@ button{
 
     display:flex;
     flex-direction:column;
+
     gap:9px;
 }
 
@@ -1134,6 +1190,10 @@ button{
     border-top:1px solid var(--line);
 }
 
+body.light .message-form{
+    background:#fff;
+}
+
 .message-form input{
     flex:1;
 
@@ -1161,9 +1221,7 @@ button{
     background:var(--purple);
 }
 
-/* =========================
-   модалка мест
-========================= */
+/* модалки */
 
 .modal{
     position:absolute;
@@ -1191,6 +1249,10 @@ button{
     border-radius:28px 28px 0 0;
 
     animation:sheet .25s ease;
+}
+
+body.light .modal-box{
+    background:#fff;
 }
 
 @keyframes sheet{
@@ -1303,9 +1365,7 @@ button{
     color:#858b95;
 }
 
-/* =========================
-   toast
-========================= */
+/* toast */
 
 .toast{
     position:absolute;
@@ -1313,7 +1373,7 @@ button{
     z-index:10000;
 
     left:50%;
-    bottom:92px;
+    bottom:91px;
 
     transform:translate(-50%,20px);
 
@@ -1341,24 +1401,95 @@ button{
     transform:translate(-50%,0);
 }
 
-@media(max-height:700px){
+/* уведомление */
 
-    .near-card{
-        bottom:88px;
+.notification{
+    position:absolute;
+
+    z-index:11000;
+
+    top:15px;
+    left:15px;
+    right:15px;
+
+    padding:14px;
+
+    border-radius:17px;
+
+    background:#151a20;
+
+    border:1px solid var(--line);
+
+    display:none;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.5);
+}
+
+.notification.show{
+    display:block;
+    animation:notify .3s ease;
+}
+
+@keyframes notify{
+    from{
+        transform:translateY(-30px);
+        opacity:0;
     }
 
-    .add-place{
-        bottom:330px;
+    to{
+        transform:translateY(0);
+        opacity:1;
     }
 }
 
-@media(min-width:600px){
+.notification b{
+    display:block;
+    font-size:14px;
+}
 
-    .app{
-        box-shadow:
-            0 0 80px rgba(155,77,255,.12),
-            0 0 0 1px #20242b;
+.notification span{
+    display:block;
+    color:var(--muted);
+    margin-top:4px;
+    font-size:12px;
+}
+
+/* безопасность */
+
+.safe-button{
+    position:absolute;
+
+    z-index:1000;
+
+    right:14px;
+    bottom:350px;
+
+    width:44px;
+    height:44px;
+
+    border-radius:14px;
+
+    background:#152b20;
+
+    color:#54e995;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+
+body.light .safe-button{
+    background:#fff;
+}
+
+@media(max-height:700px){
+
+    .near-card{
+        bottom:87px;
     }
+
+    .add-place{
+        bottom:325px;
+    }
+
 }
 
 </style>
@@ -1368,925 +1499,1213 @@ button{
 
 <div class="app">
 
-<!-- =========================
-     карта
-========================= -->
+<!-- карта -->
 
 <section id="mapPage" class="page active">
 
-    <header class="top">
+<header class="top">
 
-        <div>
-            <h1>
-                привет, <span id="helloName">никс</span> 👋
-            </h1>
+<div>
 
-            <div class="online">
-                <i></i>
-                <span id="onlineLabel">в сети</span>
-            </div>
-        </div>
+<h1>
+привет, <span id="helloName">никс</span> 👋
+</h1>
 
-        <button
-            class="top-avatar"
-            onclick="showPage('profile')"
-        >
-            <img id="topAvatar">
-            <span id="topLetter">н</span>
-        </button>
+<div class="online">
 
-    </header>
+<i></i>
 
+<span id="onlineLabel">
+в сети
+</span>
 
-    <div id="map"></div>
+</div>
 
+</div>
 
-    <div class="map-buttons">
+<button
+class="top-avatar"
+onclick="showPage('profile')"
+>
 
-        <button onclick="locateUser()">
-            ⌾
-        </button>
+<img id="topAvatar">
 
-        <button onclick="map.zoomIn()">
-            +
-        </button>
+<span id="topLetter">
+н
+</span>
 
-        <button onclick="map.zoomOut()">
-            −
-        </button>
+</button>
 
-    </div>
+</header>
 
 
-    <button
-        class="add-place"
-        onclick="openPlace()"
-    >
-        ＋ добавить место
-    </button>
+<div id="map"></div>
 
 
-    <div class="near-card">
+<div class="quick-actions">
 
-        <div class="near-title">
-            <span></span>
-            кто рядом
-        </div>
+<button
+onclick="locateUser()"
+title="моя геопозиция"
+>
+⌾
+</button>
 
-        <div class="near-user">
+<button
+onclick="toggleMapStyle()"
+title="вид карты"
+>
+◈
+</button>
 
-            <div class="avatar purple">
-                а
-            </div>
-
-            <div class="near-user-info">
-                <b>артём</b>
-                <small>240 м от тебя</small>
-            </div>
-
-            <i></i>
-
-        </div>
-
-
-        <div class="near-user">
-
-            <div class="avatar blue">
-                м
-            </div>
-
-            <div class="near-user-info">
-                <b>макс</b>
-                <small>1,2 км от тебя</small>
-            </div>
-
-            <i></i>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     друзья
-========================= -->
-
-<section id="friendsPage" class="page">
-
-    <div class="page-head">
-
-        <div>
-            <h2>друзья</h2>
-            <p>24 друга</p>
-        </div>
-
-        <button
-            class="round-button"
-            onclick="toast('добавление друзей скоро появится')"
-        >
-            ＋
-        </button>
-
-    </div>
-
-
-    <div class="search">
-
-        🔎
-
-        <input
-            id="friendSearch"
-            placeholder="найти друга"
-            oninput="searchFriends()"
-        >
-
-    </div>
-
-
-    <div id="friendsList">
-
-        <div class="friend">
-
-            <div class="avatar purple">а</div>
-
-            <div class="friend-info">
-                <b>артём</b>
-                <span>
-                    <i></i>
-                    в сети
-                </span>
-            </div>
-
-            <div class="friend-distance">
-                240 м
-            </div>
-
-        </div>
-
-
-        <div class="friend">
-
-            <div class="avatar blue">м</div>
-
-            <div class="friend-info">
-                <b>макс</b>
-                <span>
-                    <i></i>
-                    в сети
-                </span>
-            </div>
-
-            <div class="friend-distance">
-                1,2 км
-            </div>
-
-        </div>
-
-
-        <div class="friend">
-
-            <div class="avatar orange">с</div>
-
-            <div class="friend-info">
-                <b>саша</b>
-                <span>
-                    был недавно
-                </span>
-            </div>
-
-            <div class="friend-distance">
-                3,8 км
-            </div>
-
-        </div>
-
-
-        <div class="friend">
-
-            <div class="avatar pink">к</div>
-
-            <div class="friend-info">
-                <b>кира</b>
-                <span>
-                    была 12 мин назад
-                </span>
-            </div>
-
-            <div class="friend-distance">
-                5,1 км
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     чаты
-========================= -->
-
-<section id="chatsPage" class="page">
-
-    <div class="page-head">
-
-        <div>
-            <h2>чаты</h2>
-            <p>твои сообщения</p>
-        </div>
-
-    </div>
-
-
-    <div class="search">
-
-        🔎
-
-        <input placeholder="поиск">
-
-    </div>
-
-
-    <div class="chat">
-
-        <div class="avatar purple">
-            а
-        </div>
-
-        <div
-            class="chat-info"
-            onclick="openChat('артём')"
-        >
-
-            <div class="chat-info-head">
-
-                <b>артём</b>
-
-                <time>21:42</time>
-
-            </div>
-
-            <p>ты уже вышел?</p>
-
-        </div>
-
-        <div class="unread">
-            2
-        </div>
-
-    </div>
-
-
-    <div class="chat">
-
-        <div class="avatar blue">
-            м
-        </div>
-
-        <div
-            class="chat-info"
-            onclick="openChat('макс')"
-        >
-
-            <div class="chat-info-head">
-
-                <b>макс</b>
-
-                <time>20:18</time>
-
-            </div>
-
-            <p>го сегодня гулять</p>
-
-        </div>
-
-        <div class="unread">
-            1
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     профиль
-========================= -->
-
-<section id="profilePage" class="page">
-
-    <div class="page-head">
-
-        <div>
-            <h2>профиль</h2>
-            <p>твой профиль</p>
-        </div>
-
-        <button
-            class="round-button"
-            onclick="showPage('settings')"
-        >
-            ⚙
-        </button>
-
-    </div>
-
-
-    <div class="profile-card">
-
-        <div class="profile-avatar">
-
-            <img id="profileAvatar">
-
-            <span id="profileLetter">
-                н
-            </span>
-
-            <button
-                class="camera"
-                onclick="chooseAvatar()"
-            >
-                📷
-            </button>
-
-        </div>
-
-
-        <h1 id="profileName">
-            никс
-        </h1>
-
-        <p class="username">
-            @niks
-        </p>
-
-
-        <div class="profile-online">
-
-            <i></i>
-
-            <span id="profileOnline">
-                в сети
-            </span>
-
-        </div>
-
-
-        <div class="stats">
-
-            <div>
-                <b>24</b>
-                <span>друга</span>
-            </div>
-
-            <div>
-                <b>8</b>
-                <span>мест</span>
-            </div>
-
-            <div>
-                <b>12</b>
-                <span>дней</span>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="profile-menu">
-
-        <button onclick="openPlace()">
-
-            <span class="icon">
-                📍
-            </span>
-
-            <div>
-                <b>мои места</b>
-                <small>8 сохранённых мест</small>
-            </div>
-
-            <span class="arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <button>
-
-            <span class="icon">
-                ☆
-            </span>
-
-            <div>
-                <b>избранные друзья</b>
-                <small>3 друга</small>
-            </div>
-
-            <span class="arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <button>
-
-            <span class="icon">
-                🏆
-            </span>
-
-            <div>
-                <b>достижения</b>
-                <small>12 достижений</small>
-            </div>
-
-            <span class="arrow">
-                ›
-            </span>
-
-        </button>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     настройки
-========================= -->
-
-<section id="settingsPage" class="page">
-
-    <div class="page-head">
-
-        <div>
-            <h2>настройки</h2>
-            <p>приватность и аккаунт</p>
-        </div>
-
-        <button
-            class="back-button"
-            onclick="showPage('profile')"
-        >
-            ‹
-        </button>
-
-    </div>
-
-
-    <h3 class="section-title">
-        приватность
-    </h3>
-
-
-    <div class="settings-card">
-
-        <div class="setting">
-
-            <div class="setting-icon purple-bg">
-                ⌖
-            </div>
-
-            <div class="setting-info">
-
-                <b>
-                    видимость на карте
-                </b>
-
-                <small id="mapVisibilityText">
-                    тебя видят друзья
-                </small>
-
-            </div>
-
-
-            <label class="switch">
-
-                <input
-                    id="mapVisibility"
-                    type="checkbox"
-                    checked
-                    onchange="changeMapVisibility()"
-                >
-
-                <span></span>
-
-            </label>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-icon green-bg">
-                ●
-            </div>
-
-            <div class="setting-info">
-
-                <b>
-                    статус онлайн
-                </b>
-
-                <small id="onlineVisibilityText">
-                    показывается друзьям
-                </small>
-
-            </div>
-
-
-            <label class="switch">
-
-                <input
-                    id="onlineVisibility"
-                    type="checkbox"
-                    checked
-                    onchange="changeOnlineVisibility()"
-                >
-
-                <span></span>
-
-            </label>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-icon blue-bg">
-                ◷
-            </div>
-
-            <div class="setting-info">
-
-                <b>
-                    последний визит
-                </b>
-
-                <small id="lastSeenText">
-                    показывается друзьям
-                </small>
-
-            </div>
-
-
-            <label class="switch">
-
-                <input
-                    id="lastSeen"
-                    type="checkbox"
-                    checked
-                    onchange="changeLastSeen()"
-                >
-
-                <span></span>
-
-            </label>
-
-        </div>
-
-    </div>
-
-
-    <h3 class="section-title">
-        геопозиция
-    </h3>
-
-
-    <div class="settings-card">
-
-        <button
-            class="setting-button"
-            onclick="locateUser()"
-        >
-
-            <div class="setting-icon purple-bg">
-                ⌾
-            </div>
-
-            <div>
-
-                <b>
-                    моя геопозиция
-                </b>
-
-                <small id="locationStatus">
-                    определить местоположение
-                </small>
-
-            </div>
-
-            <em>›</em>
-
-        </button>
-
-
-        <button
-            class="setting-button"
-            onclick="openPlace()"
-        >
-
-            <div class="setting-icon orange-bg">
-                📍
-            </div>
-
-            <div>
-
-                <b>
-                    мои места
-                </b>
-
-                <small>
-                    дом, школа и другие места
-                </small>
-
-            </div>
-
-            <em>›</em>
-
-        </button>
-
-    </div>
-
-
-    <h3 class="section-title">
-        другое
-    </h3>
-
-
-    <div class="settings-card">
-
-        <button class="setting-button">
-
-            <div class="setting-icon blue-bg">
-                🔔
-            </div>
-
-            <div>
-
-                <b>
-                    уведомления
-                </b>
-
-                <small>
-                    сообщения и друзья
-                </small>
-
-            </div>
-
-            <em>›</em>
-
-        </button>
-
-
-        <button class="setting-button">
-
-            <div class="setting-icon purple-bg">
-                ◐
-            </div>
-
-            <div>
-
-                <b>
-                    тема приложения
-                </b>
-
-                <small>
-                    тёмная
-                </small>
-
-            </div>
-
-            <em>›</em>
-
-        </button>
-
-    </div>
-
-
-    <button
-        class="logout"
-        onclick="toast('выход пока отключён')"
-    >
-        выйти из аккаунта
-    </button>
-
-</section>
-
-
-<!-- =========================
-     навигация
-========================= -->
-
-<nav class="bottom-nav">
-
-    <button
-        class="nav active"
-        data-page="map"
-        onclick="showPage('map')"
-    >
-        <span>⌖</span>
-        <small>карта</small>
-    </button>
-
-
-    <button
-        class="nav"
-        data-page="friends"
-        onclick="showPage('friends')"
-    >
-        <span>♧</span>
-        <small>друзья</small>
-    </button>
-
-
-    <button
-        class="nav"
-        data-page="chats"
-        onclick="showPage('chats')"
-    >
-        <span>●</span>
-        <small>чаты</small>
-    </button>
-
-
-    <button
-        class="nav"
-        data-page="profile"
-        onclick="showPage('profile')"
-    >
-        <span>♙</span>
-        <small>профиль</small>
-    </button>
-
-</nav>
-
-
-<!-- =========================
-     чат
-========================= -->
-
-<div id="chatModal" class="chat-modal">
-
-    <div class="chat-window">
-
-        <header class="chat-head">
-
-            <button onclick="closeChat()">
-                ‹
-            </button>
-
-            <div class="chat-user">
-
-                <div class="avatar purple">
-                    а
-                </div>
-
-                <div>
-
-                    <b id="chatTitle">
-                        артём
-                    </b>
-
-                    <small>
-                        в сети
-                    </small>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <div
-            class="messages"
-            id="messages"
-        >
-
-            <div class="message friend-message">
-                привет 👋
-            </div>
-
-            <div class="message friend-message">
-                ты уже вышел?
-            </div>
-
-            <div class="message my-message">
-                да, я уже иду
-            </div>
-
-        </div>
-
-
-        <form
-            class="message-form"
-            onsubmit="sendMessage(event)"
-        >
-
-            <input
-                id="messageInput"
-                placeholder="написать сообщение..."
-                autocomplete="off"
-            >
-
-            <button>
-                ➤
-            </button>
-
-        </form>
-
-    </div>
+<button
+onclick="refreshLocation()"
+title="обновить"
+>
+↻
+</button>
 
 </div>
 
 
-<!-- =========================
-     добавление места
-========================= -->
+<div class="map-buttons">
+
+<button onclick="map.zoomIn()">
++
+</button>
+
+<button onclick="map.zoomOut()">
+−
+</button>
+
+<button onclick="map.setZoom(13)">
+⌂
+</button>
+
+</div>
+
+
+<button
+class="safe-button"
+onclick="safeMode()"
+>
+✓
+</button>
+
+
+<button
+class="add-place"
+onclick="openPlace()"
+>
+＋ добавить место
+</button>
+
+
+<div class="near-card">
+
+<div class="near-title">
+<span></span>
+кто рядом
+</div>
+
+
+<div class="near-user">
+
+<div class="avatar purple">
+а
+</div>
+
+<div class="near-user-info">
+
+<b>артём</b>
+
+<small>
+240 м от тебя
+</small>
+
+</div>
+
+<i></i>
+
+</div>
+
+
+<div class="near-user">
+
+<div class="avatar blue">
+м
+</div>
+
+<div class="near-user-info">
+
+<b>макс</b>
+
+<small>
+1,2 км от тебя
+</small>
+
+</div>
+
+<i></i>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- друзья -->
+
+<section id="friendsPage" class="page">
+
+<div class="page-head">
+
+<div>
+
+<h2>
+друзья
+</h2>
+
+<p>
+24 друга
+</p>
+
+</div>
+
+<button
+class="round-button"
+onclick="toast('добавление друзей скоро появится')"
+>
+＋
+</button>
+
+</div>
+
+
+<div class="search">
+
+🔎
+
+<input
+id="friendSearch"
+placeholder="найти друга"
+oninput="searchFriends()"
+>
+
+</div>
+
+
+<div id="friendsList">
+
+<div class="friend">
+
+<div class="avatar purple">
+а
+</div>
+
+<div class="friend-info">
+
+<b>
+артём
+</b>
+
+<span>
+<i></i>
+в сети
+</span>
+
+</div>
+
+<div class="friend-distance">
+240 м
+</div>
+
+</div>
+
+
+<div class="friend">
+
+<div class="avatar blue">
+м
+</div>
+
+<div class="friend-info">
+
+<b>
+макс
+</b>
+
+<span>
+<i></i>
+в сети
+</span>
+
+</div>
+
+<div class="friend-distance">
+1,2 км
+</div>
+
+</div>
+
+
+<div class="friend">
+
+<div class="avatar orange">
+с
+</div>
+
+<div class="friend-info">
+
+<b>
+саша
+</b>
+
+<span>
+был недавно
+</span>
+
+</div>
+
+<div class="friend-distance">
+3,8 км
+</div>
+
+</div>
+
+
+<div class="friend">
+
+<div class="avatar pink">
+к
+</div>
+
+<div class="friend-info">
+
+<b>
+кира
+</b>
+
+<span>
+была 12 мин назад
+</span>
+
+</div>
+
+<div class="friend-distance">
+5,1 км
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- чаты -->
+
+<section id="chatsPage" class="page">
+
+<div class="page-head">
+
+<div>
+
+<h2>
+чаты
+</h2>
+
+<p>
+твои сообщения
+</p>
+
+</div>
+
+</div>
+
+
+<div class="search">
+
+🔎
+
+<input
+placeholder="поиск"
+>
+
+</div>
+
+
+<div class="chat"
+onclick="openChat('артём')"
+>
+
+<div class="avatar purple">
+а
+</div>
+
+<div class="chat-info">
+
+<div class="chat-info-head">
+
+<b>
+артём
+</b>
+
+<time>
+21:42
+</time>
+
+</div>
+
+<p>
+ты уже вышел?
+</p>
+
+</div>
+
+<div class="unread">
+2
+</div>
+
+</div>
+
+
+<div class="chat"
+onclick="openChat('макс')"
+>
+
+<div class="avatar blue">
+м
+</div>
+
+<div class="chat-info">
+
+<div class="chat-info-head">
+
+<b>
+макс
+</b>
+
+<time>
+20:18
+</time>
+
+</div>
+
+<p>
+го сегодня гулять
+</p>
+
+</div>
+
+<div class="unread">
+1
+</div>
+
+</div>
+
+</section>
+
+
+<!-- профиль -->
+
+<section id="profilePage" class="page">
+
+<div class="page-head">
+
+<div>
+
+<h2>
+профиль
+</h2>
+
+<p>
+твой профиль
+</p>
+
+</div>
+
+<button
+class="round-button"
+onclick="showPage('settings')"
+>
+⚙
+</button>
+
+</div>
+
+
+<div class="profile-card">
+
+<div class="profile-avatar">
+
+<img id="profileAvatar">
+
+<span id="profileLetter">
+н
+</span>
+
+<button
+class="camera"
+onclick="chooseAvatar()"
+>
+📷
+</button>
+
+</div>
+
+
+<h1 id="profileName">
+никс
+</h1>
+
+<p class="username">
+@niks
+</p>
+
+
+<div
+class="profile-online"
+>
+
+<i></i>
+
+<span id="profileOnline">
+в сети
+</span>
+
+</div>
+
+
+<div class="stats">
+
+<div>
+<b id="friendsCount">
+24
+</b>
+
+<span>
+друзья
+</span>
+</div>
+
+<div>
+<b id="placesCount">
+8
+</b>
+
+<span>
+места
+</span>
+</div>
+
+<div>
+<b>
+12
+</b>
+
+<span>
+дней
+</span>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="profile-menu">
+
+<button onclick="changeName()">
+
+<span class="icon">
+✏️
+</span>
+
+<div>
+
+<b>
+изменить имя
+</b>
+
+<small>
+как тебя будут видеть
+</small>
+
+</div>
+
+<span class="arrow">
+›
+</span>
+
+</button>
+
+
+<button onclick="openPlace()">
+
+<span class="icon">
+📍
+</span>
+
+<div>
+
+<b>
+мои места
+</b>
+
+<small id="placesDescription">
+8 сохранённых мест
+</small>
+
+</div>
+
+<span class="arrow">
+›
+</span>
+
+</button>
+
+
+<button onclick="toast('избранные друзья')">
+
+<span class="icon">
+☆
+</span>
+
+<div>
+
+<b>
+избранные друзья
+</b>
+
+<small>
+3 друга
+</small>
+
+</div>
+
+<span class="arrow">
+›
+</span>
+
+</button>
+
+
+<button onclick="toast('достижения скоро появятся')">
+
+<span class="icon">
+🏆
+</span>
+
+<div>
+
+<b>
+достижения
+</b>
+
+<small>
+12 достижений
+</small>
+
+</div>
+
+<span class="arrow">
+›
+</span>
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- настройки -->
+
+<section id="settingsPage" class="page">
+
+<div class="page-head">
+
+<div>
+
+<h2>
+настройки
+</h2>
+
+<p>
+приватность и аккаунт
+</p>
+
+</div>
+
+<button
+class="back-button"
+onclick="showPage('profile')"
+>
+‹
+</button>
+
+</div>
+
+
+<h3 class="section-title">
+приватность
+</h3>
+
+
+<div class="settings-card">
+
+<div class="setting">
+
+<div class="setting-icon purple-bg">
+⌖
+</div>
+
+<div class="setting-info">
+
+<b>
+видимость на карте
+</b>
+
+<small id="mapVisibilityText">
+тебя видят друзья
+</small>
+
+</div>
+
+<label class="switch">
+
+<input
+id="mapVisibility"
+type="checkbox"
+checked
+onchange="changeMapVisibility()"
+>
+
+<span></span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div class="setting-icon green-bg">
+●
+</div>
+
+<div class="setting-info">
+
+<b>
+статус онлайн
+</b>
+
+<small id="onlineVisibilityText">
+показывается друзьям
+</small>
+
+</div>
+
+<label class="switch">
+
+<input
+id="onlineVisibility"
+type="checkbox"
+checked
+onchange="changeOnlineVisibility()"
+>
+
+<span></span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div class="setting-icon blue-bg">
+◷
+</div>
+
+<div class="setting-info">
+
+<b>
+последний визит
+</b>
+
+<small id="lastSeenText">
+показывается друзьям
+</small>
+
+</div>
+
+<label class="switch">
+
+<input
+id="lastSeen"
+type="checkbox"
+checked
+onchange="changeLastSeen()"
+>
+
+<span></span>
+
+</label>
+
+</div>
+
+</div>
+
+
+<h3 class="section-title">
+геопозиция
+</h3>
+
+
+<div class="settings-card">
+
+<button
+class="setting-button"
+onclick="locateUser()"
+>
+
+<div class="setting-icon purple-bg">
+⌾
+</div>
+
+<div>
+
+<b>
+моя геопозиция
+</b>
+
+<small id="locationStatus">
+определить местоположение
+</small>
+
+</div>
+
+<em>
+›
+</em>
+
+</button>
+
+
+<button
+class="setting-button"
+onclick="openPlace()"
+>
+
+<div class="setting-icon orange-bg">
+📍
+</div>
+
+<div>
+
+<b>
+мои места
+</b>
+
+<small>
+дом, школа и другие места
+</small>
+
+</div>
+
+<em>
+›
+</em>
+
+</button>
+
+</div>
+
+
+<h3 class="section-title">
+приложение
+</h3>
+
+
+<div class="settings-card">
+
+<div class="setting">
+
+<div class="setting-icon blue-bg">
+🔔
+</div>
+
+<div class="setting-info">
+
+<b>
+уведомления
+</b>
+
+<small>
+новые сообщения и друзья
+</small>
+
+</div>
+
+<label class="switch">
+
+<input
+id="notifications"
+type="checkbox"
+checked
+onchange="changeNotifications()"
+>
+
+<span></span>
+
+</label>
+
+</div>
+
+
+<div class="setting">
+
+<div class="setting-icon purple-bg">
+◐
+</div>
+
+<div class="setting-info">
+
+<b>
+тёмная тема
+</b>
+
+<small id="themeText">
+включена
+</small>
+
+</div>
+
+<label class="switch">
+
+<input
+id="themeToggle"
+type="checkbox"
+checked
+onchange="toggleTheme()"
+>
+
+<span></span>
+
+</label>
+
+</div>
+
+</div>
+
+
+<h3 class="section-title">
+аккаунт
+</h3>
+
+
+<div class="settings-card">
+
+<button
+class="setting-button"
+onclick="resetSettings()"
+>
+
+<div class="setting-icon orange-bg">
+↻
+</div>
+
+<div>
+
+<b>
+сбросить настройки
+</b>
+
+<small>
+вернуть настройки по умолчанию
+</small>
+
+</div>
+
+<em>
+›
+</em>
+
+</button>
+
+</div>
+
+
+<button
+class="logout"
+onclick="toast('выход пока отключён')"
+>
+выйти из аккаунта
+</button>
+
+</section>
+
+
+<!-- навигация -->
+
+<nav class="bottom-nav">
+
+<button
+class="nav active"
+data-page="map"
+onclick="showPage('map')"
+>
+
+<span>
+⌖
+</span>
+
+<small>
+карта
+</small>
+
+</button>
+
+
+<button
+class="nav"
+data-page="friends"
+onclick="showPage('friends')"
+>
+
+<span>
+♧
+</span>
+
+<small>
+друзья
+</small>
+
+</button>
+
+
+<button
+class="nav"
+data-page="chats"
+onclick="showPage('chats')"
+>
+
+<span>
+●
+</span>
+
+<small>
+чаты
+</small>
+
+</button>
+
+
+<button
+class="nav"
+data-page="profile"
+onclick="showPage('profile')"
+>
+
+<span>
+♙
+</span>
+
+<small>
+профиль
+</small>
+
+</button>
+
+</nav>
+
+
+<!-- чат -->
+
+<div id="chatModal" class="chat-modal">
+
+<div class="chat-window">
+
+<header class="chat-head">
+
+<button onclick="closeChat()">
+‹
+</button>
+
+<div class="chat-user">
+
+<div class="avatar purple">
+а
+</div>
+
+<div>
+
+<b id="chatTitle">
+артём
+</b>
+
+<small>
+в сети
+</small>
+
+</div>
+
+</div>
+
+</header>
+
+
+<div
+class="messages"
+id="messages"
+>
+
+<div class="message friend-message">
+привет 👋
+</div>
+
+<div class="message friend-message">
+ты уже вышел?
+</div>
+
+<div class="message my-message">
+да, я уже иду
+</div>
+
+</div>
+
+
+<form
+class="message-form"
+onsubmit="sendMessage(event)"
+>
+
+<input
+id="messageInput"
+placeholder="написать сообщение..."
+autocomplete="off"
+>
+
+<button>
+➤
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- место -->
 
 <div id="placeModal" class="modal">
 
-    <div class="modal-box">
+<div class="modal-box">
 
-        <div class="handle"></div>
+<div class="handle"></div>
 
-        <h2>
-            добавить место
-        </h2>
+<h2>
+добавить место
+</h2>
 
-        <p>
-            сохрани важное место на карте
-        </p>
-
-
-        <input
-            id="placeName"
-            placeholder="название места"
-        >
+<p>
+сохрани важное место на карте
+</p>
 
 
-        <div class="place-types">
-
-            <button onclick="selectPlace(this,'дом')">
-                🏠
-                <small>дом</small>
-            </button>
-
-            <button onclick="selectPlace(this,'школа')">
-                🎓
-                <small>школа</small>
-            </button>
-
-            <button onclick="selectPlace(this,'работа')">
-                💼
-                <small>работа</small>
-            </button>
-
-            <button onclick="selectPlace(this,'другое')">
-                ⭐
-                <small>другое</small>
-            </button>
-
-        </div>
+<input
+id="placeName"
+placeholder="название места"
+>
 
 
-        <button
-            class="primary"
-            onclick="savePlace()"
-        >
-            сохранить место
-        </button>
+<div class="place-types">
+
+<button onclick="selectPlace(this,'дом')">
+🏠
+<small>
+дом
+</small>
+</button>
+
+<button onclick="selectPlace(this,'школа')">
+🎓
+<small>
+школа
+</small>
+</button>
+
+<button onclick="selectPlace(this,'работа')">
+💼
+<small>
+работа
+</small>
+</button>
+
+<button onclick="selectPlace(this,'другое')">
+⭐
+<small>
+другое
+</small>
+</button>
+
+</div>
 
 
-        <button
-            class="cancel"
-            onclick="closePlace()"
-        >
-            отмена
-        </button>
+<button
+class="primary"
+onclick="savePlace()"
+>
+сохранить место
+</button>
 
-    </div>
+
+<button
+class="cancel"
+onclick="closePlace()"
+>
+отмена
+</button>
+
+</div>
 
 </div>
 
 
 <input
-    id="avatarInput"
-    type="file"
-    accept="image/*"
-    hidden
-    onchange="uploadAvatar(event)"
+id="avatarInput"
+type="file"
+accept="image/*"
+hidden
+onchange="uploadAvatar(event)"
 >
 
 
-<div id="toast" class="toast"></div>
+<div
+id="toast"
+class="toast"
+>
+</div>
+
+
+<div
+id="notification"
+class="notification"
+>
+
+<b id="notificationTitle">
+уведомление
+</b>
+
+<span id="notificationText">
+новое событие
+</span>
+
+</div>
 
 </div>
 
@@ -2296,15 +2715,64 @@ button{
 <script>
 
 /* =========================
-   переменные
+   данные
 ========================= */
 
 let map;
+
 let userMarker;
 
-let selectedPlaceType = "другое";
+let locationWatch;
+
+let selectedPlaceType="другое";
+
+let mapStyle=0;
 
 let toastTimer;
+
+let userLocation=null;
+
+let places=JSON.parse(
+    localStorage.getItem("places") || "[]"
+);
+
+
+/* =========================
+   карты
+========================= */
+
+const mapStyles=[
+
+"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+
+];
+
+let tileLayer;
+
+
+/* =========================
+   запуск
+========================= */
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+initMap();
+
+loadProfile();
+
+loadSettings();
+
+loadPlaces();
+
+startLocationTracking();
+
+});
 
 
 /* =========================
@@ -2313,24 +2781,25 @@ let toastTimer;
 
 function initMap(){
 
-    map = L.map("map",{
-        zoomControl:false,
-        attributionControl:false
-    }).setView(
-        [55.751244,37.618423],
-        13
-    );
+map=L.map(
+"map",
+{
+zoomControl:false,
+attributionControl:false
+}
+).setView(
+[55.751244,37.618423],
+13
+);
 
 
-    L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-            maxZoom:19
-        }
-    ).addTo(map);
+tileLayer=L.tileLayer(
+mapStyles[0],
+{
+maxZoom:19
+}
+).addTo(map);
 
-
-    locateUser();
 }
 
 
@@ -2338,414 +2807,331 @@ function initMap(){
    геопозиция
 ========================= */
 
+function startLocationTracking(){
+
+if(!navigator.geolocation){
+
+toast(
+"геопозиция недоступна"
+);
+
+return;
+
+}
+
+
+navigator.geolocation.getCurrentPosition(
+position=>{
+setUserPosition(position);
+},
+()=>{
+toast(
+"разреши доступ к геопозиции"
+);
+},
+{
+enableHighAccuracy:true,
+timeout:10000,
+maximumAge:5000
+}
+);
+
+
+locationWatch=
+navigator.geolocation.watchPosition(
+position=>{
+setUserPosition(position);
+},
+()=>{},
+{
+enableHighAccuracy:true,
+maximumAge:3000,
+timeout:10000
+}
+);
+
+}
+
+
+function setUserPosition(position){
+
+const lat=
+position.coords.latitude;
+
+const lng=
+position.coords.longitude;
+
+userLocation={
+lat,
+lng
+};
+
+
+if(!userMarker){
+
+const icon=
+L.divIcon({
+
+className:
+"user-location",
+
+html:`
+
+<div class="user-marker-wrap">
+
+<div class="user-pulse"></div>
+
+<div class="user-pulse"></div>
+
+<div class="user-dot"></div>
+
+<div class="user-online-label">
+● в сети
+</div>
+
+</div>
+
+`,
+
+iconSize:[
+120,
+120
+],
+
+iconAnchor:[
+60,
+60
+]
+
+});
+
+
+userMarker=
+L.marker(
+[lat,lng],
+{
+icon,
+zIndexOffset:1000
+}
+).addTo(map);
+
+
+map.setView(
+[lat,lng],
+16
+);
+
+}else{
+
+userMarker.setLatLng(
+[lat,lng]
+);
+
+}
+
+
+document.getElementById(
+"locationStatus"
+).textContent=
+"геопозиция включена";
+
+}
+
+
 function locateUser(){
 
-    if(!navigator.geolocation){
+if(!userLocation){
 
-        toast("геопозиция недоступна");
+toast(
+"определяем геопозицию..."
+);
 
-        return;
-    }
+startLocationTracking();
 
+return;
 
-    document.getElementById(
-        "locationStatus"
-    ).textContent =
-        "определяем местоположение...";
+}
 
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position){
-
-            const lat =
-                position.coords.latitude;
-
-            const lng =
-                position.coords.longitude;
-
-
-            if(userMarker){
-
-                userMarker.setLatLng([
-                    lat,
-                    lng
-                ]);
-
-            }else{
-
-                const icon =
-                    L.divIcon({
-
-                        className:
-                            "my-location-icon",
-
-                        html:`
-
-                            <div class="user-marker-wrap">
-
-                                <div class="user-pulse"></div>
-
-                                <div
-                                    class="user-pulse"
-                                ></div>
-
-                                <div class="user-dot"></div>
-
-                                <div class="user-online-label">
-                                    ● в сети
-                                </div>
-
-                            </div>
-
-                        `,
-
-                        iconSize:[
-                            120,
-                            120
-                        ],
-
-                        iconAnchor:[
-                            60,
-                            60
-                        ]
-
-                    });
+map.setView(
+[
+userLocation.lat,
+userLocation.lng
+],
+17,
+{
+animate:true
+}
+);
 
 
-                userMarker =
-                    L.marker(
-                        [lat,lng],
-                        {
-                            icon:icon,
-                            zIndexOffset:1000
-                        }
-                    ).addTo(map);
+toast(
+"ты здесь"
+);
 
-            }
+}
 
 
-            map.setView(
-                [lat,lng],
-                16
-            );
+function refreshLocation(){
 
+toast(
+"обновляем геопозицию..."
+);
 
-            document.getElementById(
-                "locationStatus"
-            ).textContent =
-                "геопозиция включена";
+if(navigator.geolocation){
 
+navigator.geolocation.getCurrentPosition(
+position=>{
+setUserPosition(position);
 
-            toast(
-                "ты на карте"
-            );
+map.setView(
+[
+position.coords.latitude,
+position.coords.longitude
+],
+17
+);
 
-        },
+toast(
+"геопозиция обновлена"
+);
 
-        function(){
+},
+()=>{
+toast(
+"не удалось обновить"
+);
+}
+);
 
-            document.getElementById(
-                "locationStatus"
-            ).textContent =
-                "не удалось определить местоположение";
+}
 
-
-            toast(
-                "разреши доступ к геопозиции"
-            );
-
-        },
-
-        {
-            enableHighAccuracy:true,
-            timeout:10000,
-            maximumAge:10000
-        }
-
-    );
 }
 
 
 /* =========================
-   навигация
+   стиль карты
+========================= */
+
+function toggleMapStyle(){
+
+mapStyle++;
+
+if(mapStyle>=mapStyles.length){
+mapStyle=0;
+}
+
+
+map.removeLayer(
+tileLayer
+);
+
+
+tileLayer=
+L.tileLayer(
+mapStyles[mapStyle],
+{
+maxZoom:19
+}
+).addTo(map);
+
+
+toast(
+mapStyle===0
+?"тёмная карта":
+mapStyle===1
+?"обычная карта":
+"спутник"
+);
+
+}
+
+
+/* =========================
+   страницы
 ========================= */
 
 function showPage(page){
 
-    document
-        .querySelectorAll(".page")
-        .forEach(function(element){
-
-            element.classList.remove(
-                "active"
-            );
-
-        });
+document
+.querySelectorAll(".page")
+.forEach(
+p=>p.classList.remove("active")
+);
 
 
-    const target =
-        document.getElementById(
-            page + "Page"
-        );
+const target=
+document.getElementById(
+page+"Page"
+);
 
 
-    if(target){
-
-        target.classList.add(
-            "active"
-        );
-
-    }
+if(target){
+target.classList.add("active");
+}
 
 
-    document
-        .querySelectorAll(".nav")
-        .forEach(function(button){
-
-            button.classList.remove(
-                "active"
-            );
-
-
-            if(
-                button.dataset.page ===
-                page
-            ){
-
-                button.classList.add(
-                    "active"
-                );
-
-            }
-
-        });
+document
+.querySelectorAll(".nav")
+.forEach(
+button=>{
+button.classList.toggle(
+"active",
+button.dataset.page===page
+);
+}
+);
 
 
-    if(
-        page === "map" &&
-        map
-    ){
+if(page==="map"){
 
-        setTimeout(
-            function(){
+setTimeout(
+()=>{
+map.invalidateSize();
+},
+100
+);
 
-                map.invalidateSize();
-
-            },
-            100
-        );
-
-    }
+}
 
 }
 
 
 /* =========================
-   поиск
+   друзья
 ========================= */
 
 function searchFriends(){
 
-    const query =
-        document
-        .getElementById(
-            "friendSearch"
-        )
-        .value
-        .toLowerCase();
+const query=
+document
+.getElementById(
+"friendSearch"
+)
+.value
+.toLowerCase();
 
 
-    document
-        .querySelectorAll(".friend")
-        .forEach(function(friend){
+document
+.querySelectorAll(".friend")
+.forEach(
+friend=>{
 
-            const name =
-                friend
-                .querySelector(
-                    ".friend-info b"
-                )
-                .textContent
-                .toLowerCase();
-
-
-            friend.style.display =
-                name.includes(query)
-                ? "flex"
-                : "none";
-
-        });
-
-}
+const name=
+friend
+.querySelector(
+".friend-info b"
+)
+.textContent
+.toLowerCase();
 
 
-/* =========================
-   настройки карты
-========================= */
-
-function changeMapVisibility(){
-
-    const enabled =
-        document.getElementById(
-            "mapVisibility"
-        ).checked;
-
-
-    const text =
-        document.getElementById(
-            "mapVisibilityText"
-        );
-
-
-    if(enabled){
-
-        text.textContent =
-            "тебя видят друзья";
-
-
-        if(userMarker){
-
-            userMarker.setOpacity(1);
-
-        }
-
-
-        toast(
-            "ты снова виден на карте"
-        );
-
-    }else{
-
-        text.textContent =
-            "ты скрыт на карте";
-
-
-        if(userMarker){
-
-            userMarker.setOpacity(0);
-
-        }
-
-
-        toast(
-            "ты скрыт на карте"
-        );
-
-    }
+friend.style.display=
+name.includes(query)
+?"flex"
+:"none";
 
 }
-
-
-/* =========================
-   онлайн
-========================= */
-
-function changeOnlineVisibility(){
-
-    const enabled =
-        document.getElementById(
-            "onlineVisibility"
-        ).checked;
-
-
-    const text =
-        document.getElementById(
-            "onlineVisibilityText"
-        );
-
-
-    const mapText =
-        document.getElementById(
-            "onlineLabel"
-        );
-
-
-    const profileText =
-        document.getElementById(
-            "profileOnline"
-        );
-
-
-    if(enabled){
-
-        text.textContent =
-            "показывается друзьям";
-
-
-        mapText.textContent =
-            "в сети";
-
-
-        profileText.textContent =
-            "в сети";
-
-
-        toast(
-            "статус онлайн виден"
-        );
-
-    }else{
-
-        text.textContent =
-            "никто не видит твой статус";
-
-
-        mapText.textContent =
-            "был недавно";
-
-
-        profileText.textContent =
-            "был недавно";
-
-
-        toast(
-            "статус онлайн скрыт"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   последний визит
-========================= */
-
-function changeLastSeen(){
-
-    const enabled =
-        document.getElementById(
-            "lastSeen"
-        ).checked;
-
-
-    const text =
-        document.getElementById(
-            "lastSeenText"
-        );
-
-
-    if(enabled){
-
-        text.textContent =
-            "показывается друзьям";
-
-
-        toast(
-            "последний визит виден"
-        );
-
-    }else{
-
-        text.textContent =
-            "никто не видит последний визит";
-
-
-        toast(
-            "последний визит скрыт"
-        );
-
-    }
+);
 
 }
 
@@ -2756,134 +3142,86 @@ function changeLastSeen(){
 
 function openChat(name){
 
-    document.getElementById(
-        "chatTitle"
-    ).textContent =
-        name;
+document.getElementById(
+"chatTitle"
+).textContent=name;
 
-
-    document.getElementById(
-        "chatModal"
-    ).classList.add(
-        "open"
-    );
-
-
-    setTimeout(
-        function(){
-
-            document
-                .getElementById(
-                    "messageInput"
-                )
-                .focus();
-
-        },
-        100
-    );
+document.getElementById(
+"chatModal"
+).classList.add("open");
 
 }
 
 
 function closeChat(){
 
-    document
-        .getElementById(
-            "chatModal"
-        )
-        .classList.remove(
-            "open"
-        );
+document.getElementById(
+"chatModal"
+).classList.remove("open");
 
 }
 
 
 function sendMessage(event){
 
-    event.preventDefault();
+event.preventDefault();
+
+const input=
+document.getElementById(
+"messageInput"
+);
+
+const text=
+input.value.trim();
+
+if(!text)return;
 
 
-    const input =
-        document.getElementById(
-            "messageInput"
-        );
+const message=
+document.createElement("div");
+
+message.className=
+"message my-message";
+
+message.textContent=
+text;
 
 
-    const text =
-        input.value.trim();
+document
+.getElementById("messages")
+.appendChild(message);
 
 
-    if(!text){
-
-        return;
-
-    }
+input.value="";
 
 
-    const message =
-        document.createElement(
-            "div"
-        );
+const messages=
+document.getElementById("messages");
+
+messages.scrollTop=
+messages.scrollHeight;
 
 
-    message.className =
-        "message my-message";
+setTimeout(
+()=>{
 
+const reply=
+document.createElement("div");
 
-    message.textContent =
-        text;
+reply.className=
+"message friend-message";
 
+reply.textContent=
+"понял 👍";
 
-    document
-        .getElementById(
-            "messages"
-        )
-        .appendChild(
-            message
-        );
+messages.appendChild(reply);
 
+messages.scrollTop=
+messages.scrollHeight;
 
-    input.value = "";
-
-
-    const messages =
-        document.getElementById(
-            "messages"
-        );
-
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-
-    setTimeout(
-        function(){
-
-            const reply =
-                document.createElement(
-                    "div"
-                );
-
-
-            reply.className =
-                "message friend-message";
-
-
-            reply.textContent =
-                "хорошо 👍";
-
-
-            messages.appendChild(
-                reply
-            );
-
-
-            messages.scrollTop =
-                messages.scrollHeight;
-
-        },
-        900
-    );
+},
+800
+);
 
 }
 
@@ -2894,212 +3232,206 @@ function sendMessage(event){
 
 function openPlace(){
 
-    document
-        .getElementById(
-            "placeModal"
-        )
-        .classList.add(
-            "open"
-        );
+document
+.getElementById("placeModal")
+.classList.add("open");
 
 }
 
 
 function closePlace(){
 
-    document
-        .getElementById(
-            "placeModal"
-        )
-        .classList.remove(
-            "open"
-        );
+document
+.getElementById("placeModal")
+.classList.remove("open");
 
 }
 
 
-function selectPlace(
-    button,
-    type
-){
+function selectPlace(button,type){
 
-    document
-        .querySelectorAll(
-            ".place-types button"
-        )
-        .forEach(
-            function(item){
+document
+.querySelectorAll(
+".place-types button"
+)
+.forEach(
+b=>b.classList.remove("selected")
+);
 
-                item.classList.remove(
-                    "selected"
-                );
+button.classList.add("selected");
 
-            }
-        );
-
-
-    button.classList.add(
-        "selected"
-    );
-
-
-    selectedPlaceType =
-        type;
+selectedPlaceType=type;
 
 }
 
 
 function savePlace(){
 
-    const name =
-        document
-        .getElementById(
-            "placeName"
-        )
-        .value
-        .trim();
+const name=
+document
+.getElementById("placeName")
+.value
+.trim();
 
 
-    if(!name){
+if(!name){
 
-        toast(
-            "введи название места"
-        );
+toast(
+"введи название места"
+);
 
-        return;
+return;
 
-    }
-
-
-    if(!navigator.geolocation){
-
-        toast(
-            "геопозиция недоступна"
-        );
-
-        return;
-
-    }
+}
 
 
-    navigator.geolocation.getCurrentPosition(
+if(!userLocation){
 
-        function(position){
+toast(
+"сначала включи геопозицию"
+);
 
-            const lat =
-                position.coords.latitude;
+return;
 
-            const lng =
-                position.coords.longitude;
-
-
-            let emoji = "⭐";
+}
 
 
-            if(
-                selectedPlaceType ===
-                "дом"
-            ){
-
-                emoji = "🏠";
-
-            }
-
-            if(
-                selectedPlaceType ===
-                "школа"
-            ){
-
-                emoji = "🎓";
-
-            }
-
-            if(
-                selectedPlaceType ===
-                "работа"
-            ){
-
-                emoji = "💼";
-
-            }
+const place={
+id:Date.now(),
+name,
+type:selectedPlaceType,
+lat:userLocation.lat,
+lng:userLocation.lng
+};
 
 
-            const icon =
-                L.divIcon({
-
-                    className:
-                        "place-icon",
-
-                    html:`
-
-                        <div style="
-                            width:42px;
-                            height:42px;
-                            border-radius:14px;
-                            background:#11161c;
-                            border:2px solid #9b4dff;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:20px;
-                            box-shadow:0 6px 20px rgba(0,0,0,.5);
-                        ">
-                            ${emoji}
-                        </div>
-
-                    `,
-
-                    iconSize:[
-                        42,
-                        42
-                    ],
-
-                    iconAnchor:[
-                        21,
-                        21
-                    ]
-
-                });
+places.push(place);
 
 
-            L.marker(
-                [lat,lng],
-                {
-                    icon:icon
-                }
-            )
-            .addTo(map)
-            .bindPopup(
-                "<b>" +
-                name +
-                "</b><br>" +
-                selectedPlaceType
-            );
+localStorage.setItem(
+"places",
+JSON.stringify(places)
+);
 
 
-            closePlace();
+drawPlace(place);
 
 
-            document.getElementById(
-                "placeName"
-            ).value = "";
+document.getElementById(
+"placeName"
+).value="";
 
 
-            toast(
-                "место сохранено"
-            );
+closePlace();
 
-        },
 
-        function(){
+updatePlacesCount();
 
-            toast(
-                "разреши доступ к геопозиции"
-            );
 
-        }
+toast(
+"место сохранено"
+);
 
-    );
+}
+
+
+function drawPlace(place){
+
+let emoji="⭐";
+
+if(place.type==="дом")
+emoji="🏠";
+
+if(place.type==="школа")
+emoji="🎓";
+
+if(place.type==="работа")
+emoji="💼";
+
+
+const icon=
+L.divIcon({
+
+className:"saved-place",
+
+html:`
+
+<div style="
+width:42px;
+height:42px;
+border-radius:14px;
+background:#11161c;
+border:2px solid #9b4dff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+box-shadow:0 6px 20px rgba(0,0,0,.5);
+">
+${emoji}
+</div>
+
+`,
+
+iconSize:[
+42,
+42
+],
+
+iconAnchor:[
+21,
+21
+]
+
+});
+
+
+L.marker(
+[
+place.lat,
+place.lng
+],
+{
+icon
+}
+)
+.addTo(map)
+.bindPopup(
+"<b>"+
+place.name+
+"</b><br>"+
+place.type
+);
+
+}
+
+
+function loadPlaces(){
+
+places.forEach(
+place=>{
+drawPlace(place);
+}
+);
+
+updatePlacesCount();
+
+}
+
+
+function updatePlacesCount(){
+
+document.getElementById(
+"placesCount"
+).textContent=
+places.length;
+
+
+document.getElementById(
+"placesDescription"
+).textContent=
+places.length+
+" сохранённых мест";
 
 }
 
@@ -3110,90 +3442,72 @@ function savePlace(){
 
 function chooseAvatar(){
 
-    document
-        .getElementById(
-            "avatarInput"
-        )
-        .click();
+document
+.getElementById("avatarInput")
+.click();
 
 }
 
 
 function uploadAvatar(event){
 
-    const file =
-        event.target.files[0];
+const file=
+event.target.files[0];
+
+if(!file)return;
 
 
-    if(!file){
-
-        return;
-
-    }
+const reader=
+new FileReader();
 
 
-    const reader =
-        new FileReader();
+reader.onload=
+e=>{
+
+const url=e.target.result;
 
 
-    reader.onload =
-        function(e){
+document.getElementById(
+"topAvatar"
+).src=url;
 
-            const url =
-                e.target.result;
-
-
-            const top =
-                document.getElementById(
-                    "topAvatar"
-                );
+document.getElementById(
+"profileAvatar"
+).src=url;
 
 
-            const profile =
-                document.getElementById(
-                    "profileAvatar"
-                );
+document.getElementById(
+"topAvatar"
+).style.display="block";
+
+document.getElementById(
+"profileAvatar"
+).style.display="block";
 
 
-            top.src = url;
-            profile.src = url;
+document.getElementById(
+"topLetter"
+).style.display="none";
+
+document.getElementById(
+"profileLetter"
+).style.display="none";
 
 
-            top.style.display =
-                "block";
-
-            profile.style.display =
-                "block";
-
-
-            document.getElementById(
-                "topLetter"
-            ).style.display =
-                "none";
+localStorage.setItem(
+"avatar",
+url
+);
 
 
-            document.getElementById(
-                "profileLetter"
-            ).style.display =
-                "none";
+toast(
+"аватарка обновлена"
+);
+
+};
 
 
-            localStorage.setItem(
-                "avatar",
-                url
-            );
-
-
-            toast(
-                "аватарка обновлена"
-            );
-
-        };
-
-
-    reader.readAsDataURL(
-        file
-    );
+reader.readAsDataURL(file);
 
 }
 
@@ -3204,60 +3518,479 @@ function uploadAvatar(event){
 
 function changeName(){
 
-    const oldName =
-        localStorage.getItem(
-            "name"
-        ) ||
-        "никс";
+const oldName=
+localStorage.getItem(
+"name"
+)||
+"никс";
 
 
-    const name =
-        prompt(
-            "как тебя называть?",
-            oldName
-        );
+const name=
+prompt(
+"как тебя называть?",
+oldName
+);
 
 
-    if(!name){
-
-        return;
-
-    }
+if(!name)return;
 
 
-    localStorage.setItem(
-        "name",
-        name
-    );
+localStorage.setItem(
+"name",
+name
+);
 
 
-    document.getElementById(
-        "helloName"
-    ).textContent =
-        name;
+updateName(name);
 
 
-    document.getElementById(
-        "profileName"
-    ).textContent =
-        name;
+toast(
+"имя обновлено"
+);
+
+}
 
 
-    document.getElementById(
-        "topLetter"
-    ).textContent =
-        name[0].toLowerCase();
+function updateName(name){
+
+document.getElementById(
+"helloName"
+).textContent=name;
 
 
-    document.getElementById(
-        "profileLetter"
-    ).textContent =
-        name[0].toLowerCase();
+document.getElementById(
+"profileName"
+).textContent=name;
 
 
-    toast(
-        "имя обновлено"
-    );
+document.getElementById(
+"topLetter"
+).textContent=
+name[0].toLowerCase();
+
+
+document.getElementById(
+"profileLetter"
+).textContent=
+name[0].toLowerCase();
+
+}
+
+
+/* =========================
+   настройки приватности
+========================= */
+
+function changeMapVisibility(){
+
+const enabled=
+document.getElementById(
+"mapVisibility"
+).checked;
+
+
+localStorage.setItem(
+"mapVisibility",
+enabled
+);
+
+
+document.getElementById(
+"mapVisibilityText"
+).textContent=
+enabled
+?"тебя видят друзья"
+:"ты скрыт на карте";
+
+
+if(userMarker){
+
+userMarker.setOpacity(
+enabled?1:0
+);
+
+}
+
+
+toast(
+enabled
+?"ты снова виден на карте"
+:"ты скрыт на карте"
+);
+
+}
+
+
+function changeOnlineVisibility(){
+
+const enabled=
+document.getElementById(
+"onlineVisibility"
+).checked;
+
+
+localStorage.setItem(
+"onlineVisibility",
+enabled
+);
+
+
+document.getElementById(
+"onlineVisibilityText"
+).textContent=
+enabled
+?"показывается друзьям"
+:"никто не видит твой статус";
+
+
+document.getElementById(
+"onlineLabel"
+).textContent=
+enabled
+?"в сети"
+:"был недавно";
+
+
+document.getElementById(
+"profileOnline"
+).textContent=
+enabled
+?"в сети"
+:"был недавно";
+
+
+toast(
+enabled
+?"статус онлайн виден"
+:"статус онлайн скрыт"
+);
+
+}
+
+
+function changeLastSeen(){
+
+const enabled=
+document.getElementById(
+"lastSeen"
+).checked;
+
+
+localStorage.setItem(
+"lastSeen",
+enabled
+);
+
+
+document.getElementById(
+"lastSeenText"
+).textContent=
+enabled
+?"показывается друзьям"
+:"никто не видит последний визит";
+
+
+toast(
+enabled
+?"последний визит виден"
+:"последний визит скрыт"
+);
+
+}
+
+
+function changeNotifications(){
+
+const enabled=
+document.getElementById(
+"notifications"
+).checked;
+
+
+localStorage.setItem(
+"notifications",
+enabled
+);
+
+
+toast(
+enabled
+?"уведомления включены"
+:"уведомления отключены"
+);
+
+}
+
+
+/* =========================
+   тема
+========================= */
+
+function toggleTheme(){
+
+const enabled=
+document.getElementById(
+"themeToggle"
+).checked;
+
+
+localStorage.setItem(
+"darkTheme",
+enabled
+);
+
+
+document.body.classList.toggle(
+"light",
+!enabled
+);
+
+
+document.getElementById(
+"themeText"
+).textContent=
+enabled
+?"включена"
+:"светлая";
+
+}
+
+
+/* =========================
+   безопасность
+========================= */
+
+function safeMode(){
+
+toast(
+"ты в безопасности ✓"
+);
+
+showNotification(
+"режим безопасности",
+"твоё местоположение сейчас под контролем"
+);
+
+}
+
+
+/* =========================
+   уведомления
+========================= */
+
+function showNotification(title,text){
+
+const box=
+document.getElementById(
+"notification"
+);
+
+document.getElementById(
+"notificationTitle"
+).textContent=title;
+
+document.getElementById(
+"notificationText"
+).textContent=text;
+
+
+box.classList.add("show");
+
+
+setTimeout(
+()=>{
+box.classList.remove("show");
+},
+3000
+);
+
+}
+
+
+/* =========================
+   загрузка данных
+========================= */
+
+function loadProfile(){
+
+const name=
+localStorage.getItem("name");
+
+if(name){
+updateName(name);
+}
+
+
+const avatar=
+localStorage.getItem("avatar");
+
+
+if(avatar){
+
+document.getElementById(
+"topAvatar"
+).src=avatar;
+
+document.getElementById(
+"profileAvatar"
+).src=avatar;
+
+
+document.getElementById(
+"topAvatar"
+).style.display="block";
+
+document.getElementById(
+"profileAvatar"
+).style.display="block";
+
+
+document.getElementById(
+"topLetter"
+).style.display="none";
+
+document.getElementById(
+"profileLetter"
+).style.display="none";
+
+}
+
+}
+
+
+/* =========================
+   настройки
+========================= */
+
+function loadSettings(){
+
+const mapVisibility=
+localStorage.getItem(
+"mapVisibility"
+);
+
+
+if(mapVisibility!==null){
+
+document.getElementById(
+"mapVisibility"
+).checked=
+mapVisibility==="true";
+
+changeMapVisibility();
+
+}
+
+
+const online=
+localStorage.getItem(
+"onlineVisibility"
+);
+
+
+if(online!==null){
+
+document.getElementById(
+"onlineVisibility"
+).checked=
+online==="true";
+
+changeOnlineVisibility();
+
+}
+
+
+const lastSeen=
+localStorage.getItem(
+"lastSeen"
+);
+
+
+if(lastSeen!==null){
+
+document.getElementById(
+"lastSeen"
+).checked=
+lastSeen==="true";
+
+changeLastSeen();
+
+}
+
+
+const notifications=
+localStorage.getItem(
+"notifications"
+);
+
+
+if(notifications!==null){
+
+document.getElementById(
+"notifications"
+).checked=
+notifications==="true";
+
+}
+
+
+const dark=
+localStorage.getItem(
+"darkTheme"
+);
+
+
+if(dark!==null){
+
+document.getElementById(
+"themeToggle"
+).checked=
+dark==="true";
+
+toggleTheme();
+
+}
+
+}
+
+
+/* =========================
+   сброс
+========================= */
+
+function resetSettings(){
+
+if(
+!confirm(
+"сбросить все настройки?"
+)
+){
+return;
+}
+
+
+localStorage.removeItem(
+"mapVisibility"
+);
+
+localStorage.removeItem(
+"onlineVisibility"
+);
+
+localStorage.removeItem(
+"lastSeen"
+);
+
+localStorage.removeItem(
+"notifications"
+);
+
+localStorage.removeItem(
+"darkTheme"
+);
+
+
+location.reload();
 
 }
 
@@ -3268,143 +4001,33 @@ function changeName(){
 
 function toast(text){
 
-    const element =
-        document.getElementById(
-            "toast"
-        );
-
-
-    element.textContent =
-        text;
-
-
-    element.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            function(){
-
-                element.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
-
-}
-
-
-/* =========================
-   загрузка профиля
-========================= */
-
-function loadProfile(){
-
-    const name =
-        localStorage.getItem(
-            "name"
-        );
-
-
-    if(name){
-
-        document.getElementById(
-            "helloName"
-        ).textContent =
-            name;
-
-
-        document.getElementById(
-            "profileName"
-        ).textContent =
-            name;
-
-
-        document.getElementById(
-            "topLetter"
-        ).textContent =
-            name[0].toLowerCase();
-
-
-        document.getElementById(
-            "profileLetter"
-        ).textContent =
-            name[0].toLowerCase();
-
-    }
-
-
-    const avatar =
-        localStorage.getItem(
-            "avatar"
-        );
-
-
-    if(avatar){
-
-        document.getElementById(
-            "topAvatar"
-        ).src =
-            avatar;
-
-
-        document.getElementById(
-            "profileAvatar"
-        ).src =
-            avatar;
-
-
-        document.getElementById(
-            "topAvatar"
-        ).style.display =
-            "block";
-
-
-        document.getElementById(
-            "profileAvatar"
-        ).style.display =
-            "block";
-
-
-        document.getElementById(
-            "topLetter"
-        ).style.display =
-            "none";
-
-
-        document.getElementById(
-            "profileLetter"
-        ).style.display =
-            "none";
-
-    }
-
-}
-
-
-/* =========================
-   запуск
-========================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        initMap();
-
-        loadProfile();
-
-    }
+const element=
+document.getElementById(
+"toast"
 );
+
+
+element.textContent=text;
+
+element.classList.add("show");
+
+
+clearTimeout(
+toastTimer
+);
+
+
+toastTimer=
+setTimeout(
+()=>{
+element.classList.remove(
+"show"
+);
+},
+2200
+);
+
+}
 
 </script>
 
