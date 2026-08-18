@@ -3,10 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#080a0f">
-<title>рядом</title>
+<meta name="theme-color" content="#090909">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<title>link</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
 *{
@@ -17,62 +21,68 @@
 }
 
 :root{
-  --bg:#080a0f;
-  --card:#11151c;
-  --card2:#181d25;
-  --line:#252b34;
+  --bg:#090909;
+  --panel:rgba(15,15,17,.94);
+  --line:#292929;
   --text:#fff;
-  --muted:#858e9a;
-  --purple:#9d4dff;
-  --green:#39e57d;
-  --red:#ff5362;
+  --muted:#929292;
+  --purple:#9b5cff;
+  --green:#38e27d;
+  --red:#ff4f5e;
 }
 
-html,body{
+html,
+body{
   width:100%;
   height:100%;
   overflow:hidden;
   background:#000;
   color:var(--text);
-  font-family:Arial,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 button{
-  font:inherit;
   border:0;
   color:inherit;
+  font:inherit;
   cursor:pointer;
 }
 
 .app{
+  position:relative;
   width:100%;
-  max-width:560px;
+  max-width:600px;
   height:100dvh;
   margin:auto;
-  position:relative;
   overflow:hidden;
-  background:var(--bg);
+  background:#090909;
 }
+
+/* =========================
+   страницы
+========================= */
 
 .page{
   position:absolute;
   inset:0;
   display:none;
-  background:var(--bg);
   overflow-y:auto;
   padding:18px 16px 100px;
+  background:var(--bg);
 }
 
 .page.active{
   display:block;
 }
 
-/* ================= MAP ================= */
-
 #mapPage{
   padding:0;
   overflow:hidden;
 }
+
+/* =========================
+   карта
+========================= */
 
 #map{
   position:absolute;
@@ -85,417 +95,465 @@ button{
   display:none;
 }
 
-.top{
+/* =========================
+   кнопки карты
+========================= */
+
+.map-buttons{
   position:absolute;
   z-index:1000;
-  top:0;
-  left:0;
-  right:0;
-  padding:18px 16px 45px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:linear-gradient(
-    to bottom,
-    rgba(8,10,15,.98),
-    rgba(8,10,15,.65),
-    transparent
-  );
-}
+  right:13px;
+  top:18px;
 
-.top h1{
-  font-size:20px;
-}
-
-.online{
-  display:flex;
-  gap:7px;
-  align-items:center;
-  color:var(--muted);
-  font-size:12px;
-  margin-top:5px;
-}
-
-.online-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 12px var(--green);
-  animation:pulse 1.7s infinite;
-}
-
-@keyframes pulse{
-  0%,100%{
-    opacity:.6;
-    box-shadow:0 0 5px var(--green);
-  }
-  50%{
-    opacity:1;
-    box-shadow:0 0 18px var(--green);
-  }
-}
-
-.top-avatar{
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  background:#28163e;
-  border:2px solid var(--purple);
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:18px;
-  font-weight:bold;
-}
-
-.top-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:none;
-}
-
-.map-tools{
-  position:absolute;
-  z-index:1000;
-  left:14px;
-  top:105px;
   display:flex;
   flex-direction:column;
   gap:8px;
 }
 
-.map-tools button,
-.zoom-tools button{
+.map-btn{
   width:45px;
   height:45px;
+
   border-radius:15px;
-  background:rgba(10,14,19,.92);
+
+  background:rgba(12,12,14,.92);
   backdrop-filter:blur(15px);
-  font-size:21px;
-  box-shadow:0 8px 25px rgba(0,0,0,.4);
-}
-
-.zoom-tools{
-  position:absolute;
-  z-index:1000;
-  right:14px;
-  top:105px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-/* ================= USER MARKER ================= */
-
-.user-marker{
-  position:relative;
-  width:150px;
-  height:150px;
-}
-
-.ring{
-  position:absolute;
-  width:126px;
-  height:126px;
-  left:12px;
-  top:7px;
-  border-radius:50%;
-  border:1px solid rgba(157,77,255,.45);
-  animation:ring 2.8s infinite;
-}
-
-.ring.two{
-  animation-delay:1.4s;
-}
-
-@keyframes ring{
-  0%{
-    transform:scale(.35);
-    opacity:.8;
-  }
-  70%{
-    transform:scale(1);
-    opacity:.15;
-  }
-  100%{
-    transform:scale(1.18);
-    opacity:0;
-  }
-}
-
-/*
-  Главная круглая аватарка.
-  Скорость + направление + батарея
-  находятся внутри неё.
-*/
-
-.user-photo{
-  position:absolute;
-  z-index:5;
-  left:43px;
-  top:37px;
-
-  width:64px;
-  height:64px;
-
-  border-radius:50%;
-
-  background:linear-gradient(
-    135deg,
-    #9d4dff,
-    #5316a8
-  );
-
-  border:4px solid #fff;
-
-  overflow:hidden;
 
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 
-  font-size:22px;
-  font-weight:bold;
+  font-size:20px;
 
   box-shadow:
-    0 0 0 7px rgba(157,77,255,.25),
-    0 0 35px rgba(157,77,255,.65);
+    0 8px 25px rgba(0,0,0,.4);
 }
 
-.user-photo img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:none;
+.map-btn:active{
+  transform:scale(.92);
 }
 
-/* маленькая точка онлайн */
+/* =========================
+   моя точка
+========================= */
 
-.online-badge{
+.my-marker{
+  position:relative;
+  width:180px;
+  height:180px;
+}
+
+/* пульсирующее кольцо */
+
+.pulse{
   position:absolute;
-  z-index:10;
 
-  width:13px;
-  height:13px;
+  width:116px;
+  height:116px;
 
-  right:37px;
+  left:32px;
   top:35px;
 
   border-radius:50%;
-  background:var(--green);
 
-  border:3px solid #10151c;
+  border:2px solid rgba(155,92,255,.45);
 
-  box-shadow:0 0 8px var(--green);
+  animation:pulse 2.7s infinite;
 }
 
-/*
-  Бейдж скорости.
-  СПРАВА СНИЗУ ВНУТРИ АВАТАРКИ.
-*/
+.pulse.second{
+  animation-delay:1.35s;
+}
 
-.speed-badge{
+@keyframes pulse{
+
+  0%{
+    transform:scale(.55);
+    opacity:.8;
+  }
+
+  70%{
+    transform:scale(1.2);
+    opacity:0;
+  }
+
+  100%{
+    opacity:0;
+  }
+
+}
+
+/* =========================
+   информация над аватаркой
+========================= */
+
+.marker-info{
   position:absolute;
-  z-index:20;
 
-  right:2px;
-  bottom:2px;
-
-  min-width:29px;
-  height:19px;
-
-  padding:0 4px;
-
-  border-radius:8px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  background:rgba(5,7,10,.94);
-  border:1px solid rgba(255,255,255,.28);
-
-  color:#fff;
-
-  font-size:7px;
-  line-height:1;
-
-  white-space:nowrap;
-
-  box-shadow:0 3px 10px rgba(0,0,0,.55);
-}
-
-/*
-  Батарея.
-  ТОЖЕ внутри аватарки, снизу справа.
-  Она находится чуть выше скорости.
-*/
-
-.battery-badge{
-  position:absolute;
-  z-index:21;
-
-  right:2px;
-  bottom:23px;
-
-  min-width:29px;
-  height:18px;
-
-  padding:0 4px;
-
-  border-radius:7px;
-
-  background:rgba(5,7,10,.94);
-  border:1px solid rgba(57,229,125,.55);
-
-  color:#65ed98;
-
-  font-size:7px;
-  font-weight:bold;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:0 3px 10px rgba(0,0,0,.5);
-}
-
-.battery-badge.low{
-  color:#ff5b68;
-  border-color:#ff5362;
-}
-
-.user-name{
-  position:absolute;
   left:50%;
-  top:105px;
+  top:0;
 
   transform:translateX(-50%);
 
-  padding:6px 10px;
-
-  background:rgba(7,10,14,.94);
-  color:#fff;
-
-  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 
   white-space:nowrap;
 
-  font-size:11px;
-  font-weight:bold;
-
-  box-shadow:0 6px 15px rgba(0,0,0,.3);
+  z-index:20;
 }
 
-/* ================= FRIEND MARKER ================= */
+.marker-name{
+  font-size:13px;
+  font-weight:800;
 
-.friend-marker{
-  width:110px;
-  height:105px;
-  position:relative;
+  padding:5px 9px;
+
+  border-radius:12px;
+
+  background:rgba(255,255,255,.94);
+  color:#111;
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.35);
 }
 
-.friend-photo{
-  position:absolute;
-  left:29px;
-  top:10px;
+.marker-status{
+  margin-top:4px;
 
-  width:51px;
-  height:51px;
+  padding:4px 8px;
+
+  border-radius:10px;
+
+  background:rgba(7,7,8,.94);
+
+  font-size:9px;
+  font-weight:700;
+
+  color:#fff;
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.3);
+
+  transition:.25s;
+}
+
+.status-dot{
+  display:inline-block;
+
+  width:6px;
+  height:6px;
 
   border-radius:50%;
 
-  border:3px solid white;
+  margin-right:4px;
+
+  background:var(--green);
+
+  box-shadow:
+    0 0 8px var(--green);
+}
+
+.marker-status.moving{
+  color:#fff;
+}
+
+.marker-status.stopped{
+  color:#aaa;
+}
+
+/* =========================
+   аватарка
+========================= */
+
+.avatar-wrap{
+  position:absolute;
+
+  left:55px;
+  top:65px;
+
+  width:70px;
+  height:70px;
+
+  z-index:10;
+}
+
+.avatar{
+  position:relative;
+
+  width:70px;
+  height:70px;
+
+  border-radius:50%;
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #a65cff,
+      #50199b
+    );
+
+  border:4px solid #fff;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
-  font-weight:bold;
+  font-size:25px;
+  font-weight:800;
 
-  box-shadow:0 8px 25px rgba(0,0,0,.5);
+  box-shadow:
+    0 0 0 6px rgba(155,92,255,.22),
+    0 8px 25px rgba(0,0,0,.5);
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+
+  display:none;
+}
+
+/* =========================
+   батарея внутри аватарки
+========================= */
+
+.battery-badge{
+  position:absolute;
+
+  right:1px;
+  bottom:1px;
+
+  min-width:25px;
+  height:17px;
+
+  padding:0 4px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  border-radius:7px;
+
+  background:rgba(0,0,0,.88);
+
+  color:#fff;
+
+  font-size:7px;
+  font-weight:900;
+
+  border:1px solid rgba(255,255,255,.35);
+
+  z-index:30;
+}
+
+.battery-badge.low{
+  color:#ff5260;
+  border-color:#ff5260;
+}
+
+/* =========================
+   стрелка направления
+========================= */
+
+.direction{
+  position:absolute;
+
+  left:116px;
+  top:79px;
+
+  width:34px;
+  height:34px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:15;
+
+  transition:
+    transform .8s cubic-bezier(.22,.8,.25,1);
+}
+
+/*
+  настоящая жирная чёрная стрелка
+*/
+
+.direction-arrow{
+  width:0;
+  height:0;
+
+  border-left:9px solid transparent;
+  border-right:9px solid transparent;
+
+  border-bottom:23px solid #050505;
+
+  filter:
+    drop-shadow(
+      0 2px 2px rgba(255,255,255,.5)
+    );
+
+  transform-origin:50% 70%;
+}
+
+/* =========================
+   скорость
+========================= */
+
+.speed-label{
+  position:absolute;
+
+  left:50%;
+  top:139px;
+
+  transform:translateX(-50%);
+
+  padding:5px 9px;
+
+  border-radius:12px;
+
+  background:rgba(8,8,9,.94);
+
+  color:#fff;
+
+  font-size:9px;
+  font-weight:800;
+
+  white-space:nowrap;
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.35);
+}
+
+.speed-label span{
+  color:#aaa;
+}
+
+/* =========================
+   друзья
+========================= */
+
+.friend-marker{
+  width:100px;
+  height:100px;
+
+  position:relative;
+}
+
+.friend-avatar{
+  position:absolute;
+
+  left:25px;
+  top:12px;
+
+  width:50px;
+  height:50px;
+
+  border-radius:50%;
+
+  border:3px solid #fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-weight:800;
+
+  box-shadow:
+    0 7px 20px rgba(0,0,0,.45);
 }
 
 .friend-online{
   position:absolute;
 
+  right:20px;
+  top:11px;
+
   width:12px;
   height:12px;
-
-  top:10px;
-  right:24px;
 
   border-radius:50%;
 
   background:var(--green);
+
   border:2px solid #111;
 }
 
 .friend-name{
   position:absolute;
 
-  top:66px;
   left:50%;
+  top:67px;
 
   transform:translateX(-50%);
 
   white-space:nowrap;
 
-  background:rgba(7,10,14,.94);
+  background:rgba(8,8,9,.94);
 
-  padding:4px 7px;
+  padding:4px 8px;
 
-  border-radius:14px;
+  border-radius:10px;
 
-  color:#fff;
-  font-size:10px;
+  font-size:9px;
 }
 
-/* ================= EMOJI ================= */
+/* =========================
+   эмодзи
+========================= */
 
-.emoji-toggle{
+.emoji-button{
   position:absolute;
+
   z-index:2000;
 
   left:14px;
-  bottom:360px;
+  bottom:90px;
 
-  width:45px;
-  height:45px;
+  width:47px;
+  height:47px;
 
-  border-radius:15px;
+  border-radius:16px;
 
-  background:rgba(10,14,19,.93);
+  background:rgba(12,12,14,.94);
 
   font-size:21px;
 
-  box-shadow:0 8px 25px rgba(0,0,0,.4);
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.45);
 }
 
 .emoji-panel{
   position:absolute;
-  z-index:2001;
+
+  z-index:2100;
 
   left:12px;
   right:12px;
-  bottom:165px;
+
+  bottom:150px;
+
+  padding:9px;
+
+  border-radius:20px;
+
+  background:rgba(12,12,14,.96);
+
+  backdrop-filter:blur(20px);
 
   display:flex;
   justify-content:center;
+
   gap:5px;
 
-  padding:10px;
-
-  border-radius:22px;
-
-  background:rgba(10,14,19,.95);
-  backdrop-filter:blur(20px);
-
   opacity:0;
-  transform:translateY(15px);
+  transform:translateY(12px);
 
   pointer-events:none;
 
@@ -505,35 +563,41 @@ button{
 .emoji-panel.open{
   opacity:1;
   transform:translateY(0);
+
   pointer-events:auto;
 }
 
 .emoji-panel button{
-  width:38px;
-  height:38px;
+  width:39px;
+  height:39px;
 
   border-radius:12px;
 
-  background:#191f27;
+  background:#202024;
 
   font-size:20px;
 }
 
 .flying-emoji{
   position:fixed;
+
   z-index:99999;
 
   pointer-events:none;
 
   font-size:30px;
 
-  animation:flyEmoji 1.5s ease-out forwards;
+  animation:
+    flyEmoji 1.4s ease-out forwards;
 }
 
 @keyframes flyEmoji{
+
   0%{
-    transform:translate(-50%,0) scale(.5);
     opacity:0;
+    transform:
+      translate(-50%,0)
+      scale(.5);
   }
 
   15%{
@@ -541,129 +605,60 @@ button{
   }
 
   70%{
-    transform:translate(-50%,-100px) scale(1.2);
     opacity:1;
+    transform:
+      translate(-50%,-100px)
+      scale(1.15);
   }
 
   100%{
-    transform:translate(-50%,-170px) scale(.7);
     opacity:0;
+    transform:
+      translate(-50%,-170px)
+      scale(.7);
   }
+
 }
 
-/* ================= BOTTOM CARD ================= */
-
-.near-card{
-  position:absolute;
-  z-index:1000;
-
-  left:13px;
-  right:13px;
-  bottom:87px;
-
-  padding:13px 14px;
-
-  border-radius:23px;
-
-  background:rgba(9,12,17,.94);
-  backdrop-filter:blur(20px);
-
-  border:1px solid rgba(255,255,255,.07);
-
-  box-shadow:0 15px 45px rgba(0,0,0,.5);
-}
-
-.near-title{
-  font-size:13px;
-  font-weight:bold;
-  margin-bottom:7px;
-}
-
-.near-title i{
-  display:inline-block;
-
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:var(--green);
-
-  margin-right:5px;
-}
-
-.near-user{
-  display:flex;
-  align-items:center;
-  gap:10px;
-
-  padding:5px 0;
-}
-
-.mini-avatar{
-  width:36px;
-  height:36px;
-
-  border-radius:50%;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  font-weight:bold;
-}
-
-.near-info{
-  flex:1;
-}
-
-.near-info b{
-  font-size:13px;
-}
-
-.near-info small{
-  display:block;
-  color:var(--muted);
-  margin-top:3px;
-  font-size:11px;
-}
-
-.battery{
-  font-size:11px;
-  color:#aeb5be;
-}
-
-/* ================= NAV ================= */
+/* =========================
+   нижняя навигация
+========================= */
 
 .bottom-nav{
   position:absolute;
+
   z-index:5000;
 
   left:10px;
   right:10px;
   bottom:9px;
 
-  height:67px;
+  height:65px;
 
   display:grid;
   grid-template-columns:repeat(4,1fr);
 
-  background:rgba(12,16,21,.95);
+  background:rgba(13,13,15,.96);
+
   backdrop-filter:blur(20px);
 
-  border:1px solid rgba(255,255,255,.07);
+  border:
+    1px solid rgba(255,255,255,.08);
 
   border-radius:22px;
 
-  box-shadow:0 15px 45px rgba(0,0,0,.55);
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.55);
 }
 
 .nav{
   background:transparent;
-  color:#717984;
+
+  color:#707070;
 
   display:flex;
   flex-direction:column;
+
   align-items:center;
   justify-content:center;
 
@@ -675,39 +670,30 @@ button{
 }
 
 .nav small{
-  font-size:10px;
+  font-size:9px;
 }
 
 .nav.active{
-  color:#b46cff;
+  color:#a96cff;
 }
 
-/* ================= OTHER PAGES ================= */
+/* =========================
+   страницы
+========================= */
 
-.page-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 2px 20px;
+.page-title{
+  padding-top:5px;
+  margin-bottom:20px;
 }
 
-.page-head h2{
+.page-title h1{
   font-size:29px;
 }
 
-.page-head p{
+.page-title p{
   color:var(--muted);
-  font-size:13px;
+  font-size:12px;
   margin-top:5px;
-}
-
-.round{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  background:#291541;
-  color:#c18cff;
-  font-size:22px;
 }
 
 .search{
@@ -720,197 +706,204 @@ button{
 
   padding:0 14px;
 
-  border:1px solid var(--line);
-  border-radius:16px;
+  background:#151517;
 
-  background:var(--card);
+  border:1px solid var(--line);
+
+  border-radius:16px;
 
   margin-bottom:10px;
 }
 
 .search input{
-  width:100%;
-  border:0;
-  outline:0;
+  flex:1;
 
   background:transparent;
 
-  color:var(--text);
+  border:0;
+  outline:0;
+
+  color:#fff;
 }
 
-.friend,
-.chat{
+/* друзья */
+
+.list{
+  background:#151517;
+
+  border:1px solid var(--line);
+
+  border-radius:20px;
+
+  overflow:hidden;
+}
+
+.person{
+  min-height:70px;
+
   display:flex;
   align-items:center;
+
   gap:11px;
 
-  padding:14px 2px;
+  padding:10px 13px;
 
   border-bottom:1px solid var(--line);
 }
 
-.friend-avatar{
+.person:last-child{
+  border-bottom:0;
+}
+
+.person-avatar{
   width:45px;
   height:45px;
 
   border-radius:50%;
 
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
 
-  font-weight:bold;
+  font-weight:800;
 }
 
-.friend-info{
+.person-info{
   flex:1;
 }
 
-.friend-info b{
+.person-info b{
+  display:block;
   font-size:14px;
 }
 
-.friend-info span{
+.person-info small{
   display:block;
-
-  color:var(--muted);
-
-  font-size:11px;
-
+  color:#777;
   margin-top:4px;
+  font-size:10px;
 }
 
-.green-dot{
-  display:inline-block;
-
-  width:7px;
-  height:7px;
-
-  border-radius:50%;
-
-  background:var(--green);
-
-  margin-right:4px;
+.person-battery{
+  color:#888;
+  font-size:10px;
 }
 
-.friend-battery{
-  color:var(--muted);
-  font-size:11px;
-}
+/* =========================
+   профиль
+========================= */
 
-/* ================= PROFILE ================= */
-
-.profile-card{
-  text-align:center;
-
-  padding:25px 16px 0;
+.profile{
+  background:#151517;
 
   border:1px solid var(--line);
 
-  border-radius:25px;
+  border-radius:24px;
 
-  background:var(--card);
+  padding:24px 15px 0;
+
+  text-align:center;
 }
 
 .profile-avatar{
   position:relative;
 
-  width:120px;
-  height:120px;
+  width:115px;
+  height:115px;
 
   margin:auto;
 
   border-radius:50%;
 
-  border:3px solid var(--purple);
-
-  background:#291541;
+  overflow:hidden;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
-  overflow:hidden;
+  background:#3b1763;
 
-  font-size:43px;
-  font-weight:bold;
+  border:3px solid #a15cff;
+
+  font-size:40px;
+  font-weight:800;
 }
 
 .profile-avatar img{
   width:100%;
   height:100%;
   object-fit:cover;
+
   display:none;
 }
 
-.camera{
+.profile-avatar button{
   position:absolute;
 
   right:0;
-  bottom:2px;
+  bottom:0;
 
-  width:35px;
-  height:35px;
+  width:34px;
+  height:34px;
 
   border-radius:50%;
 
-  background:#171c22;
+  background:#18181b;
 
-  border:2px solid var(--bg);
+  border:2px solid #090909;
 }
 
-.profile-card h1{
+.profile h2{
   margin-top:15px;
-  font-size:25px;
+  font-size:23px;
 }
 
 .profile-status{
-  margin-top:8px;
   color:var(--green);
-  font-size:12px;
+  font-size:11px;
+  margin-top:6px;
 }
 
-.stats{
+.profile-stats{
+  margin-top:20px;
+
   display:grid;
   grid-template-columns:repeat(3,1fr);
-
-  margin-top:20px;
 
   border-top:1px solid var(--line);
 }
 
-.stats div{
-  padding:16px 3px;
+.profile-stats div{
+  padding:15px 3px;
 }
 
-.stats b{
+.profile-stats b{
   display:block;
-  font-size:20px;
+  font-size:19px;
 }
 
-.stats span{
+.profile-stats span{
   display:block;
-  color:var(--muted);
-  font-size:11px;
+  color:#777;
+  font-size:10px;
   margin-top:4px;
 }
 
-.menu,
-.settings{
+.menu{
   margin-top:14px;
+
+  background:#151517;
+
+  border:1px solid var(--line);
 
   border-radius:20px;
 
   overflow:hidden;
-
-  background:var(--card);
-
-  border:1px solid var(--line);
 }
 
 .menu button{
   width:100%;
-  min-height:68px;
+  min-height:65px;
 
   padding:10px 14px;
 
@@ -918,6 +911,7 @@ button{
 
   display:flex;
   align-items:center;
+
   gap:12px;
 
   text-align:left;
@@ -925,10 +919,14 @@ button{
   border-bottom:1px solid var(--line);
 }
 
+.menu button:last-child{
+  border-bottom:0;
+}
+
 .menu-icon{
   width:35px;
-  font-size:20px;
   text-align:center;
+  font-size:19px;
 }
 
 .menu-info{
@@ -937,38 +935,76 @@ button{
 
 .menu-info b{
   display:block;
-  font-size:14px;
+  font-size:13px;
 }
 
 .menu-info small{
   display:block;
-  color:var(--muted);
+  color:#777;
   margin-top:4px;
+  font-size:10px;
 }
 
 .arrow{
-  color:#777;
-  font-size:25px;
+  color:#666;
+  font-size:24px;
 }
 
-/* ================= SETTINGS ================= */
+/* =========================
+   настройки
+========================= */
 
-.section{
-  color:#777f89;
-  font-size:12px;
-  margin:18px 4px 8px;
+.settings-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:20px;
+}
+
+.settings-title h1{
+  font-size:29px;
+}
+
+.back{
+  width:43px;
+  height:43px;
+
+  border-radius:14px;
+
+  background:#171719;
+
+  font-size:24px;
+}
+
+.section-name{
+  color:#777;
+  font-size:11px;
+  margin:17px 3px 8px;
 }
 
 .setting{
-  min-height:72px;
-
-  display:flex;
-  align-items:center;
-  gap:11px;
+  min-height:70px;
 
   padding:10px 13px;
 
+  display:flex;
+  align-items:center;
+
+  gap:11px;
+
+  background:#151517;
+
   border-bottom:1px solid var(--line);
+}
+
+.setting:first-child{
+  border-radius:18px 18px 0 0;
+}
+
+.setting:last-child{
+  border-radius:0 0 18px 18px;
+  border-bottom:0;
 }
 
 .setting-icon{
@@ -978,23 +1014,10 @@ button{
   border-radius:12px;
 
   display:flex;
-  justify-content:center;
   align-items:center;
-}
+  justify-content:center;
 
-.si-purple{
-  background:#291541;
-  color:#c18cff;
-}
-
-.si-green{
-  background:#123a27;
-  color:#55e895;
-}
-
-.si-blue{
-  background:#122b48;
-  color:#66adff;
+  background:#292039;
 }
 
 .setting-info{
@@ -1003,19 +1026,22 @@ button{
 
 .setting-info b{
   display:block;
-  font-size:14px;
+  font-size:13px;
 }
 
 .setting-info small{
   display:block;
-  color:var(--muted);
-  font-size:11px;
+  color:#777;
   margin-top:4px;
+  font-size:10px;
 }
+
+/* переключатель */
 
 .switch{
   position:relative;
-  width:48px;
+
+  width:47px;
   height:27px;
 }
 
@@ -1027,9 +1053,9 @@ button{
   position:absolute;
   inset:0;
 
-  background:#343a43;
+  border-radius:20px;
 
-  border-radius:30px;
+  background:#353539;
 }
 
 .switch span:before{
@@ -1051,160 +1077,41 @@ button{
 }
 
 .switch input:checked+span{
-  background:var(--purple);
+  background:#9655f7;
 }
 
 .switch input:checked+span:before{
-  transform:translateX(21px);
+  transform:translateX(20px);
 }
 
-/* ================= MODAL ================= */
-
-.modal{
-  position:absolute;
-  inset:0;
-
-  z-index:9000;
-
-  display:none;
-  align-items:flex-end;
-
-  background:rgba(0,0,0,.7);
-}
-
-.modal.open{
-  display:flex;
-}
-
-.sheet{
-  width:100%;
-
-  padding:24px 18px 27px;
-
-  background:#11161c;
-
-  border-radius:28px 28px 0 0;
-}
-
-.handle{
-  width:42px;
-  height:4px;
-
-  margin:0 auto 20px;
-
-  border-radius:10px;
-
-  background:#4c535c;
-}
-
-.sheet h2{
-  font-size:24px;
-}
-
-.sheet p{
-  color:var(--muted);
-  font-size:13px;
-
-  margin:6px 0 16px;
-}
-
-.sheet input{
-  width:100%;
-  height:52px;
-
-  padding:0 14px;
-
-  border-radius:15px;
-
-  border:1px solid var(--line);
-
-  outline:0;
-
-  background:#191f26;
-
-  color:#fff;
-}
-
-.primary{
-  width:100%;
-  height:52px;
-
-  border-radius:16px;
-
-  background:linear-gradient(
-    135deg,
-    #a450ff,
-    #7028df
-  );
-
-  font-weight:bold;
-}
-
-.cancel{
-  width:100%;
-  height:45px;
-
-  background:transparent;
-  color:#858c96;
-}
-
-.place-types{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-
-  gap:7px;
-
-  margin:12px 0;
-}
-
-.place-types button{
-  height:70px;
-
-  border-radius:15px;
-
-  background:#191f26;
-
-  border:1px solid var(--line);
-
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-
-  gap:4px;
-
-  font-size:21px;
-}
-
-.place-types button.selected{
-  border-color:var(--purple);
-  background:#291541;
-}
-
-/* ================= TOAST ================= */
+/* =========================
+   toast
+========================= */
 
 .toast{
   position:absolute;
-  z-index:12000;
+
+  z-index:15000;
 
   left:50%;
-  bottom:90px;
+  bottom:86px;
 
-  transform:translate(-50%,20px);
+  transform:
+    translate(-50%,20px);
 
   opacity:0;
 
   pointer-events:none;
 
-  padding:11px 16px;
+  padding:10px 15px;
 
-  border-radius:15px;
+  border-radius:14px;
 
   background:#fff;
   color:#111;
 
-  font-size:12px;
-  font-weight:bold;
+  font-size:11px;
+  font-weight:800;
 
   white-space:nowrap;
 
@@ -1213,7 +1120,9 @@ button{
 
 .toast.show{
   opacity:1;
-  transform:translate(-50%,0);
+
+  transform:
+    translate(-50%,0);
 }
 </style>
 </head>
@@ -1222,104 +1131,87 @@ button{
 
 <div class="app">
 
-<section id="mapPage" class="page active">
+<!-- =========================
+     карта
+========================= -->
 
-<header class="top">
-
-<div>
-<h1>привет, <span id="helloName">никс</span> 👋</h1>
-
-<div class="online">
-<span class="online-dot"></span>
-<span id="onlineText">в сети</span>
-</div>
-</div>
-
-<button class="top-avatar" onclick="showPage('profile')">
-<img id="topAvatar">
-<span id="topLetter">н</span>
-</button>
-
-</header>
+<section
+  id="mapPage"
+  class="page active"
+>
 
 <div id="map"></div>
 
-<div class="map-tools">
-<button onclick="locateUser()">⌾</button>
-<button onclick="changeMap()">◈</button>
-<button onclick="refreshLocation()">↻</button>
+<div class="map-buttons">
+
+<button
+  class="map-btn"
+  onclick="locateMe()"
+>
+⌾
+</button>
+
+<button
+  class="map-btn"
+  onclick="zoomIn()"
+>
++
+</button>
+
+<button
+  class="map-btn"
+  onclick="zoomOut()"
+>
+−
+</button>
+
+<button
+  class="map-btn"
+  onclick="changeMapStyle()"
+>
+◈
+</button>
+
 </div>
 
-<div class="zoom-tools">
-<button onclick="map.zoomIn()">+</button>
-<button onclick="map.zoomOut()">−</button>
-</div>
+<button
+  class="emoji-button"
+  onclick="toggleEmoji()"
+>
+😊
+</button>
 
-<button class="emoji-toggle" onclick="toggleEmojiPanel()">😊</button>
+<div
+  id="emojiPanel"
+  class="emoji-panel"
+>
 
-<div class="emoji-panel" id="emojiPanel">
 <button onclick="sendEmoji('❤️')">❤️</button>
 <button onclick="sendEmoji('😂')">😂</button>
 <button onclick="sendEmoji('🔥')">🔥</button>
-<button onclick="sendEmoji('😭')">😭</button>
 <button onclick="sendEmoji('😎')">😎</button>
+<button onclick="sendEmoji('😭')">😭</button>
 <button onclick="sendEmoji('👍')">👍</button>
 <button onclick="sendEmoji('👋')">👋</button>
 <button onclick="sendEmoji('💜')">💜</button>
-</div>
-
-<div class="near-card">
-
-<div class="near-title">
-<i></i>кто рядом
-</div>
-
-<div class="near-user">
-
-<div class="mini-avatar" style="background:#5422a0">
-а
-</div>
-
-<div class="near-info">
-<b>артём</b>
-<small>🟢 в сети · 240 м</small>
-</div>
-
-<div class="battery">🔋 64%</div>
-
-</div>
-
-<div class="near-user">
-
-<div class="mini-avatar" style="background:#245da8">
-м
-</div>
-
-<div class="near-info">
-<b>макс</b>
-<small>🟢 в сети · 1,2 км</small>
-</div>
-
-<div class="battery">🔋 87%</div>
-
-</div>
 
 </div>
 
 </section>
 
 
-<section id="friendsPage" class="page">
+<!-- =========================
+     друзья
+========================= -->
 
-<div class="page-head">
+<section
+  id="friendsPage"
+  class="page"
+>
 
-<div>
-<h2>друзья</h2>
-<p>24 друга</p>
-</div>
-
-<button class="round" onclick="toast('добавление друзей скоро появится')">＋</button>
-
+<div class="page-title">
+<h1>друзья</h1>
+<p>люди рядом с тобой</p>
 </div>
 
 <div class="search">
@@ -1327,59 +1219,72 @@ button{
 <input placeholder="найти друга">
 </div>
 
-<div class="friend">
+<div class="list">
 
-<div class="friend-avatar" style="background:#5422a0">
+<div class="person">
+
+<div
+  class="person-avatar"
+  style="background:#5522a0"
+>
 а
 </div>
 
-<div class="friend-info">
+<div class="person-info">
 <b>артём</b>
-<span>
-<i class="green-dot"></i>
+<small>
+<span style="color:#38e27d">●</span>
 в сети · 240 м
-</span>
+</small>
 </div>
 
-<div class="friend-battery">
+<div class="person-battery">
 🔋 64%
 </div>
 
 </div>
 
-<div class="friend">
+<div class="person">
 
-<div class="friend-avatar" style="background:#245da8">
+<div
+  class="person-avatar"
+  style="background:#2364aa"
+>
 м
 </div>
 
-<div class="friend-info">
+<div class="person-info">
 <b>макс</b>
-<span>
-<i class="green-dot"></i>
+<small>
+<span style="color:#38e27d">●</span>
 в сети · 1,2 км
-</span>
+</small>
 </div>
 
-<div class="friend-battery">
+<div class="person-battery">
 🔋 87%
 </div>
 
 </div>
 
-<div class="friend">
+<div class="person">
 
-<div class="friend-avatar" style="background:#a84b20">
+<div
+  class="person-avatar"
+  style="background:#a74a20"
+>
 с
 </div>
 
-<div class="friend-info">
+<div class="person-info">
 <b>саша</b>
-<span>был недавно</span>
+<small>был недавно</small>
 </div>
 
-<div class="friend-battery">
+<div class="person-battery">
 🔋 31%
+</div>
+
 </div>
 
 </div>
@@ -1387,15 +1292,18 @@ button{
 </section>
 
 
-<section id="chatsPage" class="page">
+<!-- =========================
+     чаты
+========================= -->
 
-<div class="page-head">
+<section
+  id="chatsPage"
+  class="page"
+>
 
-<div>
-<h2>чаты</h2>
+<div class="page-title">
+<h1>чаты</h1>
 <p>твои сообщения</p>
-</div>
-
 </div>
 
 <div class="search">
@@ -1403,36 +1311,46 @@ button{
 <input placeholder="поиск">
 </div>
 
-<div class="friend">
+<div class="list">
 
-<div class="friend-avatar" style="background:#5422a0">
+<div class="person">
+
+<div
+  class="person-avatar"
+  style="background:#5522a0"
+>
 а
 </div>
 
-<div class="friend-info">
+<div class="person-info">
 <b>артём</b>
-<span>привет 👋</span>
+<small>привет 👋</small>
 </div>
 
-<div class="friend-battery">
+<div class="person-battery">
 21:42
 </div>
 
 </div>
 
-<div class="friend">
+<div class="person">
 
-<div class="friend-avatar" style="background:#245da8">
+<div
+  class="person-avatar"
+  style="background:#2364aa"
+>
 м
 </div>
 
-<div class="friend-info">
+<div class="person-info">
 <b>макс</b>
-<span>го гулять</span>
+<small>го гулять</small>
 </div>
 
-<div class="friend-battery">
+<div class="person-battery">
 20:18
+</div>
+
 </div>
 
 </div>
@@ -1440,40 +1358,45 @@ button{
 </section>
 
 
-<section id="profilePage" class="page">
+<!-- =========================
+     профиль
+========================= -->
 
-<div class="page-head">
+<section
+  id="profilePage"
+  class="page"
+>
 
-<div>
-<h2>профиль</h2>
-<p>твой профиль</p>
+<div class="page-title">
+<h1>профиль</h1>
+<p>твоя страница в link</p>
 </div>
 
-<button class="round" onclick="showPage('settings')">
-⚙
-</button>
-
-</div>
-
-<div class="profile-card">
+<div class="profile">
 
 <div class="profile-avatar">
 
 <img id="profileAvatar">
 
-<span id="profileLetter">н</span>
+<span id="profileLetter">
+н
+</span>
 
-<button class="camera" onclick="chooseAvatar()">📷</button>
+<button onclick="chooseAvatar()">
+📷
+</button>
 
 </div>
 
-<h1 id="profileName">никс</h1>
+<h2 id="profileName">
+никс
+</h2>
 
 <div class="profile-status">
 ● в сети · 🔋 <span id="profileBattery">—</span>
 </div>
 
-<div class="stats">
+<div class="profile-stats">
 
 <div>
 <b>24</b>
@@ -1481,7 +1404,7 @@ button{
 </div>
 
 <div>
-<b>0</b>
+<b>3</b>
 <span>места</span>
 </div>
 
@@ -1498,27 +1421,46 @@ button{
 
 <button onclick="changeName()">
 
-<span class="menu-icon">✏️</span>
+<div class="menu-icon">
+✏️
+</div>
 
 <div class="menu-info">
 <b>изменить имя</b>
-<small>как тебя будут видеть</small>
+<small>имя на карте и в профиле</small>
 </div>
 
-<span class="arrow">›</span>
+<div class="arrow">›</div>
 
 </button>
 
 <button onclick="chooseAvatar()">
 
-<span class="menu-icon">🖼️</span>
+<div class="menu-icon">
+🖼️
+</div>
 
 <div class="menu-info">
 <b>изменить аватарку</b>
-<small>выбери фотографию</small>
+<small>выбрать свою фотографию</small>
 </div>
 
-<span class="arrow">›</span>
+<div class="arrow">›</div>
+
+</button>
+
+<button onclick="showPage('settings')">
+
+<div class="menu-icon">
+⚙️
+</div>
+
+<div class="menu-info">
+<b>настройки</b>
+<small>приватность и геопозиция</small>
+</div>
+
+<div class="arrow">›</div>
 
 </button>
 
@@ -1527,30 +1469,37 @@ button{
 </section>
 
 
-<section id="settingsPage" class="page">
+<!-- =========================
+     настройки
+========================= -->
 
-<div class="page-head">
+<section
+  id="settingsPage"
+  class="page"
+>
 
-<div>
-<h2>настройки</h2>
-<p>приватность</p>
-</div>
+<div class="settings-title">
 
-<button class="round" onclick="showPage('profile')">
+<h1>настройки</h1>
+
+<button
+  class="back"
+  onclick="showPage('profile')"
+>
 ‹
 </button>
 
 </div>
 
-<div class="section">
+<div class="section-name">
 приватность
 </div>
 
-<div class="settings">
+<div>
 
 <div class="setting">
 
-<div class="setting-icon si-purple">
+<div class="setting-icon">
 ⌖
 </div>
 
@@ -1562,76 +1511,104 @@ button{
 </div>
 
 <label class="switch">
-<input type="checkbox" checked onchange="changeMapVisibility(this)">
+
+<input
+  type="checkbox"
+  checked
+  onchange="toggleMapVisibility(this)"
+>
+
 <span></span>
+
 </label>
 
 </div>
 
+
 <div class="setting">
 
-<div class="setting-icon si-green">
+<div class="setting-icon">
 ●
 </div>
 
 <div class="setting-info">
 <b>статус онлайн</b>
-<small id="onlineVisibilityText">
-показывается друзьям
+<small id="onlineText">
+друзья видят, что ты в сети
 </small>
 </div>
 
 <label class="switch">
-<input type="checkbox" checked onchange="changeOnlineVisibility(this)">
+
+<input
+  type="checkbox"
+  checked
+  onchange="toggleOnline(this)"
+>
+
 <span></span>
+
 </label>
 
 </div>
 
+
 <div class="setting">
 
-<div class="setting-icon si-blue">
+<div class="setting-icon">
 ◷
 </div>
 
 <div class="setting-info">
 <b>последний визит</b>
 <small>
-показывается друзьям
+показывать, когда ты был в сети
 </small>
 </div>
 
 <label class="switch">
-<input type="checkbox" checked>
+
+<input
+  type="checkbox"
+  checked
+>
+
 <span></span>
+
 </label>
 
 </div>
 
 </div>
 
-<div class="section">
+
+<div class="section-name">
 геопозиция
 </div>
 
-<div class="settings">
+<div>
 
 <div class="setting">
 
-<div class="setting-icon si-purple">
+<div class="setting-icon">
 ⌾
 </div>
 
 <div class="setting-info">
 <b>геопозиция</b>
-<small id="locationStatus">
-определяется
+<small id="locationText">
+определение местоположения
 </small>
 </div>
 
 <button
-onclick="locateUser()"
-style="background:transparent;font-size:24px">
+  onclick="requestLocation()"
+  style="
+  background:transparent;
+  font-size:23px;
+  color:#777;
+  "
+>
 ›
 </button>
 
@@ -1642,39 +1619,63 @@ style="background:transparent;font-size:24px">
 </section>
 
 
+<!-- =========================
+     навигация
+========================= -->
+
 <nav class="bottom-nav">
 
-<button class="nav active" data-page="map" onclick="showPage('map')">
+<button
+  class="nav active"
+  data-page="map"
+  onclick="showPage('map')"
+>
 <span>⌖</span>
 <small>карта</small>
 </button>
 
-<button class="nav" data-page="friends" onclick="showPage('friends')">
+<button
+  class="nav"
+  data-page="friends"
+  onclick="showPage('friends')"
+>
 <span>♧</span>
 <small>друзья</small>
 </button>
 
-<button class="nav" data-page="chats" onclick="showPage('chats')">
+<button
+  class="nav"
+  data-page="chats"
+  onclick="showPage('chats')"
+>
 <span>●</span>
 <small>чаты</small>
 </button>
 
-<button class="nav" data-page="profile" onclick="showPage('profile')">
+<button
+  class="nav"
+  data-page="profile"
+  onclick="showPage('profile')"
+>
 <span>♙</span>
 <small>профиль</small>
 </button>
 
 </nav>
 
+
 <input
-id="avatarInput"
-type="file"
-accept="image/*"
-hidden
-onchange="uploadAvatar(event)"
+  id="avatarInput"
+  type="file"
+  accept="image/*"
+  hidden
+  onchange="uploadAvatar(event)"
 >
 
-<div class="toast" id="toast"></div>
+<div
+  id="toast"
+  class="toast"
+></div>
 
 </div>
 
@@ -1684,52 +1685,58 @@ onchange="uploadAvatar(event)"
 <script>
 
 /* =====================================
-   настройки
+   основные переменные
 ===================================== */
 
 let map;
-let userMarker=null;
+let myMarker;
 
 let currentLat=null;
 let currentLng=null;
 
 let lastLat=null;
 let lastLng=null;
-let lastTime=null;
+
+let lastGpsTime=null;
 
 let currentSpeed=0;
+
 let currentHeading=null;
 
-let animationFrame=null;
+let displayedHeading=0;
 
-let batteryPercent=null;
+let movementAnimation=null;
+
+let batteryLevel=null;
 
 let mapStyle=0;
 
-const tiles=[
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-];
-
 let tileLayer;
+
+const mapTiles=[
+
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+
+];
 
 
 /* =====================================
    запуск
 ===================================== */
 
-document.addEventListener("DOMContentLoaded",()=>{
-
-  initMap();
-
-  loadProfile();
-
-  getBattery();
-
-  startGPS();
-
-});
+document.addEventListener(
+  "DOMContentLoaded",
+  ()=>{
+    initMap();
+    loadProfile();
+    initBattery();
+    startLocation();
+  }
+);
 
 
 /* =====================================
@@ -1738,31 +1745,39 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 function initMap(){
 
-  map=L.map("map",{
-    zoomControl:false,
-    attributionControl:false
-  }).setView(
+  map=L.map(
+    "map",
+    {
+      zoomControl:false,
+      attributionControl:false
+    }
+  ).setView(
     [55.751244,37.618423],
-    13
+    14
   );
 
-  tileLayer=L.tileLayer(
-    tiles[0],
-    {maxZoom:19}
-  ).addTo(map);
+  tileLayer=
+    L.tileLayer(
+      mapTiles[0],
+      {
+        maxZoom:19
+      }
+    ).addTo(map);
 
 }
 
 
 /* =====================================
-   GPS
+   геопозиция
 ===================================== */
 
-function startGPS(){
+function startLocation(){
 
   if(!navigator.geolocation){
 
-    toast("геопозиция недоступна");
+    toast(
+      "геопозиция недоступна"
+    );
 
     return;
 
@@ -1772,45 +1787,51 @@ function startGPS(){
 
     position=>{
 
-      const lat=position.coords.latitude;
-      const lng=position.coords.longitude;
+      const lat=
+        position.coords.latitude;
+
+      const lng=
+        position.coords.longitude;
 
       const now=Date.now();
 
       /*
-        вычисляем скорость
+        скорость
       */
 
       if(
         lastLat!==null &&
         lastLng!==null &&
-        lastTime!==null
+        lastGpsTime!==null
       ){
 
         const distance=
-          distanceMeters(
+          getDistance(
             lastLat,
             lastLng,
             lat,
             lng
           );
 
-        const timeSeconds=
-          (now-lastTime)/1000;
+        const seconds=
+          (now-lastGpsTime)/1000;
 
-        if(timeSeconds>0){
+        if(seconds>0){
 
           const rawSpeed=
-            distance/timeSeconds*3.6;
+            distance/
+            seconds*
+            3.6;
 
           /*
-            сглаживание скорости.
-            Это убирает резкие скачки GPS.
+            сильное сглаживание.
+            GPS не будет дёргать
+            значение скорости.
           */
 
           currentSpeed=
-            currentSpeed*0.7+
-            rawSpeed*0.3;
+            currentSpeed*.75+
+            rawSpeed*.25;
 
           if(currentSpeed<0.5){
             currentSpeed=0;
@@ -1825,20 +1846,22 @@ function startGPS(){
       */
 
       if(
-        position.coords.heading!==null &&
+        typeof position.coords.heading
+        ==="number" &&
         position.coords.heading>=0
       ){
 
         currentHeading=
           position.coords.heading;
 
-      }else if(
+      }
+      else if(
         lastLat!==null &&
         lastLng!==null
       ){
 
         currentHeading=
-          calculateBearing(
+          getBearing(
             lastLat,
             lastLng,
             lat,
@@ -1849,32 +1872,34 @@ function startGPS(){
 
       lastLat=lat;
       lastLng=lng;
-      lastTime=now;
-
-      /*
-        плавно перемещаем маркер
-      */
-
-      moveUserSmoothly(lat,lng);
+      lastGpsTime=now;
 
       currentLat=lat;
       currentLng=lng;
 
+      moveMarkerSmoothly(
+        lat,
+        lng
+      );
+
+      updateMarkerUI();
+
       document.getElementById(
-        "locationStatus"
-      ).textContent="геопозиция включена";
+        "locationText"
+      ).textContent=
+        "геопозиция включена";
 
     },
 
     ()=>{
+      document.getElementById(
+        "locationText"
+      ).textContent=
+        "нет доступа к геопозиции";
+
       toast(
         "разреши доступ к геопозиции"
       );
-
-      document.getElementById(
-        "locationStatus"
-      ).textContent=
-        "нет доступа";
     },
 
     {
@@ -1892,7 +1917,7 @@ function startGPS(){
    расстояние
 ===================================== */
 
-function distanceMeters(
+function getDistance(
   lat1,
   lon1,
   lat2,
@@ -1901,8 +1926,11 @@ function distanceMeters(
 
   const R=6371000;
 
-  const p1=lat1*Math.PI/180;
-  const p2=lat2*Math.PI/180;
+  const p1=
+    lat1*Math.PI/180;
+
+  const p2=
+    lat2*Math.PI/180;
 
   const dp=
     (lat2-lat1)*Math.PI/180;
@@ -1916,10 +1944,11 @@ function distanceMeters(
     Math.cos(p2)*
     Math.sin(dl/2)**2;
 
-  return 2*R*Math.atan2(
-    Math.sqrt(a),
-    Math.sqrt(1-a)
-  );
+  return 2*R*
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1-a)
+    );
 
 }
 
@@ -1928,7 +1957,7 @@ function distanceMeters(
    направление
 ===================================== */
 
-function calculateBearing(
+function getBearing(
   lat1,
   lon1,
   lat2,
@@ -1937,7 +1966,8 @@ function calculateBearing(
 
   const y=
     Math.sin(
-      (lon2-lon1)*Math.PI/180
+      (lon2-lon1)*
+      Math.PI/180
     )*
     Math.cos(
       lat2*Math.PI/180
@@ -1958,135 +1988,24 @@ function calculateBearing(
       lat2*Math.PI/180
     )*
     Math.cos(
-      (lon2-lon1)*Math.PI/180
+      (lon2-lon1)*
+      Math.PI/180
     );
 
   return(
-    Math.atan2(y,x)*180/Math.PI+360
+    Math.atan2(y,x)*
+    180/Math.PI+
+    360
   )%360;
 
 }
 
 
 /* =====================================
-   направление → стрелка
+   создание моей точки
 ===================================== */
 
-function headingArrow(degrees){
-
-  if(degrees===null)
-    return "";
-
-  const directions=[
-    "↑",
-    "↗",
-    "→",
-    "↘",
-    "↓",
-    "↙",
-    "←",
-    "↖"
-  ];
-
-  const index=
-    Math.round(degrees/45)%8;
-
-  return directions[index];
-
-}
-
-
-/* =====================================
-   плавное движение
-===================================== */
-
-function moveUserSmoothly(
-  targetLat,
-  targetLng
-){
-
-  if(!userMarker){
-
-    createUserMarker(
-      targetLat,
-      targetLng
-    );
-
-    return;
-
-  }
-
-  const start=
-    userMarker.getLatLng();
-
-  const startLat=start.lat;
-  const startLng=start.lng;
-
-  const duration=900;
-
-  const started=performance.now();
-
-  if(animationFrame)
-    cancelAnimationFrame(animationFrame);
-
-  function animate(now){
-
-    const progress=
-      Math.min(
-        (now-started)/duration,
-        1
-      );
-
-    /*
-      smoothstep.
-      Движение начинается мягко,
-      ускоряется в середине,
-      и мягко останавливается.
-    */
-
-    const eased=
-      progress*progress*
-      (3-2*progress);
-
-    const lat=
-      startLat+
-      (targetLat-startLat)*eased;
-
-    const lng=
-      startLng+
-      (targetLng-startLng)*eased;
-
-    userMarker.setLatLng([
-      lat,
-      lng
-    ]);
-
-    updateUserInfo();
-
-    if(progress<1){
-
-      animationFrame=
-        requestAnimationFrame(
-          animate
-        );
-
-    }
-
-  }
-
-  animationFrame=
-    requestAnimationFrame(
-      animate
-    );
-
-}
-
-
-/* =====================================
-   создание маркера
-===================================== */
-
-function createUserMarker(
+function createMyMarker(
   lat,
   lng
 ){
@@ -2094,55 +2013,93 @@ function createUserMarker(
   const icon=
     L.divIcon({
 
-      className:"user-location",
+      className:"my-location",
 
       html:`
 
-      <div class="user-marker">
+      <div class="my-marker">
 
-        <div class="ring"></div>
-        <div class="ring two"></div>
-
-        <div class="user-photo">
-
-          <img id="mapUserAvatar">
-
-          <span id="mapUserLetter">
-            н
-          </span>
+        <div class="marker-info">
 
           <div
-            id="speedBadge"
-            class="speed-badge">
-            0 км/ч
+            class="marker-name"
+            id="markerName"
+          >
+            никс
           </div>
 
           <div
-            id="batteryBadge"
-            class="battery-badge">
-            —%
+            class="marker-status"
+            id="markerStatus"
+          >
+            <span class="status-dot"></span>
+            в сети
           </div>
 
         </div>
 
-        <div class="online-badge"></div>
+        <div class="pulse"></div>
+        <div class="pulse second"></div>
 
-        <div class="user-name">
-          <span id="mapUserName">
-            никс
-          </span>
+        <div class="avatar-wrap">
+
+          <div
+            class="avatar"
+            id="mapAvatar"
+          >
+
+            <img
+              id="mapAvatarImage"
+            >
+
+            <span id="mapLetter">
+              н
+            </span>
+
+            <div
+              id="batteryBadge"
+              class="battery-badge"
+            >
+              —%
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          class="direction"
+          id="direction"
+        >
+          <div
+            class="direction-arrow"
+          ></div>
+        </div>
+
+        <div
+          class="speed-label"
+          id="speedLabel"
+        >
+          <span>стою</span> · 0.0 км/ч
         </div>
 
       </div>
 
       `,
 
-      iconSize:[150,150],
-      iconAnchor:[75,75]
+      iconSize:[
+        180,
+        180
+      ],
+
+      iconAnchor:[
+        90,
+        90
+      ]
 
     });
 
-  userMarker=
+  myMarker=
     L.marker(
       [lat,lng],
       {
@@ -2154,44 +2111,266 @@ function createUserMarker(
   map.setView(
     [lat,lng],
     16,
-    {animate:true}
+    {
+      animate:true
+    }
   );
 
-  updateUserInfo();
+  updateMarkerUI();
 
 }
 
 
 /* =====================================
-   информация внутри аватарки
+   плавное перемещение
 ===================================== */
 
-function updateUserInfo(){
+function moveMarkerSmoothly(
+  targetLat,
+  targetLng
+){
 
-  const speed=
-    document.getElementById(
-      "speedBadge"
+  if(!myMarker){
+
+    createMyMarker(
+      targetLat,
+      targetLng
     );
 
-  if(speed){
-
-    const value=
-      currentSpeed<0.1
-        ?0
-        :currentSpeed;
-
-    const arrow=
-      value>0.5
-        ?headingArrow(currentHeading)
-        :"";
-
-    speed.textContent=
-      arrow+
-      " "+
-      value.toFixed(1)+
-      " км/ч";
+    return;
 
   }
+
+  const start=
+    myMarker.getLatLng();
+
+  const startLat=
+    start.lat;
+
+  const startLng=
+    start.lng;
+
+  const duration=1000;
+
+  const started=
+    performance.now();
+
+  if(movementAnimation)
+    cancelAnimationFrame(
+      movementAnimation
+    );
+
+  function animate(now){
+
+    const progress=
+      Math.min(
+        (now-started)/
+        duration,
+        1
+      );
+
+    /*
+      плавная кривая
+    */
+
+    const eased=
+      progress*
+      progress*
+      (3-2*progress);
+
+    const lat=
+      startLat+
+      (
+        targetLat-
+        startLat
+      )*
+      eased;
+
+    const lng=
+      startLng+
+      (
+        targetLng-
+        startLng
+      )*
+      eased;
+
+    myMarker.setLatLng([
+      lat,
+      lng
+    ]);
+
+    if(progress<1){
+
+      movementAnimation=
+        requestAnimationFrame(
+          animate
+        );
+
+    }
+
+  }
+
+  movementAnimation=
+    requestAnimationFrame(
+      animate
+    );
+
+}
+
+
+/* =====================================
+   плавный поворот стрелки
+===================================== */
+
+function updateDirection(){
+
+  const arrow=
+    document.getElementById(
+      "direction"
+    );
+
+  if(!arrow)
+    return;
+
+  if(
+    currentHeading===null ||
+    currentSpeed<0.5
+  ){
+
+    arrow.style.opacity=".25";
+
+    return;
+
+  }
+
+  arrow.style.opacity="1";
+
+  /*
+    вычисляем ближайший угол.
+    Благодаря этому стрелка не
+    будет делать оборот 359 → 0.
+  */
+
+  let target=
+    currentHeading;
+
+  let current=
+    displayedHeading;
+
+  while(
+    target-current>180
+  ){
+    target-=360;
+  }
+
+  while(
+    target-current<-180
+  ){
+    target+=360;
+  }
+
+  displayedHeading=
+    current+
+    (target-current)*.18;
+
+  arrow.style.transform=
+    `rotate(${displayedHeading}deg)`;
+
+}
+
+
+/* =====================================
+   информация на маркере
+===================================== */
+
+function updateMarkerUI(){
+
+  const name=
+    localStorage.getItem(
+      "name"
+    )||"никс";
+
+  const markerName=
+    document.getElementById(
+      "markerName"
+    );
+
+  if(markerName)
+    markerName.textContent=name;
+
+  /*
+    движение / остановка
+  */
+
+  const status=
+    document.getElementById(
+      "markerStatus"
+    );
+
+  const speedLabel=
+    document.getElementById(
+      "speedLabel"
+    );
+
+  if(
+    currentSpeed>=0.5
+  ){
+
+    if(status){
+
+      status.classList.add(
+        "moving"
+      );
+
+      status.classList.remove(
+        "stopped"
+      );
+
+      status.innerHTML=
+        `<span class="status-dot"></span>
+         в сети · движение`;
+
+    }
+
+    if(speedLabel){
+
+      speedLabel.innerHTML=
+        `<span>движение</span> · `+
+        `${currentSpeed.toFixed(1)} км/ч`;
+
+    }
+
+  }
+  else{
+
+    if(status){
+
+      status.classList.remove(
+        "moving"
+      );
+
+      status.classList.add(
+        "stopped"
+      );
+
+      status.innerHTML=
+        `<span class="status-dot"></span>
+         в сети`;
+
+    }
+
+    if(speedLabel){
+
+      speedLabel.innerHTML=
+        `<span>стою</span> · 0.0 км/ч`;
+
+    }
+
+  }
+
+  /*
+    батарея
+  */
 
   const battery=
     document.getElementById(
@@ -2200,23 +2379,30 @@ function updateUserInfo(){
 
   if(battery){
 
-    if(batteryPercent===null){
+    if(batteryLevel===null){
 
       battery.textContent="—%";
 
-    }else{
+    }
+    else{
 
       battery.textContent=
-        batteryPercent+"%";
+        batteryLevel+"%";
 
       battery.classList.toggle(
         "low",
-        batteryPercent<=20
+        batteryLevel<=20
       );
 
     }
 
   }
+
+  /*
+    направление
+  */
+
+  updateDirection();
 
 }
 
@@ -2225,144 +2411,62 @@ function updateUserInfo(){
    батарея
 ===================================== */
 
-function getBattery(){
+function initBattery(){
 
-  /*
-    Battery API поддерживается
-    не всеми браузерами.
-  */
-
-  if(!navigator.getBattery){
-
-    document.getElementById(
-      "profileBattery"
-    ).textContent="—";
+  if(
+    !navigator.getBattery
+  ){
 
     return;
 
   }
 
-  navigator.getBattery().then(
-    battery=>{
+  navigator
+    .getBattery()
+    .then(
+      battery=>{
 
-      updateBattery(battery);
+        updateBattery(
+          battery
+        );
 
-      battery.addEventListener(
-        "levelchange",
-        ()=>{
-          updateBattery(battery);
-        }
-      );
+        battery.addEventListener(
+          "levelchange",
+          ()=>{
+            updateBattery(
+              battery
+            );
+          }
+        );
 
-    }
-  );
+      }
+    );
 
 }
 
 
-function updateBattery(battery){
+function updateBattery(
+  battery
+){
 
-  batteryPercent=
+  batteryLevel=
     Math.round(
       battery.level*100
     );
 
-  document.getElementById(
-    "profileBattery"
-  ).textContent=
-    batteryPercent+"%";
-
-  updateUserInfo();
-
-}
-
-
-/* =====================================
-   аватарка
-===================================== */
-
-function chooseAvatar(){
-
-  document
-    .getElementById("avatarInput")
-    .click();
-
-}
-
-
-function uploadAvatar(event){
-
-  const file=
-    event.target.files[0];
-
-  if(!file)return;
-
-  const reader=
-    new FileReader();
-
-  reader.onload=e=>{
-
-    const url=e.target.result;
-
-    localStorage.setItem(
-      "avatar",
-      url
-    );
-
-    setAvatar(url);
-
-    toast(
-      "аватарка обновлена"
-    );
-
-  };
-
-  reader.readAsDataURL(file);
-
-}
-
-
-function setAvatar(url){
-
-  const top=
-    document.getElementById(
-      "topAvatar"
-    );
-
   const profile=
     document.getElementById(
-      "profileAvatar"
+      "profileBattery"
     );
 
-  top.src=url;
-  profile.src=url;
+  if(profile){
 
-  top.style.display="block";
-  profile.style.display="block";
-
-  document.getElementById(
-    "topLetter"
-  ).style.display="none";
-
-  document.getElementById(
-    "profileLetter"
-  ).style.display="none";
-
-  const mapAvatar=
-    document.getElementById(
-      "mapUserAvatar"
-    );
-
-  if(mapAvatar){
-
-    mapAvatar.src=url;
-    mapAvatar.style.display="block";
-
-    document.getElementById(
-      "mapUserLetter"
-    ).style.display="none";
+    profile.textContent=
+      batteryLevel+"%";
 
   }
+
+  updateMarkerUI();
 
 }
 
@@ -2374,47 +2478,67 @@ function setAvatar(url){
 function loadProfile(){
 
   const name=
-    localStorage.getItem("name")||
-    "никс";
+    localStorage.getItem(
+      "name"
+    )||"никс";
 
   updateName(name);
 
   const avatar=
-    localStorage.getItem("avatar");
+    localStorage.getItem(
+      "avatar"
+    );
 
-  if(avatar)
-    setAvatar(avatar);
+  if(avatar){
+
+    setAvatar(
+      avatar
+    );
+
+  }
 
 }
 
 
 function updateName(name){
 
-  document.getElementById(
-    "helloName"
-  ).textContent=name;
-
-  document.getElementById(
-    "profileName"
-  ).textContent=name;
-
-  document.getElementById(
-    "topLetter"
-  ).textContent=
-    name[0].toLowerCase();
-
-  document.getElementById(
-    "profileLetter"
-  ).textContent=
-    name[0].toLowerCase();
-
-  const mapName=
+  const profileName=
     document.getElementById(
-      "mapUserName"
+      "profileName"
     );
 
-  if(mapName)
-    mapName.textContent=name;
+  if(profileName)
+    profileName.textContent=name;
+
+  const letter=
+    document.getElementById(
+      "profileLetter"
+    );
+
+  if(letter)
+    letter.textContent=
+      name
+      .charAt(0)
+      .toLowerCase();
+
+  const mapLetter=
+    document.getElementById(
+      "mapLetter"
+    );
+
+  if(mapLetter)
+    mapLetter.textContent=
+      name
+      .charAt(0)
+      .toLowerCase();
+
+  const markerName=
+    document.getElementById(
+      "markerName"
+    );
+
+  if(markerName)
+    markerName.textContent=name;
 
 }
 
@@ -2422,8 +2546,9 @@ function updateName(name){
 function changeName(){
 
   const old=
-    localStorage.getItem("name")||
-    "никс";
+    localStorage.getItem(
+      "name"
+    )||"никс";
 
   const name=
     prompt(
@@ -2431,7 +2556,8 @@ function changeName(){
       old
     );
 
-  if(!name)return;
+  if(!name)
+    return;
 
   localStorage.setItem(
     "name",
@@ -2440,7 +2566,100 @@ function changeName(){
 
   updateName(name);
 
-  toast("имя изменено");
+  toast(
+    "имя изменено"
+  );
+
+}
+
+
+/* =====================================
+   аватар
+===================================== */
+
+function chooseAvatar(){
+
+  document
+    .getElementById(
+      "avatarInput"
+    )
+    .click();
+
+}
+
+
+function uploadAvatar(
+  event
+){
+
+  const file=
+    event.target.files[0];
+
+  if(!file)
+    return;
+
+  const reader=
+    new FileReader();
+
+  reader.onload=
+    event=>{
+
+      const url=
+        event.target.result;
+
+      localStorage.setItem(
+        "avatar",
+        url
+      );
+
+      setAvatar(url);
+
+      toast(
+        "аватарка обновлена"
+      );
+
+    };
+
+  reader.readAsDataURL(
+    file
+  );
+
+}
+
+
+function setAvatar(url){
+
+  const profile=
+    document.getElementById(
+      "profileAvatar"
+    );
+
+  if(profile){
+
+    profile.src=url;
+    profile.style.display="block";
+
+    document.getElementById(
+      "profileLetter"
+    ).style.display="none";
+
+  }
+
+  const mapImage=
+    document.getElementById(
+      "mapAvatarImage"
+    );
+
+  if(mapImage){
+
+    mapImage.src=url;
+    mapImage.style.display="block";
+
+    document.getElementById(
+      "mapLetter"
+    ).style.display="none";
+
+  }
 
 }
 
@@ -2452,9 +2671,15 @@ function changeName(){
 function showPage(page){
 
   document
-    .querySelectorAll(".page")
+    .querySelectorAll(
+      ".page"
+    )
     .forEach(
-      p=>p.classList.remove("active")
+      p=>{
+        p.classList.remove(
+          "active"
+        );
+      }
     );
 
   const target=
@@ -2463,23 +2688,31 @@ function showPage(page){
     );
 
   if(target)
-    target.classList.add("active");
+    target.classList.add(
+      "active"
+    );
 
   document
-    .querySelectorAll(".nav")
-    .forEach(nav=>{
+    .querySelectorAll(
+      ".nav"
+    )
+    .forEach(
+      nav=>{
 
-      nav.classList.toggle(
-        "active",
-        nav.dataset.page===page
-      );
+        nav.classList.toggle(
+          "active",
+          nav.dataset.page===page
+        );
 
-    });
+      }
+    );
 
   if(page==="map"){
 
     setTimeout(
-      ()=>map.invalidateSize(),
+      ()=>{
+        map.invalidateSize();
+      },
       100
     );
 
@@ -2489,65 +2722,21 @@ function showPage(page){
 
 
 /* =====================================
-   настройки видимости
-===================================== */
-
-function changeMapVisibility(input){
-
-  const visible=
-    input.checked;
-
-  document.getElementById(
-    "mapVisibilityText"
-  ).textContent=
-    visible
-      ?"тебя видят друзья"
-      :"ты скрыт на карте";
-
-  if(userMarker){
-
-    userMarker.setOpacity(
-      visible?1:0
-    );
-
-  }
-
-}
-
-
-function changeOnlineVisibility(input){
-
-  document.getElementById(
-    "onlineVisibilityText"
-  ).textContent=
-    input.checked
-      ?"показывается друзьям"
-      :"никто не видит твой статус";
-
-  document.getElementById(
-    "onlineText"
-  ).textContent=
-    input.checked
-      ?"в сети"
-      :"был недавно";
-
-}
-
-
-/* =====================================
    карта
 ===================================== */
 
-function locateUser(){
+function locateMe(){
 
   if(
-    currentLat===null||
+    currentLat===null ||
     currentLng===null
   ){
 
     toast(
-      "определяем геопозицию..."
+      "определяем тебя..."
     );
+
+    requestLocation();
 
     return;
 
@@ -2559,62 +2748,105 @@ function locateUser(){
       currentLng
     ],
     17,
-    {animate:true}
+    {
+      animate:true
+    }
   );
 
 }
 
 
-function refreshLocation(){
+function requestLocation(){
 
-  toast(
-    "обновляем геопозицию..."
-  );
+  if(
+    !navigator.geolocation
+  ){
 
-  if(navigator.geolocation){
-
-    navigator.geolocation.getCurrentPosition(
-      position=>{
-
-        moveUserSmoothly(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-
-        toast(
-          "геопозиция обновлена"
-        );
-
-      },
-      ()=>{
-        toast(
-          "не удалось определить"
-        );
-      },
-      {
-        enableHighAccuracy:true,
-        timeout:10000
-      }
+    toast(
+      "геопозиция недоступна"
     );
+
+    return;
 
   }
 
+  navigator.geolocation.getCurrentPosition(
+
+    position=>{
+
+      moveMarkerSmoothly(
+        position.coords.latitude,
+        position.coords.longitude
+      );
+
+      currentLat=
+        position.coords.latitude;
+
+      currentLng=
+        position.coords.longitude;
+
+      map.setView(
+        [
+          currentLat,
+          currentLng
+        ],
+        17,
+        {
+          animate:true
+        }
+      );
+
+    },
+
+    ()=>{
+      toast(
+        "разреши геопозицию"
+      );
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:10000
+    }
+
+  );
+
 }
 
 
-function changeMap(){
+function zoomIn(){
+
+  map.zoomIn();
+
+}
+
+
+function zoomOut(){
+
+  map.zoomOut();
+
+}
+
+
+function changeMapStyle(){
 
   mapStyle++;
 
-  if(mapStyle>=tiles.length)
+  if(
+    mapStyle>=mapTiles.length
+  )
     mapStyle=0;
 
-  map.removeLayer(tileLayer);
+  map.removeLayer(
+    tileLayer
+  );
 
   tileLayer=
     L.tileLayer(
-      tiles[mapStyle],
-      {maxZoom:19}
+      mapTiles[mapStyle],
+      {
+        maxZoom:19
+      }
     ).addTo(map);
 
 }
@@ -2624,59 +2856,161 @@ function changeMap(){
    эмодзи
 ===================================== */
 
-function toggleEmojiPanel(){
+function toggleEmoji(){
 
   document
-    .getElementById("emojiPanel")
-    .classList.toggle("open");
+    .getElementById(
+      "emojiPanel"
+    )
+    .classList.toggle(
+      "open"
+    );
 
 }
 
 
-function sendEmoji(emoji){
+function sendEmoji(
+  emoji
+){
 
   document
-    .getElementById("emojiPanel")
-    .classList.remove("open");
+    .getElementById(
+      "emojiPanel"
+    )
+    .classList.remove(
+      "open"
+    );
 
   const avatar=
     document.querySelector(
-      ".user-photo"
+      ".avatar"
     );
 
-  if(!avatar)return;
+  if(!avatar)
+    return;
 
   const rect=
     avatar.getBoundingClientRect();
 
   const element=
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   element.className=
     "flying-emoji";
 
-  element.textContent=emoji;
+  element.textContent=
+    emoji;
 
   element.style.left=
-    (rect.left+rect.width/2)+"px";
+    (
+      rect.left+
+      rect.width/2
+    )+"px";
 
   element.style.top=
-    (rect.top+rect.height/2)+"px";
+    (
+      rect.top+
+      rect.height/2
+    )+"px";
 
   document.body.appendChild(
     element
   );
 
   setTimeout(
-    ()=>element.remove(),
-    1600
+    ()=>{
+      element.remove();
+    },
+    1500
   );
 
 }
 
 
 /* =====================================
-   toast
+   настройки
+===================================== */
+
+function toggleMapVisibility(
+  input
+){
+
+  const text=
+    document.getElementById(
+      "mapVisibilityText"
+    );
+
+  if(input.checked){
+
+    text.textContent=
+      "тебя видят друзья";
+
+    if(myMarker)
+      myMarker.setOpacity(1);
+
+  }
+  else{
+
+    text.textContent=
+      "ты скрыт на карте";
+
+    if(myMarker)
+      myMarker.setOpacity(0);
+
+  }
+
+}
+
+
+function toggleOnline(
+  input
+){
+
+  const text=
+    document.getElementById(
+      "onlineText"
+    );
+
+  const status=
+    document.getElementById(
+      "markerStatus"
+    );
+
+  if(input.checked){
+
+    text.textContent=
+      "друзья видят, что ты в сети";
+
+    if(status){
+
+      status.innerHTML=
+        `<span class="status-dot"></span>
+         в сети`;
+
+    }
+
+  }
+  else{
+
+    text.textContent=
+      "никто не видит твой статус";
+
+    if(status){
+
+      status.innerHTML=
+        "был недавно";
+
+    }
+
+  }
+
+}
+
+
+/* =====================================
+   уведомления
 ===================================== */
 
 let toastTimer;
@@ -2690,7 +3024,9 @@ function toast(text){
 
   el.textContent=text;
 
-  el.classList.add("show");
+  el.classList.add(
+    "show"
+  );
 
   clearTimeout(
     toastTimer
@@ -2699,7 +3035,9 @@ function toast(text){
   toastTimer=
     setTimeout(
       ()=>{
-        el.classList.remove("show");
+        el.classList.remove(
+          "show"
+        );
       },
       2200
     );
