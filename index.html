@@ -2,745 +2,1365 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#09070c">
-<title>Рядом — пространство для тебя</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>рядом</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
+
+/* =========================
+   основа
+========================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --bg:#07090d;
+    --card:#10141a;
+    --card2:#171c23;
+    --line:#252b34;
+    --text:#fff;
+    --muted:#858c98;
+    --purple:#9b4dff;
+    --purple2:#7029df;
+    --green:#39df79;
+    --red:#ff5360;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    background:#000;
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    border:0;
+    color:inherit;
+    cursor:pointer;
+}
+
+/* =========================
+   приложение
+========================= */
+
+.app{
+    position:relative;
+    width:100%;
+    height:100dvh;
+    max-width:520px;
+    margin:auto;
+    overflow:hidden;
+    background:var(--bg);
+}
+
+.page{
+    position:absolute;
+    inset:0;
+    display:none;
+    overflow-y:auto;
+    padding:18px 16px 105px;
+    background:var(--bg);
+}
+
+.page.active{
+    display:block;
+    animation:pageIn .2s ease;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(7px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================
+   карта
+========================= */
+
+#mapPage{
+    padding:0;
+    overflow:hidden;
+}
+
+#map{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:#11161c;
+}
+
+.leaflet-control-attribution,
+.leaflet-control-zoom{
+    display:none;
+}
+
+/* верх */
+
+.top{
+    position:absolute;
+    z-index:1000;
+    top:0;
+    left:0;
+    right:0;
+    padding:19px 17px 38px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:linear-gradient(
+        to bottom,
+        rgba(7,9,13,.98),
+        rgba(7,9,13,.7),
+        transparent
+    );
+}
+
+.top h1{
+    font-size:20px;
+    letter-spacing:-.4px;
+}
+
+.online{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:6px;
+    color:#b1b6bf;
+    font-size:12px;
+}
+
+.online i{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 12px var(--green);
+    animation:onlinePulse 1.7s infinite;
+}
+
+@keyframes onlinePulse{
+    0%,100%{
+        box-shadow:0 0 5px var(--green);
+    }
+
+    50%{
+        box-shadow:0 0 18px var(--green);
+    }
+}
+
+/* аватар */
+
+.top-avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    border:2px solid var(--purple);
+    background:#25133d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-size:19px;
+    font-weight:bold;
+}
+
+.top-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+}
+
+/* кнопки карты */
+
+.map-buttons{
+    position:absolute;
+    z-index:1000;
+    right:14px;
+    top:105px;
+
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.map-buttons button{
+    width:43px;
+    height:43px;
+    border-radius:14px;
+    background:rgba(13,17,22,.93);
+    backdrop-filter:blur(15px);
+    font-size:23px;
+    box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+
+/* добавить место */
+
+.add-place{
+    position:absolute;
+    z-index:1000;
+    left:50%;
+    bottom:350px;
+    transform:translateX(-50%);
+
+    padding:12px 18px;
+    border-radius:30px;
+
+    background:#fff;
+    color:#111;
+    font-size:13px;
+    font-weight:bold;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+    white-space:nowrap;
+}
+
+/* карточка рядом */
+
+.near-card{
+    position:absolute;
+    z-index:1000;
+    left:13px;
+    right:13px;
+    bottom:92px;
+
+    padding:15px;
+
+    border-radius:23px;
+
+    background:rgba(9,12,16,.93);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.07);
+
+    box-shadow:0 15px 45px rgba(0,0,0,.4);
+}
+
+.near-title{
+    color:#dce0e5;
+    font-weight:bold;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.near-title span{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    margin-right:6px;
+}
+
+.near-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 0;
+}
+
+.near-user-info{
+    flex:1;
+}
+
+.near-user-info b{
+    display:block;
+    font-size:14px;
+}
+
+.near-user-info small{
+    display:block;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.near-user > i{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+}
+
+/* =========================
+   маркер пользователя
+========================= */
+
+.user-marker-wrap{
+    position:relative;
+    width:120px;
+    height:120px;
+}
+
+.user-pulse{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:100px;
+    height:100px;
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:rgba(155,77,255,.16);
+    border:1px solid rgba(155,77,255,.35);
+
+    animation:userPulse 2s infinite;
+}
+
+.user-pulse:nth-child(2){
+    animation-delay:.7s;
+}
+
+@keyframes userPulse{
+    0%{
+        transform:translate(-50%,-50%) scale(.35);
+        opacity:.8;
+    }
+
+    70%{
+        transform:translate(-50%,-50%) scale(1);
+        opacity:.15;
+    }
+
+    100%{
+        transform:translate(-50%,-50%) scale(1.2);
+        opacity:0;
+    }
+}
+
+.user-dot{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+
+    width:27px;
+    height:27px;
+
+    border-radius:50%;
+
+    background:var(--purple);
+
+    border:5px solid #fff;
+
+    box-shadow:
+        0 0 0 7px rgba(155,77,255,.28),
+        0 0 35px rgba(155,77,255,.9);
+
+    z-index:5;
+}
+
+.user-online-label{
+    position:absolute;
+    left:50%;
+    top:calc(50% + 38px);
+    transform:translateX(-50%);
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    background:rgba(10,13,17,.92);
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    font-size:11px;
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.35);
+}
+
+/* =========================
+   заголовки страниц
+========================= */
+
+.page-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:12px 2px 20px;
+}
+
+.page-head h2{
+    font-size:29px;
+    letter-spacing:-1px;
+}
+
+.page-head p{
+    color:var(--muted);
+    margin-top:5px;
+    font-size:13px;
+}
+
+.round-button{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#281343;
+    color:#c18cff;
+    font-size:25px;
+}
+
+.back-button{
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    background:var(--card);
+    font-size:30px;
+}
+
+/* =========================
+   поиск
+========================= */
+
+.search{
+    height:51px;
+
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    padding:0 15px;
+
+    background:var(--card);
+    border:1px solid var(--line);
+
+    border-radius:16px;
+
+    color:#777f8a;
+
+    margin-bottom:15px;
+}
+
+.search input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
+}
+
+.search input::placeholder{
+    color:#737a85;
+}
+
+/* =========================
+   аватары
+========================= */
+
+.avatar{
+    width:45px;
+    height:45px;
+
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:18px;
+    font-weight:bold;
+}
+
+.purple{
+    background:linear-gradient(135deg,#9d50ff,#4320a5);
+}
+
+.blue{
+    background:linear-gradient(135deg,#4c9dff,#214494);
+}
+
+.orange{
+    background:linear-gradient(135deg,#ff9b45,#b84420);
+}
+
+.pink{
+    background:linear-gradient(135deg,#ff58bd,#8b286f);
+}
+
+.green-avatar{
+    background:linear-gradient(135deg,#46dc8a,#176743);
 }
 
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #09070c;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
+/* =========================
+   друзья
+========================= */
+
+.friend{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:14px 3px;
+
+    border-bottom:1px solid var(--line);
 }
 
-button, input {
-    font: inherit;
-    border: 0;
-    outline: none;
+.friend-info{
+    flex:1;
 }
 
-.app {
-    max-width: 720px;
-    margin: 0 auto;
-    padding-bottom: 105px;
+.friend-info b{
+    display:block;
+    font-size:15px;
 }
 
-/* HEADER */
-.header {
-    padding: 24px 20px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.friend-info span{
+    display:block;
+    color:var(--muted);
+    margin-top:5px;
+    font-size:12px;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.friend-info i{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    margin-right:4px;
 }
 
-.logo-dot {
-    width: 14px;
-    height: 14px;
-    background: #ff7518;
-    border-radius: 50%;
-    box-shadow: 0 0 18px rgba(255,117,24,.7);
-    animation: pulseDot 2s infinite;
+.friend-distance{
+    color:#777f89;
+    font-size:12px;
 }
+
+/* =========================
+   чаты
+========================= */
 
-@keyframes pulseDot {
-    0%,100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(.7); opacity: .6; }
+.chat{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:14px 2px;
+
+    border-bottom:1px solid var(--line);
 }
 
-.logo-text {
-    font-size: 23px;
-    font-weight: 850;
-    letter-spacing: -.7px;
+.chat-info{
+    flex:1;
 }
 
-.header-icon {
-    width: 43px;
-    height: 43px;
-    border-radius: 50%;
-    background: #18131d;
-    border: 1px solid rgba(255,255,255,.08);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 19px;
-    cursor: pointer;
+.chat-info-head{
+    display:flex;
+    justify-content:space-between;
 }
 
-/* SCREENS */
-.screen {
-    display: none;
-    padding: 10px 18px 30px;
-    animation: screenIn .35s ease;
+.chat-info b{
+    font-size:15px;
 }
 
-.screen.active {
-    display: block;
+.chat-info time{
+    color:#737a84;
+    font-size:11px;
 }
 
-@keyframes screenIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+.chat-info p{
+    color:var(--muted);
+    margin-top:5px;
 }
+
+.unread{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:var(--purple);
 
-/* CARDS */
-.card {
-    background: linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.025));
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 25px;
-    padding: 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 15px 50px rgba(0,0,0,.16);
+    font-size:11px;
+    font-weight:bold;
 }
 
-.card-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
+/* =========================
+   профиль
+========================= */
+
+.profile-card{
+    background:linear-gradient(
+        180deg,
+        #11161c,
+        #0d1116
+    );
+
+    border:1px solid var(--line);
+    border-radius:24px;
+
+    text-align:center;
+
+    padding:25px 17px 0;
 }
+
+.profile-avatar{
+    position:relative;
+
+    width:118px;
+    height:118px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#26133d;
 
-.card-title h2 {
-    font-size: 18px;
+    border:3px solid var(--purple);
+
+    font-size:45px;
+    font-weight:bold;
 }
 
-.card-title span {
-    color: #8f8897;
-    font-size: 13px;
+.profile-avatar img{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    object-fit:cover;
+    display:none;
 }
+
+.camera{
+    position:absolute;
+    right:-4px;
+    bottom:1px;
+
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
 
-/* HERO */
-.hero {
-    padding: 24px 4px 22px;
+    background:#171c22;
+    border:2px solid #07090d;
 }
 
-.hero h1 {
-    font-size: 36px;
-    line-height: 1.03;
-    letter-spacing: -1.5px;
-    margin-bottom: 10px;
+.profile-card h1{
+    margin-top:15px;
+    font-size:25px;
 }
 
-.hero h1 span {
-    background: linear-gradient(90deg,#fff,#b77cff,#ff8a32);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+.username{
+    color:var(--muted);
+    margin-top:4px;
 }
 
-.hero p {
-    color: #9d96a5;
-    line-height: 1.5;
-    font-size: 15px;
+.profile-online{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+
+    margin-top:9px;
+
+    color:#b1b6bf;
+    font-size:13px;
 }
 
-/* MOOD */
-.mood-card {
-    background: radial-gradient(circle at 90% 0%, rgba(255,125,38,.12), transparent 35%),
-                linear-gradient(145deg,#18111d,#100c13);
+.profile-online i{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--green);
 }
 
-.mood-face {
-    text-align: center;
-    font-size: 54px;
-    margin: 8px 0 4px;
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    margin-top:23px;
+
+    border-top:1px solid var(--line);
 }
 
-.mood-name {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 750;
+.stats div{
+    padding:17px 4px;
 }
 
-.mood-description {
-    text-align: center;
-    color: #908895;
-    font-size: 13px;
-    margin-top: 4px;
+.stats b{
+    display:block;
+    font-size:20px;
 }
 
-.mood-range {
-    width: 100%;
-    margin-top: 22px;
-    appearance: none;
-    height: 8px;
-    border-radius: 20px;
-    background: linear-gradient(90deg,#693cff,#a451ff,#ff7b21);
+.stats span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:5px;
 }
+
+.profile-menu{
+    margin-top:14px;
 
-.mood-range::-webkit-slider-thumb {
-    appearance: none;
-    width: 27px;
-    height: 27px;
-    border-radius: 50%;
-    background: white;
-    border: 5px solid #9a5cff;
-    box-shadow: 0 3px 15px rgba(0,0,0,.4);
+    background:var(--card);
+
+    border:1px solid var(--line);
+    border-radius:20px;
+
+    overflow:hidden;
 }
+
+.profile-menu button{
+    width:100%;
+    min-height:68px;
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    padding:10px 15px;
 
-.mood-labels {
-    display: flex;
-    justify-content: space-between;
-    color: #77717d;
-    font-size: 11px;
-    margin-top: 9px;
+    background:transparent;
+
+    border-bottom:1px solid var(--line);
+
+    text-align:left;
 }
 
-/* PET */
-.pet-card {
-    min-height: 270px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.profile-menu button:last-child{
+    border-bottom:0;
 }
 
-.pet {
-    width: 125px;
-    height: 125px;
-    border-radius: 45% 45% 42% 42%;
-    background: linear-gradient(145deg,#a96cff,#6931b8);
-    position: relative;
-    margin: 15px 0;
-    box-shadow: 0 15px 40px rgba(120,45,255,.3), inset 0 -10px 20px rgba(0,0,0,.15);
-    animation: petFloat 3s ease-in-out infinite;
+.profile-menu .icon{
+    width:32px;
+    text-align:center;
+    font-size:21px;
 }
 
-.pet::before,
-.pet::after {
-    content: "";
-    position: absolute;
-    top: -22px;
-    width: 43px;
-    height: 48px;
-    background: #8d50d8;
-    z-index: -1;
+.profile-menu div{
+    flex:1;
 }
 
-.pet::before {
-    left: 8px;
-    transform: rotate(-24deg);
-    border-radius: 70% 20% 50% 20%;
+.profile-menu b{
+    display:block;
 }
 
-.pet::after {
-    right: 8px;
-    transform: rotate(24deg);
-    border-radius: 20% 70% 20% 50%;
+.profile-menu small{
+    display:block;
+    color:var(--muted);
+    margin-top:4px;
 }
 
-.pet-eye {
-    position: absolute;
-    width: 13px;
-    height: 17px;
-    border-radius: 50%;
-    background: #181020;
-    top: 45px;
+.arrow{
+    color:#737984;
+    font-size:24px;
 }
 
-.pet-eye.left { left: 34px; }
-.pet-eye.right { right: 34px; }
+/* =========================
+   настройки
+========================= */
 
-.pet-mouth {
-    position: absolute;
-    width: 24px;
-    height: 12px;
-    border-bottom: 3px solid #24142d;
-    border-radius: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 70px;
+.section-title{
+    color:#7d8490;
+    font-size:12px;
+    margin:20px 5px 9px;
 }
+
+.settings-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.setting{
+    min-height:75px;
 
-.pet-name {
-    font-size: 21px;
-    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:11px 14px;
+
+    border-bottom:1px solid var(--line);
 }
 
-.pet-status {
-    color: #958b9e;
-    font-size: 13px;
-    margin-top: 5px;
+.setting:last-child{
+    border-bottom:0;
 }
+
+.setting-icon{
+    width:38px;
+    height:38px;
+
+    border-radius:12px;
 
-.pet-buttons {
-    display: flex;
-    gap: 8px;
-    margin-top: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    flex-shrink:0;
 }
 
-.pet-btn {
-    padding: 10px 15px;
-    border-radius: 13px;
-    color: white;
-    background: #21182a;
-    border: 1px solid rgba(255,255,255,.08);
-    transition: .2s;
-    cursor: pointer;
+.purple-bg{
+    background:#291542;
+    color:#c18cff;
 }
 
-.pet-btn:active {
-    transform: scale(.94);
+.green-bg{
+    background:#123b27;
+    color:#5be99a;
 }
 
-@keyframes petFloat {
-    0%,100% { transform: translateY(0) rotate(0); }
-    50% { transform: translateY(-9px) rotate(1deg); }
+.blue-bg{
+    background:#122c4b;
+    color:#69adff;
 }
 
-/* ACTIONS */
-.actions {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
+.orange-bg{
+    background:#422716;
+    color:#ff9d54;
 }
 
-.action {
-    min-height: 105px;
-    border-radius: 20px;
-    padding: 16px;
-    color: white;
-    text-align: left;
-    background: #151119;
-    border: 1px solid rgba(255,255,255,.07);
-    transition: .25s;
-    cursor: pointer;
+.setting-info{
+    flex:1;
 }
 
-.action:active {
-    transform: scale(.96);
+.setting-info b{
+    display:block;
+    font-size:14px;
 }
 
-.action-icon {
-    font-size: 25px;
-    margin-bottom: 12px;
+.setting-info small{
+    display:block;
+    color:var(--muted);
+    margin-top:5px;
 }
+
+.switch{
+    position:relative;
 
-.action strong {
-    display: block;
-    font-size: 14px;
+    width:48px;
+    height:28px;
+
+    flex-shrink:0;
 }
 
-.action small {
-    display: block;
-    color: #7f7787;
-    margin-top: 4px;
+.switch input{
+    display:none;
 }
+
+.switch span{
+    position:absolute;
+    inset:0;
+
+    background:#30363e;
 
-/* PROFILE */
-.profile-top {
-    text-align: center;
-    padding: 20px 0 25px;
+    border-radius:30px;
+
+    transition:.2s;
 }
+
+.switch span:before{
+    content:"";
+
+    position:absolute;
+
+    width:22px;
+    height:22px;
+
+    left:3px;
+    top:3px;
 
-.avatar-wrapper {
-    position: relative;
-    width: 105px;
-    height: 105px;
-    margin: 0 auto 12px;
-    cursor: pointer;
+    background:#fff;
+
+    border-radius:50%;
+
+    transition:.2s;
 }
 
-.avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 35px;
-    background: linear-gradient(135deg,#7639ff,#ff7518);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 43px;
-    box-shadow: 0 15px 40px rgba(123,51,255,.25);
-    transition: transform .2s;
-    user-select: none;
+.switch input:checked + span{
+    background:var(--purple);
 }
 
-.avatar-wrapper:active .avatar {
-    transform: scale(.92);
+.switch input:checked + span:before{
+    transform:translateX(20px);
 }
+
+/* =========================
+   кнопки настроек
+========================= */
+
+.setting-button{
+    width:100%;
+    min-height:75px;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
 
-.avatar-hint {
-    font-size: 11px;
-    color: #8a8292;
-    margin-top: 4px;
+    padding:11px 14px;
+
+    background:transparent;
+
+    border-bottom:1px solid var(--line);
+
+    text-align:left;
 }
 
-.profile-name-display {
-    font-size: 25px;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 2px 10px;
-    border-radius: 10px;
-    display: inline-block;
-    transition: background .2s;
+.setting-button:last-child{
+    border-bottom:0;
 }
 
-.profile-name-display:hover {
-    background: rgba(255,255,255,.05);
+.setting-button > div:nth-child(2){
+    flex:1;
 }
 
-.profile-name-input {
-    display: none;
-    font-size: 25px;
-    font-weight: 700;
-    background: transparent;
-    color: #fff;
-    border: 2px solid #8b4cff;
-    border-radius: 12px;
-    padding: 4px 12px;
-    text-align: center;
-    width: 250px;
+.setting-button em{
+    font-style:normal;
+    color:#747b85;
+    font-size:25px;
 }
+
+.logout{
+    width:100%;
+    height:54px;
+
+    margin-top:20px;
 
-.profile-name-input.show {
-    display: inline-block;
+    border-radius:16px;
+
+    background:#291316;
+
+    color:#ff5c67;
+
+    font-weight:bold;
 }
+
+/* =========================
+   нижняя навигация
+========================= */
+
+.bottom-nav{
+    position:absolute;
 
-.profile-name-display.hide {
-    display: none;
+    z-index:5000;
+
+    left:10px;
+    right:10px;
+    bottom:9px;
+
+    height:68px;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    background:rgba(12,16,21,.94);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.07);
+
+    border-radius:22px;
+
+    box-shadow:0 15px 45px rgba(0,0,0,.55);
 }
+
+.nav{
+    background:transparent;
+
+    color:#707783;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 
-.profile-sub {
-    color: #8f8796;
-    margin-top: 5px;
-    font-size: 14px;
+    gap:4px;
 }
 
-.profile-save-btn {
-    display: inline-block;
-    margin-top: 12px;
-    padding: 8px 24px;
-    border-radius: 14px;
-    background: #8b4cff;
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: .2s;
-    box-shadow: 0 8px 25px rgba(139,76,255,.25);
+.nav span{
+    font-size:21px;
 }
 
-.profile-save-btn:active {
-    transform: scale(.94);
+.nav small{
+    font-size:10px;
 }
 
-.profile-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,.06);
+.nav.active{
+    color:#b46cff;
 }
 
-.profile-row:last-child {
-    border-bottom: 0;
+.nav.active span{
+    filter:drop-shadow(0 0 8px rgba(180,108,255,.9));
 }
 
-.profile-row span {
-    color: #8e8793;
+/* =========================
+   чат
+========================= */
+
+.chat-modal{
+    position:absolute;
+    inset:0;
+
+    z-index:8000;
+
+    display:none;
+
+    background:var(--bg);
 }
 
-/* AVATAR PICKER */
-.avatar-picker-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 20000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,.8);
-    backdrop-filter: blur(10px);
-    padding: 20px;
+.chat-modal.open{
+    display:block;
 }
 
-.avatar-picker-overlay.show {
-    display: flex;
+.chat-window{
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
 }
+
+.chat-head{
+    height:75px;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:10px 15px;
+
+    border-bottom:1px solid var(--line);
 
-.avatar-picker {
-    width: 100%;
-    max-width: 420px;
-    max-height: 80vh;
-    background: #1a1520;
-    border-radius: 28px;
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,.08);
-    box-shadow: 0 25px 80px rgba(0,0,0,.6);
-    animation: modalIn .3s ease;
-    overflow-y: auto;
+    background:#0b0e13;
 }
 
-.avatar-picker-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
+.chat-head > button{
+    background:transparent;
+    font-size:34px;
+    color:#aaa;
 }
 
-.avatar-picker-title h2 {
-    font-size: 19px;
+.chat-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
 
-.avatar-picker-close {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.06);
-    color: #aaa;
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.chat-user small{
+    display:block;
+    color:var(--green);
+    margin-top:4px;
 }
 
-.avatar-grid {
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    gap: 10px;
+.messages{
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:18px 14px;
+
+    display:flex;
+    flex-direction:column;
+    gap:9px;
 }
+
+.message{
+    max-width:78%;
+
+    padding:11px 14px;
 
-.avatar-option {
-    aspect-ratio: 1;
-    border-radius: 18px;
-    background: rgba(255,255,255,.04);
-    border: 2px solid transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    transition: .2s;
-    cursor: pointer;
+    border-radius:17px;
+
+    font-size:14px;
 }
+
+.friend-message{
+    align-self:flex-start;
 
-.avatar-option:active {
-    transform: scale(.9);
+    background:#171c23;
+
+    border-bottom-left-radius:5px;
 }
+
+.my-message{
+    align-self:flex-end;
+
+    background:linear-gradient(
+        135deg,
+        #9848ff,
+        #6d2bdb
+    );
 
-.avatar-option.selected {
-    border-color: #8b4cff;
-    background: rgba(139,76,255,.15);
-    box-shadow: 0 0 25px rgba(139,76,255,.15);
+    border-bottom-right-radius:5px;
 }
 
-@keyframes modalIn {
-    from { opacity: 0; transform: scale(.95) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+.message-form{
+    display:flex;
+    gap:8px;
+
+    padding:10px;
+
+    background:#0b0e13;
+
+    border-top:1px solid var(--line);
 }
+
+.message-form input{
+    flex:1;
+
+    height:46px;
+
+    border:1px solid var(--line);
+
+    border-radius:23px;
+
+    background:#151a20;
+
+    color:#fff;
+
+    outline:0;
 
-/* AI BUTTON */
-.ai-button {
-    position: fixed;
-    z-index: 8999;
-    right: max(20px, calc((100vw - 720px)/2 + 20px));
-    bottom: 95px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg,#4d425c,#62556d);
-    color: #d7d0dc;
-    font-weight: 900;
-    font-size: 18px;
-    box-shadow: 0 10px 35px rgba(0,0,0,.35);
-    cursor: pointer;
+    padding:0 15px;
 }
 
-.ai-button::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #ffb02e;
-    border: 2px solid #0e0a11;
-    border-radius: 50%;
-    right: 3px;
-    top: 3px;
+.message-form button{
+    width:46px;
+    height:46px;
+
+    border-radius:50%;
+
+    background:var(--purple);
 }
+
+/* =========================
+   модалка мест
+========================= */
+
+.modal{
+    position:absolute;
+    inset:0;
+
+    z-index:9000;
 
-.ai-button:active {
-    transform: scale(.92);
+    display:none;
+    align-items:flex-end;
+
+    background:rgba(0,0,0,.7);
 }
 
-/* AI MODAL */
-.ai-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 20000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0,0,0,.75);
-    backdrop-filter: blur(9px);
+.modal.open{
+    display:flex;
 }
+
+.modal-box{
+    width:100%;
+
+    padding:25px 18px 28px;
+
+    background:#11161c;
+
+    border-radius:28px 28px 0 0;
 
-.ai-modal.show {
-    display: flex;
+    animation:sheet .25s ease;
 }
 
-.ai-modal-box {
-    width: min(410px,100%);
-    padding: 28px 22px;
-    border-radius: 27px;
-    text-align: center;
-    background: radial-gradient(circle at 50% 0%, rgba(139,76,255,.2), transparent 45%), #17121c;
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 25px 80px rgba(0,0,0,.6);
-    animation: modalIn .3s ease;
+@keyframes sheet{
+    from{
+        transform:translateY(100%);
+    }
+
+    to{
+        transform:translateY(0);
+    }
 }
+
+.handle{
+    width:42px;
+    height:4px;
+
+    margin:0 auto 20px;
+
+    background:#4c525b;
 
-.ai-modal-icon {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 15px;
-    border-radius: 22px;
-    background: linear-gradient(135deg,#6d4c88,#4b3b56);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 31px;
+    border-radius:10px;
 }
 
-.ai-modal-box h2 {
-    font-size: 23px;
-    margin-bottom: 10px;
+.modal-box h2{
+    font-size:24px;
 }
 
-.ai-modal-box p {
-    color: #99909f;
-    font-size: 14px;
-    line-height: 1.6;
+.modal-box p{
+    color:var(--muted);
+    margin-top:6px;
+    margin-bottom:17px;
 }
+
+.modal-box input{
+    width:100%;
+    height:52px;
+
+    padding:0 15px;
+
+    border-radius:15px;
+
+    background:#191e24;
+
+    border:1px solid var(--line);
 
-.ai-modal-close {
-    width: 100%;
-    margin-top: 18px;
-    padding: 14px;
-    border-radius: 15px;
-    color: white;
-    background: #8b4cff;
-    font-weight: 750;
-    cursor: pointer;
+    outline:0;
+
+    color:#fff;
 }
+
+.place-types{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
 
-/* BOTTOM NAV */
-.bottom-nav {
-    position: fixed;
-    z-index: 9000;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(680px, calc(100% - 22px));
-    height: 70px;
-    padding: 7px;
-    display: flex;
-    justify-content: space-around;
-    background: rgba(18,14,22,.94);
-    backdrop-filter: blur(25px);
-    border: 1px solid rgba(255,255,255,.09);
-    border-radius: 24px;
-    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+    gap:8px;
+
+    margin:12px 0;
 }
+
+.place-types button{
+    height:72px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 
-.nav-btn {
-    flex: 1;
-    color: #77707e;
-    background: transparent;
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    transition: .35s;
-    cursor: pointer;
+    gap:5px;
+
+    background:#191e24;
+
+    border:1px solid var(--line);
+
+    border-radius:15px;
+
+    font-size:21px;
 }
 
-.nav-btn .nav-icon {
-    font-size: 21px;
+.place-types button.selected{
+    border-color:var(--purple);
+    background:#28153f;
 }
 
-.nav-btn span:last-child {
-    font-size: 10px;
+.place-types small{
+    font-size:10px;
+    color:#aaa;
 }
+
+.primary{
+    width:100%;
+    height:53px;
 
-.nav-btn.active {
-    color: white;
-    background: linear-gradient(135deg, rgba(137,76,255,.27), rgba(255,117,24,.12));
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #a450ff,
+        #7029df
+    );
+
+    font-weight:bold;
 }
 
-.nav-indicator {
-    position: absolute;
-    bottom: 4px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #ff791f;
+.cancel{
+    width:100%;
+    height:48px;
+
+    background:transparent;
+
+    color:#858b95;
 }
+
+/* =========================
+   toast
+========================= */
+
+.toast{
+    position:absolute;
+
+    z-index:10000;
+
+    left:50%;
+    bottom:92px;
+
+    transform:translate(-50%,20px);
+
+    padding:12px 17px;
 
-/* TOAST */
-.toast {
-    position: fixed;
-    z-index: 30000;
-    left: 50%;
-    bottom: 100px;
-    transform: translate(-50%, 20px);
-    background: #242027;
-    border: 1px solid rgba(255,255,255,.1);
-    padding: 13px 18px;
-    border-radius: 15px;
-    opacity: 0;
-    pointer-events: none;
-    transition: .3s;
-    font-size: 13px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.4);
-    max-width: 90%;
-    text-align: center;
+    border-radius:15px;
+
+    background:#fff;
+    color:#111;
+
+    font-size:12px;
+    font-weight:bold;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+
+    white-space:nowrap;
 }
 
-.toast.show {
-    opacity: 1;
-    transform: translate(-50%, 0);
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
 }
+
+@media(max-height:700px){
 
-/* TELEGRAM */
-.telegram {
-    display: block;
-    color: white;
-    text-decoration: none;
-    background: #17131b;
-    border: 1px solid rgba(255,255,255,.08);
-    padding: 15px;
-    border-radius: 16px;
-    margin-top: 9px;
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
+    .near-card{
+        bottom:88px;
+    }
+
+    .add-place{
+        bottom:330px;
+    }
 }
 
-/* RESPONSIVE */
-@media(max-width:480px) {
-    .hero h1 { font-size: 32px; }
-    .screen { padding-left: 15px; padding-right: 15px; }
-    .card { border-radius: 22px; }
-    .avatar-grid { grid-template-columns: repeat(5,1fr); }
-    .profile-name-input { width: 180px; font-size: 20px; }
+@media(min-width:600px){
+
+    .app{
+        box-shadow:
+            0 0 80px rgba(155,77,255,.12),
+            0 0 0 1px #20242b;
+    }
 }
+
 </style>
 </head>
 
@@ -748,527 +1368,2044 @@ button, input {
 
 <div class="app">
 
-<header class="header">
-    <div class="logo">
-        <div class="logo-dot"></div>
-        <div class="logo-text">Рядом</div>
-    </div>
-    <button class="header-icon" onclick="showToast('Здесь ты можешь быть собой 💜')">✦</button>
-</header>
+<!-- =========================
+     карта
+========================= -->
 
-<!-- ================= HOME ================= -->
-<main id="home" class="screen active">
-    <section class="hero">
-        <h1>Ты не один.<br>Ты всегда <span>рядом.</span></h1>
-        <p>Место, где можно отдохнуть, поговорить, разобраться в своих чувствах и просто побыть собой.</p>
-    </section>
+<section id="mapPage" class="page active">
 
-    <section class="card mood-card">
-        <div class="card-title">
-            <h2>Как ты сегодня?</h2>
-            <span>настроение</span>
-        </div>
-        <div class="mood-face" id="moodFace">🙂</div>
-        <div class="mood-name" id="moodName">Нормально</div>
-        <div class="mood-description" id="moodDescription">Можно сделать сегодняшний день немного лучше.</div>
-        <input id="moodRange" class="mood-range" type="range" min="0" max="100" value="50" oninput="changeMood(this.value)">
-        <div class="mood-labels">
-            <span>плохо</span>
-            <span>нормально</span>
-            <span>отлично</span>
-        </div>
-    </section>
+    <header class="top">
 
-    <section class="card pet-card">
-        <div class="card-title" style="width:100%">
-            <h2>Твой питомец</h2>
-            <span>Луми</span>
-        </div>
-        <div class="pet" id="pet">
-            <div class="pet-eye left"></div>
-            <div class="pet-eye right"></div>
-            <div class="pet-mouth" id="petMouth"></div>
-        </div>
-        <div class="pet-name">Луми</div>
-        <div class="pet-status" id="petStatus">Луми рад тебя видеть 💜</div>
-        <div class="pet-buttons">
-            <button class="pet-btn" onclick="playPet()">🎮 Поиграть</button>
-            <button class="pet-btn" onclick="feedPet()">🍎 Покормить</button>
-        </div>
-    </section>
+        <div>
+            <h1>
+                привет, <span id="helloName">никс</span> 👋
+            </h1>
 
-    <section class="card">
-        <div class="card-title">
-            <h2>Что тебе сейчас нужно?</h2>
-        </div>
-        <div class="actions">
-            <button class="action" onclick="openAI()">
-                <div class="action-icon">🤖</div>
-                <strong>Рядом AI</strong>
-                <small>скоро будет доступен</small>
-            </button>
-            <button class="action" onclick="openScreen('help',this)">
-                <div class="action-icon">🫶</div>
-                <strong>Мне нужна помощь</strong>
-                <small>полезные контакты</small>
-            </button>
-            <button class="action" onclick="openScreen('categories',this)">
-                <div class="action-icon">🌙</div>
-                <strong>Успокоиться</strong>
-                <small>идеи и упражнения</small>
-            </button>
-            <button class="action" onclick="showToast('Ты уже сделал что-то хорошее — открыл Рядом 💜')">
-                <div class="action-icon">✨</div>
-                <strong>Поддержка</strong>
-                <small>маленькие напоминания</small>
-            </button>
-        </div>
-    </section>
-</main>
-
-<!-- ================= CATEGORIES ================= -->
-<main id="categories" class="screen">
-    <section class="hero">
-        <h1>Для тебя <span>💜</span></h1>
-        <p>Выбери то, что подходит тебе прямо сейчас.</p>
-    </section>
-    <div class="category-tabs">
-        <button class="category active" onclick="selectCategory(this,'all')">Всё</button>
-        <button class="category" onclick="selectCategory(this,'calm')">😌 Спокойствие</button>
-        <button class="category" onclick="selectCategory(this,'motivation')">⚡ Мотивация</button>
-        <button class="category" onclick="selectCategory(this,'sleep')">🌙 Сон</button>
-        <button class="category" onclick="selectCategory(this,'friends')">🫂 Друзья</button>
-        <button class="category" onclick="selectCategory(this,'people')">🪜 Люди</button>
-    </div>
-    <div id="contentList"></div>
-</main>
-
-<!-- ================= PROFILE ================= -->
-<main id="profile" class="screen">
-    <section class="profile-top">
-        <div class="avatar-wrapper" onclick="openAvatarPicker()">
-            <div class="avatar" id="profileAvatar">🐉</div>
-        </div>
-        <div style="font-size:12px;color:#6a6270;margin-bottom:12px;">👆 нажми на аватар, чтобы выбрать</div>
-
-        <div class="profile-name-wrapper">
-            <div class="profile-name-display" id="profileNameDisplay" onclick="editName()">Мой профиль</div>
-            <input class="profile-name-input" id="profileNameInput" type="text" maxlength="30" placeholder="Введи ник">
-            <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;">
-                <button class="profile-save-btn" onclick="saveName()">💾 Сохранить ник</button>
+            <div class="online">
+                <i></i>
+                <span id="onlineLabel">в сети</span>
             </div>
         </div>
 
-        <p class="profile-sub" id="profileSub">Это твоё личное пространство</p>
-    </section>
-
-    <section class="card">
-        <div class="profile-row">
-            <span>Настроение сегодня</span>
-            <strong id="profileMood">🙂 Нормально</strong>
-        </div>
-        <div class="profile-row">
-            <span>Питомец</span>
-            <strong>Луми 💜</strong>
-        </div>
-        <div class="profile-row">
-            <span>Дней в Рядом</span>
-            <strong>1</strong>
-        </div>
-        <div class="profile-row">
-            <span>Добрые поступки</span>
-            <strong id="goodCount">0 ✨</strong>
-        </div>
-    </section>
-
-    <section class="card">
-        <div class="card-title"><h2>Маленькое напоминание</h2></div>
-        <p style="color:#a099a5;line-height:1.6;font-size:14px;">
-            Тебе не обязательно всегда быть сильным.
-            Иногда нормально устать, погрустить или попросить помощи. 💜
-        </p>
-    </section>
-
-    <button class="telegram" onclick="window.open('https://t.me/ryadom_online','_blank')">
-        ✈️ Telegram «Рядом»
-    </button>
-</main>
-
-<!-- ================= HELP ================= -->
-<main id="help" class="screen">
-    <section class="hero">
-        <h1>Ты можешь попросить <span>помощи.</span></h1>
-        <p>Если тебе очень тяжело, не обязательно справляться со всем одному.</p>
-    </section>
-
-    <section class="card" style="text-align:center;padding:26px 18px;">
-        <div style="font-size:48px;margin-bottom:10px;">🫶</div>
-        <h2 style="font-size:23px;margin-bottom:8px;">Позови человека, которому доверяешь</h2>
-        <p style="color:#908995;line-height:1.5;font-size:14px;">
-            Если тебе сейчас плохо или страшно, попробуй связаться с близким человеком.
-        </p>
-        <button class="phone" style="width:100%;border:0;cursor:pointer;display:block;color:white;text-decoration:none;background:linear-gradient(135deg,#8b4cff,#5f25bd);padding:16px;border-radius:16px;margin-top:17px;font-size:20px;font-weight:800;box-shadow:0 10px 30px rgba(108,50,220,.25);" onclick="window.location.href='tel:'">
-            👤 Позвать человека
+        <button
+            class="top-avatar"
+            onclick="showPage('profile')"
+        >
+            <img id="topAvatar">
+            <span id="topLetter">н</span>
         </button>
-        <p style="margin-top:12px;font-size:12px;color:#908995;">На телефоне откроется приложение контактов</p>
-    </section>
 
-    <section class="card">
-        <h2 style="margin-bottom:10px;">Если прямо сейчас опасно</h2>
-        <p style="color:#918994;line-height:1.5;font-size:14px;">
-            Постарайся не оставаться одному. Позови родителя, родственника, учителя или другого взрослого, которому доверяешь. При непосредственной опасности обратись в местную экстренную службу.
-        </p>
-    </section>
+    </header>
 
-    <button class="telegram" onclick="window.open('https://t.me/ryadom_online','_blank')">
-        ✈️ Перейти в Telegram «Рядом»
-    </button>
-</main>
 
-</div>
+    <div id="map"></div>
 
-<!-- AI BUTTON -->
-<button class="ai-button" onclick="openAI()">AI</button>
 
-<!-- AI MODAL -->
-<div class="ai-modal" id="aiModal" onclick="closeAIModal(event)">
-    <div class="ai-modal-box">
-        <div class="ai-modal-icon">🤖</div>
-        <h2>Рядом AI скоро будет здесь 💜</h2>
-        <p>Мы работаем над Рядом AI — виртуальным помощником, которому можно будет рассказать о том, что тебя беспокоит, или просто поговорить.</p>
-        <button class="ai-modal-close" onclick="closeAIModal()">Понятно 💜</button>
+    <div class="map-buttons">
+
+        <button onclick="locateUser()">
+            ⌾
+        </button>
+
+        <button onclick="map.zoomIn()">
+            +
+        </button>
+
+        <button onclick="map.zoomOut()">
+            −
+        </button>
+
     </div>
-</div>
 
-<!-- AVATAR PICKER -->
-<div class="avatar-picker-overlay" id="avatarPicker" onclick="closeAvatarPicker(event)">
-    <div class="avatar-picker">
-        <div class="avatar-picker-title">
-            <h2>Выбери аватар 🎨</h2>
-            <button class="avatar-picker-close" onclick="closeAvatarPicker()">✕</button>
+
+    <button
+        class="add-place"
+        onclick="openPlace()"
+    >
+        ＋ добавить место
+    </button>
+
+
+    <div class="near-card">
+
+        <div class="near-title">
+            <span></span>
+            кто рядом
         </div>
-        <div class="avatar-grid" id="avatarGrid"></div>
+
+        <div class="near-user">
+
+            <div class="avatar purple">
+                а
+            </div>
+
+            <div class="near-user-info">
+                <b>артём</b>
+                <small>240 м от тебя</small>
+            </div>
+
+            <i></i>
+
+        </div>
+
+
+        <div class="near-user">
+
+            <div class="avatar blue">
+                м
+            </div>
+
+            <div class="near-user-info">
+                <b>макс</b>
+                <small>1,2 км от тебя</small>
+            </div>
+
+            <i></i>
+
+        </div>
+
     </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+</section>
 
-<!-- BOTTOM NAV -->
+
+<!-- =========================
+     друзья
+========================= -->
+
+<section id="friendsPage" class="page">
+
+    <div class="page-head">
+
+        <div>
+            <h2>друзья</h2>
+            <p>24 друга</p>
+        </div>
+
+        <button
+            class="round-button"
+            onclick="toast('добавление друзей скоро появится')"
+        >
+            ＋
+        </button>
+
+    </div>
+
+
+    <div class="search">
+
+        🔎
+
+        <input
+            id="friendSearch"
+            placeholder="найти друга"
+            oninput="searchFriends()"
+        >
+
+    </div>
+
+
+    <div id="friendsList">
+
+        <div class="friend">
+
+            <div class="avatar purple">а</div>
+
+            <div class="friend-info">
+                <b>артём</b>
+                <span>
+                    <i></i>
+                    в сети
+                </span>
+            </div>
+
+            <div class="friend-distance">
+                240 м
+            </div>
+
+        </div>
+
+
+        <div class="friend">
+
+            <div class="avatar blue">м</div>
+
+            <div class="friend-info">
+                <b>макс</b>
+                <span>
+                    <i></i>
+                    в сети
+                </span>
+            </div>
+
+            <div class="friend-distance">
+                1,2 км
+            </div>
+
+        </div>
+
+
+        <div class="friend">
+
+            <div class="avatar orange">с</div>
+
+            <div class="friend-info">
+                <b>саша</b>
+                <span>
+                    был недавно
+                </span>
+            </div>
+
+            <div class="friend-distance">
+                3,8 км
+            </div>
+
+        </div>
+
+
+        <div class="friend">
+
+            <div class="avatar pink">к</div>
+
+            <div class="friend-info">
+                <b>кира</b>
+                <span>
+                    была 12 мин назад
+                </span>
+            </div>
+
+            <div class="friend-distance">
+                5,1 км
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     чаты
+========================= -->
+
+<section id="chatsPage" class="page">
+
+    <div class="page-head">
+
+        <div>
+            <h2>чаты</h2>
+            <p>твои сообщения</p>
+        </div>
+
+    </div>
+
+
+    <div class="search">
+
+        🔎
+
+        <input placeholder="поиск">
+
+    </div>
+
+
+    <div class="chat">
+
+        <div class="avatar purple">
+            а
+        </div>
+
+        <div
+            class="chat-info"
+            onclick="openChat('артём')"
+        >
+
+            <div class="chat-info-head">
+
+                <b>артём</b>
+
+                <time>21:42</time>
+
+            </div>
+
+            <p>ты уже вышел?</p>
+
+        </div>
+
+        <div class="unread">
+            2
+        </div>
+
+    </div>
+
+
+    <div class="chat">
+
+        <div class="avatar blue">
+            м
+        </div>
+
+        <div
+            class="chat-info"
+            onclick="openChat('макс')"
+        >
+
+            <div class="chat-info-head">
+
+                <b>макс</b>
+
+                <time>20:18</time>
+
+            </div>
+
+            <p>го сегодня гулять</p>
+
+        </div>
+
+        <div class="unread">
+            1
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     профиль
+========================= -->
+
+<section id="profilePage" class="page">
+
+    <div class="page-head">
+
+        <div>
+            <h2>профиль</h2>
+            <p>твой профиль</p>
+        </div>
+
+        <button
+            class="round-button"
+            onclick="showPage('settings')"
+        >
+            ⚙
+        </button>
+
+    </div>
+
+
+    <div class="profile-card">
+
+        <div class="profile-avatar">
+
+            <img id="profileAvatar">
+
+            <span id="profileLetter">
+                н
+            </span>
+
+            <button
+                class="camera"
+                onclick="chooseAvatar()"
+            >
+                📷
+            </button>
+
+        </div>
+
+
+        <h1 id="profileName">
+            никс
+        </h1>
+
+        <p class="username">
+            @niks
+        </p>
+
+
+        <div class="profile-online">
+
+            <i></i>
+
+            <span id="profileOnline">
+                в сети
+            </span>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div>
+                <b>24</b>
+                <span>друга</span>
+            </div>
+
+            <div>
+                <b>8</b>
+                <span>мест</span>
+            </div>
+
+            <div>
+                <b>12</b>
+                <span>дней</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="profile-menu">
+
+        <button onclick="openPlace()">
+
+            <span class="icon">
+                📍
+            </span>
+
+            <div>
+                <b>мои места</b>
+                <small>8 сохранённых мест</small>
+            </div>
+
+            <span class="arrow">
+                ›
+            </span>
+
+        </button>
+
+
+        <button>
+
+            <span class="icon">
+                ☆
+            </span>
+
+            <div>
+                <b>избранные друзья</b>
+                <small>3 друга</small>
+            </div>
+
+            <span class="arrow">
+                ›
+            </span>
+
+        </button>
+
+
+        <button>
+
+            <span class="icon">
+                🏆
+            </span>
+
+            <div>
+                <b>достижения</b>
+                <small>12 достижений</small>
+            </div>
+
+            <span class="arrow">
+                ›
+            </span>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     настройки
+========================= -->
+
+<section id="settingsPage" class="page">
+
+    <div class="page-head">
+
+        <div>
+            <h2>настройки</h2>
+            <p>приватность и аккаунт</p>
+        </div>
+
+        <button
+            class="back-button"
+            onclick="showPage('profile')"
+        >
+            ‹
+        </button>
+
+    </div>
+
+
+    <h3 class="section-title">
+        приватность
+    </h3>
+
+
+    <div class="settings-card">
+
+        <div class="setting">
+
+            <div class="setting-icon purple-bg">
+                ⌖
+            </div>
+
+            <div class="setting-info">
+
+                <b>
+                    видимость на карте
+                </b>
+
+                <small id="mapVisibilityText">
+                    тебя видят друзья
+                </small>
+
+            </div>
+
+
+            <label class="switch">
+
+                <input
+                    id="mapVisibility"
+                    type="checkbox"
+                    checked
+                    onchange="changeMapVisibility()"
+                >
+
+                <span></span>
+
+            </label>
+
+        </div>
+
+
+        <div class="setting">
+
+            <div class="setting-icon green-bg">
+                ●
+            </div>
+
+            <div class="setting-info">
+
+                <b>
+                    статус онлайн
+                </b>
+
+                <small id="onlineVisibilityText">
+                    показывается друзьям
+                </small>
+
+            </div>
+
+
+            <label class="switch">
+
+                <input
+                    id="onlineVisibility"
+                    type="checkbox"
+                    checked
+                    onchange="changeOnlineVisibility()"
+                >
+
+                <span></span>
+
+            </label>
+
+        </div>
+
+
+        <div class="setting">
+
+            <div class="setting-icon blue-bg">
+                ◷
+            </div>
+
+            <div class="setting-info">
+
+                <b>
+                    последний визит
+                </b>
+
+                <small id="lastSeenText">
+                    показывается друзьям
+                </small>
+
+            </div>
+
+
+            <label class="switch">
+
+                <input
+                    id="lastSeen"
+                    type="checkbox"
+                    checked
+                    onchange="changeLastSeen()"
+                >
+
+                <span></span>
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <h3 class="section-title">
+        геопозиция
+    </h3>
+
+
+    <div class="settings-card">
+
+        <button
+            class="setting-button"
+            onclick="locateUser()"
+        >
+
+            <div class="setting-icon purple-bg">
+                ⌾
+            </div>
+
+            <div>
+
+                <b>
+                    моя геопозиция
+                </b>
+
+                <small id="locationStatus">
+                    определить местоположение
+                </small>
+
+            </div>
+
+            <em>›</em>
+
+        </button>
+
+
+        <button
+            class="setting-button"
+            onclick="openPlace()"
+        >
+
+            <div class="setting-icon orange-bg">
+                📍
+            </div>
+
+            <div>
+
+                <b>
+                    мои места
+                </b>
+
+                <small>
+                    дом, школа и другие места
+                </small>
+
+            </div>
+
+            <em>›</em>
+
+        </button>
+
+    </div>
+
+
+    <h3 class="section-title">
+        другое
+    </h3>
+
+
+    <div class="settings-card">
+
+        <button class="setting-button">
+
+            <div class="setting-icon blue-bg">
+                🔔
+            </div>
+
+            <div>
+
+                <b>
+                    уведомления
+                </b>
+
+                <small>
+                    сообщения и друзья
+                </small>
+
+            </div>
+
+            <em>›</em>
+
+        </button>
+
+
+        <button class="setting-button">
+
+            <div class="setting-icon purple-bg">
+                ◐
+            </div>
+
+            <div>
+
+                <b>
+                    тема приложения
+                </b>
+
+                <small>
+                    тёмная
+                </small>
+
+            </div>
+
+            <em>›</em>
+
+        </button>
+
+    </div>
+
+
+    <button
+        class="logout"
+        onclick="toast('выход пока отключён')"
+    >
+        выйти из аккаунта
+    </button>
+
+</section>
+
+
+<!-- =========================
+     навигация
+========================= -->
+
 <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="openScreen('home',this)">
-        <div class="nav-icon">⌂</div>
-        <span>Главная</span>
-        <div class="nav-indicator"></div>
+
+    <button
+        class="nav active"
+        data-page="map"
+        onclick="showPage('map')"
+    >
+        <span>⌖</span>
+        <small>карта</small>
     </button>
-    <button class="nav-btn" onclick="openScreen('categories',this)">
-        <div class="nav-icon">✦</div>
-        <span>Для тебя</span>
+
+
+    <button
+        class="nav"
+        data-page="friends"
+        onclick="showPage('friends')"
+    >
+        <span>♧</span>
+        <small>друзья</small>
     </button>
-    <button class="nav-btn" onclick="openAI()">
-        <div class="nav-icon">💬</div>
-        <span>AI</span>
+
+
+    <button
+        class="nav"
+        data-page="chats"
+        onclick="showPage('chats')"
+    >
+        <span>●</span>
+        <small>чаты</small>
     </button>
-    <button class="nav-btn" onclick="openScreen('help',this)">
-        <div class="nav-icon">🫶</div>
-        <span>Помощь</span>
+
+
+    <button
+        class="nav"
+        data-page="profile"
+        onclick="showPage('profile')"
+    >
+        <span>♙</span>
+        <small>профиль</small>
     </button>
-    <button class="nav-btn" onclick="openScreen('profile',this)">
-        <div class="nav-icon">◉</div>
-        <span>Профиль</span>
-    </button>
+
 </nav>
 
+
+<!-- =========================
+     чат
+========================= -->
+
+<div id="chatModal" class="chat-modal">
+
+    <div class="chat-window">
+
+        <header class="chat-head">
+
+            <button onclick="closeChat()">
+                ‹
+            </button>
+
+            <div class="chat-user">
+
+                <div class="avatar purple">
+                    а
+                </div>
+
+                <div>
+
+                    <b id="chatTitle">
+                        артём
+                    </b>
+
+                    <small>
+                        в сети
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div
+            class="messages"
+            id="messages"
+        >
+
+            <div class="message friend-message">
+                привет 👋
+            </div>
+
+            <div class="message friend-message">
+                ты уже вышел?
+            </div>
+
+            <div class="message my-message">
+                да, я уже иду
+            </div>
+
+        </div>
+
+
+        <form
+            class="message-form"
+            onsubmit="sendMessage(event)"
+        >
+
+            <input
+                id="messageInput"
+                placeholder="написать сообщение..."
+                autocomplete="off"
+            >
+
+            <button>
+                ➤
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     добавление места
+========================= -->
+
+<div id="placeModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="handle"></div>
+
+        <h2>
+            добавить место
+        </h2>
+
+        <p>
+            сохрани важное место на карте
+        </p>
+
+
+        <input
+            id="placeName"
+            placeholder="название места"
+        >
+
+
+        <div class="place-types">
+
+            <button onclick="selectPlace(this,'дом')">
+                🏠
+                <small>дом</small>
+            </button>
+
+            <button onclick="selectPlace(this,'школа')">
+                🎓
+                <small>школа</small>
+            </button>
+
+            <button onclick="selectPlace(this,'работа')">
+                💼
+                <small>работа</small>
+            </button>
+
+            <button onclick="selectPlace(this,'другое')">
+                ⭐
+                <small>другое</small>
+            </button>
+
+        </div>
+
+
+        <button
+            class="primary"
+            onclick="savePlace()"
+        >
+            сохранить место
+        </button>
+
+
+        <button
+            class="cancel"
+            onclick="closePlace()"
+        >
+            отмена
+        </button>
+
+    </div>
+
+</div>
+
+
+<input
+    id="avatarInput"
+    type="file"
+    accept="image/*"
+    hidden
+    onchange="uploadAvatar(event)"
+>
+
+
+<div id="toast" class="toast"></div>
+
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-// ======================== СОСТОЯНИЕ ========================
-let goodActions = Number(localStorage.getItem("ryadom_good_actions") || 0);
-let petHappiness = Number(localStorage.getItem("ryadom_pet") || 70);
 
-let userProfile = {
-    name: localStorage.getItem("ryadom_name") || "Мой профиль",
-    avatar: localStorage.getItem("ryadom_avatar") || "🐉"
-};
+/* =========================
+   переменные
+========================= */
 
-const AVATARS = [
-    "🐉","🦊","🐱","🐶","🐺","🦄","🐼","🐨","🦁","🐯","🐸","🐵",
-    "🦋","🐝","🐞","🦉","🦅","🐧","🌙","⭐","🌸","🌺","🌻","🌿",
-    "🔥","🌈","☀️","🌊","🍄","🎃","💎","🪐","🚀","🌠","🎨","🧚",
-    "😺","🐈","🐕","🦮","🐩","🐇","🐿️","🦔","🦇","🦢","🦩","🕊️",
-    "🐦","🐤","🐣","🐥","🦜","🐸","🐊","🦎","🐍","🐢","🐙","🦑",
-    "🦐","🦀","🐡","🐠","🐟","🐬","🐳","🐋","🦈","🦭"
-];
+let map;
+let userMarker;
 
-// ======================== ПРОФИЛЬ ========================
-function loadProfile() {
-    document.getElementById("profileAvatar").textContent = userProfile.avatar;
-    document.getElementById("profileNameDisplay").textContent = userProfile.name;
-    
-    const sub = document.getElementById("profileSub");
-    if (userProfile.name && userProfile.name !== "Мой профиль") {
-        sub.textContent = "Привет, " + userProfile.name + "! 👋";
-    } else {
-        sub.textContent = "Это твоё личное пространство";
-    }
-    
-    document.querySelectorAll(".avatar-option").forEach(el => {
-        el.classList.toggle("selected", el.textContent === userProfile.avatar);
-    });
+let selectedPlaceType = "другое";
+
+let toastTimer;
+
+
+/* =========================
+   карта
+========================= */
+
+function initMap(){
+
+    map = L.map("map",{
+        zoomControl:false,
+        attributionControl:false
+    }).setView(
+        [55.751244,37.618423],
+        13
+    );
+
+
+    L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+            maxZoom:19
+        }
+    ).addTo(map);
+
+
+    locateUser();
 }
 
-function editName() {
-    const display = document.getElementById("profileNameDisplay");
-    const input = document.getElementById("profileNameInput");
-    display.classList.add("hide");
-    input.classList.add("show");
-    input.value = userProfile.name;
-    input.focus();
-    input.select();
-}
 
-function saveName() {
-    const display = document.getElementById("profileNameDisplay");
-    const input = document.getElementById("profileNameInput");
-    const newName = input.value.trim() || "Мой профиль";
-    userProfile.name = newName;
-    localStorage.setItem("ryadom_name", newName);
-    display.classList.remove("hide");
-    input.classList.remove("show");
-    loadProfile();
-    showToast("Ник сохранён! 💜");
-}
+/* =========================
+   геопозиция
+========================= */
 
-function openAvatarPicker() {
-    document.getElementById("avatarPicker").classList.add("show");
-}
+function locateUser(){
 
-function closeAvatarPicker(event) {
-    if (event && event.target !== document.getElementById("avatarPicker")) return;
-    document.getElementById("avatarPicker").classList.remove("show");
-}
+    if(!navigator.geolocation){
 
-function selectAvatar(emoji) {
-    userProfile.avatar = emoji;
-    localStorage.setItem("ryadom_avatar", emoji);
-    loadProfile();
-    closeAvatarPicker();
-    showToast("Аватар обновлён! ✨");
-}
+        toast("геопозиция недоступна");
 
-function renderAvatarPicker() {
-    const grid = document.getElementById("avatarGrid");
-    grid.innerHTML = "";
-    AVATARS.forEach(emoji => {
-        const btn = document.createElement("button");
-        btn.className = "avatar-option";
-        btn.textContent = emoji;
-        if (emoji === userProfile.avatar) btn.classList.add("selected");
-        btn.onclick = () => selectAvatar(emoji);
-        grid.appendChild(btn);
-    });
-}
-
-// ======================== ЭКРАНЫ ========================
-function openScreen(id, button) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-    
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-        btn.classList.remove("active");
-        btn.querySelector(".nav-indicator")?.remove();
-    });
-    
-    if (button) {
-        button.classList.add("active");
-        const ind = document.createElement("div");
-        ind.className = "nav-indicator";
-        button.appendChild(ind);
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-// ======================== MOOD ========================
-function changeMood(value) {
-    value = Number(value);
-    let face, name, desc;
-    if (value <= 20) { face = "😢"; name = "Очень плохо"; desc = "Похоже, сегодня тебе действительно тяжело."; }
-    else if (value <= 40) { face = "😕"; name = "Грустно"; desc = "Иногда плохой день — просто плохой день."; }
-    else if (value <= 60) { face = "🙂"; name = "Нормально"; desc = "Можно сделать сегодняшний день немного лучше."; }
-    else if (value <= 80) { face = "😊"; name = "Хорошо"; desc = "Кажется, сегодня неплохой день!"; }
-    else { face = "🤩"; name = "Отлично!"; desc = "Вот это настроение! Сохрани его ✨"; }
-    
-    document.getElementById("moodFace").textContent = face;
-    document.getElementById("moodName").textContent = name;
-    document.getElementById("moodDescription").textContent = desc;
-    document.getElementById("profileMood").textContent = face + " " + name;
-    localStorage.setItem("ryadom_mood", value);
-}
-
-// ======================== ПИТОМЕЦ ========================
-function updatePet() {
-    const status = document.getElementById("petStatus");
-    const mouth = document.getElementById("petMouth");
-    const pet = document.getElementById("pet");
-    
-    if (petHappiness >= 80) {
-        status.textContent = "Луми счастлив! Ему очень нравится быть с тобой 💜";
-        mouth.style.borderBottom = "3px solid #24142d";
-        pet.style.filter = "brightness(1.1)";
-    } else if (petHappiness >= 45) {
-        status.textContent = "Луми немного скучает по тебе.";
-        mouth.style.borderBottom = "3px solid #24142d";
-        pet.style.filter = "brightness(.95)";
-    } else {
-        status.textContent = "Луми грустит... Поиграй с ним 🥺";
-        mouth.style.borderBottom = "0";
-        pet.style.filter = "brightness(.75)";
-    }
-    localStorage.setItem("ryadom_pet", petHappiness);
-}
-
-function playPet() {
-    petHappiness = Math.min(100, petHappiness + 18);
-    updatePet();
-    addGoodAction();
-    showToast("Луми счастлив! 🎮💜");
-}
-
-function feedPet() {
-    petHappiness = Math.min(100, petHappiness + 10);
-    updatePet();
-    addGoodAction();
-    showToast("Луми вкусно поел 🍎");
-}
-
-setInterval(() => {
-    petHappiness = Math.max(0, petHappiness - 1);
-    updatePet();
-}, 60000);
-
-// ======================== GOOD ACTIONS ========================
-function addGoodAction() {
-    goodActions++;
-    localStorage.setItem("ryadom_good_actions", goodActions);
-    document.getElementById("goodCount").textContent = goodActions + " ✨";
-}
-
-// ======================== CATEGORIES ========================
-const content = {
-    all: [
-        ["🌿", "Сделай паузу", "Убери телефон на минуту, сделай несколько спокойных вдохов и просто посиди."],
-        ["💭", "Запиши мысли", "Иногда становится легче, если выписать всё, что сейчас происходит внутри."],
-        ["🫶", "Поговори с кем-нибудь", "Выбери человека, которому доверяешь, и просто напиши ему."],
-        ["✨", "Маленькая победа", "Даже если сегодня ты просто встал с кровати — это уже что-то."]
-    ],
-    calm: [
-        ["🌬️", "Дыхание 4–4", "Вдохни на 4 секунды, задержи дыхание на 4 и медленно выдохни."],
-        ["🌧️", "Представь спокойное место", "Закрой глаза и представь место, где тебе спокойно и безопасно."],
-        ["🧘", "Заземление", "Назови 5 вещей, которые видишь, 4 которые можешь потрогать и 3 которые слышишь."]
-    ],
-    motivation: [
-        ["⚡", "Один маленький шаг", "Не обязательно решить всё сразу. Выбери только одну маленькую задачу."],
-        ["🚀", "Ты способен", "Ошибки не делают тебя хуже. Они просто означают, что ты учишься."],
-        ["🏆", "Вспомни победу", "Вспомни ситуацию, когда ты справился с тем, что казалось сложным."]
-    ],
-    sleep: [
-        ["🌙", "Выключи яркий экран", "Перед сном попробуй немного уменьшить яркость телефона."],
-        ["☁️", "Спокойная мысль", "Представь место, где тебе максимально спокойно."],
-        ["🛏️", "Не торопись уснуть", "Не заставляй себя уснуть. Просто удобно устройся и дай телу расслабиться."]
-    ],
-    friends: [
-        ["🫂", "Напиши другу", "Иногда простое «как ты?» может сильно изменить чей-то день."],
-        ["💬", "Будь рядом", "Если друг рассказывает о проблеме, иногда самое важное — просто выслушать."],
-        ["❤️", "Скажи что-нибудь хорошее", "Отправь человеку сообщение, которое ему будет приятно получить."]
-    ],
-    people: [
-        ["🌱", "Кто-то появляется", "Иногда в твоей жизни неожиданно появляется новый человек."],
-        ["🙂", "Всё становится хорошо", "Вы начинаете общаться, смеяться, гулять, делиться мыслями."],
-        ["🫂", "Человек становится близким", "Постепенно человек может стать очень важной частью твоей жизни."],
-        ["✨", "Вы проходите что-то вместе", "Бывают хорошие дни, сложные разговоры, ссоры и примирения."],
-        ["🍂", "Иногда люди отдаляются", "Иногда люди меняются. У них появляются новые интересы, друзья, планы."],
-        ["🚪", "Кто-то уходит", "Некоторые люди остаются с нами надолго, а некоторые уходят."],
-        ["💭", "Но воспоминания остаются", "Даже если человек больше не рядом, то время, которое вы провели вместе, всё равно было настоящим."],
-        ["💜", "Оставайся собой", "Самое главное — не теряй себя ради того, чтобы удержать другого человека."],
-        ["🌅", "Впереди ещё много людей", "После одного человека жизнь не заканчивается. Ты ещё встретишь людей, с которыми будут новые разговоры, дружба, любовь, приключения и воспоминания."],
-        ["🪜", "Жизнь продолжается", "Жизнь похожа на лестницу: кто-то идёт рядом с тобой несколько ступеней, кто-то — почти весь путь. Главное — продолжать идти и оставаться собой."]
-    ]
-};
-
-function selectCategory(button, type) {
-    document.querySelectorAll(".category").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    renderContent(type);
-}
-
-function renderContent(type) {
-    const list = document.getElementById("contentList");
-    list.innerHTML = "";
-    
-    if (type === "people") {
-        const intro = document.createElement("div");
-        intro.className = "people-intro";
-        intro.innerHTML = `<h2>🪜 Люди приходят и уходят</h2><p>Иногда человек становится очень близким, а потом ваши дороги расходятся. Это может быть больно, но это часть жизни.</p>`;
-        list.appendChild(intro);
-        
-        content.people.forEach(item => {
-            const step = document.createElement("div");
-            step.className = "people-step";
-            step.innerHTML = `<div class="people-step-icon">${item[0]}</div><div class="people-step-title">${item[1]}</div><div class="people-step-text">${item[2]}</div>`;
-            step.onclick = () => { addGoodAction(); showToast("Ты можешь продолжать идти 💜"); };
-            list.appendChild(step);
-        });
-        
-        const final = document.createElement("div");
-        final.className = "people-final";
-        final.innerHTML = `<div class="big">💜</div><h2>Это абсолютно нормально</h2><p>Люди приходят в нашу жизнь и иногда уходят. Кто-то остаётся надолго, кто-то проходит только несколько ступеней вместе с нами.<br><br>Это не значит, что всё было зря. Хорошие воспоминания остаются с тобой, даже если человек больше не рядом.<br><br>И самое главное: <strong>не меняй себя ради того, чтобы удержать другого человека.</strong><br><br>Будь собой. Продолжай идти. Впереди ещё много новых людей, встреч и моментов. 🌅</p>`;
-        list.appendChild(final);
         return;
     }
-    
-    content[type].forEach(item => {
-        const div = document.createElement("div");
-        div.className = "content-item";
-        div.innerHTML = `<div class="emoji">${item[0]}</div><h3>${item[1]}</h3><p>${item[2]}</p>`;
-        div.onclick = () => { addGoodAction(); showToast("Ты сделал что-то хорошее для себя ✨"); };
-        list.appendChild(div);
-    });
+
+
+    document.getElementById(
+        "locationStatus"
+    ).textContent =
+        "определяем местоположение...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            const lat =
+                position.coords.latitude;
+
+            const lng =
+                position.coords.longitude;
+
+
+            if(userMarker){
+
+                userMarker.setLatLng([
+                    lat,
+                    lng
+                ]);
+
+            }else{
+
+                const icon =
+                    L.divIcon({
+
+                        className:
+                            "my-location-icon",
+
+                        html:`
+
+                            <div class="user-marker-wrap">
+
+                                <div class="user-pulse"></div>
+
+                                <div
+                                    class="user-pulse"
+                                ></div>
+
+                                <div class="user-dot"></div>
+
+                                <div class="user-online-label">
+                                    ● в сети
+                                </div>
+
+                            </div>
+
+                        `,
+
+                        iconSize:[
+                            120,
+                            120
+                        ],
+
+                        iconAnchor:[
+                            60,
+                            60
+                        ]
+
+                    });
+
+
+                userMarker =
+                    L.marker(
+                        [lat,lng],
+                        {
+                            icon:icon,
+                            zIndexOffset:1000
+                        }
+                    ).addTo(map);
+
+            }
+
+
+            map.setView(
+                [lat,lng],
+                16
+            );
+
+
+            document.getElementById(
+                "locationStatus"
+            ).textContent =
+                "геопозиция включена";
+
+
+            toast(
+                "ты на карте"
+            );
+
+        },
+
+        function(){
+
+            document.getElementById(
+                "locationStatus"
+            ).textContent =
+                "не удалось определить местоположение";
+
+
+            toast(
+                "разреши доступ к геопозиции"
+            );
+
+        },
+
+        {
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:10000
+        }
+
+    );
 }
 
-// ======================== AI ========================
-function openAI() {
-    document.getElementById("aiModal").classList.add("show");
-}
 
-function closeAIModal(event) {
-    if (event && event.target !== document.getElementById("aiModal")) return;
-    document.getElementById("aiModal").classList.remove("show");
-}
+/* =========================
+   навигация
+========================= */
 
-// ======================== TOAST ========================
-let toastTimer;
-function showToast(text) {
-    const toast = document.getElementById("toast");
-    toast.textContent = text;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
-}
+function showPage(page){
 
-// ======================== ЗАГРУЗКА ========================
-function loadMood() {
-    const saved = localStorage.getItem("ryadom_mood");
-    if (saved !== null) {
-        document.getElementById("moodRange").value = saved;
-        changeMood(saved);
+    document
+        .querySelectorAll(".page")
+        .forEach(function(element){
+
+            element.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const target =
+        document.getElementById(
+            page + "Page"
+        );
+
+
+    if(target){
+
+        target.classList.add(
+            "active"
+        );
+
     }
-    document.getElementById("goodCount").textContent = goodActions + " ✨";
+
+
+    document
+        .querySelectorAll(".nav")
+        .forEach(function(button){
+
+            button.classList.remove(
+                "active"
+            );
+
+
+            if(
+                button.dataset.page ===
+                page
+            ){
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+
+
+    if(
+        page === "map" &&
+        map
+    ){
+
+        setTimeout(
+            function(){
+
+                map.invalidateSize();
+
+            },
+            100
+        );
+
+    }
+
 }
 
-// ======================== СТАРТ ========================
-renderAvatarPicker();
-renderContent("all");
-updatePet();
-loadProfile();
-loadMood();
+
+/* =========================
+   поиск
+========================= */
+
+function searchFriends(){
+
+    const query =
+        document
+        .getElementById(
+            "friendSearch"
+        )
+        .value
+        .toLowerCase();
+
+
+    document
+        .querySelectorAll(".friend")
+        .forEach(function(friend){
+
+            const name =
+                friend
+                .querySelector(
+                    ".friend-info b"
+                )
+                .textContent
+                .toLowerCase();
+
+
+            friend.style.display =
+                name.includes(query)
+                ? "flex"
+                : "none";
+
+        });
+
+}
+
+
+/* =========================
+   настройки карты
+========================= */
+
+function changeMapVisibility(){
+
+    const enabled =
+        document.getElementById(
+            "mapVisibility"
+        ).checked;
+
+
+    const text =
+        document.getElementById(
+            "mapVisibilityText"
+        );
+
+
+    if(enabled){
+
+        text.textContent =
+            "тебя видят друзья";
+
+
+        if(userMarker){
+
+            userMarker.setOpacity(1);
+
+        }
+
+
+        toast(
+            "ты снова виден на карте"
+        );
+
+    }else{
+
+        text.textContent =
+            "ты скрыт на карте";
+
+
+        if(userMarker){
+
+            userMarker.setOpacity(0);
+
+        }
+
+
+        toast(
+            "ты скрыт на карте"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   онлайн
+========================= */
+
+function changeOnlineVisibility(){
+
+    const enabled =
+        document.getElementById(
+            "onlineVisibility"
+        ).checked;
+
+
+    const text =
+        document.getElementById(
+            "onlineVisibilityText"
+        );
+
+
+    const mapText =
+        document.getElementById(
+            "onlineLabel"
+        );
+
+
+    const profileText =
+        document.getElementById(
+            "profileOnline"
+        );
+
+
+    if(enabled){
+
+        text.textContent =
+            "показывается друзьям";
+
+
+        mapText.textContent =
+            "в сети";
+
+
+        profileText.textContent =
+            "в сети";
+
+
+        toast(
+            "статус онлайн виден"
+        );
+
+    }else{
+
+        text.textContent =
+            "никто не видит твой статус";
+
+
+        mapText.textContent =
+            "был недавно";
+
+
+        profileText.textContent =
+            "был недавно";
+
+
+        toast(
+            "статус онлайн скрыт"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   последний визит
+========================= */
+
+function changeLastSeen(){
+
+    const enabled =
+        document.getElementById(
+            "lastSeen"
+        ).checked;
+
+
+    const text =
+        document.getElementById(
+            "lastSeenText"
+        );
+
+
+    if(enabled){
+
+        text.textContent =
+            "показывается друзьям";
+
+
+        toast(
+            "последний визит виден"
+        );
+
+    }else{
+
+        text.textContent =
+            "никто не видит последний визит";
+
+
+        toast(
+            "последний визит скрыт"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   чат
+========================= */
+
+function openChat(name){
+
+    document.getElementById(
+        "chatTitle"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "chatModal"
+    ).classList.add(
+        "open"
+    );
+
+
+    setTimeout(
+        function(){
+
+            document
+                .getElementById(
+                    "messageInput"
+                )
+                .focus();
+
+        },
+        100
+    );
+
+}
+
+
+function closeChat(){
+
+    document
+        .getElementById(
+            "chatModal"
+        )
+        .classList.remove(
+            "open"
+        );
+
+}
+
+
+function sendMessage(event){
+
+    event.preventDefault();
+
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text){
+
+        return;
+
+    }
+
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+
+    message.className =
+        "message my-message";
+
+
+    message.textContent =
+        text;
+
+
+    document
+        .getElementById(
+            "messages"
+        )
+        .appendChild(
+            message
+        );
+
+
+    input.value = "";
+
+
+    const messages =
+        document.getElementById(
+            "messages"
+        );
+
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+
+    setTimeout(
+        function(){
+
+            const reply =
+                document.createElement(
+                    "div"
+                );
+
+
+            reply.className =
+                "message friend-message";
+
+
+            reply.textContent =
+                "хорошо 👍";
+
+
+            messages.appendChild(
+                reply
+            );
+
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        },
+        900
+    );
+
+}
+
+
+/* =========================
+   места
+========================= */
+
+function openPlace(){
+
+    document
+        .getElementById(
+            "placeModal"
+        )
+        .classList.add(
+            "open"
+        );
+
+}
+
+
+function closePlace(){
+
+    document
+        .getElementById(
+            "placeModal"
+        )
+        .classList.remove(
+            "open"
+        );
+
+}
+
+
+function selectPlace(
+    button,
+    type
+){
+
+    document
+        .querySelectorAll(
+            ".place-types button"
+        )
+        .forEach(
+            function(item){
+
+                item.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+    button.classList.add(
+        "selected"
+    );
+
+
+    selectedPlaceType =
+        type;
+
+}
+
+
+function savePlace(){
+
+    const name =
+        document
+        .getElementById(
+            "placeName"
+        )
+        .value
+        .trim();
+
+
+    if(!name){
+
+        toast(
+            "введи название места"
+        );
+
+        return;
+
+    }
+
+
+    if(!navigator.geolocation){
+
+        toast(
+            "геопозиция недоступна"
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            const lat =
+                position.coords.latitude;
+
+            const lng =
+                position.coords.longitude;
+
+
+            let emoji = "⭐";
+
+
+            if(
+                selectedPlaceType ===
+                "дом"
+            ){
+
+                emoji = "🏠";
+
+            }
+
+            if(
+                selectedPlaceType ===
+                "школа"
+            ){
+
+                emoji = "🎓";
+
+            }
+
+            if(
+                selectedPlaceType ===
+                "работа"
+            ){
+
+                emoji = "💼";
+
+            }
+
+
+            const icon =
+                L.divIcon({
+
+                    className:
+                        "place-icon",
+
+                    html:`
+
+                        <div style="
+                            width:42px;
+                            height:42px;
+                            border-radius:14px;
+                            background:#11161c;
+                            border:2px solid #9b4dff;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:20px;
+                            box-shadow:0 6px 20px rgba(0,0,0,.5);
+                        ">
+                            ${emoji}
+                        </div>
+
+                    `,
+
+                    iconSize:[
+                        42,
+                        42
+                    ],
+
+                    iconAnchor:[
+                        21,
+                        21
+                    ]
+
+                });
+
+
+            L.marker(
+                [lat,lng],
+                {
+                    icon:icon
+                }
+            )
+            .addTo(map)
+            .bindPopup(
+                "<b>" +
+                name +
+                "</b><br>" +
+                selectedPlaceType
+            );
+
+
+            closePlace();
+
+
+            document.getElementById(
+                "placeName"
+            ).value = "";
+
+
+            toast(
+                "место сохранено"
+            );
+
+        },
+
+        function(){
+
+            toast(
+                "разреши доступ к геопозиции"
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================
+   аватар
+========================= */
+
+function chooseAvatar(){
+
+    document
+        .getElementById(
+            "avatarInput"
+        )
+        .click();
+
+}
+
+
+function uploadAvatar(event){
+
+    const file =
+        event.target.files[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            const url =
+                e.target.result;
+
+
+            const top =
+                document.getElementById(
+                    "topAvatar"
+                );
+
+
+            const profile =
+                document.getElementById(
+                    "profileAvatar"
+                );
+
+
+            top.src = url;
+            profile.src = url;
+
+
+            top.style.display =
+                "block";
+
+            profile.style.display =
+                "block";
+
+
+            document.getElementById(
+                "topLetter"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "profileLetter"
+            ).style.display =
+                "none";
+
+
+            localStorage.setItem(
+                "avatar",
+                url
+            );
+
+
+            toast(
+                "аватарка обновлена"
+            );
+
+        };
+
+
+    reader.readAsDataURL(
+        file
+    );
+
+}
+
+
+/* =========================
+   имя
+========================= */
+
+function changeName(){
+
+    const oldName =
+        localStorage.getItem(
+            "name"
+        ) ||
+        "никс";
+
+
+    const name =
+        prompt(
+            "как тебя называть?",
+            oldName
+        );
+
+
+    if(!name){
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "name",
+        name
+    );
+
+
+    document.getElementById(
+        "helloName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        name;
+
+
+    document.getElementById(
+        "topLetter"
+    ).textContent =
+        name[0].toLowerCase();
+
+
+    document.getElementById(
+        "profileLetter"
+    ).textContent =
+        name[0].toLowerCase();
+
+
+    toast(
+        "имя обновлено"
+    );
+
+}
+
+
+/* =========================
+   toast
+========================= */
+
+function toast(text){
+
+    const element =
+        document.getElementById(
+            "toast"
+        );
+
+
+    element.textContent =
+        text;
+
+
+    element.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function(){
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            2200
+        );
+
+}
+
+
+/* =========================
+   загрузка профиля
+========================= */
+
+function loadProfile(){
+
+    const name =
+        localStorage.getItem(
+            "name"
+        );
+
+
+    if(name){
+
+        document.getElementById(
+            "helloName"
+        ).textContent =
+            name;
+
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            name;
+
+
+        document.getElementById(
+            "topLetter"
+        ).textContent =
+            name[0].toLowerCase();
+
+
+        document.getElementById(
+            "profileLetter"
+        ).textContent =
+            name[0].toLowerCase();
+
+    }
+
+
+    const avatar =
+        localStorage.getItem(
+            "avatar"
+        );
+
+
+    if(avatar){
+
+        document.getElementById(
+            "topAvatar"
+        ).src =
+            avatar;
+
+
+        document.getElementById(
+            "profileAvatar"
+        ).src =
+            avatar;
+
+
+        document.getElementById(
+            "topAvatar"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "profileAvatar"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "topLetter"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "profileLetter"
+        ).style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================
+   запуск
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        initMap();
+
+        loadProfile();
+
+    }
+);
+
 </script>
 
 </body>
