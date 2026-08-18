@@ -3,1495 +3,1225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
 <title>рядом</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    -webkit-tap-highlight-color:transparent;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
 :root{
-    --bg:#07090d;
-    --card:#10141a;
-    --card2:#171c23;
-    --line:#252b34;
-    --text:#ffffff;
-    --muted:#858c98;
-    --purple:#9b4dff;
-    --purple2:#7029df;
-    --green:#39df79;
-    --red:#ff5360;
-    --blue:#4e9cff;
-    --yellow:#ffc94d;
+  --bg:#07090d;
+  --card:#10151c;
+  --card2:#171d25;
+  --line:#252c35;
+  --text:#fff;
+  --muted:#858e9a;
+  --purple:#9b4dff;
+  --purple2:#7028e0;
+  --green:#38e37a;
+  --red:#ff5362;
+  --blue:#4b9cff;
 }
 
 body.light{
-    --bg:#f4f5f8;
-    --card:#ffffff;
-    --card2:#eef0f4;
-    --line:#dfe2e7;
-    --text:#111318;
-    --muted:#737985;
+  --bg:#f3f4f7;
+  --card:#fff;
+  --card2:#eef0f4;
+  --line:#dfe2e7;
+  --text:#111;
+  --muted:#727985;
 }
 
-html,
-body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  font-family:Arial,sans-serif;
+  color:var(--text);
 }
 
-body{
-    background:#000;
-    color:var(--text);
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-button,
-input{
-    font:inherit;
+button,input{
+  font:inherit;
 }
 
 button{
-    border:0;
-    color:inherit;
-    cursor:pointer;
+  border:0;
+  cursor:pointer;
+  color:inherit;
 }
 
 .app{
-    position:relative;
-    width:100%;
-    height:100dvh;
-    max-width:540px;
-    margin:auto;
-    overflow:hidden;
-    background:var(--bg);
+  position:relative;
+  width:100%;
+  max-width:560px;
+  height:100dvh;
+  margin:auto;
+  overflow:hidden;
+  background:var(--bg);
 }
 
 .page{
-    position:absolute;
-    inset:0;
-    display:none;
-    overflow-y:auto;
-    padding:18px 16px 110px;
-    background:var(--bg);
+  position:absolute;
+  inset:0;
+  display:none;
+  overflow-y:auto;
+  padding:18px 16px 105px;
+  background:var(--bg);
 }
 
 .page.active{
-    display:block;
-    animation:pageIn .2s ease;
+  display:block;
+  animation:pageIn .25s ease;
 }
 
 @keyframes pageIn{
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 /* карта */
 
 #mapPage{
-    padding:0;
-    overflow:hidden;
+  padding:0;
+  overflow:hidden;
 }
 
 #map{
-    position:absolute;
-    inset:0;
-    z-index:1;
-    background:#101419;
+  position:absolute;
+  inset:0;
+  z-index:1;
 }
 
 .leaflet-control-attribution,
 .leaflet-control-zoom{
-    display:none;
+  display:none;
 }
 
 .top{
-    position:absolute;
-    z-index:1000;
-    top:0;
-    left:0;
-    right:0;
-
-    padding:18px 16px 40px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    background:linear-gradient(
-        to bottom,
-        rgba(7,9,13,.98),
-        rgba(7,9,13,.72),
-        transparent
-    );
+  position:absolute;
+  z-index:1000;
+  top:0;
+  left:0;
+  right:0;
+  padding:18px 16px 42px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:linear-gradient(
+    to bottom,
+    rgba(7,9,13,.98),
+    rgba(7,9,13,.7),
+    transparent
+  );
 }
 
 body.light .top{
-    background:linear-gradient(
-        to bottom,
-        rgba(244,245,248,.98),
-        rgba(244,245,248,.7),
-        transparent
-    );
+  background:linear-gradient(
+    to bottom,
+    rgba(243,244,247,.98),
+    rgba(243,244,247,.7),
+    transparent
+  );
 }
 
 .top h1{
-    font-size:20px;
-    letter-spacing:-.4px;
+  font-size:20px;
 }
 
 .online{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    margin-top:6px;
-    color:#aeb5bf;
-    font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
 }
 
-.online i{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:var(--green);
-    box-shadow:0 0 12px var(--green);
-    animation:onlinePulse 1.7s infinite;
+.online-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green);
+  animation:pulseGreen 1.7s infinite;
 }
 
-@keyframes onlinePulse{
-    0%,100%{
-        box-shadow:0 0 5px var(--green);
-    }
-    50%{
-        box-shadow:0 0 18px var(--green);
-    }
+@keyframes pulseGreen{
+  0%,100%{
+    box-shadow:0 0 5px var(--green);
+  }
+  50%{
+    box-shadow:0 0 18px var(--green);
+  }
 }
 
 .top-avatar{
-    width:46px;
-    height:46px;
-    border-radius:50%;
-    border:2px solid var(--purple);
-    background:#26133e;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    font-size:18px;
-    font-weight:bold;
+  width:47px;
+  height:47px;
+  border-radius:50%;
+  background:#28163e;
+  border:2px solid var(--purple);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:18px;
 }
 
 .top-avatar img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:none;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
 }
 
-.map-buttons{
-    position:absolute;
-    z-index:1000;
-    right:14px;
-    top:104px;
-
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+.map-tools{
+  position:absolute;
+  z-index:1000;
+  top:105px;
+  left:14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
 
-.map-buttons button{
-    width:44px;
-    height:44px;
-    border-radius:14px;
-    background:rgba(13,17,22,.92);
-    backdrop-filter:blur(15px);
-    font-size:21px;
-    box-shadow:0 8px 25px rgba(0,0,0,.4);
+.map-tools button,
+.zoom-tools button{
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  background:rgba(10,14,19,.9);
+  backdrop-filter:blur(16px);
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+  font-size:21px;
 }
 
-body.light .map-buttons button{
-    background:rgba(255,255,255,.92);
-    color:#111;
+body.light .map-tools button,
+body.light .zoom-tools button{
+  background:rgba(255,255,255,.92);
+  color:#111;
+}
+
+.zoom-tools{
+  position:absolute;
+  z-index:1000;
+  top:105px;
+  right:14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.safe{
+  position:absolute;
+  z-index:1000;
+  right:14px;
+  bottom:355px;
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  background:#153522;
+  color:#57ed98;
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
 }
 
 .add-place{
-    position:absolute;
-    z-index:1000;
-    left:50%;
-    bottom:350px;
-    transform:translateX(-50%);
-
-    padding:12px 18px;
-    border-radius:30px;
-
-    background:#fff;
-    color:#111;
-
-    font-size:13px;
-    font-weight:bold;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.45);
-    white-space:nowrap;
+  position:absolute;
+  z-index:1000;
+  left:50%;
+  bottom:355px;
+  transform:translateX(-50%);
+  padding:12px 18px;
+  border-radius:30px;
+  background:#fff;
+  color:#111;
+  font-weight:bold;
+  box-shadow:0 10px 30px rgba(0,0,0,.45);
+  white-space:nowrap;
 }
 
-.quick-actions{
-    position:absolute;
-    z-index:1000;
-    left:14px;
-    top:105px;
-
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.quick-actions button{
-    width:44px;
-    height:44px;
-
-    border-radius:14px;
-
-    background:rgba(13,17,22,.92);
-    backdrop-filter:blur(15px);
-
-    font-size:19px;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.4);
-}
+/* нижняя карточка */
 
 .near-card{
-    position:absolute;
-    z-index:1000;
-    left:13px;
-    right:13px;
-    bottom:91px;
-
-    padding:14px;
-
-    border-radius:23px;
-
-    background:rgba(9,12,16,.93);
-    backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.07);
-
-    box-shadow:0 15px 45px rgba(0,0,0,.4);
+  position:absolute;
+  z-index:1000;
+  left:13px;
+  right:13px;
+  bottom:87px;
+  padding:13px 14px;
+  border-radius:23px;
+  background:rgba(9,12,17,.93);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow:0 15px 45px rgba(0,0,0,.5);
 }
 
 body.light .near-card{
-    background:rgba(255,255,255,.93);
-    color:#111;
+  background:rgba(255,255,255,.94);
 }
 
 .near-title{
-    color:#dce0e5;
-    font-weight:bold;
-    font-size:14px;
-    margin-bottom:8px;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:7px;
 }
 
-body.light .near-title{
-    color:#222;
-}
-
-.near-title span{
-    display:inline-block;
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--green);
-    margin-right:6px;
+.near-title i{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  margin-right:5px;
 }
 
 .near-user{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:6px 0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:5px 0;
 }
 
-.near-user-info{
-    flex:1;
+.mini-avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  font-weight:bold;
+  flex-shrink:0;
 }
 
-.near-user-info b{
-    display:block;
-    font-size:14px;
+.mini-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.near-user-info small{
-    display:block;
-    color:var(--muted);
-    margin-top:3px;
+.near-info{
+  flex:1;
 }
 
-.near-user > i{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--green);
+.near-info b{
+  font-size:13px;
 }
 
-/* маркер */
-
-.user-marker-wrap{
-    position:relative;
-    width:120px;
-    height:120px;
+.near-info small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+  font-size:11px;
 }
 
-.user-pulse{
-    position:absolute;
-    left:50%;
-    top:50%;
-
-    width:100px;
-    height:100px;
-
-    transform:translate(-50%,-50%);
-
-    border-radius:50%;
-
-    background:rgba(155,77,255,.15);
-    border:1px solid rgba(155,77,255,.35);
-
-    animation:userPulse 2s infinite;
+.battery{
+  font-size:11px;
+  color:#aeb5be;
 }
 
-.user-pulse:nth-child(2){
-    animation-delay:.7s;
+/* маркеры */
+
+.user-marker{
+  position:relative;
+  width:145px;
+  height:145px;
 }
 
-@keyframes userPulse{
-    0%{
-        transform:translate(-50%,-50%) scale(.3);
-        opacity:.8;
-    }
-
-    70%{
-        transform:translate(-50%,-50%) scale(1);
-        opacity:.15;
-    }
-
-    100%{
-        transform:translate(-50%,-50%) scale(1.25);
-        opacity:0;
-    }
+.ring{
+  position:absolute;
+  width:120px;
+  height:120px;
+  left:12px;
+  top:5px;
+  border-radius:50%;
+  border:1px solid rgba(155,77,255,.4);
+  animation:ring 2.6s infinite;
 }
 
-.user-dot{
-    position:absolute;
-
-    left:50%;
-    top:50%;
-
-    transform:translate(-50%,-50%);
-
-    width:27px;
-    height:27px;
-
-    border-radius:50%;
-
-    background:var(--purple);
-
-    border:5px solid #fff;
-
-    box-shadow:
-        0 0 0 7px rgba(155,77,255,.28),
-        0 0 35px rgba(155,77,255,.9);
-
-    z-index:5;
+.ring.two{
+  animation-delay:1.3s;
 }
 
-.user-online-label{
-    position:absolute;
+@keyframes ring{
+  0%{
+    transform:scale(.35);
+    opacity:.8;
+  }
+  70%{
+    transform:scale(1);
+    opacity:.15;
+  }
+  100%{
+    transform:scale(1.15);
+    opacity:0;
+  }
+}
 
-    left:50%;
-    top:calc(50% + 39px);
+.user-photo{
+  position:absolute;
+  z-index:5;
+  left:42px;
+  top:35px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  border:4px solid #fff;
+  background:linear-gradient(135deg,#9b4dff,#5416a8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  font-size:21px;
+  font-weight:bold;
+  box-shadow:
+    0 0 0 7px rgba(155,77,255,.25),
+    0 0 35px rgba(155,77,255,.7);
+}
 
-    transform:translateX(-50%);
+.user-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+}
 
-    padding:5px 10px;
+.online-badge{
+  position:absolute;
+  z-index:8;
+  right:37px;
+  top:34px;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--green);
+  border:3px solid #10151c;
+}
 
-    border-radius:20px;
+.user-name{
+  position:absolute;
+  left:50%;
+  top:100px;
+  transform:translateX(-50%);
+  padding:6px 10px;
+  border-radius:20px;
+  background:rgba(8,11,15,.94);
+  color:#fff;
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:bold;
+}
 
-    background:rgba(10,13,17,.92);
+.friend-marker{
+  position:relative;
+  width:105px;
+  height:105px;
+}
 
-    border:1px solid rgba(255,255,255,.08);
+.friend-photo{
+  position:absolute;
+  left:26px;
+  top:12px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#4b9cff;
+  border:3px solid #fff;
+  box-shadow:0 7px 25px rgba(0,0,0,.45);
+  font-weight:bold;
+}
 
-    color:#fff;
+.friend-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-    font-size:11px;
-    font-weight:bold;
+.friend-online{
+  position:absolute;
+  right:25px;
+  top:11px;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--green);
+  border:2px solid #111;
+}
 
-    white-space:nowrap;
+.friend-name{
+  position:absolute;
+  top:66px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  background:rgba(8,11,15,.92);
+  border-radius:15px;
+  padding:4px 7px;
+  color:#fff;
+  font-size:10px;
+}
+
+/* эмоции */
+
+.emoji-panel{
+  position:absolute;
+  z-index:3000;
+  left:12px;
+  right:12px;
+  bottom:165px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  padding:10px;
+  border-radius:22px;
+  background:rgba(10,14,19,.94);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 15px 40px rgba(0,0,0,.45);
+  transform:translateY(15px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+
+.emoji-panel.open{
+  transform:translateY(0);
+  opacity:1;
+  pointer-events:auto;
+}
+
+.emoji-panel button{
+  width:39px;
+  height:39px;
+  border-radius:13px;
+  background:#191f27;
+  font-size:21px;
+  transition:.18s;
+}
+
+.emoji-panel button:active{
+  transform:scale(.8);
+}
+
+.emoji-toggle{
+  position:absolute;
+  z-index:3001;
+  left:14px;
+  bottom:355px;
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  background:rgba(10,14,19,.92);
+  font-size:21px;
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+
+/* летающие эмодзи */
+
+.flying-emoji{
+  position:fixed;
+  z-index:10000;
+  font-size:30px;
+  pointer-events:none;
+  animation:flyEmoji 1.5s ease-out forwards;
+}
+
+@keyframes flyEmoji{
+  0%{
+    transform:translate(-50%,0) scale(.5) rotate(-10deg);
+    opacity:0;
+  }
+  15%{
+    opacity:1;
+  }
+  70%{
+    transform:translate(-50%,-100px) scale(1.25) rotate(10deg);
+    opacity:1;
+  }
+  100%{
+    transform:translate(-50%,-170px) scale(.7) rotate(-5deg);
+    opacity:0;
+  }
 }
 
 /* страницы */
 
 .page-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 2px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 2px 20px;
 }
 
 .page-head h2{
-    font-size:29px;
-    letter-spacing:-1px;
+  font-size:29px;
+  letter-spacing:-1px;
 }
 
 .page-head p{
-    color:var(--muted);
-    margin-top:5px;
-    font-size:13px;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
 }
 
-.round-button{
-    width:45px;
-    height:45px;
-
-    border-radius:50%;
-
-    background:#281343;
-
-    color:#c18cff;
-
-    font-size:23px;
+.round{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#291541;
+  color:#c18cff;
+  font-size:22px;
 }
 
-.back-button{
-    width:43px;
-    height:43px;
-
-    border-radius:13px;
-
-    background:var(--card);
-
-    font-size:30px;
+.back{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:var(--card);
+  font-size:28px;
 }
-
-/* поиск */
 
 .search{
-    height:51px;
-
-    display:flex;
-    align-items:center;
-    gap:9px;
-
-    padding:0 15px;
-
-    background:var(--card);
-
-    border:1px solid var(--line);
-
-    border-radius:16px;
-
-    color:#777f8a;
-
-    margin-bottom:15px;
+  height:50px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  color:#777;
+  margin-bottom:10px;
 }
 
 .search input{
-    width:100%;
-    border:0;
-    outline:0;
-    background:transparent;
-    color:var(--text);
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
 }
 
-.search input::placeholder{
-    color:#737a85;
+.friend,
+.chat{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:14px 2px;
+  border-bottom:1px solid var(--line);
 }
 
-/* аватары */
-
-.avatar{
-    width:45px;
-    height:45px;
-
-    flex-shrink:0;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:18px;
-    font-weight:bold;
+.friend-avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  font-weight:bold;
+  flex-shrink:0;
 }
 
-.purple{
-    background:linear-gradient(135deg,#9d50ff,#4320a5);
-}
-
-.blue{
-    background:linear-gradient(135deg,#4c9dff,#214494);
-}
-
-.orange{
-    background:linear-gradient(135deg,#ff9b45,#b84420);
-}
-
-.pink{
-    background:linear-gradient(135deg,#ff58bd,#8b286f);
-}
-
-.green-avatar{
-    background:linear-gradient(135deg,#46dc8a,#176743);
-}
-
-/* друзья */
-
-.friend{
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:14px 3px;
-
-    border-bottom:1px solid var(--line);
+.friend-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 .friend-info{
-    flex:1;
+  flex:1;
 }
 
 .friend-info b{
-    display:block;
-    font-size:15px;
+  font-size:14px;
 }
 
 .friend-info span{
-    display:block;
-    color:var(--muted);
-    margin-top:5px;
-    font-size:12px;
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
 }
 
-.friend-info i{
-    display:inline-block;
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:var(--green);
-    margin-right:4px;
+.green-dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  margin-right:4px;
 }
 
-.friend-distance{
-    color:#777f89;
-    font-size:12px;
-}
-
-/* чат */
-
-.chat{
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:14px 2px;
-
-    border-bottom:1px solid var(--line);
-}
-
-.chat-info{
-    flex:1;
-}
-
-.chat-info-head{
-    display:flex;
-    justify-content:space-between;
-}
-
-.chat-info b{
-    font-size:15px;
-}
-
-.chat-info time{
-    color:#737a84;
-    font-size:11px;
-}
-
-.chat-info p{
-    color:var(--muted);
-    margin-top:5px;
-}
-
-.unread{
-    width:22px;
-    height:22px;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:var(--purple);
-
-    font-size:11px;
-    font-weight:bold;
+.friend-battery{
+  font-size:11px;
+  color:var(--muted);
 }
 
 /* профиль */
 
 .profile-card{
-    background:linear-gradient(
-        180deg,
-        #11161c,
-        #0d1116
-    );
-
-    border:1px solid var(--line);
-
-    border-radius:24px;
-
-    text-align:center;
-
-    padding:25px 17px 0;
-}
-
-body.light .profile-card{
-    background:var(--card);
+  text-align:center;
+  padding:25px 16px 0;
+  border:1px solid var(--line);
+  border-radius:25px;
+  background:var(--card);
 }
 
 .profile-avatar{
-    position:relative;
-
-    width:118px;
-    height:118px;
-
-    margin:auto;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#26133d;
-
-    border:3px solid var(--purple);
-
-    font-size:45px;
-    font-weight:bold;
+  position:relative;
+  width:120px;
+  height:120px;
+  margin:auto;
+  border-radius:50%;
+  border:3px solid var(--purple);
+  background:#291541;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  font-size:43px;
+  font-weight:bold;
+  box-shadow:0 0 35px rgba(155,77,255,.25);
 }
 
 .profile-avatar img{
-    width:100%;
-    height:100%;
-
-    border-radius:50%;
-
-    object-fit:cover;
-
-    display:none;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
 }
 
 .camera{
-    position:absolute;
-
-    right:-4px;
-    bottom:1px;
-
-    width:34px;
-    height:34px;
-
-    border-radius:50%;
-
-    background:#171c22;
-
-    border:2px solid #07090d;
+  position:absolute;
+  right:0;
+  bottom:2px;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  background:#171c22;
+  border:2px solid var(--bg);
 }
 
 .profile-card h1{
-    margin-top:15px;
-    font-size:25px;
+  margin-top:15px;
+  font-size:25px;
 }
 
-.username{
-    color:var(--muted);
-    margin-top:4px;
-}
-
-.profile-online{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-
-    margin-top:9px;
-
-    color:#b1b6bf;
-
-    font-size:13px;
-}
-
-.profile-online i{
-    width:8px;
-    height:8px;
-
-    border-radius:50%;
-
-    background:var(--green);
+.profile-status{
+  margin-top:8px;
+  color:var(--green);
+  font-size:12px;
 }
 
 .stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-
-    margin-top:23px;
-
-    border-top:1px solid var(--line);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  margin-top:20px;
+  border-top:1px solid var(--line);
 }
 
 .stats div{
-    padding:17px 4px;
+  padding:16px 3px;
 }
 
 .stats b{
-    display:block;
-    font-size:20px;
+  display:block;
+  font-size:20px;
 }
 
 .stats span{
-    display:block;
-    color:var(--muted);
-    font-size:11px;
-    margin-top:5px;
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
 }
 
-.profile-menu{
-    margin-top:14px;
-
-    background:var(--card);
-
-    border:1px solid var(--line);
-
-    border-radius:20px;
-
-    overflow:hidden;
+.menu{
+  margin-top:14px;
+  border-radius:20px;
+  overflow:hidden;
+  background:var(--card);
+  border:1px solid var(--line);
 }
 
-.profile-menu button{
-    width:100%;
-    min-height:68px;
-
-    display:flex;
-    align-items:center;
-    gap:13px;
-
-    padding:10px 15px;
-
-    background:transparent;
-
-    border-bottom:1px solid var(--line);
-
-    text-align:left;
+.menu button{
+  width:100%;
+  min-height:68px;
+  padding:10px 14px;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
 }
 
-.profile-menu button:last-child{
-    border-bottom:0;
+.menu button:last-child{
+  border:0;
 }
 
-.profile-menu .icon{
-    width:32px;
-    text-align:center;
-    font-size:21px;
+.menu-icon{
+  width:35px;
+  font-size:20px;
+  text-align:center;
 }
 
-.profile-menu div{
-    flex:1;
+.menu-info{
+  flex:1;
 }
 
-.profile-menu b{
-    display:block;
+.menu-info b{
+  display:block;
+  font-size:14px;
 }
 
-.profile-menu small{
-    display:block;
-    color:var(--muted);
-    margin-top:4px;
+.menu-info small{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
 }
 
 .arrow{
-    color:#737984;
-    font-size:24px;
+  color:#777;
+  font-size:25px;
 }
 
 /* настройки */
 
-.section-title{
-    color:#7d8490;
-    font-size:12px;
-    margin:20px 5px 9px;
+.section{
+  color:#777f89;
+  font-size:12px;
+  margin:18px 4px 8px;
 }
 
-.settings-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:20px;
-    overflow:hidden;
+.settings{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  overflow:hidden;
 }
 
 .setting{
-    min-height:75px;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:11px 14px;
-
-    border-bottom:1px solid var(--line);
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 13px;
+  border-bottom:1px solid var(--line);
 }
 
 .setting:last-child{
-    border-bottom:0;
+  border:0;
 }
 
 .setting-icon{
-    width:38px;
-    height:38px;
-
-    border-radius:12px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    flex-shrink:0;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.purple-bg{
-    background:#291542;
-    color:#c18cff;
+.si-purple{
+  background:#291541;
+  color:#c18cff;
 }
 
-.green-bg{
-    background:#123b27;
-    color:#5be99a;
+.si-green{
+  background:#123a27;
+  color:#55e895;
 }
 
-.blue-bg{
-    background:#122c4b;
-    color:#69adff;
+.si-blue{
+  background:#122b48;
+  color:#66adff;
 }
 
-.orange-bg{
-    background:#422716;
-    color:#ff9d54;
+.si-orange{
+  background:#412817;
+  color:#ff9c51;
 }
 
 .setting-info{
-    flex:1;
+  flex:1;
 }
 
 .setting-info b{
-    display:block;
-    font-size:14px;
+  display:block;
+  font-size:14px;
 }
 
 .setting-info small{
-    display:block;
-    color:var(--muted);
-    margin-top:5px;
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
 }
 
 .switch{
-    position:relative;
-
-    width:48px;
-    height:28px;
-
-    flex-shrink:0;
+  position:relative;
+  width:48px;
+  height:27px;
 }
 
 .switch input{
-    display:none;
+  display:none;
 }
 
 .switch span{
-    position:absolute;
-    inset:0;
-
-    background:#30363e;
-
-    border-radius:30px;
-
-    transition:.2s;
+  position:absolute;
+  inset:0;
+  background:#343a43;
+  border-radius:30px;
 }
 
 .switch span:before{
-    content:"";
-
-    position:absolute;
-
-    width:22px;
-    height:22px;
-
-    left:3px;
-    top:3px;
-
-    background:#fff;
-
-    border-radius:50%;
-
-    transition:.2s;
+  content:"";
+  position:absolute;
+  width:21px;
+  height:21px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:#fff;
+  transition:.2s;
 }
 
-.switch input:checked + span{
-    background:var(--purple);
+.switch input:checked+span{
+  background:var(--purple);
 }
 
-.switch input:checked + span:before{
-    transform:translateX(20px);
-}
-
-.setting-button{
-    width:100%;
-    min-height:75px;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:11px 14px;
-
-    background:transparent;
-
-    border-bottom:1px solid var(--line);
-
-    text-align:left;
-}
-
-.setting-button:last-child{
-    border-bottom:0;
-}
-
-.setting-button > div:nth-child(2){
-    flex:1;
-}
-
-.setting-button em{
-    font-style:normal;
-    color:#747b85;
-    font-size:25px;
-}
-
-.logout{
-    width:100%;
-    height:54px;
-
-    margin-top:20px;
-
-    border-radius:16px;
-
-    background:#291316;
-
-    color:#ff5c67;
-
-    font-weight:bold;
+.switch input:checked+span:before{
+  transform:translateX(21px);
 }
 
 /* навигация */
 
 .bottom-nav{
-    position:absolute;
-
-    z-index:5000;
-
-    left:10px;
-    right:10px;
-    bottom:9px;
-
-    height:68px;
-
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-
-    background:rgba(12,16,21,.94);
-
-    backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.07);
-
-    border-radius:22px;
-
-    box-shadow:0 15px 45px rgba(0,0,0,.55);
+  position:absolute;
+  z-index:5000;
+  left:10px;
+  right:10px;
+  bottom:9px;
+  height:67px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  background:rgba(12,16,21,.95);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:22px;
+  box-shadow:0 15px 45px rgba(0,0,0,.55);
 }
 
 body.light .bottom-nav{
-    background:rgba(255,255,255,.94);
-    color:#111;
+  background:rgba(255,255,255,.95);
+  color:#111;
 }
 
 .nav{
-    background:transparent;
-
-    color:#707783;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-
-    gap:4px;
+  background:transparent;
+  color:#717984;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
 }
 
 .nav span{
-    font-size:21px;
+  font-size:21px;
 }
 
 .nav small{
-    font-size:10px;
+  font-size:10px;
 }
 
 .nav.active{
-    color:#b46cff;
-}
-
-.nav.active span{
-    filter:drop-shadow(
-        0 0 8px
-        rgba(180,108,255,.9)
-    );
-}
-
-/* чат окно */
-
-.chat-modal{
-    position:absolute;
-    inset:0;
-
-    z-index:8000;
-
-    display:none;
-
-    background:var(--bg);
-}
-
-.chat-modal.open{
-    display:block;
-}
-
-.chat-window{
-    height:100%;
-
-    display:flex;
-    flex-direction:column;
-}
-
-.chat-head{
-    height:75px;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:10px 15px;
-
-    border-bottom:1px solid var(--line);
-
-    background:#0b0e13;
-}
-
-body.light .chat-head{
-    background:#fff;
-}
-
-.chat-head > button{
-    background:transparent;
-    font-size:34px;
-}
-
-.chat-user{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.chat-user small{
-    display:block;
-    color:var(--green);
-    margin-top:4px;
-}
-
-.messages{
-    flex:1;
-
-    overflow-y:auto;
-
-    padding:18px 14px;
-
-    display:flex;
-    flex-direction:column;
-
-    gap:9px;
-}
-
-.message{
-    max-width:78%;
-
-    padding:11px 14px;
-
-    border-radius:17px;
-
-    font-size:14px;
-}
-
-.friend-message{
-    align-self:flex-start;
-
-    background:#171c23;
-
-    border-bottom-left-radius:5px;
-}
-
-.my-message{
-    align-self:flex-end;
-
-    background:linear-gradient(
-        135deg,
-        #9848ff,
-        #6d2bdb
-    );
-
-    border-bottom-right-radius:5px;
-}
-
-.message-form{
-    display:flex;
-    gap:8px;
-
-    padding:10px;
-
-    background:#0b0e13;
-
-    border-top:1px solid var(--line);
-}
-
-body.light .message-form{
-    background:#fff;
-}
-
-.message-form input{
-    flex:1;
-
-    height:46px;
-
-    border:1px solid var(--line);
-
-    border-radius:23px;
-
-    background:#151a20;
-
-    color:#fff;
-
-    outline:0;
-
-    padding:0 15px;
-}
-
-.message-form button{
-    width:46px;
-    height:46px;
-
-    border-radius:50%;
-
-    background:var(--purple);
+  color:#b46cff;
 }
 
 /* модалки */
 
 .modal{
-    position:absolute;
-    inset:0;
-
-    z-index:9000;
-
-    display:none;
-    align-items:flex-end;
-
-    background:rgba(0,0,0,.7);
+  position:absolute;
+  inset:0;
+  z-index:9000;
+  display:none;
+  align-items:flex-end;
+  background:rgba(0,0,0,.7);
 }
 
 .modal.open{
-    display:flex;
+  display:flex;
 }
 
-.modal-box{
-    width:100%;
-
-    padding:25px 18px 28px;
-
-    background:#11161c;
-
-    border-radius:28px 28px 0 0;
-
-    animation:sheet .25s ease;
+.sheet{
+  width:100%;
+  padding:24px 18px 27px;
+  background:#11161c;
+  border-radius:28px 28px 0 0;
+  animation:sheetIn .25s ease;
 }
 
-body.light .modal-box{
-    background:#fff;
+body.light .sheet{
+  background:#fff;
 }
 
-@keyframes sheet{
-    from{
-        transform:translateY(100%);
-    }
-
-    to{
-        transform:translateY(0);
-    }
+@keyframes sheetIn{
+  from{
+    transform:translateY(100%);
+  }
+  to{
+    transform:translateY(0);
+  }
 }
 
 .handle{
-    width:42px;
-    height:4px;
-
-    margin:0 auto 20px;
-
-    background:#4c525b;
-
-    border-radius:10px;
+  width:42px;
+  height:4px;
+  margin:0 auto 20px;
+  border-radius:10px;
+  background:#4c535c;
 }
 
-.modal-box h2{
-    font-size:24px;
+.sheet h2{
+  font-size:24px;
 }
 
-.modal-box p{
-    color:var(--muted);
-    margin-top:6px;
-    margin-bottom:17px;
+.sheet p{
+  color:var(--muted);
+  font-size:13px;
+  margin:6px 0 16px;
 }
 
-.modal-box input{
-    width:100%;
-    height:52px;
-
-    padding:0 15px;
-
-    border-radius:15px;
-
-    background:#191e24;
-
-    border:1px solid var(--line);
-
-    outline:0;
-
-    color:#fff;
+.sheet input{
+  width:100%;
+  height:52px;
+  padding:0 14px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  outline:0;
+  background:#191f26;
+  color:#fff;
 }
 
 .place-types{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-
-    gap:8px;
-
-    margin:12px 0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin:12px 0;
 }
 
 .place-types button{
-    height:72px;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-
-    gap:5px;
-
-    background:#191e24;
-
-    border:1px solid var(--line);
-
-    border-radius:15px;
-
-    font-size:21px;
+  height:70px;
+  border-radius:15px;
+  background:#191f26;
+  border:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:21px;
 }
 
 .place-types button.selected{
-    border-color:var(--purple);
-    background:#28153f;
+  border-color:var(--purple);
+  background:#291541;
 }
 
 .place-types small{
-    font-size:10px;
-    color:#aaa;
+  color:#999;
+  font-size:9px;
 }
 
 .primary{
-    width:100%;
-    height:53px;
-
-    border-radius:16px;
-
-    background:linear-gradient(
-        135deg,
-        #a450ff,
-        #7029df
-    );
-
-    font-weight:bold;
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#a450ff,#7028df);
+  font-weight:bold;
 }
 
 .cancel{
-    width:100%;
-    height:48px;
-
-    background:transparent;
-
-    color:#858b95;
+  width:100%;
+  height:45px;
+  background:transparent;
+  color:#858c96;
 }
 
 /* toast */
 
 .toast{
-    position:absolute;
-
-    z-index:10000;
-
-    left:50%;
-    bottom:91px;
-
-    transform:translate(-50%,20px);
-
-    padding:12px 17px;
-
-    border-radius:15px;
-
-    background:#fff;
-    color:#111;
-
-    font-size:12px;
-    font-weight:bold;
-
-    opacity:0;
-
-    pointer-events:none;
-
-    transition:.25s;
-
-    white-space:nowrap;
+  position:absolute;
+  z-index:11000;
+  left:50%;
+  bottom:90px;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  padding:11px 16px;
+  border-radius:15px;
+  background:#fff;
+  color:#111;
+  font-size:12px;
+  font-weight:bold;
+  white-space:nowrap;
+  transition:.25s;
 }
 
 .toast.show{
-    opacity:1;
-    transform:translate(-50%,0);
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* чат */
+
+.chat-modal{
+  position:absolute;
+  inset:0;
+  z-index:8000;
+  display:none;
+  background:var(--bg);
+}
+
+.chat-modal.open{
+  display:block;
+}
+
+.chat-window{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-head{
+  height:74px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-bottom:1px solid var(--line);
+}
+
+.chat-head button{
+  background:transparent;
+  font-size:33px;
+}
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.message{
+  max-width:78%;
+  padding:10px 13px;
+  border-radius:17px;
+  font-size:14px;
+}
+
+.their-message{
+  align-self:flex-start;
+  background:var(--card2);
+}
+
+.my-message{
+  align-self:flex-end;
+  background:linear-gradient(135deg,#9848ff,#7028df);
+}
+
+.message-form{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid var(--line);
+}
+
+.message-form input{
+  flex:1;
+  height:46px;
+  padding:0 14px;
+  border-radius:23px;
+  border:1px solid var(--line);
+  outline:0;
+  background:var(--card);
+  color:var(--text);
+}
+
+.message-form button{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:var(--purple);
 }
 
 /* уведомление */
 
 .notification{
-    position:absolute;
-
-    z-index:11000;
-
-    top:15px;
-    left:15px;
-    right:15px;
-
-    padding:14px;
-
-    border-radius:17px;
-
-    background:#151a20;
-
-    border:1px solid var(--line);
-
-    display:none;
-
-    box-shadow:0 15px 35px rgba(0,0,0,.5);
+  position:absolute;
+  z-index:12000;
+  left:14px;
+  right:14px;
+  top:14px;
+  padding:13px;
+  border-radius:17px;
+  background:#151a20;
+  border:1px solid var(--line);
+  display:none;
+  box-shadow:0 15px 35px rgba(0,0,0,.5);
+  animation:notificationIn .3s ease;
 }
 
 .notification.show{
-    display:block;
-    animation:notify .3s ease;
-}
-
-@keyframes notify{
-    from{
-        transform:translateY(-30px);
-        opacity:0;
-    }
-
-    to{
-        transform:translateY(0);
-        opacity:1;
-    }
+  display:block;
 }
 
 .notification b{
-    display:block;
-    font-size:14px;
+  font-size:13px;
 }
 
 .notification span{
-    display:block;
-    color:var(--muted);
-    margin-top:4px;
-    font-size:12px;
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
 }
 
-/* безопасность */
-
-.safe-button{
-    position:absolute;
-
-    z-index:1000;
-
-    right:14px;
-    bottom:350px;
-
-    width:44px;
-    height:44px;
-
-    border-radius:14px;
-
-    background:#152b20;
-
-    color:#54e995;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.4);
+@keyframes notificationIn{
+  from{
+    opacity:0;
+    transform:translateY(-25px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
-
-body.light .safe-button{
-    background:#fff;
-}
-
-@media(max-height:700px){
-
-    .near-card{
-        bottom:87px;
-    }
-
-    .add-place{
-        bottom:325px;
-    }
-
-}
-
 </style>
 </head>
 
@@ -1506,148 +1236,75 @@ body.light .safe-button{
 <header class="top">
 
 <div>
-
-<h1>
-привет, <span id="helloName">никс</span> 👋
-</h1>
+<h1>привет, <span id="helloName">никс</span> 👋</h1>
 
 <div class="online">
-
-<i></i>
-
-<span id="onlineLabel">
-в сети
-</span>
-
+<span class="online-dot"></span>
+<span id="onlineText">в сети</span>
+</div>
 </div>
 
-</div>
-
-<button
-class="top-avatar"
-onclick="showPage('profile')"
->
-
+<button class="top-avatar" onclick="showPage('profile')">
 <img id="topAvatar">
-
-<span id="topLetter">
-н
-</span>
-
+<span id="topLetter">н</span>
 </button>
 
 </header>
 
-
 <div id="map"></div>
 
-
-<div class="quick-actions">
-
-<button
-onclick="locateUser()"
-title="моя геопозиция"
->
-⌾
-</button>
-
-<button
-onclick="toggleMapStyle()"
-title="вид карты"
->
-◈
-</button>
-
-<button
-onclick="refreshLocation()"
-title="обновить"
->
-↻
-</button>
-
+<div class="map-tools">
+<button onclick="locateUser()">⌾</button>
+<button onclick="changeMap()">◈</button>
+<button onclick="refreshLocation()">↻</button>
 </div>
 
-
-<div class="map-buttons">
-
-<button onclick="map.zoomIn()">
-+
-</button>
-
-<button onclick="map.zoomOut()">
-−
-</button>
-
-<button onclick="map.setZoom(13)">
-⌂
-</button>
-
+<div class="zoom-tools">
+<button onclick="map.zoomIn()">+</button>
+<button onclick="map.zoomOut()">−</button>
 </div>
 
+<button class="safe" onclick="safeMode()">✓</button>
 
-<button
-class="safe-button"
-onclick="safeMode()"
->
-✓
-</button>
+<button class="emoji-toggle" onclick="toggleEmojiPanel()">😊</button>
 
+<div class="emoji-panel" id="emojiPanel">
+<button onclick="sendEmoji('❤️')">❤️</button>
+<button onclick="sendEmoji('😂')">😂</button>
+<button onclick="sendEmoji('🔥')">🔥</button>
+<button onclick="sendEmoji('😭')">😭</button>
+<button onclick="sendEmoji('😎')">😎</button>
+<button onclick="sendEmoji('👍')">👍</button>
+<button onclick="sendEmoji('👋')">👋</button>
+<button onclick="sendEmoji('💜')">💜</button>
+</div>
 
-<button
-class="add-place"
-onclick="openPlace()"
->
+<button class="add-place" onclick="openPlace()">
 ＋ добавить место
 </button>
-
 
 <div class="near-card">
 
 <div class="near-title">
-<span></span>
-кто рядом
+<i></i>кто рядом
 </div>
-
 
 <div class="near-user">
-
-<div class="avatar purple">
-а
-</div>
-
-<div class="near-user-info">
-
+<div class="mini-avatar" style="background:#5422a0">а</div>
+<div class="near-info">
 <b>артём</b>
-
-<small>
-240 м от тебя
-</small>
-
+<small><span style="color:#39df79">●</span> в сети · 240 м</small>
 </div>
-
-<i></i>
-
+<div class="battery">🔋 64%</div>
 </div>
-
 
 <div class="near-user">
-
-<div class="avatar blue">
-м
-</div>
-
-<div class="near-user-info">
-
+<div class="mini-avatar" style="background:#245da8">м</div>
+<div class="near-info">
 <b>макс</b>
-
-<small>
-1,2 км от тебя
-</small>
-
+<small><span style="color:#39df79">●</span> в сети · 1,2 км</small>
 </div>
-
-<i></i>
-
+<div class="battery">🔋 87%</div>
 </div>
 
 </div>
@@ -1660,143 +1317,55 @@ onclick="openPlace()"
 <section id="friendsPage" class="page">
 
 <div class="page-head">
-
 <div>
-
-<h2>
-друзья
-</h2>
-
-<p>
-24 друга
-</p>
-
+<h2>друзья</h2>
+<p>24 друга</p>
 </div>
 
-<button
-class="round-button"
-onclick="toast('добавление друзей скоро появится')"
->
-＋
-</button>
-
+<button class="round" onclick="toast('добавление друзей скоро появится')">＋</button>
 </div>
-
 
 <div class="search">
-
 🔎
-
-<input
-id="friendSearch"
-placeholder="найти друга"
-oninput="searchFriends()"
->
-
+<input id="friendSearch" placeholder="найти друга" oninput="searchFriends()">
 </div>
-
 
 <div id="friendsList">
 
 <div class="friend">
-
-<div class="avatar purple">
-а
-</div>
-
+<div class="friend-avatar" style="background:#5422a0">а</div>
 <div class="friend-info">
-
-<b>
-артём
-</b>
-
-<span>
-<i></i>
-в сети
-</span>
-
+<b>артём</b>
+<span><i class="green-dot"></i>в сети · 240 м</span>
 </div>
-
-<div class="friend-distance">
-240 м
+<div class="friend-battery">🔋 64%</div>
 </div>
-
-</div>
-
 
 <div class="friend">
-
-<div class="avatar blue">
-м
-</div>
-
+<div class="friend-avatar" style="background:#245da8">м</div>
 <div class="friend-info">
-
-<b>
-макс
-</b>
-
-<span>
-<i></i>
-в сети
-</span>
-
+<b>макс</b>
+<span><i class="green-dot"></i>в сети · 1,2 км</span>
 </div>
-
-<div class="friend-distance">
-1,2 км
+<div class="friend-battery">🔋 87%</div>
 </div>
-
-</div>
-
 
 <div class="friend">
-
-<div class="avatar orange">
-с
-</div>
-
+<div class="friend-avatar" style="background:#a84b20">с</div>
 <div class="friend-info">
-
-<b>
-саша
-</b>
-
-<span>
-был недавно
-</span>
-
+<b>саша</b>
+<span>был недавно</span>
 </div>
-
-<div class="friend-distance">
-3,8 км
+<div class="friend-battery">🔋 31%</div>
 </div>
-
-</div>
-
 
 <div class="friend">
-
-<div class="avatar pink">
-к
-</div>
-
+<div class="friend-avatar" style="background:#9a287d">кира</div>
 <div class="friend-info">
-
-<b>
-кира
-</b>
-
-<span>
-была 12 мин назад
-</span>
-
+<b>кира</b>
+<span>была 12 мин назад</span>
 </div>
-
-<div class="friend-distance">
-5,1 км
-</div>
-
+<div class="friend-battery">🔋 52%</div>
 </div>
 
 </div>
@@ -1809,100 +1378,37 @@ oninput="searchFriends()"
 <section id="chatsPage" class="page">
 
 <div class="page-head">
-
 <div>
-
-<h2>
-чаты
-</h2>
-
-<p>
-твои сообщения
-</p>
-
+<h2>чаты</h2>
+<p>твои сообщения</p>
 </div>
-
 </div>
-
 
 <div class="search">
-
 🔎
-
-<input
-placeholder="поиск"
->
-
+<input placeholder="поиск">
 </div>
 
+<div class="chat" onclick="openChat('артём')">
+<div class="friend-avatar" style="background:#5422a0">а</div>
 
-<div class="chat"
-onclick="openChat('артём')"
->
-
-<div class="avatar purple">
-а
+<div class="friend-info">
+<b>артём</b>
+<span>ты уже вышел?</span>
 </div>
 
-<div class="chat-info">
-
-<div class="chat-info-head">
-
-<b>
-артём
-</b>
-
-<time>
-21:42
-</time>
-
+<div class="friend-battery">21:42</div>
 </div>
 
-<p>
-ты уже вышел?
-</p>
+<div class="chat" onclick="openChat('макс')">
+<div class="friend-avatar" style="background:#245da8">м</div>
 
+<div class="friend-info">
+<b>макс</b>
+<span>го сегодня гулять</span>
 </div>
 
-<div class="unread">
-2
-</div>
-
-</div>
-
-
-<div class="chat"
-onclick="openChat('макс')"
->
-
-<div class="avatar blue">
-м
-</div>
-
-<div class="chat-info">
-
-<div class="chat-info-head">
-
-<b>
-макс
-</b>
-
-<time>
-20:18
-</time>
-
-</div>
-
-<p>
-го сегодня гулять
-</p>
-
-</div>
-
-<div class="unread">
-1
-</div>
-
+<div class="friend-battery">20:18</div>
 </div>
 
 </section>
@@ -1913,207 +1419,75 @@ onclick="openChat('макс')"
 <section id="profilePage" class="page">
 
 <div class="page-head">
-
 <div>
-
-<h2>
-профиль
-</h2>
-
-<p>
-твой профиль
-</p>
-
+<h2>профиль</h2>
+<p>твой профиль</p>
 </div>
 
-<button
-class="round-button"
-onclick="showPage('settings')"
->
-⚙
-</button>
-
+<button class="round" onclick="showPage('settings')">⚙</button>
 </div>
-
 
 <div class="profile-card">
 
 <div class="profile-avatar">
-
 <img id="profileAvatar">
+<span id="profileLetter">н</span>
 
-<span id="profileLetter">
-н
-</span>
-
-<button
-class="camera"
-onclick="chooseAvatar()"
->
-📷
-</button>
-
+<button class="camera" onclick="chooseAvatar()">📷</button>
 </div>
 
+<h1 id="profileName">никс</h1>
 
-<h1 id="profileName">
-никс
-</h1>
-
-<p class="username">
-@niks
-</p>
-
-
-<div
-class="profile-online"
->
-
-<i></i>
-
-<span id="profileOnline">
-в сети
-</span>
-
+<div class="profile-status">
+● в сети · 🔋 <span id="profileBattery">—</span>
 </div>
-
 
 <div class="stats">
-
 <div>
-<b id="friendsCount">
-24
-</b>
-
-<span>
-друзья
-</span>
+<b>24</b>
+<span>друзья</span>
 </div>
 
 <div>
-<b id="placesCount">
-8
-</b>
-
-<span>
-места
-</span>
+<b id="placesCount">0</b>
+<span>места</span>
 </div>
 
 <div>
-<b>
-12
-</b>
-
-<span>
-дней
-</span>
+<b>12</b>
+<span>дней</span>
+</div>
 </div>
 
 </div>
 
-</div>
-
-
-<div class="profile-menu">
+<div class="menu">
 
 <button onclick="changeName()">
-
-<span class="icon">
-✏️
-</span>
-
-<div>
-
-<b>
-изменить имя
-</b>
-
-<small>
-как тебя будут видеть
-</small>
-
+<span class="menu-icon">✏️</span>
+<div class="menu-info">
+<b>изменить имя</b>
+<small>как тебя будут видеть</small>
 </div>
-
-<span class="arrow">
-›
-</span>
-
+<span class="arrow">›</span>
 </button>
-
 
 <button onclick="openPlace()">
-
-<span class="icon">
-📍
-</span>
-
-<div>
-
-<b>
-мои места
-</b>
-
-<small id="placesDescription">
-8 сохранённых мест
-</small>
-
+<span class="menu-icon">📍</span>
+<div class="menu-info">
+<b>мои места</b>
+<small id="placesText">сохранённые места</small>
 </div>
-
-<span class="arrow">
-›
-</span>
-
+<span class="arrow">›</span>
 </button>
-
 
 <button onclick="toast('избранные друзья')">
-
-<span class="icon">
-☆
-</span>
-
-<div>
-
-<b>
-избранные друзья
-</b>
-
-<small>
-3 друга
-</small>
-
+<span class="menu-icon">☆</span>
+<div class="menu-info">
+<b>избранные друзья</b>
+<small>3 друга</small>
 </div>
-
-<span class="arrow">
-›
-</span>
-
-</button>
-
-
-<button onclick="toast('достижения скоро появятся')">
-
-<span class="icon">
-🏆
-</span>
-
-<div>
-
-<b>
-достижения
-</b>
-
-<small>
-12 достижений
-</small>
-
-</div>
-
-<span class="arrow">
-›
-</span>
-
+<span class="arrow">›</span>
 </button>
 
 </div>
@@ -2128,323 +1502,137 @@ class="profile-online"
 <div class="page-head">
 
 <div>
+<h2>настройки</h2>
+<p>приватность и приложение</p>
+</div>
 
-<h2>
-настройки
-</h2>
-
-<p>
-приватность и аккаунт
-</p>
+<button class="back" onclick="showPage('profile')">‹</button>
 
 </div>
 
-<button
-class="back-button"
-onclick="showPage('profile')"
->
-‹
-</button>
+<div class="section">приватность</div>
 
-</div>
-
-
-<h3 class="section-title">
-приватность
-</h3>
-
-
-<div class="settings-card">
+<div class="settings">
 
 <div class="setting">
 
-<div class="setting-icon purple-bg">
-⌖
-</div>
+<div class="setting-icon si-purple">⌖</div>
 
 <div class="setting-info">
-
-<b>
-видимость на карте
-</b>
-
-<small id="mapVisibilityText">
-тебя видят друзья
-</small>
-
+<b>видимость на карте</b>
+<small id="mapVisibilityText">тебя видят друзья</small>
 </div>
 
 <label class="switch">
-
-<input
-id="mapVisibility"
-type="checkbox"
-checked
-onchange="changeMapVisibility()"
->
-
+<input id="mapVisibility" type="checkbox" checked onchange="changeMapVisibility()">
 <span></span>
-
 </label>
 
 </div>
 
-
 <div class="setting">
 
-<div class="setting-icon green-bg">
-●
-</div>
+<div class="setting-icon si-green">●</div>
 
 <div class="setting-info">
-
-<b>
-статус онлайн
-</b>
-
-<small id="onlineVisibilityText">
-показывается друзьям
-</small>
-
+<b>статус онлайн</b>
+<small id="onlineVisibilityText">показывается друзьям</small>
 </div>
 
 <label class="switch">
-
-<input
-id="onlineVisibility"
-type="checkbox"
-checked
-onchange="changeOnlineVisibility()"
->
-
+<input id="onlineVisibility" type="checkbox" checked onchange="changeOnlineVisibility()">
 <span></span>
-
 </label>
 
 </div>
 
-
 <div class="setting">
 
-<div class="setting-icon blue-bg">
-◷
-</div>
+<div class="setting-icon si-blue">◷</div>
 
 <div class="setting-info">
-
-<b>
-последний визит
-</b>
-
-<small id="lastSeenText">
-показывается друзьям
-</small>
-
+<b>последний визит</b>
+<small id="lastSeenText">показывается друзьям</small>
 </div>
 
 <label class="switch">
-
-<input
-id="lastSeen"
-type="checkbox"
-checked
-onchange="changeLastSeen()"
->
-
+<input id="lastSeen" type="checkbox" checked onchange="changeLastSeen()">
 <span></span>
-
 </label>
 
 </div>
 
 </div>
 
+<div class="section">геопозиция</div>
 
-<h3 class="section-title">
-геопозиция
-</h3>
-
-
-<div class="settings-card">
-
-<button
-class="setting-button"
-onclick="locateUser()"
->
-
-<div class="setting-icon purple-bg">
-⌾
-</div>
-
-<div>
-
-<b>
-моя геопозиция
-</b>
-
-<small id="locationStatus">
-определить местоположение
-</small>
-
-</div>
-
-<em>
-›
-</em>
-
-</button>
-
-
-<button
-class="setting-button"
-onclick="openPlace()"
->
-
-<div class="setting-icon orange-bg">
-📍
-</div>
-
-<div>
-
-<b>
-мои места
-</b>
-
-<small>
-дом, школа и другие места
-</small>
-
-</div>
-
-<em>
-›
-</em>
-
-</button>
-
-</div>
-
-
-<h3 class="section-title">
-приложение
-</h3>
-
-
-<div class="settings-card">
+<div class="settings">
 
 <div class="setting">
 
-<div class="setting-icon blue-bg">
-🔔
-</div>
+<div class="setting-icon si-purple">⌾</div>
 
 <div class="setting-info">
+<b>геопозиция</b>
+<small id="locationStatus">определяется</small>
+</div>
 
-<b>
-уведомления
-</b>
+<button onclick="locateUser()" style="background:transparent;font-size:24px">›</button>
 
-<small>
-новые сообщения и друзья
-</small>
+</div>
 
+<div class="setting">
+
+<div class="setting-icon si-orange">📍</div>
+
+<div class="setting-info">
+<b>мои места</b>
+<small>дом, школа, работа и другое</small>
+</div>
+
+<button onclick="openPlace()" style="background:transparent;font-size:24px">›</button>
+
+</div>
+
+</div>
+
+<div class="section">приложение</div>
+
+<div class="settings">
+
+<div class="setting">
+
+<div class="setting-icon si-blue">🔔</div>
+
+<div class="setting-info">
+<b>уведомления</b>
+<small>сообщения и друзья</small>
 </div>
 
 <label class="switch">
-
-<input
-id="notifications"
-type="checkbox"
-checked
-onchange="changeNotifications()"
->
-
+<input id="notifications" type="checkbox" checked>
 <span></span>
-
 </label>
 
 </div>
 
-
 <div class="setting">
 
-<div class="setting-icon purple-bg">
-◐
-</div>
+<div class="setting-icon si-purple">◐</div>
 
 <div class="setting-info">
-
-<b>
-тёмная тема
-</b>
-
-<small id="themeText">
-включена
-</small>
-
+<b>тёмная тема</b>
+<small id="themeText">включена</small>
 </div>
 
 <label class="switch">
-
-<input
-id="themeToggle"
-type="checkbox"
-checked
-onchange="toggleTheme()"
->
-
+<input id="themeToggle" type="checkbox" checked onchange="toggleTheme()">
 <span></span>
-
 </label>
 
 </div>
 
 </div>
-
-
-<h3 class="section-title">
-аккаунт
-</h3>
-
-
-<div class="settings-card">
-
-<button
-class="setting-button"
-onclick="resetSettings()"
->
-
-<div class="setting-icon orange-bg">
-↻
-</div>
-
-<div>
-
-<b>
-сбросить настройки
-</b>
-
-<small>
-вернуть настройки по умолчанию
-</small>
-
-</div>
-
-<em>
-›
-</em>
-
-</button>
-
-</div>
-
-
-<button
-class="logout"
-onclick="toast('выход пока отключён')"
->
-выйти из аккаунта
-</button>
 
 </section>
 
@@ -2453,121 +1641,87 @@ onclick="toast('выход пока отключён')"
 
 <nav class="bottom-nav">
 
-<button
-class="nav active"
-data-page="map"
-onclick="showPage('map')"
->
-
-<span>
-⌖
-</span>
-
-<small>
-карта
-</small>
-
+<button class="nav active" data-page="map" onclick="showPage('map')">
+<span>⌖</span>
+<small>карта</small>
 </button>
 
-
-<button
-class="nav"
-data-page="friends"
-onclick="showPage('friends')"
->
-
-<span>
-♧
-</span>
-
-<small>
-друзья
-</small>
-
+<button class="nav" data-page="friends" onclick="showPage('friends')">
+<span>♧</span>
+<small>друзья</small>
 </button>
 
-
-<button
-class="nav"
-data-page="chats"
-onclick="showPage('chats')"
->
-
-<span>
-●
-</span>
-
-<small>
-чаты
-</small>
-
+<button class="nav" data-page="chats" onclick="showPage('chats')">
+<span>●</span>
+<small>чаты</small>
 </button>
 
-
-<button
-class="nav"
-data-page="profile"
-onclick="showPage('profile')"
->
-
-<span>
-♙
-</span>
-
-<small>
-профиль
-</small>
-
+<button class="nav" data-page="profile" onclick="showPage('profile')">
+<span>♙</span>
+<small>профиль</small>
 </button>
 
 </nav>
 
 
+<!-- окно добавления места -->
+
+<div class="modal" id="placeModal">
+
+<div class="sheet">
+
+<div class="handle"></div>
+
+<h2>добавить место</h2>
+
+<p>сохрани важное место на карте</p>
+
+<input id="placeName" placeholder="название места">
+
+<div class="place-types">
+
+<button onclick="selectPlace(this,'дом')">🏠<small>дом</small></button>
+<button onclick="selectPlace(this,'школа')">🎓<small>школа</small></button>
+<button onclick="selectPlace(this,'работа')">💼<small>работа</small></button>
+<button onclick="selectPlace(this,'другое')">⭐<small>другое</small></button>
+
+</div>
+
+<button class="primary" onclick="savePlace()">сохранить место</button>
+
+<button class="cancel" onclick="closePlace()">отмена</button>
+
+</div>
+
+</div>
+
+
 <!-- чат -->
 
-<div id="chatModal" class="chat-modal">
+<div class="chat-modal" id="chatModal">
 
 <div class="chat-window">
 
-<header class="chat-head">
+<div class="chat-head">
 
-<button onclick="closeChat()">
-‹
-</button>
+<button onclick="closeChat()">‹</button>
 
-<div class="chat-user">
-
-<div class="avatar purple">
-а
-</div>
+<div class="friend-avatar" style="background:#5422a0">а</div>
 
 <div>
-
-<b id="chatTitle">
-артём
-</b>
-
-<small>
-в сети
-</small>
-
+<b id="chatTitle">артём</b>
+<span style="display:block;color:#39df79;font-size:11px;margin-top:4px">в сети</span>
 </div>
 
 </div>
 
-</header>
+<div class="messages" id="messages">
 
-
-<div
-class="messages"
-id="messages"
->
-
-<div class="message friend-message">
+<div class="message their-message">
 привет 👋
 </div>
 
-<div class="message friend-message">
+<div class="message their-message">
 ты уже вышел?
 </div>
 
@@ -2577,21 +1731,11 @@ id="messages"
 
 </div>
 
+<form class="message-form" onsubmit="sendMessage(event)">
 
-<form
-class="message-form"
-onsubmit="sendMessage(event)"
->
+<input id="messageInput" placeholder="написать сообщение..." autocomplete="off">
 
-<input
-id="messageInput"
-placeholder="написать сообщение..."
-autocomplete="off"
->
-
-<button>
-➤
-</button>
+<button>➤</button>
 
 </form>
 
@@ -2600,111 +1744,13 @@ autocomplete="off"
 </div>
 
 
-<!-- место -->
+<input id="avatarInput" type="file" accept="image/*" hidden onchange="uploadAvatar(event)">
 
-<div id="placeModal" class="modal">
+<div class="toast" id="toast"></div>
 
-<div class="modal-box">
-
-<div class="handle"></div>
-
-<h2>
-добавить место
-</h2>
-
-<p>
-сохрани важное место на карте
-</p>
-
-
-<input
-id="placeName"
-placeholder="название места"
->
-
-
-<div class="place-types">
-
-<button onclick="selectPlace(this,'дом')">
-🏠
-<small>
-дом
-</small>
-</button>
-
-<button onclick="selectPlace(this,'школа')">
-🎓
-<small>
-школа
-</small>
-</button>
-
-<button onclick="selectPlace(this,'работа')">
-💼
-<small>
-работа
-</small>
-</button>
-
-<button onclick="selectPlace(this,'другое')">
-⭐
-<small>
-другое
-</small>
-</button>
-
-</div>
-
-
-<button
-class="primary"
-onclick="savePlace()"
->
-сохранить место
-</button>
-
-
-<button
-class="cancel"
-onclick="closePlace()"
->
-отмена
-</button>
-
-</div>
-
-</div>
-
-
-<input
-id="avatarInput"
-type="file"
-accept="image/*"
-hidden
-onchange="uploadAvatar(event)"
->
-
-
-<div
-id="toast"
-class="toast"
->
-</div>
-
-
-<div
-id="notification"
-class="notification"
->
-
-<b id="notificationTitle">
-уведомление
-</b>
-
-<span id="notificationText">
-новое событие
-</span>
-
+<div class="notification" id="notification">
+<b id="notificationTitle">уведомление</b>
+<span id="notificationText">новое событие</span>
 </div>
 
 </div>
@@ -2715,90 +1761,55 @@ class="notification"
 <script>
 
 /* =========================
-   данные
+   переменные
 ========================= */
 
 let map;
-
 let userMarker;
-
-let locationWatch;
-
-let selectedPlaceType="другое";
-
+let userLocation=null;
+let selectedPlace="другое";
 let mapStyle=0;
-
+let tileLayer;
 let toastTimer;
 
-let userLocation=null;
-
 let places=JSON.parse(
-    localStorage.getItem("places") || "[]"
+  localStorage.getItem("places") || "[]"
 );
-
-
-/* =========================
-   карты
-========================= */
-
-const mapStyles=[
-
-"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
-"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-
-];
-
-let tileLayer;
-
-
-/* =========================
-   запуск
-========================= */
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-initMap();
-
-loadProfile();
-
-loadSettings();
-
-loadPlaces();
-
-startLocationTracking();
-
-});
 
 
 /* =========================
    карта
 ========================= */
 
+const mapTiles=[
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+];
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  initMap();
+  loadProfile();
+  loadSettings();
+  loadPlaces();
+  getBattery();
+  startLocation();
+
+});
+
+
 function initMap(){
 
-map=L.map(
-"map",
-{
-zoomControl:false,
-attributionControl:false
-}
-).setView(
-[55.751244,37.618423],
-13
-);
+  map=L.map("map",{
+    zoomControl:false,
+    attributionControl:false
+  }).setView([55.751244,37.618423],13);
 
-
-tileLayer=L.tileLayer(
-mapStyles[0],
-{
-maxZoom:19
-}
-).addTo(map);
+  tileLayer=L.tileLayer(mapTiles[0],{
+    maxZoom:19
+  }).addTo(map);
 
 }
 
@@ -2807,631 +1818,241 @@ maxZoom:19
    геопозиция
 ========================= */
 
-function startLocationTracking(){
+function startLocation(){
 
-if(!navigator.geolocation){
+  if(!navigator.geolocation){
+    toast("геопозиция недоступна");
+    return;
+  }
 
-toast(
-"геопозиция недоступна"
-);
+  navigator.geolocation.getCurrentPosition(
+    position=>{
+      updateUserPosition(position);
+      addDemoFriends();
+    },
+    ()=>{
+      toast("разреши доступ к геопозиции");
+      addDemoFriends();
+    },
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:5000
+    }
+  );
 
-return;
-
-}
-
-
-navigator.geolocation.getCurrentPosition(
-position=>{
-setUserPosition(position);
-},
-()=>{
-toast(
-"разреши доступ к геопозиции"
-);
-},
-{
-enableHighAccuracy:true,
-timeout:10000,
-maximumAge:5000
-}
-);
-
-
-locationWatch=
-navigator.geolocation.watchPosition(
-position=>{
-setUserPosition(position);
-},
-()=>{},
-{
-enableHighAccuracy:true,
-maximumAge:3000,
-timeout:10000
-}
-);
+  navigator.geolocation.watchPosition(
+    position=>{
+      updateUserPosition(position);
+    },
+    ()=>{},
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:3000
+    }
+  );
 
 }
 
 
-function setUserPosition(position){
+function updateUserPosition(position){
 
-const lat=
-position.coords.latitude;
+  userLocation={
+    lat:position.coords.latitude,
+    lng:position.coords.longitude
+  };
 
-const lng=
-position.coords.longitude;
+  if(!userMarker){
 
-userLocation={
-lat,
-lng
-};
+    const icon=L.divIcon({
 
+      className:"user-location",
 
-if(!userMarker){
+      html:`
+      <div class="user-marker">
 
-const icon=
-L.divIcon({
+        <div class="ring"></div>
+        <div class="ring two"></div>
 
-className:
-"user-location",
+        <div class="user-photo">
+          <img id="mapUserAvatar">
+          <span id="mapUserLetter">н</span>
+        </div>
 
-html:`
+        <div class="online-badge"></div>
 
-<div class="user-marker-wrap">
+        <div class="user-name">
+          <span id="mapUserName">никс</span>
+          · <span id="mapBattery">—</span>%
+        </div>
 
-<div class="user-pulse"></div>
+      </div>
+      `,
 
-<div class="user-pulse"></div>
+      iconSize:[145,145],
+      iconAnchor:[72,72]
 
-<div class="user-dot"></div>
+    });
 
-<div class="user-online-label">
-● в сети
-</div>
+    userMarker=L.marker(
+      [userLocation.lat,userLocation.lng],
+      {
+        icon:icon,
+        zIndexOffset:1000
+      }
+    ).addTo(map);
 
-</div>
+    map.setView(
+      [userLocation.lat,userLocation.lng],
+      16,
+      {animate:true}
+    );
 
-`,
+    setTimeout(updateMapAvatar,100);
 
-iconSize:[
-120,
-120
-],
+  }else{
 
-iconAnchor:[
-60,
-60
-]
+    userMarker.setLatLng([
+      userLocation.lat,
+      userLocation.lng
+    ]);
 
-});
+  }
 
-
-userMarker=
-L.marker(
-[lat,lng],
-{
-icon,
-zIndexOffset:1000
-}
-).addTo(map);
-
-
-map.setView(
-[lat,lng],
-16
-);
-
-}else{
-
-userMarker.setLatLng(
-[lat,lng]
-);
-
-}
-
-
-document.getElementById(
-"locationStatus"
-).textContent=
-"геопозиция включена";
-
-}
-
-
-function locateUser(){
-
-if(!userLocation){
-
-toast(
-"определяем геопозицию..."
-);
-
-startLocationTracking();
-
-return;
-
-}
-
-map.setView(
-[
-userLocation.lat,
-userLocation.lng
-],
-17,
-{
-animate:true
-}
-);
-
-
-toast(
-"ты здесь"
-);
-
-}
-
-
-function refreshLocation(){
-
-toast(
-"обновляем геопозицию..."
-);
-
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(
-position=>{
-setUserPosition(position);
-
-map.setView(
-[
-position.coords.latitude,
-position.coords.longitude
-],
-17
-);
-
-toast(
-"геопозиция обновлена"
-);
-
-},
-()=>{
-toast(
-"не удалось обновить"
-);
-}
-);
-
-}
+  document.getElementById("locationStatus").textContent="геопозиция включена";
 
 }
 
 
 /* =========================
-   стиль карты
+   друзья на карте
 ========================= */
 
-function toggleMapStyle(){
+function addDemoFriends(){
 
-mapStyle++;
+  if(!userLocation) return;
 
-if(mapStyle>=mapStyles.length){
-mapStyle=0;
-}
+  const friends=[
+    {
+      name:"артём",
+      letter:"а",
+      color:"#5422a0",
+      battery:64,
+      lat:userLocation.lat+0.006,
+      lng:userLocation.lng+0.004
+    },
+    {
+      name:"макс",
+      letter:"м",
+      color:"#245da8",
+      battery:87,
+      lat:userLocation.lat-0.009,
+      lng:userLocation.lng+0.008
+    },
+    {
+      name:"саша",
+      letter:"с",
+      color:"#a84b20",
+      battery:31,
+      lat:userLocation.lat+0.012,
+      lng:userLocation.lng-0.007
+    }
+  ];
 
+  friends.forEach(friend=>{
 
-map.removeLayer(
-tileLayer
-);
+    const icon=L.divIcon({
 
+      className:"friend-location",
 
-tileLayer=
-L.tileLayer(
-mapStyles[mapStyle],
-{
-maxZoom:19
-}
-).addTo(map);
+      html:`
+      <div class="friend-marker">
 
+        <div
+          class="friend-photo"
+          style="background:${friend.color}"
+        >
+          ${friend.letter}
+        </div>
 
-toast(
-mapStyle===0
-?"тёмная карта":
-mapStyle===1
-?"обычная карта":
-"спутник"
-);
+        <div class="friend-online"></div>
+
+        <div class="friend-name">
+          ${friend.name} · ${friend.battery}%
+        </div>
+
+      </div>
+      `,
+
+      iconSize:[105,105],
+      iconAnchor:[52,52]
+
+    });
+
+    const marker=L.marker(
+      [friend.lat,friend.lng],
+      {icon}
+    ).addTo(map);
+
+    marker.bindPopup(`
+      <b>${friend.name}</b><br>
+      🟢 в сети<br>
+      🔋 ${friend.battery}%
+    `);
+
+  });
 
 }
 
 
 /* =========================
-   страницы
+   батарея
 ========================= */
 
-function showPage(page){
+function getBattery(){
 
-document
-.querySelectorAll(".page")
-.forEach(
-p=>p.classList.remove("active")
-);
+  if(!navigator.getBattery){
+    document.getElementById("profileBattery").textContent="—";
+    return;
+  }
 
+  navigator.getBattery().then(battery=>{
 
-const target=
-document.getElementById(
-page+"Page"
-);
+    updateBattery(battery);
 
+    battery.addEventListener(
+      "levelchange",
+      ()=>{
+        updateBattery(battery);
+      }
+    );
 
-if(target){
-target.classList.add("active");
-}
-
-
-document
-.querySelectorAll(".nav")
-.forEach(
-button=>{
-button.classList.toggle(
-"active",
-button.dataset.page===page
-);
-}
-);
-
-
-if(page==="map"){
-
-setTimeout(
-()=>{
-map.invalidateSize();
-},
-100
-);
-
-}
+  });
 
 }
 
 
-/* =========================
-   друзья
-========================= */
+function updateBattery(battery){
 
-function searchFriends(){
+  const percent=Math.round(
+    battery.level*100
+  );
 
-const query=
-document
-.getElementById(
-"friendSearch"
-)
-.value
-.toLowerCase();
+  document.getElementById(
+    "profileBattery"
+  ).textContent=percent+"%";
 
+  const mapBattery=
+    document.getElementById("mapBattery");
 
-document
-.querySelectorAll(".friend")
-.forEach(
-friend=>{
+  if(mapBattery){
+    mapBattery.textContent=percent;
+  }
 
-const name=
-friend
-.querySelector(
-".friend-info b"
-)
-.textContent
-.toLowerCase();
-
-
-friend.style.display=
-name.includes(query)
-?"flex"
-:"none";
-
-}
-);
-
-}
-
-
-/* =========================
-   чат
-========================= */
-
-function openChat(name){
-
-document.getElementById(
-"chatTitle"
-).textContent=name;
-
-document.getElementById(
-"chatModal"
-).classList.add("open");
-
-}
-
-
-function closeChat(){
-
-document.getElementById(
-"chatModal"
-).classList.remove("open");
-
-}
-
-
-function sendMessage(event){
-
-event.preventDefault();
-
-const input=
-document.getElementById(
-"messageInput"
-);
-
-const text=
-input.value.trim();
-
-if(!text)return;
-
-
-const message=
-document.createElement("div");
-
-message.className=
-"message my-message";
-
-message.textContent=
-text;
-
-
-document
-.getElementById("messages")
-.appendChild(message);
-
-
-input.value="";
-
-
-const messages=
-document.getElementById("messages");
-
-messages.scrollTop=
-messages.scrollHeight;
-
-
-setTimeout(
-()=>{
-
-const reply=
-document.createElement("div");
-
-reply.className=
-"message friend-message";
-
-reply.textContent=
-"понял 👍";
-
-messages.appendChild(reply);
-
-messages.scrollTop=
-messages.scrollHeight;
-
-},
-800
-);
-
-}
-
-
-/* =========================
-   места
-========================= */
-
-function openPlace(){
-
-document
-.getElementById("placeModal")
-.classList.add("open");
-
-}
-
-
-function closePlace(){
-
-document
-.getElementById("placeModal")
-.classList.remove("open");
-
-}
-
-
-function selectPlace(button,type){
-
-document
-.querySelectorAll(
-".place-types button"
-)
-.forEach(
-b=>b.classList.remove("selected")
-);
-
-button.classList.add("selected");
-
-selectedPlaceType=type;
-
-}
-
-
-function savePlace(){
-
-const name=
-document
-.getElementById("placeName")
-.value
-.trim();
-
-
-if(!name){
-
-toast(
-"введи название места"
-);
-
-return;
-
-}
-
-
-if(!userLocation){
-
-toast(
-"сначала включи геопозицию"
-);
-
-return;
-
-}
-
-
-const place={
-id:Date.now(),
-name,
-type:selectedPlaceType,
-lat:userLocation.lat,
-lng:userLocation.lng
-};
-
-
-places.push(place);
-
-
-localStorage.setItem(
-"places",
-JSON.stringify(places)
-);
-
-
-drawPlace(place);
-
-
-document.getElementById(
-"placeName"
-).value="";
-
-
-closePlace();
-
-
-updatePlacesCount();
-
-
-toast(
-"место сохранено"
-);
-
-}
-
-
-function drawPlace(place){
-
-let emoji="⭐";
-
-if(place.type==="дом")
-emoji="🏠";
-
-if(place.type==="школа")
-emoji="🎓";
-
-if(place.type==="работа")
-emoji="💼";
-
-
-const icon=
-L.divIcon({
-
-className:"saved-place",
-
-html:`
-
-<div style="
-width:42px;
-height:42px;
-border-radius:14px;
-background:#11161c;
-border:2px solid #9b4dff;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:20px;
-box-shadow:0 6px 20px rgba(0,0,0,.5);
-">
-${emoji}
-</div>
-
-`,
-
-iconSize:[
-42,
-42
-],
-
-iconAnchor:[
-21,
-21
-]
-
-});
-
-
-L.marker(
-[
-place.lat,
-place.lng
-],
-{
-icon
-}
-)
-.addTo(map)
-.bindPopup(
-"<b>"+
-place.name+
-"</b><br>"+
-place.type
-);
-
-}
-
-
-function loadPlaces(){
-
-places.forEach(
-place=>{
-drawPlace(place);
-}
-);
-
-updatePlacesCount();
-
-}
-
-
-function updatePlacesCount(){
-
-document.getElementById(
-"placesCount"
-).textContent=
-places.length;
-
-
-document.getElementById(
-"placesDescription"
-).textContent=
-places.length+
-" сохранённых мест";
+  if(percent<=20){
+    toast("заряд почти закончился 🔋");
+  }
 
 }
 
@@ -3442,72 +2063,73 @@ places.length+
 
 function chooseAvatar(){
 
-document
-.getElementById("avatarInput")
-.click();
+  document
+    .getElementById("avatarInput")
+    .click();
 
 }
 
 
 function uploadAvatar(event){
 
-const file=
-event.target.files[0];
+  const file=event.target.files[0];
 
-if(!file)return;
+  if(!file)return;
 
+  const reader=new FileReader();
 
-const reader=
-new FileReader();
+  reader.onload=e=>{
 
+    const url=e.target.result;
 
-reader.onload=
-e=>{
+    localStorage.setItem("avatar",url);
 
-const url=e.target.result;
+    setAvatar(url);
 
+    toast("аватарка обновлена");
 
-document.getElementById(
-"topAvatar"
-).src=url;
+  };
 
-document.getElementById(
-"profileAvatar"
-).src=url;
+  reader.readAsDataURL(file);
+
+}
 
 
-document.getElementById(
-"topAvatar"
-).style.display="block";
+function setAvatar(url){
 
-document.getElementById(
-"profileAvatar"
-).style.display="block";
+  const top=document.getElementById("topAvatar");
+  const profile=document.getElementById("profileAvatar");
 
+  top.src=url;
+  profile.src=url;
 
-document.getElementById(
-"topLetter"
-).style.display="none";
+  top.style.display="block";
+  profile.style.display="block";
 
-document.getElementById(
-"profileLetter"
-).style.display="none";
+  document.getElementById("topLetter").style.display="none";
+  document.getElementById("profileLetter").style.display="none";
 
+  updateMapAvatar();
 
-localStorage.setItem(
-"avatar",
-url
-);
+}
 
 
-toast(
-"аватарка обновлена"
-);
+function updateMapAvatar(){
 
-};
+  const avatar=localStorage.getItem("avatar");
 
+  const img=document.getElementById("mapUserAvatar");
+  const letter=document.getElementById("mapUserLetter");
 
-reader.readAsDataURL(file);
+  if(!img)return;
+
+  if(avatar){
+
+    img.src=avatar;
+    img.style.display="block";
+    letter.style.display="none";
+
+  }
 
 }
 
@@ -3518,240 +2140,470 @@ reader.readAsDataURL(file);
 
 function changeName(){
 
-const oldName=
-localStorage.getItem(
-"name"
-)||
-"никс";
+  const oldName=
+    localStorage.getItem("name") ||
+    "никс";
 
+  const name=prompt(
+    "как тебя называть?",
+    oldName
+  );
 
-const name=
-prompt(
-"как тебя называть?",
-oldName
-);
+  if(!name)return;
 
+  localStorage.setItem(
+    "name",
+    name
+  );
 
-if(!name)return;
+  updateName(name);
 
-
-localStorage.setItem(
-"name",
-name
-);
-
-
-updateName(name);
-
-
-toast(
-"имя обновлено"
-);
+  toast("имя обновлено");
 
 }
 
 
 function updateName(name){
 
-document.getElementById(
-"helloName"
-).textContent=name;
+  document.getElementById(
+    "helloName"
+  ).textContent=name;
 
+  document.getElementById(
+    "profileName"
+  ).textContent=name;
 
-document.getElementById(
-"profileName"
-).textContent=name;
+  document.getElementById(
+    "topLetter"
+  ).textContent=name[0].toLowerCase();
 
+  document.getElementById(
+    "profileLetter"
+  ).textContent=name[0].toLowerCase();
 
-document.getElementById(
-"topLetter"
-).textContent=
-name[0].toLowerCase();
+  const mapName=
+    document.getElementById("mapUserName");
 
-
-document.getElementById(
-"profileLetter"
-).textContent=
-name[0].toLowerCase();
+  if(mapName){
+    mapName.textContent=name;
+  }
 
 }
 
 
 /* =========================
-   настройки приватности
+   эмодзи
 ========================= */
 
-function changeMapVisibility(){
+function toggleEmojiPanel(){
 
-const enabled=
-document.getElementById(
-"mapVisibility"
-).checked;
-
-
-localStorage.setItem(
-"mapVisibility",
-enabled
-);
-
-
-document.getElementById(
-"mapVisibilityText"
-).textContent=
-enabled
-?"тебя видят друзья"
-:"ты скрыт на карте";
-
-
-if(userMarker){
-
-userMarker.setOpacity(
-enabled?1:0
-);
+  document
+    .getElementById("emojiPanel")
+    .classList.toggle("open");
 
 }
 
 
-toast(
-enabled
-?"ты снова виден на карте"
-:"ты скрыт на карте"
-);
+function sendEmoji(emoji){
+
+  const panel=
+    document.getElementById("emojiPanel");
+
+  panel.classList.remove("open");
+
+  if(!userLocation){
+    toast("сначала включи геопозицию");
+    return;
+  }
+
+  createFlyingEmoji(emoji);
+
+  toast(
+    emoji+" отправлен на карту"
+  );
+
+}
+
+
+function createFlyingEmoji(emoji){
+
+  const element=
+    document.createElement("div");
+
+  element.className="flying-emoji";
+
+  element.textContent=emoji;
+
+  const rect=
+    document
+      .querySelector(".user-photo")
+      ?.getBoundingClientRect();
+
+  if(rect){
+
+    element.style.left=
+      (rect.left+rect.width/2)+"px";
+
+    element.style.top=
+      (rect.top+rect.height/2)+"px";
+
+  }else{
+
+    element.style.left="50%";
+    element.style.top="50%";
+
+  }
+
+  document.body.appendChild(element);
+
+  setTimeout(
+    ()=>element.remove(),
+    1600
+  );
+
+}
+
+
+/* =========================
+   карта
+========================= */
+
+function locateUser(){
+
+  if(!userLocation){
+    toast("определяем геопозицию...");
+    startLocation();
+    return;
+  }
+
+  map.setView(
+    [userLocation.lat,userLocation.lng],
+    17,
+    {animate:true}
+  );
+
+  toast("ты здесь 📍");
+
+}
+
+
+function refreshLocation(){
+
+  toast("обновляем геопозицию...");
+
+  if(navigator.geolocation){
+
+    navigator.geolocation.getCurrentPosition(
+      position=>{
+        updateUserPosition(position);
+        map.setView(
+          [
+            position.coords.latitude,
+            position.coords.longitude
+          ],
+          17,
+          {animate:true}
+        );
+        toast("геопозиция обновлена");
+      },
+      ()=>{
+        toast("не удалось определить");
+      }
+    );
+
+  }
+
+}
+
+
+function changeMap(){
+
+  mapStyle++;
+
+  if(mapStyle>=mapTiles.length)
+    mapStyle=0;
+
+  map.removeLayer(tileLayer);
+
+  tileLayer=
+    L.tileLayer(
+      mapTiles[mapStyle],
+      {maxZoom:19}
+    ).addTo(map);
+
+  toast(
+    mapStyle===0
+      ?"тёмная карта"
+      :mapStyle===1
+      ?"обычная карта"
+      :"спутник"
+  );
+
+}
+
+
+/* =========================
+   места
+========================= */
+
+function openPlace(){
+
+  document
+    .getElementById("placeModal")
+    .classList.add("open");
+
+}
+
+
+function closePlace(){
+
+  document
+    .getElementById("placeModal")
+    .classList.remove("open");
+
+}
+
+
+function selectPlace(button,type){
+
+  document
+    .querySelectorAll(".place-types button")
+    .forEach(b=>{
+      b.classList.remove("selected");
+    });
+
+  button.classList.add("selected");
+
+  selectedPlace=type;
+
+}
+
+
+function savePlace(){
+
+  const name=
+    document
+      .getElementById("placeName")
+      .value
+      .trim();
+
+  if(!name){
+    toast("введи название");
+    return;
+  }
+
+  if(!userLocation){
+    toast("нет геопозиции");
+    return;
+  }
+
+  const place={
+    name:name,
+    type:selectedPlace,
+    lat:userLocation.lat,
+    lng:userLocation.lng
+  };
+
+  places.push(place);
+
+  localStorage.setItem(
+    "places",
+    JSON.stringify(places)
+  );
+
+  drawPlace(place);
+
+  document.getElementById(
+    "placeName"
+  ).value="";
+
+  closePlace();
+
+  updatePlaces();
+
+  toast("место сохранено 📍");
+
+}
+
+
+function drawPlace(place){
+
+  let emoji="⭐";
+
+  if(place.type==="дом")emoji="🏠";
+  if(place.type==="школа")emoji="🎓";
+  if(place.type==="работа")emoji="💼";
+
+  const icon=L.divIcon({
+
+    className:"saved-place",
+
+    html:`
+      <div style="
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        background:#11161c;
+        border:2px solid #9b4dff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:20px;
+        box-shadow:0 8px 22px rgba(0,0,0,.45);
+      ">
+        ${emoji}
+      </div>
+    `,
+
+    iconSize:[42,42],
+    iconAnchor:[21,21]
+
+  });
+
+  L.marker(
+    [place.lat,place.lng],
+    {icon}
+  )
+  .addTo(map)
+  .bindPopup(
+    "<b>"+place.name+"</b><br>"+place.type
+  );
+
+}
+
+
+function loadPlaces(){
+
+  places.forEach(
+    place=>drawPlace(place)
+  );
+
+  updatePlaces();
+
+}
+
+
+function updatePlaces(){
+
+  document.getElementById(
+    "placesCount"
+  ).textContent=places.length;
+
+  document.getElementById(
+    "placesText"
+  ).textContent=
+    places.length+
+    " сохранённых мест";
+
+}
+
+
+/* =========================
+   настройки
+========================= */
+
+function changeMapVisibility(){
+
+  const enabled=
+    document.getElementById(
+      "mapVisibility"
+    ).checked;
+
+  localStorage.setItem(
+    "mapVisibility",
+    enabled
+  );
+
+  document.getElementById(
+    "mapVisibilityText"
+  ).textContent=
+    enabled
+      ?"тебя видят друзья"
+      :"ты скрыт на карте";
+
+  if(userMarker){
+    userMarker.setOpacity(
+      enabled?1:0
+    );
+  }
 
 }
 
 
 function changeOnlineVisibility(){
 
-const enabled=
-document.getElementById(
-"onlineVisibility"
-).checked;
+  const enabled=
+    document.getElementById(
+      "onlineVisibility"
+    ).checked;
 
+  localStorage.setItem(
+    "onlineVisibility",
+    enabled
+  );
 
-localStorage.setItem(
-"onlineVisibility",
-enabled
-);
+  document.getElementById(
+    "onlineVisibilityText"
+  ).textContent=
+    enabled
+      ?"показывается друзьям"
+      :"никто не видит твой статус";
 
-
-document.getElementById(
-"onlineVisibilityText"
-).textContent=
-enabled
-?"показывается друзьям"
-:"никто не видит твой статус";
-
-
-document.getElementById(
-"onlineLabel"
-).textContent=
-enabled
-?"в сети"
-:"был недавно";
-
-
-document.getElementById(
-"profileOnline"
-).textContent=
-enabled
-?"в сети"
-:"был недавно";
-
-
-toast(
-enabled
-?"статус онлайн виден"
-:"статус онлайн скрыт"
-);
+  document.getElementById(
+    "onlineText"
+  ).textContent=
+    enabled
+      ?"в сети"
+      :"был недавно";
 
 }
 
 
 function changeLastSeen(){
 
-const enabled=
-document.getElementById(
-"lastSeen"
-).checked;
+  const enabled=
+    document.getElementById(
+      "lastSeen"
+    ).checked;
 
+  localStorage.setItem(
+    "lastSeen",
+    enabled
+  );
 
-localStorage.setItem(
-"lastSeen",
-enabled
-);
-
-
-document.getElementById(
-"lastSeenText"
-).textContent=
-enabled
-?"показывается друзьям"
-:"никто не видит последний визит";
-
-
-toast(
-enabled
-?"последний визит виден"
-:"последний визит скрыт"
-);
+  document.getElementById(
+    "lastSeenText"
+  ).textContent=
+    enabled
+      ?"показывается друзьям"
+      :"никто не видит последний визит";
 
 }
 
-
-function changeNotifications(){
-
-const enabled=
-document.getElementById(
-"notifications"
-).checked;
-
-
-localStorage.setItem(
-"notifications",
-enabled
-);
-
-
-toast(
-enabled
-?"уведомления включены"
-:"уведомления отключены"
-);
-
-}
-
-
-/* =========================
-   тема
-========================= */
 
 function toggleTheme(){
 
-const enabled=
-document.getElementById(
-"themeToggle"
-).checked;
+  const dark=
+    document.getElementById(
+      "themeToggle"
+    ).checked;
 
+  document.body.classList.toggle(
+    "light",
+    !dark
+  );
 
-localStorage.setItem(
-"darkTheme",
-enabled
-);
+  localStorage.setItem(
+    "darkTheme",
+    dark
+  );
 
-
-document.body.classList.toggle(
-"light",
-!enabled
-);
-
-
-document.getElementById(
-"themeText"
-).textContent=
-enabled
-?"включена"
-:"светлая";
+  document.getElementById(
+    "themeText"
+  ).textContent=
+    dark
+      ?"включена"
+      :"светлая";
 
 }
 
@@ -3762,235 +2614,243 @@ enabled
 
 function safeMode(){
 
-toast(
-"ты в безопасности ✓"
-);
-
-showNotification(
-"режим безопасности",
-"твоё местоположение сейчас под контролем"
-);
+  toast("ты в безопасности ✓");
 
 }
 
 
 /* =========================
-   уведомления
+   страницы
 ========================= */
 
-function showNotification(title,text){
+function showPage(page){
 
-const box=
-document.getElementById(
-"notification"
-);
+  document
+    .querySelectorAll(".page")
+    .forEach(p=>{
+      p.classList.remove("active");
+    });
 
-document.getElementById(
-"notificationTitle"
-).textContent=title;
+  const target=
+    document.getElementById(
+      page+"Page"
+    );
 
-document.getElementById(
-"notificationText"
-).textContent=text;
+  if(target)
+    target.classList.add("active");
 
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav=>{
+      nav.classList.toggle(
+        "active",
+        nav.dataset.page===page
+      );
+    });
 
-box.classList.add("show");
-
-
-setTimeout(
-()=>{
-box.classList.remove("show");
-},
-3000
-);
+  if(page==="map"){
+    setTimeout(
+      ()=>map.invalidateSize(),
+      100
+    );
+  }
 
 }
 
 
 /* =========================
-   загрузка данных
+   друзья поиск
+========================= */
+
+function searchFriends(){
+
+  const query=
+    document
+      .getElementById("friendSearch")
+      .value
+      .toLowerCase();
+
+  document
+    .querySelectorAll(".friend")
+    .forEach(friend=>{
+
+      const name=
+        friend
+          .querySelector(".friend-info b")
+          .textContent
+          .toLowerCase();
+
+      friend.style.display=
+        name.includes(query)
+          ?"flex"
+          :"none";
+
+    });
+
+}
+
+
+/* =========================
+   чат
+========================= */
+
+function openChat(name){
+
+  document.getElementById(
+    "chatTitle"
+  ).textContent=name;
+
+  document.getElementById(
+    "chatModal"
+  ).classList.add("open");
+
+}
+
+
+function closeChat(){
+
+  document.getElementById(
+    "chatModal"
+  ).classList.remove("open");
+
+}
+
+
+function sendMessage(event){
+
+  event.preventDefault();
+
+  const input=
+    document.getElementById(
+      "messageInput"
+    );
+
+  const text=
+    input.value.trim();
+
+  if(!text)return;
+
+  const message=
+    document.createElement("div");
+
+  message.className=
+    "message my-message";
+
+  message.textContent=text;
+
+  document
+    .getElementById("messages")
+    .appendChild(message);
+
+  input.value="";
+
+  const messages=
+    document.getElementById("messages");
+
+  messages.scrollTop=
+    messages.scrollHeight;
+
+  setTimeout(()=>{
+
+    const reply=
+      document.createElement("div");
+
+    reply.className=
+      "message their-message";
+
+    reply.textContent="понял 👍";
+
+    messages.appendChild(reply);
+
+    messages.scrollTop=
+      messages.scrollHeight;
+
+  },800);
+
+}
+
+
+/* =========================
+   профиль
 ========================= */
 
 function loadProfile(){
 
-const name=
-localStorage.getItem("name");
+  const name=
+    localStorage.getItem("name");
 
-if(name){
-updateName(name);
-}
+  if(name)
+    updateName(name);
 
+  const avatar=
+    localStorage.getItem("avatar");
 
-const avatar=
-localStorage.getItem("avatar");
-
-
-if(avatar){
-
-document.getElementById(
-"topAvatar"
-).src=avatar;
-
-document.getElementById(
-"profileAvatar"
-).src=avatar;
-
-
-document.getElementById(
-"topAvatar"
-).style.display="block";
-
-document.getElementById(
-"profileAvatar"
-).style.display="block";
-
-
-document.getElementById(
-"topLetter"
-).style.display="none";
-
-document.getElementById(
-"profileLetter"
-).style.display="none";
+  if(avatar)
+    setAvatar(avatar);
 
 }
 
-}
-
-
-/* =========================
-   настройки
-========================= */
 
 function loadSettings(){
 
-const mapVisibility=
-localStorage.getItem(
-"mapVisibility"
-);
+  const mapVisibility=
+    localStorage.getItem("mapVisibility");
+
+  if(mapVisibility!==null){
+
+    document.getElementById(
+      "mapVisibility"
+    ).checked=
+      mapVisibility==="true";
+
+    changeMapVisibility();
+
+  }
 
 
-if(mapVisibility!==null){
+  const online=
+    localStorage.getItem("onlineVisibility");
 
-document.getElementById(
-"mapVisibility"
-).checked=
-mapVisibility==="true";
+  if(online!==null){
 
-changeMapVisibility();
+    document.getElementById(
+      "onlineVisibility"
+    ).checked=
+      online==="true";
 
-}
+    changeOnlineVisibility();
 
-
-const online=
-localStorage.getItem(
-"onlineVisibility"
-);
+  }
 
 
-if(online!==null){
+  const lastSeen=
+    localStorage.getItem("lastSeen");
 
-document.getElementById(
-"onlineVisibility"
-).checked=
-online==="true";
+  if(lastSeen!==null){
 
-changeOnlineVisibility();
+    document.getElementById(
+      "lastSeen"
+    ).checked=
+      lastSeen==="true";
 
-}
+    changeLastSeen();
 
-
-const lastSeen=
-localStorage.getItem(
-"lastSeen"
-);
+  }
 
 
-if(lastSeen!==null){
+  const dark=
+    localStorage.getItem("darkTheme");
 
-document.getElementById(
-"lastSeen"
-).checked=
-lastSeen==="true";
+  if(dark!==null){
 
-changeLastSeen();
+    document.getElementById(
+      "themeToggle"
+    ).checked=
+      dark==="true";
 
-}
+    toggleTheme();
 
-
-const notifications=
-localStorage.getItem(
-"notifications"
-);
-
-
-if(notifications!==null){
-
-document.getElementById(
-"notifications"
-).checked=
-notifications==="true";
-
-}
-
-
-const dark=
-localStorage.getItem(
-"darkTheme"
-);
-
-
-if(dark!==null){
-
-document.getElementById(
-"themeToggle"
-).checked=
-dark==="true";
-
-toggleTheme();
-
-}
-
-}
-
-
-/* =========================
-   сброс
-========================= */
-
-function resetSettings(){
-
-if(
-!confirm(
-"сбросить все настройки?"
-)
-){
-return;
-}
-
-
-localStorage.removeItem(
-"mapVisibility"
-);
-
-localStorage.removeItem(
-"onlineVisibility"
-);
-
-localStorage.removeItem(
-"lastSeen"
-);
-
-localStorage.removeItem(
-"notifications"
-);
-
-localStorage.removeItem(
-"darkTheme"
-);
-
-
-location.reload();
+  }
 
 }
 
@@ -4001,31 +2861,21 @@ location.reload();
 
 function toast(text){
 
-const element=
-document.getElementById(
-"toast"
-);
+  const el=
+    document.getElementById("toast");
 
+  el.textContent=text;
 
-element.textContent=text;
+  el.classList.add("show");
 
-element.classList.add("show");
+  clearTimeout(toastTimer);
 
-
-clearTimeout(
-toastTimer
-);
-
-
-toastTimer=
-setTimeout(
-()=>{
-element.classList.remove(
-"show"
-);
-},
-2200
-);
+  toastTimer=setTimeout(
+    ()=>{
+      el.classList.remove("show");
+    },
+    2200
+  );
 
 }
 
