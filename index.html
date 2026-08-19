@@ -3,1061 +3,950 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0, user-scalable=no">
 
 <title>LINK</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
-
 *{
     box-sizing:border-box;
+    margin:0;
+    padding:0;
     -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
-    margin:0;
     width:100%;
-    min-height:100%;
+    height:100%;
+    overflow:hidden;
     background:#050505;
     color:#fff;
-    font-family:Arial,Helvetica,sans-serif;
-    overflow:hidden;
-}
-
-button,
-input{
-    font:inherit;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
 }
 
 button{
+    border:0;
+    outline:0;
+    font:inherit;
     cursor:pointer;
 }
 
-.app{
+#app{
     width:100%;
-    max-width:600px;
-    height:100vh;
-    margin:auto;
-    background:#070707;
+    height:100%;
     position:relative;
-    overflow:hidden;
+    background:#050505;
 }
 
-/* ================= TOP ================= */
-
-.top{
-    position:absolute;
-    z-index:1000;
-    top:0;
-    left:0;
-    right:0;
-    height:75px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:12px 18px;
-
-    pointer-events:none;
-}
-
-.top>*{
-    pointer-events:auto;
-}
-
-.logo{
-    font-size:27px;
-    font-weight:900;
-    letter-spacing:4px;
-}
-
-.status{
-    display:flex;
-    align-items:center;
-    gap:7px;
-
-    background:#0d0d0dcc;
-    border:1px solid #292929;
-    border-radius:30px;
-
-    padding:9px 13px;
-
-    backdrop-filter:blur(12px);
-}
-
-.status-dot{
-    width:9px;
-    height:9px;
-    border-radius:50%;
-    background:#00ff72;
-    box-shadow:0 0 10px #00ff72;
-}
-
-.status.offline .status-dot{
-    background:#777;
-    box-shadow:none;
-}
-
-/* ================= MAP ================= */
-
-.map{
-    position:absolute;
-    inset:0;
-}
-
-#map{
-    position:absolute;
-    inset:0;
-    background:#111;
-    filter:grayscale(1) contrast(1.12);
-}
-
-/* затемнение карты */
-
-.map:after{
-    content:"";
-    position:absolute;
-    pointer-events:none;
-    z-index:400;
-
-    inset:0;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,.72),
-            transparent 25%,
-            transparent 70%,
-            rgba(0,0,0,.8)
-        );
-}
-
-/* ================= CITY CARD ================= */
-
-.city{
-    position:absolute;
-    z-index:600;
-
-    top:82px;
-    left:17px;
-
-    padding:10px 14px;
-
-    background:#fff;
-    color:#000;
-
-    border-radius:15px;
-
-    box-shadow:0 10px 30px #0008;
-}
-
-.city b{
-    display:block;
-    font-size:16px;
-}
-
-.city small{
-    display:block;
-    margin-top:2px;
-    font-size:10px;
-    opacity:.6;
-}
-
-/* ================= MAP CONTROLS ================= */
-
-.map-controls{
-    position:absolute;
-    z-index:600;
-
-    right:15px;
-    top:85px;
-
-    display:grid;
-    gap:8px;
-}
-
-.map-button{
-    width:43px;
-    height:43px;
-
-    border:1px solid #333;
-    border-radius:50%;
-
-    background:#080808dd;
-    color:#fff;
-
-    font-size:20px;
-
-    backdrop-filter:blur(10px);
-}
-
-.map-button:active{
-    transform:scale(.9);
-}
-
-/* ================= MY LOCATION ================= */
-
-.my-location{
-    width:68px;
-    height:68px;
-
-    border-radius:50%;
-
-    background:#111;
-
-    border:4px solid #fff;
-
-    box-shadow:
-        0 0 0 7px rgba(255,255,255,.13),
-        0 0 35px rgba(255,255,255,.35);
-
-    overflow:visible;
-
-    position:relative;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.my-location img{
-    width:100%;
-    height:100%;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.my-letter{
-    width:100%;
-    height:100%;
-
-    border-radius:50%;
-
-    background:#fff;
-    color:#000;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-weight:900;
-    font-size:24px;
-}
-
-/* направление */
-
-.direction{
-    position:absolute;
-
-    width:0;
-    height:0;
-
-    left:50%;
-    top:-22px;
-
-    transform:translateX(-50%);
-
-    border-left:9px solid transparent;
-    border-right:9px solid transparent;
-    border-bottom:22px solid #fff;
-
-    filter:drop-shadow(0 0 5px #fff);
-}
-
-/* ================= RAINBOW TAIL ================= */
-
-.rainbow-tail{
-    position:absolute;
-
-    width:145px;
-    height:23px;
-
-    left:-105px;
-    top:35px;
-
-    border-radius:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            #ff003c,
-            #ff7a00,
-            #ffee00,
-            #00ff70,
-            #00b7ff,
-            #7040ff,
-            #ff00d4
-        );
-
-    filter:blur(9px);
-
-    opacity:.9;
-
-    transform:rotate(-18deg);
-
-    animation:tail 1.8s linear infinite;
-}
-
-@keyframes tail{
-
-    0%{
-        opacity:.35;
-        transform:rotate(-18deg) scaleX(.75);
-    }
-
-    50%{
-        opacity:1;
-        transform:rotate(-18deg) scaleX(1);
-    }
-
-    100%{
-        opacity:.35;
-        transform:rotate(-18deg) scaleX(.75);
-    }
-
-}
-
-/* ================= FRIEND MARKERS ================= */
-
-.friend-marker{
-    width:48px;
-    height:48px;
-
-    border-radius:50%;
-
-    background:#222;
-
-    border:3px solid #fff;
-
-    color:#fff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-weight:900;
-
-    box-shadow:
-        0 0 0 5px #ffffff22,
-        0 8px 25px #000;
-}
-
-.friend-marker img{
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-    border-radius:50%;
-}
-
-/* ================= USER PANEL ================= */
-
-.user-panel{
-    position:absolute;
-
-    z-index:700;
-
-    left:15px;
-    right:15px;
-    bottom:96px;
-
-    background:#080808ed;
-
-    border:1px solid #303030;
-
-    border-radius:22px;
-
-    padding:10px;
-
-    display:flex;
-    align-items:center;
-
-    gap:10px;
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:0 15px 40px #000;
-}
-
-.avatar{
-    width:50px;
-    height:50px;
-
-    border-radius:50%;
-
-    background:#fff;
-    color:#000;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-weight:900;
-
-    overflow:hidden;
-}
-
-.avatar img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.user-info{
-    flex:1;
-}
-
-.user-info b{
-    display:block;
-    font-size:14px;
-}
-
-.user-info small{
-    display:block;
-    color:#888;
-    margin-top:4px;
-    font-size:10px;
-}
-
-.battery{
-    padding:7px 9px;
-
-    background:#151515;
-
-    border-radius:10px;
-
-    font-size:11px;
-}
-
-/* ================= MUSIC ================= */
-
-.music{
-    position:absolute;
-
-    z-index:700;
-
-    left:15px;
-    right:15px;
-
-    bottom:178px;
-
-    background:#090909e8;
-
-    border:1px solid #292929;
-
-    border-radius:18px;
-
-    padding:10px 12px;
-
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    backdrop-filter:blur(20px);
-}
-
-.music-icon{
-    width:43px;
-    height:43px;
-
-    border-radius:12px;
-
-    background:#fff;
-    color:#000;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:20px;
-}
-
-.music-info{
-    flex:1;
-}
-
-.music-info small{
-    display:block;
-    color:#777;
-    font-size:9px;
-}
-
-.music-info b{
-    display:block;
-    margin-top:3px;
-    font-size:13px;
-}
-
-.music button{
-    width:37px;
-    height:37px;
-
-    border:0;
-    border-radius:11px;
-
-    background:#fff;
-    color:#000;
-}
-
-/* ================= BOTTOM NAV ================= */
-
-.bottom{
-    position:absolute;
-
-    z-index:900;
-
-    bottom:10px;
-
-    left:12px;
-    right:12px;
-
-    height:70px;
-
-    background:#090909f5;
-
-    border:1px solid #292929;
-
-    border-radius:25px;
-
-    display:grid;
-
-    grid-template-columns:repeat(5,1fr);
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:0 10px 35px #000;
-}
-
-.nav{
-    border:0;
-
-    background:transparent;
-
-    color:#666;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:5px;
-
-    font-size:20px;
-}
-
-.nav span{
-    font-size:9px;
-}
-
-.nav.active{
-    color:#fff;
-}
-
-.nav-avatar{
-    width:28px;
-    height:28px;
-
-    border-radius:50%;
-
-    background:#fff;
-    color:#000;
-
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:10px;
-    font-weight:900;
-}
-
-.nav-avatar img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-/* ================= SCREENS ================= */
+/* =========================
+   SCREENS
+========================= */
 
 .screen{
     position:absolute;
-
     inset:0;
-
-    z-index:2000;
-
-    background:#070707;
-
     display:none;
-
-    overflow-y:auto;
-
-    padding-bottom:90px;
+    padding-bottom:92px;
+    background:#050505;
 }
 
 .screen.active{
     display:block;
 }
 
-/* ================= SCREEN HEADER ================= */
+/* =========================
+   MAP
+========================= */
 
-.screen-header{
-    height:72px;
+#mapScreen{
+    padding-bottom:0;
+}
 
-    padding:15px 18px;
+#map{
+    position:absolute;
+    inset:0;
+    background:#080808;
+    z-index:1;
+}
+
+.leaflet-control-attribution{
+    background:rgba(0,0,0,.65)!important;
+    color:#777!important;
+    font-size:8px!important;
+}
+
+.leaflet-control-attribution a{
+    color:#aaa!important;
+}
+
+.leaflet-control-zoom{
+    display:none;
+}
+
+/* Dark map */
+
+.leaflet-tile{
+    filter:
+        grayscale(1)
+        brightness(.55)
+        contrast(1.2);
+}
+
+/* map top */
+
+.map-top{
+    position:absolute;
+    top:18px;
+    left:14px;
+    right:14px;
+    z-index:1000;
 
     display:flex;
     align-items:center;
     justify-content:space-between;
 
-    border-bottom:1px solid #181818;
+    pointer-events:none;
 }
 
-.screen-header h2{
-    margin:0;
-
+.map-logo{
+    pointer-events:auto;
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:10px 15px;
     font-size:20px;
+    font-weight:900;
+    letter-spacing:3px;
 }
 
-.back,
-.header-button{
-    width:40px;
-    height:40px;
-
-    border:1px solid #282828;
-
-    border-radius:13px;
-
-    background:#111;
-
-    color:#fff;
-
-    font-size:20px;
-}
-
-/* ================= CONTENT ================= */
-
-.content{
-    padding:15px;
-}
-
-.search{
-    width:100%;
-
-    padding:13px;
-
-    border-radius:14px;
-
-    border:1px solid #292929;
-
-    background:#111;
-
-    color:#fff;
-
-    outline:none;
-
-    margin-bottom:10px;
-}
-
-.card{
-    background:#0d0d0d;
-
-    border:1px solid #222;
-
-    border-radius:18px;
-
-    padding:14px;
-
-    margin-bottom:10px;
-}
-
-/* ================= FRIEND ================= */
-
-.friend{
+.map-actions{
     display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:12px;
-
-    margin-bottom:7px;
-
-    background:#0d0d0d;
-
-    border:1px solid #202020;
-
-    border-radius:17px;
+    gap:8px;
+    pointer-events:auto;
 }
 
-.friend-avatar{
-    width:48px;
-    height:48px;
-
+.round-btn{
+    width:44px;
+    height:44px;
     border-radius:50%;
-
-    background:#222;
-
+    background:rgba(0,0,0,.78);
+    color:white;
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(15px);
     display:flex;
     align-items:center;
     justify-content:center;
-
-    overflow:hidden;
-
-    font-weight:bold;
+    font-size:19px;
 }
 
-.friend-avatar img{
+/* location card */
+
+.location-card{
+    position:absolute;
+    top:78px;
+    left:14px;
+    z-index:1000;
+
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:22px;
+
+    padding:11px 15px;
+
+    min-width:165px;
+}
+
+.location-card .city{
+    font-size:15px;
+    font-weight:800;
+}
+
+.location-card .status{
+    color:#aaa;
+    font-size:12px;
+    margin-top:3px;
+}
+
+/* battery */
+
+.battery-card{
+    position:absolute;
+    top:78px;
+    right:14px;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    background:rgba(0,0,0,.78);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+
+    padding:10px 13px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+/* map marker */
+
+.my-marker{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+
+    position:relative;
+
+    border:4px solid #fff;
+
+    background:#111;
+
+    box-shadow:
+        0 0 0 7px rgba(255,255,255,.13),
+        0 0 35px rgba(255,255,255,.3);
+
+    overflow:visible;
+}
+
+.my-marker img{
     width:100%;
     height:100%;
     object-fit:cover;
+    border-radius:50%;
+}
+
+.online-dot{
+    position:absolute;
+    right:0;
+    bottom:2px;
+
+    width:17px;
+    height:17px;
+
+    background:#fff;
+    border:4px solid #050505;
+
+    border-radius:50%;
+}
+
+/* direction arrow */
+
+.direction-arrow{
+    position:absolute;
+    left:50%;
+    top:-45px;
+
+    width:0;
+    height:0;
+
+    transform:translateX(-50%);
+
+    border-left:9px solid transparent;
+    border-right:9px solid transparent;
+    border-bottom:30px solid white;
+
+    filter:drop-shadow(0 3px 5px #000);
+}
+
+/* pulse */
+
+.my-marker::after{
+    content:"";
+    position:absolute;
+    inset:-18px;
+
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.22);
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{
+        transform:scale(.8);
+        opacity:.8;
+    }
+    100%{
+        transform:scale(1.45);
+        opacity:0;
+    }
+}
+
+/* Rainbow trail */
+
+.rainbow-trail{
+    width:26px;
+    height:130px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        to bottom,
+        #ff0055,
+        #ff7a00,
+        #ffe600,
+        #00ff88,
+        #00c8ff,
+        #7c00ff
+    );
+
+    filter:blur(13px);
+
+    opacity:.62;
+
+    transform:rotate(-20deg);
+
+    animation:trail 2s ease-in-out infinite;
+}
+
+@keyframes trail{
+    0%,100%{
+        transform:rotate(-20deg) scale(.9);
+        opacity:.4;
+    }
+
+    50%{
+        transform:rotate(-20deg) scale(1.15);
+        opacity:.7;
+    }
+}
+
+/* friends */
+
+.friend-marker{
+    width:50px;
+    height:50px;
+
+    border-radius:50%;
+
+    background:#111;
+
+    border:3px solid white;
+
+    overflow:hidden;
+
+    box-shadow:0 4px 20px #000;
+}
+
+.friend-marker img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* map bottom info */
+
+.map-info{
+    position:absolute;
+    left:14px;
+    right:14px;
+    bottom:104px;
+
+    z-index:1000;
+
+    display:flex;
+    gap:9px;
+}
+
+.info-pill{
+    flex:1;
+
+    background:rgba(0,0,0,.8);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:18px;
+
+    padding:10px 12px;
+
+    text-align:center;
+}
+
+.info-pill strong{
+    display:block;
+    font-size:14px;
+}
+
+.info-pill span{
+    color:#888;
+    font-size:10px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.page{
+    height:100%;
+    overflow:auto;
+    padding:20px 16px 110px;
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:24px;
+}
+
+.header h1{
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+.header small{
+    color:#777;
+}
+
+/* =========================
+   FRIENDS
+========================= */
+
+.search{
+    height:48px;
+    border-radius:17px;
+
+    background:#111;
+    border:1px solid #202020;
+
+    color:white;
+
+    padding:0 16px;
+
+    width:100%;
+    margin-bottom:18px;
+
+    outline:none;
+}
+
+.search::placeholder{
+    color:#666;
+}
+
+.friend{
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    background:#101010;
+
+    border:1px solid #1d1d1d;
+
+    padding:12px;
+
+    border-radius:20px;
+
+    margin-bottom:10px;
+}
+
+.friend-avatar{
+    width:52px;
+    height:52px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #fff;
 }
 
 .friend-info{
     flex:1;
 }
 
-.friend-info b{
-    display:block;
+.friend-name{
+    font-size:15px;
+    font-weight:800;
 }
 
-.friend-info small{
-    display:block;
-
+.friend-status{
     color:#777;
-
-    margin-top:4px;
-
-    font-size:10px;
+    font-size:12px;
+    margin-top:3px;
 }
 
 .online{
-    color:#00ff72!important;
+    width:10px;
+    height:10px;
+    background:#fff;
+    border-radius:50%;
 }
 
-/* ================= CHAT ================= */
+/* =========================
+   CHATS
+========================= */
 
 .chat{
     display:flex;
-
-    gap:10px;
-
     align-items:center;
+    gap:12px;
 
-    padding:12px;
+    padding:13px 4px;
 
-    border-bottom:1px solid #181818;
+    border-bottom:1px solid #171717;
 }
 
 .chat-avatar{
-    width:48px;
-    height:48px;
-
+    width:54px;
+    height:54px;
     border-radius:50%;
-
-    background:#222;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-weight:bold;
+    object-fit:cover;
 }
 
 .chat-info{
     flex:1;
 }
 
-.chat-info b{
-    display:block;
+.chat-name{
+    font-weight:800;
 }
 
-.chat-info small{
+.chat-message{
     color:#777;
-
-    display:block;
-
+    font-size:13px;
     margin-top:4px;
 }
 
-.time{
+.chat-time{
     color:#666;
-    font-size:9px;
+    font-size:11px;
 }
 
-/* ================= PROFILE ================= */
+/* =========================
+   PROFILE
+========================= */
 
 .profile-top{
     text-align:center;
-
-    padding:25px 15px;
+    padding-top:20px;
 }
 
-.profile-avatar{
-    width:120px;
-    height:120px;
+.big-avatar{
+    width:115px;
+    height:115px;
 
-    margin:auto;
+    border-radius:50%;
 
-    border-radius:35px;
-
-    background:#fff;
-    color:#000;
-
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:40px;
-    font-weight:900;
-
-    border:3px solid #fff;
-}
-
-.profile-avatar img{
-    width:100%;
-    height:100%;
     object-fit:cover;
+
+    border:4px solid white;
+
+    box-shadow:0 0 35px rgba(255,255,255,.15);
+
+    margin-bottom:14px;
 }
 
-.profile-top h2{
-    margin:12px 0 5px;
+.profile-name{
+    font-size:25px;
+    font-weight:900;
 }
 
-.profile-top small{
+.profile-tag{
     color:#777;
+    margin-top:4px;
+}
+
+.profile-status{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    margin-top:12px;
+
+    padding:7px 12px;
+
+    background:#111;
+    border-radius:30px;
+
+    font-size:12px;
+}
+
+.profile-status i{
+    width:8px;
+    height:8px;
+    background:white;
+    border-radius:50%;
 }
 
 .stats{
     display:grid;
-
     grid-template-columns:repeat(3,1fr);
+    gap:8px;
 
-    margin-top:20px;
-
-    background:#0d0d0d;
-
-    border:1px solid #222;
-
-    border-radius:18px;
-
-    padding:15px;
+    margin-top:25px;
 }
 
-.stats div{
+.stat{
+    background:#111;
+    border:1px solid #1d1d1d;
+    border-radius:18px;
+    padding:15px 5px;
     text-align:center;
 }
 
-.stats b{
+.stat strong{
     display:block;
     font-size:19px;
 }
 
-.stats small{
-    display:block;
-    margin-top:4px;
-}
-
-/* ================= FORMS ================= */
-
-.field{
-    margin-bottom:12px;
-}
-
-.field label{
-    display:block;
-
-    color:#777;
-
-    font-size:10px;
-
-    margin-bottom:5px;
-}
-
-.field input{
-    width:100%;
-
-    padding:13px;
-
-    border:1px solid #292929;
-
-    border-radius:13px;
-
-    background:#111;
-
-    color:#fff;
-
-    outline:none;
-}
-
-.main-button{
-    width:100%;
-
-    border:0;
-
-    border-radius:14px;
-
-    padding:14px;
-
-    background:#fff;
-
-    color:#000;
-
-    font-weight:bold;
-}
-
-/* ================= SETTINGS ================= */
-
-.setting-title{
-    color:#777;
-
+.stat span{
+    color:#666;
     font-size:11px;
+}
 
-    margin:20px 5px 8px;
+/* =========================
+   SETTINGS
+========================= */
+
+.settings-group{
+    margin-bottom:25px;
+}
+
+.settings-title{
+    color:#666;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    margin:0 4px 8px;
 }
 
 .setting{
     display:flex;
-
     align-items:center;
+    gap:13px;
 
-    justify-content:space-between;
+    background:#101010;
 
-    padding:15px;
+    border-bottom:1px solid #1c1c1c;
 
-    background:#0d0d0d;
+    padding:16px;
 
-    border-bottom:1px solid #202020;
+    min-height:62px;
 }
 
 .setting:first-of-type{
-    border-radius:16px 16px 0 0;
+    border-radius:17px 17px 0 0;
 }
 
 .setting:last-of-type{
-    border-radius:0 0 16px 16px;
+    border-radius:0 0 17px 17px;
+    border-bottom:0;
 }
 
-.switch{
-    width:42px;
-    height:24px;
+.setting-icon{
+    width:37px;
+    height:37px;
 
-    border-radius:20px;
+    border-radius:12px;
 
-    background:#333;
-
-    padding:3px;
-}
-
-.switch i{
-    display:block;
-
-    width:18px;
-    height:18px;
-
-    border-radius:50%;
-
-    background:#fff;
-
-    transition:.2s;
-}
-
-.switch.on{
-    background:#fff;
-}
-
-.switch.on i{
-    transform:translateX(18px);
-
-    background:#000;
-}
-
-/* ================= CHECKINS ================= */
-
-.checkin-card{
-    padding:20px;
-
-    border-radius:22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #171717,
-            #080808
-        );
-
-    border:1px solid #292929;
-
-    text-align:center;
-}
-
-.checkin-icon{
-    font-size:45px;
-}
-
-.place{
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    padding:13px;
-
-    border-bottom:1px solid #202020;
-}
-
-.place-icon{
-    width:45px;
-    height:45px;
-
-    border-radius:14px;
-
-    background:#191919;
+    background:#1b1b1b;
 
     display:flex;
     align-items:center;
     justify-content:center;
+
+    font-size:17px;
 }
 
-.place-info{
+.setting-info{
     flex:1;
 }
 
-.place-info b{
+.setting-name{
+    font-size:14px;
+    font-weight:700;
+}
+
+.setting-description{
+    font-size:11px;
+    color:#666;
+    margin-top:3px;
+}
+
+.chevron{
+    color:#555;
+    font-size:20px;
+}
+
+/* toggle */
+
+.toggle{
+    width:46px;
+    height:27px;
+
+    background:#292929;
+
+    border-radius:30px;
+
+    padding:3px;
+}
+
+.toggle.active{
+    background:white;
+}
+
+.toggle span{
     display:block;
+
+    width:21px;
+    height:21px;
+
+    background:#777;
+
+    border-radius:50%;
+
+    transition:.2s;
 }
 
-.place-info small{
-    color:#777;
+.toggle.active span{
+    background:#000;
+    transform:translateX(19px);
 }
 
-/* ================= LEAFLET ================= */
+/* =========================
+   BOTTOM NAV
+========================= */
 
-.leaflet-control-attribution{
-    display:none!important;
+.bottom-nav{
+    position:fixed;
+
+    left:10px;
+    right:10px;
+    bottom:10px;
+
+    height:74px;
+
+    z-index:99999;
+
+    background:rgba(8,8,8,.94);
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:25px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.7),
+        inset 0 1px rgba(255,255,255,.05);
+
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+
+    padding:6px;
 }
 
-.leaflet-control-zoom{
-    display:none!important;
+.nav-btn{
+    background:transparent;
+    color:#666;
+
+    border-radius:20px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    gap:4px;
+
+    transition:.2s;
 }
 
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip{
+.nav-btn .icon{
+    font-size:21px;
+    line-height:1;
+}
+
+.nav-btn span:last-child{
+    font-size:9px;
+    font-weight:700;
+}
+
+.nav-btn.active{
+    background:#fff;
+    color:#000;
+}
+
+.nav-btn:active{
+    transform:scale(.93);
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+
+    z-index:200000;
+
+    background:rgba(0,0,0,.7);
+
+    backdrop-filter:blur(10px);
+
+    display:none;
+
+    align-items:flex-end;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.sheet{
+    width:100%;
+
+    background:#101010;
+
+    border-radius:30px 30px 0 0;
+
+    border-top:1px solid #333;
+
+    padding:22px;
+
+    animation:sheet .25s ease;
+}
+
+@keyframes sheet{
+    from{
+        transform:translateY(100%);
+    }
+    to{
+        transform:translateY(0);
+    }
+}
+
+.sheet-handle{
+    width:42px;
+    height:5px;
+
+    background:#444;
+
+    border-radius:10px;
+
+    margin:0 auto 22px;
+}
+
+.sheet h2{
+    font-size:22px;
+    margin-bottom:17px;
+}
+
+.sheet button{
+    width:100%;
+    height:50px;
+
+    border-radius:16px;
+
+    background:#fff;
+    color:#000;
+
+    font-weight:800;
+
+    margin-top:10px;
+}
+
+/* =========================
+   MUSIC
+========================= */
+
+.music-card{
+    margin-top:20px;
+
     background:#111;
+
+    border:1px solid #202020;
+
+    border-radius:22px;
+
+    padding:15px;
+}
+
+.music-top{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.music-cover{
+    width:50px;
+    height:50px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(135deg,#fff,#222);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#000;
+    font-size:22px;
+}
+
+.music-title{
+    font-weight:800;
+}
+
+.music-artist{
+    color:#666;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.music-note{
+    margin-left:auto;
     color:#fff;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:700px){
+
+    .bottom-nav{
+        left:50%;
+        right:auto;
+        transform:translateX(-50%);
+        width:600px;
+    }
+
+    .page{
+        max-width:650px;
+        margin:auto;
+    }
+
+    .map-info{
+        left:50%;
+        right:auto;
+        width:600px;
+        transform:translateX(-50%);
+    }
 }
 
 </style>
@@ -1065,172 +954,119 @@ button{
 
 <body>
 
-<div class="app">
+<div id="app">
 
-<!-- =====================================================
+<!-- =========================
      MAP
-===================================================== -->
+========================= -->
 
-<div class="map">
+<section id="mapScreen" class="screen active">
 
     <div id="map"></div>
 
-    <div class="top">
+    <div class="map-top">
 
-        <div class="logo">
+        <div class="map-logo">
             LINK
         </div>
 
-        <div
-            class="status"
-            id="status"
-            onclick="toggleOnline()">
+        <div class="map-actions">
 
-            <div class="status-dot"></div>
+            <button class="round-btn" onclick="locateMe()">
+                ⌖
+            </button>
 
-            <span id="statusText">
-                В сети
+            <button class="round-btn" onclick="zoomIn()">
+                +
+            </button>
+
+            <button class="round-btn" onclick="zoomOut()">
+                −
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="location-card">
+        <div class="city" id="cityName">
+            Моя карта
+        </div>
+
+        <div class="status">
+            <span id="onlineText">
+                ● в сети
             </span>
+        </div>
+    </div>
 
+    <div class="battery-card">
+        🔋
+        <span id="battery">
+            --%
+        </span>
+    </div>
+
+    <div class="map-info">
+
+        <div class="info-pill">
+            <strong id="speed">
+                0 км/ч
+            </strong>
+            <span>
+                скорость
+            </span>
+        </div>
+
+        <div class="info-pill">
+            <strong id="distance">
+                0 м
+            </strong>
+            <span>
+                движение
+            </span>
+        </div>
+
+        <div class="info-pill">
+            <strong id="accuracy">
+                -- м
+            </strong>
+            <span>
+                точность
+            </span>
         </div>
 
     </div>
 
-    <div class="city">
-
-        <b id="cityName">
-            Твоя карта
-        </b>
-
-        <small>
-            кто рядом сейчас
-        </small>
-
-    </div>
-
-    <div class="map-controls">
-
-        <button
-            class="map-button"
-            onclick="zoomIn()">
-            +
-        </button>
-
-        <button
-            class="map-button"
-            onclick="zoomOut()">
-            −
-        </button>
-
-        <button
-            class="map-button"
-            onclick="findMe()">
-            ⌖
-        </button>
-
-    </div>
-
-    <!-- MUSIC -->
-
-    <div class="music">
-
-        <div class="music-icon">
-            ♪
-        </div>
-
-        <div class="music-info">
-
-            <small>
-                СЕЙЧАС СЛУШАЮ
-            </small>
-
-            <b id="musicTitle">
-                Музыка не указана
-            </b>
-
-            <small id="musicArtist">
-                Открой профиль
-            </small>
-
-        </div>
-
-        <button
-            onclick="openScreen('profile')">
-            →
-        </button>
-
-    </div>
-
-    <!-- USER -->
-
-    <div class="user-panel">
-
-        <div
-            class="avatar"
-            id="mapAvatar">
-            Н
-        </div>
-
-        <div class="user-info">
-
-            <b id="mapName">
-                Никс
-            </b>
-
-            <small>
-                <span id="onlineText">
-                    ● в сети
-                </span>
-                · движение включено
-            </small>
-
-        </div>
-
-        <div
-            class="battery"
-            id="battery">
-            🔋 —
-        </div>
-
-    </div>
-
-</div>
+</section>
 
 
-<!-- =====================================================
+<!-- =========================
      FRIENDS
-===================================================== -->
+========================= -->
 
-<section
-    class="screen"
-    id="friendsScreen">
+<section id="friendsScreen" class="screen">
 
-    <header class="screen-header">
+    <div class="page">
 
-        <button
-            class="back"
-            onclick="closeScreen()">
-            ‹
-        </button>
+        <div class="header">
+            <div>
+                <h1>Друзья</h1>
+                <small>кто сейчас рядом</small>
+            </div>
 
-        <h2>
-            Друзья
-        </h2>
-
-        <button
-            class="header-button"
-            onclick="addFriend()">
-            +
-        </button>
-
-    </header>
-
-    <div class="content">
+            <button class="round-btn"
+                    onclick="openFriendsModal()">
+                +
+            </button>
+        </div>
 
         <input
             class="search"
-            placeholder="Поиск друзей"
-            oninput="searchFriends(this.value)">
+            id="friendSearch"
+            placeholder="Поиск друзей..."
+            oninput="filterFriends()"
+        >
 
         <div id="friendsList"></div>
 
@@ -1239,148 +1075,94 @@ button{
 </section>
 
 
-<!-- =====================================================
+<!-- =========================
      CHATS
-===================================================== -->
+========================= -->
 
-<section
-    class="screen"
-    id="chatsScreen">
+<section id="chatsScreen" class="screen">
 
-    <header class="screen-header">
+    <div class="page">
 
-        <button
-            class="back"
-            onclick="closeScreen()">
-            ‹
-        </button>
+        <div class="header">
 
-        <h2>
-            Чаты
-        </h2>
+            <div>
+                <h1>Чаты</h1>
+                <small>общайся с друзьями</small>
+            </div>
 
-        <button
-            class="header-button">
-            ✎
-        </button>
-
-    </header>
-
-    <div class="content">
+        </div>
 
         <input
             class="search"
-            placeholder="Поиск">
+            placeholder="Поиск чатов..."
+        >
 
-        <div id="chatList"></div>
+        <div class="chat">
 
-    </div>
+            <img
+                class="chat-avatar"
+                src="https://i.pravatar.cc/100?img=12"
+            >
 
-</section>
+            <div class="chat-info">
+                <div class="chat-name">
+                    Лучшие друзья
+                </div>
 
-
-<!-- =====================================================
-     CHECKINS
-===================================================== -->
-
-<section
-    class="screen"
-    id="checkinsScreen">
-
-    <header class="screen-header">
-
-        <button
-            class="back"
-            onclick="closeScreen()">
-            ‹
-        </button>
-
-        <h2>
-            Чекины
-        </h2>
-
-        <button
-            class="header-button"
-            onclick="newCheckin()">
-            +
-        </button>
-
-    </header>
-
-    <div class="content">
-
-        <div class="checkin-card">
-
-            <div class="checkin-icon">
-                📍
+                <div class="chat-message">
+                    Никита: где вы?
+                </div>
             </div>
 
-            <h2>
-                Где ты?
-            </h2>
-
-            <p>
-                Отметься в месте,
-                чтобы друзья увидели тебя.
-            </p>
-
-            <button
-                class="main-button"
-                onclick="newCheckin()">
-                Отметиться здесь
-            </button>
+            <div class="chat-time">
+                02:51
+            </div>
 
         </div>
 
-        <h3>
-            Сегодня
-        </h3>
+        <div class="chat">
 
-        <div class="place">
+            <img
+                class="chat-avatar"
+                src="https://i.pravatar.cc/100?img=32"
+            >
 
-            <div class="place-icon">
-                🏟
+            <div class="chat-info">
+                <div class="chat-name">
+                    Маша
+                </div>
+
+                <div class="chat-message">
+                    Скоро буду
+                </div>
             </div>
 
-            <div class="place-info">
-
-                <b>
-                    Стадион
-                </b>
-
-                <small>
-                    Ты был здесь недавно
-                </small>
-
+            <div class="chat-time">
+                02:43
             </div>
-
-            <small>
-                12:40
-            </small>
 
         </div>
 
-        <div class="place">
+        <div class="chat">
 
-            <div class="place-icon">
-                ☕
+            <img
+                class="chat-avatar"
+                src="https://i.pravatar.cc/100?img=47"
+            >
+
+            <div class="chat-info">
+                <div class="chat-name">
+                    Артём
+                </div>
+
+                <div class="chat-message">
+                    Давай на карте
+                </div>
             </div>
 
-            <div class="place-info">
-
-                <b>
-                    Кофейня
-                </b>
-
-                <small>
-                    3 друга рядом
-                </small>
-
+            <div class="chat-time">
+                01:25
             </div>
-
-            <small>
-                10:15
-            </small>
 
         </div>
 
@@ -1389,154 +1171,95 @@ button{
 </section>
 
 
-<!-- =====================================================
+<!-- =========================
      PROFILE
-===================================================== -->
+========================= -->
 
-<section
-    class="screen"
-    id="profileScreen">
+<section id="profileScreen" class="screen">
 
-    <header class="screen-header">
+    <div class="page">
 
-        <button
-            class="back"
-            onclick="closeScreen()">
-            ‹
-        </button>
+        <div class="header">
+            <div>
+                <h1>Профиль</h1>
+                <small>твой LINK</small>
+            </div>
 
-        <h2>
-            Профиль
-        </h2>
-
-        <button
-            class="header-button"
-            onclick="openScreen('settings')">
-            ⚙
-        </button>
-
-    </header>
-
-    <div class="profile-top">
-
-        <div
-            class="profile-avatar"
-            id="profileAvatar">
-            Н
+            <button class="round-btn"
+                    onclick="showScreen('settingsScreen')">
+                ⚙
+            </button>
         </div>
 
-        <input
-            id="avatarInput"
-            type="file"
-            accept="image/*"
-            style="display:none"
-            onchange="changeAvatar(event)">
+        <div class="profile-top">
 
-        <button
-            class="main-button"
-            style="margin-top:10px"
-            onclick="document.getElementById('avatarInput').click()">
-            Изменить аватарку
-        </button>
+            <img
+                id="profileAvatar"
+                class="big-avatar"
+                src="https://i.pravatar.cc/300?img=11"
+            >
 
-        <h2 id="profileName">
-            Никс
-        </h2>
+            <div
+                id="profileName"
+                class="profile-name">
+                Никс
+            </div>
 
-        <small>
-            @link_user ·
-            <span class="online">
-                ● в сети
-            </span>
-        </small>
+            <div class="profile-tag">
+                @niks
+            </div>
+
+            <div class="profile-status">
+                <i></i>
+                сейчас в сети
+            </div>
+
+        </div>
 
         <div class="stats">
 
-            <div>
-                <b>12</b>
-                <small>друзей</small>
+            <div class="stat">
+                <strong>24</strong>
+                <span>друга</span>
             </div>
 
-            <div>
-                <b>27</b>
-                <small>чекинов</small>
+            <div class="stat">
+                <strong>148</strong>
+                <span>чек-инов</span>
             </div>
 
-            <div>
-                <b>3</b>
-                <small>места</small>
+            <div class="stat">
+                <strong>8.4 км</strong>
+                <span>сегодня</span>
             </div>
 
         </div>
 
-    </div>
+        <div class="music-card">
 
-    <div class="content">
+            <div class="music-top">
 
-        <div class="card">
+                <div class="music-cover">
+                    ♪
+                </div>
 
-            <div class="field">
+                <div>
+                    <div class="music-title">
+                        Музыка
+                    </div>
 
-                <label>
-                    ИМЯ
-                </label>
+                    <div class="music-artist"
+                         id="musicStatus">
+                        браузер не может узнать
+                        музыку телефона
+                    </div>
+                </div>
 
-                <input
-                    id="nameInput"
-                    value="Никс">
-
-            </div>
-
-            <div class="field">
-
-                <label>
-                    ЧТО ТЫ СЛУШАЕШЬ
-                </label>
-
-                <input
-                    id="musicInput"
-                    placeholder="Например: TRЯСИ">
+                <div class="music-note">
+                    ♫
+                </div>
 
             </div>
-
-            <div class="field">
-
-                <label>
-                    ИСПОЛНИТЕЛЬ
-                </label>
-
-                <input
-                    id="artistInput"
-                    placeholder="Например: TRITIA">
-
-            </div>
-
-            <button
-                class="main-button"
-                onclick="saveProfile()">
-                Сохранить
-            </button>
-
-        </div>
-
-        <div class="card">
-
-            <b>
-                🎧 Сейчас слушаю
-            </b>
-
-            <p style="color:#777;font-size:12px;line-height:1.5">
-
-                В обычном браузере сайт не может
-                напрямую узнать, что играет
-                в другом приложении телефона.
-
-                Здесь можно указать трек вручную.
-                Для настоящего автоматического
-                отображения понадобится отдельная
-                интеграция/API или мобильное приложение.
-
-            </p>
 
         </div>
 
@@ -1545,252 +1268,328 @@ button{
 </section>
 
 
-<!-- =====================================================
+<!-- =========================
      SETTINGS
-===================================================== -->
+========================= -->
 
-<section
-    class="screen"
-    id="settingsScreen">
+<section id="settingsScreen" class="screen">
 
-    <header class="screen-header">
+    <div class="page">
 
-        <button
-            class="back"
-            onclick="closeScreen()">
-            ‹
-        </button>
+        <div class="header">
 
-        <h2>
-            Настройки
-        </h2>
-
-        <span></span>
-
-    </header>
-
-    <div class="content">
-
-        <div class="setting-title">
-            КАРТА
-        </div>
-
-        <div class="setting">
-
-            <span>
-                Показывать друзей
-            </span>
-
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
+            <div>
+                <h1>Настройки</h1>
+                <small>управление LINK</small>
             </div>
 
         </div>
 
-        <div class="setting">
+        <div class="settings-group">
 
-            <span>
-                Радужный шлейф
-            </span>
-
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
+            <div class="settings-title">
+                Основные
             </div>
 
-        </div>
+            <div class="setting"
+                 onclick="openAvatar()">
 
-        <div class="setting">
+                <div class="setting-icon">
+                    ◉
+                </div>
 
-            <span>
-                Показывать направление
-            </span>
+                <div class="setting-info">
+                    <div class="setting-name">
+                        Аватар
+                    </div>
 
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
+                    <div class="setting-description">
+                        Изменить фотографию профиля
+                    </div>
+                </div>
+
+                <div class="chevron">
+                    ›
+                </div>
+
             </div>
 
-        </div>
+            <div class="setting">
 
-        <div class="setting">
+                <div class="setting-icon">
+                    ◉
+                </div>
 
-            <span>
-                Движение
-            </span>
+                <div class="setting-info">
+                    <div class="setting-name">
+                        Показывать геопозицию
+                    </div>
 
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
+                    <div class="setting-description">
+                        Друзья видят тебя на карте
+                    </div>
+                </div>
+
+                <div
+                    class="toggle active"
+                    id="locationToggle"
+                    onclick="toggleLocation(event)">
+                    <span></span>
+                </div>
+
             </div>
 
-        </div>
+            <div class="setting">
 
+                <div class="setting-icon">
+                    ◉
+                </div>
 
-        <div class="setting-title">
-            ПРИВАТНОСТЬ
-        </div>
+                <div class="setting-info">
+                    <div class="setting-name">
+                        Статус онлайн
+                    </div>
 
-        <div class="setting">
+                    <div class="setting-description">
+                        Показывать, когда ты в сети
+                    </div>
+                </div>
 
-            <span>
-                Показывать геопозицию
-            </span>
+                <div
+                    class="toggle active"
+                    onclick="this.classList.toggle('active')">
+                    <span></span>
+                </div>
 
-            <div
-                class="switch"
-                id="geoSwitch"
-                onclick="toggleLocation(this)">
-                <i></i>
-            </div>
-
-        </div>
-
-        <div class="setting">
-
-            <span>
-                Показывать статус онлайн
-            </span>
-
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
-            </div>
-
-        </div>
-
-        <div class="setting">
-
-            <span>
-                Показывать заряд
-            </span>
-
-            <div
-                class="switch on"
-                onclick="switchSetting(this)">
-                <i></i>
             </div>
 
         </div>
 
 
-        <div class="setting-title">
-            ДРУГОЕ
-        </div>
+        <div class="settings-group">
 
-        <div class="setting">
+            <div class="settings-title">
+                Карта
+            </div>
 
-            <span>
-                Тёмная тема
-            </span>
+            <div class="setting">
 
-            <div class="switch on">
-                <i></i>
+                <div class="setting-icon">
+                    ◌
+                </div>
+
+                <div class="setting-info">
+                    <div class="setting-name">
+                        Радужный шлейф
+                    </div>
+
+                    <div class="setting-description">
+                        След движения на карте
+                    </div>
+                </div>
+
+                <div
+                    class="toggle active"
+                    onclick="this.classList.toggle('active')">
+                    <span></span>
+                </div>
+
+            </div>
+
+            <div class="setting"
+                 onclick="locateMe();showScreen('mapScreen')">
+
+                <div class="setting-icon">
+                    ⌖
+                </div>
+
+                <div class="setting-info">
+                    <div class="setting-name">
+                        Моя геопозиция
+                    </div>
+
+                    <div class="setting-description">
+                        Найти меня на карте
+                    </div>
+                </div>
+
+                <div class="chevron">
+                    ›
+                </div>
+
             </div>
 
         </div>
 
-        <div class="setting">
 
-            <span>
-                Версия
-            </span>
+        <div class="settings-group">
 
-            <span style="color:#777">
-                LINK 1.0
-            </span>
+            <div class="settings-title">
+                О приложении
+            </div>
+
+            <div class="setting">
+
+                <div class="setting-icon">
+                    i
+                </div>
+
+                <div class="setting-info">
+                    <div class="setting-name">
+                        LINK
+                    </div>
+
+                    <div class="setting-description">
+                        Версия 1.0
+                    </div>
+                </div>
+
+            </div>
 
         </div>
-
-        <button
-            class="main-button"
-            style="margin-top:20px"
-            onclick="resetApp()">
-            Сбросить данные
-        </button>
 
     </div>
 
 </section>
 
 
-<!-- =====================================================
-     BOTTOM NAVIGATION
-===================================================== -->
+<!-- =========================
+     BOTTOM NAV
+========================= -->
 
-<nav class="bottom">
+<nav class="bottom-nav">
 
     <button
-        class="nav active"
-        onclick="goHome()">
+        class="nav-btn active"
+        data-screen="mapScreen"
+        onclick="showScreen('mapScreen',this)">
 
-        ●
-
-        <span>
-            карта
-        </span>
+        <div class="icon">⌖</div>
+        <span>Карта</span>
 
     </button>
 
     <button
-        class="nav"
-        onclick="openScreen('friends')">
+        class="nav-btn"
+        data-screen="friendsScreen"
+        onclick="showScreen('friendsScreen',this)">
 
-        ♟
-
-        <span>
-            друзья
-        </span>
+        <div class="icon">♙</div>
+        <span>Друзья</span>
 
     </button>
 
     <button
-        class="nav"
-        onclick="openScreen('chats')">
+        class="nav-btn"
+        data-screen="chatsScreen"
+        onclick="showScreen('chatsScreen',this)">
 
-        •••
-
-        <span>
-            чаты
-        </span>
+        <div class="icon">●</div>
+        <span>Чаты</span>
 
     </button>
 
     <button
-        class="nav"
-        onclick="openScreen('checkins')">
+        class="nav-btn"
+        data-screen="profileScreen"
+        onclick="showScreen('profileScreen',this)">
 
-        ⌖
-
-        <span>
-            чекины
-        </span>
+        <div class="icon">◉</div>
+        <span>Профиль</span>
 
     </button>
 
     <button
-        class="nav"
-        onclick="openScreen('profile')">
+        class="nav-btn"
+        data-screen="settingsScreen"
+        onclick="showScreen('settingsScreen',this)">
 
-        <div
-            class="nav-avatar"
-            id="navAvatar">
-            Н
-        </div>
-
-        <span>
-            ты
-        </span>
+        <div class="icon">⚙</div>
+        <span>Настройки</span>
 
     </button>
 
 </nav>
+
+
+<!-- =========================
+     AVATAR MODAL
+========================= -->
+
+<div id="avatarModal" class="modal">
+
+    <div class="sheet">
+
+        <div class="sheet-handle"></div>
+
+        <h2>
+            Аватар
+        </h2>
+
+        <input
+            type="file"
+            id="avatarInput"
+            accept="image/*"
+            style="display:none"
+            onchange="changeAvatar(event)"
+        >
+
+        <button
+            onclick="document.getElementById('avatarInput').click()">
+            Выбрать фотографию
+        </button>
+
+        <button
+            onclick="closeModal()"
+            style="
+                background:#1d1d1d;
+                color:white;
+            ">
+            Отмена
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FRIEND MODAL
+========================= -->
+
+<div id="friendsModal" class="modal">
+
+    <div class="sheet">
+
+        <div class="sheet-handle"></div>
+
+        <h2>
+            Добавить друга
+        </h2>
+
+        <input
+            class="search"
+            placeholder="@username или код LINK"
+            style="margin-bottom:0"
+        >
+
+        <button onclick="closeModal()">
+            Найти
+        </button>
+
+        <button
+            onclick="closeModal()"
+            style="
+                background:#1d1d1d;
+                color:white;
+            ">
+            Отмена
+        </button>
+
+    </div>
+
+</div>
+
 
 </div>
 
@@ -1799,255 +1598,285 @@ button{
 
 <script>
 
-/* =====================================================
-   DATA
-===================================================== */
+/* =========================================
+   BASIC APP
+========================================= */
+
+const screens = [
+    "mapScreen",
+    "friendsScreen",
+    "chatsScreen",
+    "profileScreen",
+    "settingsScreen"
+];
+
+function showScreen(id,button){
+
+    screens.forEach(screen => {
+
+        const el = document.getElementById(screen);
+
+        if(el){
+            el.classList.remove("active");
+        }
+
+    });
+
+    const target = document.getElementById(id);
+
+    if(target){
+        target.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    if(button){
+        button.classList.add("active");
+    }else{
+
+        const nav = document.querySelector(
+            `.nav-btn[data-screen="${id}"]`
+        );
+
+        if(nav){
+            nav.classList.add("active");
+        }
+    }
+
+    setTimeout(() => {
+
+        if(map){
+            map.invalidateSize();
+        }
+
+    },100);
+}
+
+
+/* =========================================
+   MAP
+========================================= */
 
 let map;
 
-let myMarker;
+let userMarker = null;
+
+let accuracyCircle = null;
+
+let lastPosition = null;
 
 let watchId = null;
 
-let online = true;
+let totalDistance = 0;
 
-let friends = [
+let direction = 0;
 
-    {
-        name:"Маша",
-        lat:55.758,
-        lng:37.620,
-        online:true
-    },
+let trailPoints = [];
 
-    {
-        name:"Артём",
-        lat:55.752,
-        lng:37.610,
-        online:true
-    },
-
-    {
-        name:"Никитос",
-        lat:55.761,
-        lng:37.612,
-        online:true
-    },
-
-    {
-        name:"Игорёк",
-        lat:55.749,
-        lng:37.625,
-        online:false
-    },
-
-    {
-        name:"Алёна",
-        lat:55.754,
-        lng:37.628,
-        online:true
-    },
-
-    {
-        name:"Мия",
-        lat:55.765,
-        lng:37.620,
-        online:false
-    }
-
-];
+let trailLayers = [];
 
 
-/* =====================================================
-   START
-===================================================== */
+function initMap(){
 
-window.onload=function(){
-
-    loadProfile();
-
-    createMap();
-
-    createFriends();
-
-    updateBattery();
-
-};
-
-
-/* =====================================================
-   MAP
-===================================================== */
-
-function createMap(){
-
-    map=L.map(
-        "map",
-        {
-            zoomControl:false,
-            attributionControl:false
-        }
-    ).setView(
-        [55.7558,37.6173],
-        13
+    map = L.map("map",{
+        zoomControl:false,
+        attributionControl:true,
+        minZoom:2,
+        maxZoom:19
+    }).setView(
+        [55.751244,37.618423],
+        12
     );
 
 
     L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
-            maxZoom:20
+            maxZoom:19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
         }
     ).addTo(map);
 
 
-    createMyMarker();
+    createDemoFriends();
 
-    createFriendMarkers();
+    locateMe();
 
 }
 
 
-/* =====================================================
-   MY MARKER
-===================================================== */
+/* =========================================
+   MY LOCATION
+========================================= */
 
-function createMyMarker(
-    lat=55.7558,
-    lng=37.6173
-){
+function createMyIcon(){
 
-    if(myMarker){
+    const avatar =
+        localStorage.getItem("linkAvatar")
+        ||
+        "https://i.pravatar.cc/300?img=11";
 
-        map.removeLayer(myMarker);
-
-    }
-
-
-    let name=
-        localStorage.getItem("linkName")
-        ||"Никс";
-
-    let avatar=
-        localStorage.getItem("linkAvatar");
-
-
-    let avatarHTML="";
-
-    if(avatar){
-
-        avatarHTML=
-            `<img src="${avatar}">`;
-
-    }else{
-
-        avatarHTML=
-            `<div class="my-letter">
-                ${name.charAt(0).toUpperCase()}
-             </div>`;
-
-    }
-
-
-    let html=`
-
-        <div class="my-location">
-
-            <div class="direction"></div>
-
-            <div class="rainbow-tail"></div>
-
-            ${avatarHTML}
-
-        </div>
-
-    `;
-
-
-    let icon=L.divIcon({
+    return L.divIcon({
 
         className:"",
 
-        html:html,
+        html:`
 
-        iconSize:[68,68],
+            <div class="rainbow-trail"></div>
 
-        iconAnchor:[34,34]
+            <div
+                class="my-marker"
+                style="
+                    transform:rotate(${direction}deg);
+                "
+            >
+
+                <img src="${avatar}">
+
+                <div class="direction-arrow"></div>
+
+                <div class="online-dot"></div>
+
+            </div>
+
+        `,
+
+        iconSize:[70,70],
+
+        iconAnchor:[35,35]
 
     });
-
-
-    myMarker=L.marker(
-        [lat,lng],
-        {icon:icon}
-    ).addTo(map);
-
 }
 
 
-/* =====================================================
-   FRIEND MARKERS
-===================================================== */
+function updateMyPosition(position){
 
-function createFriendMarkers(){
+    const lat = position.coords.latitude;
 
-    friends.forEach(
-        friend=>{
+    const lng = position.coords.longitude;
 
-            let letter=
-                friend.name
-                .charAt(0)
-                .toUpperCase();
+    const accuracy =
+        position.coords.accuracy || 0;
+
+    const speed =
+        position.coords.speed || 0;
 
 
-            let html=`
+    if(lastPosition){
 
-                <div
-                    class="friend-marker">
-
-                    ${letter}
-
-                </div>
-
-            `;
-
-
-            let icon=L.divIcon({
-
-                className:"",
-
-                html:html,
-
-                iconSize:[48,48],
-
-                iconAnchor:[24,24]
-
-            });
-
-
-            L.marker(
-                [friend.lat,friend.lng],
-                {icon:icon}
-            )
-            .addTo(map)
-            .bindPopup(
-                `<b>${friend.name}</b><br>
-                 ${friend.online
-                    ?"🟢 В сети"
-                    :"⚫ Не в сети"}`
+        const distance =
+            map.distance(
+                [lastPosition.lat,lastPosition.lng],
+                [lat,lng]
             );
 
-        }
-    );
+        if(distance > 1){
 
+            totalDistance += distance;
+
+            document.getElementById("distance")
+                .textContent =
+                Math.round(totalDistance) + " м";
+
+            addTrail(
+                lastPosition.lat,
+                lastPosition.lng,
+                lat,
+                lng
+            );
+        }
+    }
+
+
+    if(position.coords.heading != null){
+
+        direction =
+            position.coords.heading;
+    }
+
+
+    lastPosition = {
+        lat,
+        lng
+    };
+
+
+    document.getElementById("speed")
+        .textContent =
+        Math.round(speed * 3.6) + " км/ч";
+
+
+    document.getElementById("accuracy")
+        .textContent =
+        Math.round(accuracy) + " м";
+
+
+    if(!userMarker){
+
+        userMarker =
+            L.marker(
+                [lat,lng],
+                {
+                    icon:createMyIcon(),
+                    zIndexOffset:1000
+                }
+            ).addTo(map);
+
+        map.setView(
+            [lat,lng],
+            16,
+            {
+                animate:true
+            }
+        );
+
+    }else{
+
+        userMarker.setLatLng(
+            [lat,lng]
+        );
+
+        userMarker.setIcon(
+            createMyIcon()
+        );
+    }
+
+
+    if(!accuracyCircle){
+
+        accuracyCircle =
+            L.circle(
+                [lat,lng],
+                {
+                    radius:accuracy,
+                    color:"#fff",
+                    weight:1,
+                    opacity:.18,
+                    fillColor:"#fff",
+                    fillOpacity:.04
+                }
+            ).addTo(map);
+
+    }else{
+
+        accuracyCircle.setLatLng(
+            [lat,lng]
+        );
+
+        accuracyCircle.setRadius(
+            accuracy
+        );
+    }
 }
 
 
-/* =====================================================
+/* =========================================
    GEOLOCATION
-===================================================== */
+========================================= */
 
-function startLocation(){
+function locateMe(){
 
     if(!navigator.geolocation){
 
@@ -2056,820 +1885,536 @@ function startLocation(){
         );
 
         return;
-
     }
 
 
-    watchId=
-        navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
 
-            position=>{
+        updateMyPosition,
 
-                let lat=
-                    position.coords.latitude;
+        function(){
 
-                let lng=
-                    position.coords.longitude;
+            document.getElementById("onlineText")
+                .textContent =
+                "● геопозиция недоступна";
 
+        },
 
-                createMyMarker(
-                    lat,
-                    lng
-                );
+        {
+            enableHighAccuracy:true,
+            maximumAge:3000,
+            timeout:10000
+        }
 
-
-                map.setView(
-                    [lat,lng],
-                    map.getZoom()
-                );
-
-            },
-
-            error=>{
-
-                console.log(
-                    "Геолокация:",
-                    error
-                );
-
-            },
-
-            {
-                enableHighAccuracy:true,
-
-                maximumAge:2000,
-
-                timeout:10000
-
-            }
-
-        );
-
-}
+    );
 
 
-function stopLocation(){
-
-    if(
-        watchId!==null
-    ){
+    if(watchId !== null){
 
         navigator.geolocation.clearWatch(
             watchId
         );
 
-        watchId=null;
-
     }
 
-}
 
+    watchId =
+        navigator.geolocation.watchPosition(
 
-function findMe(){
+            updateMyPosition,
 
-    if(
-        navigator.geolocation
-    ){
+            function(){},
 
-        navigator.geolocation.getCurrentPosition(
-
-            position=>{
-
-                let lat=
-                    position.coords.latitude;
-
-                let lng=
-                    position.coords.longitude;
-
-
-                createMyMarker(
-                    lat,
-                    lng
-                );
-
-
-                map.setView(
-                    [lat,lng],
-                    17
-                );
-
-            },
-
-            ()=>{
-                alert(
-                    "Разреши доступ к геопозиции."
-                );
+            {
+                enableHighAccuracy:true,
+                maximumAge:2000,
+                timeout:10000
             }
 
         );
-
-    }
-
 }
 
 
-/* =====================================================
-   MAP ZOOM
-===================================================== */
+/* =========================================
+   TRAIL
+========================================= */
+
+function addTrail(
+    lat1,
+    lng1,
+    lat2,
+    lng2
+){
+
+    const line =
+        L.polyline(
+            [
+                [lat1,lng1],
+                [lat2,lng2]
+            ],
+            {
+                color:
+                    [
+                        "#ff006e",
+                        "#ff7a00",
+                        "#ffee00",
+                        "#00ff88",
+                        "#00d9ff",
+                        "#7b00ff"
+                    ][
+                        trailLayers.length %
+                        6
+                    ],
+
+                weight:12,
+
+                opacity:.35,
+
+                lineCap:"round",
+
+                className:"rainbow-map-line"
+            }
+        ).addTo(map);
+
+
+    trailLayers.push(line);
+
+
+    if(trailLayers.length > 60){
+
+        const old =
+            trailLayers.shift();
+
+        map.removeLayer(old);
+    }
+}
+
+
+/* =========================================
+   MAP CONTROLS
+========================================= */
 
 function zoomIn(){
 
-    map.zoomIn();
-
+    if(map){
+        map.zoomIn();
+    }
 }
-
 
 function zoomOut(){
 
-    map.zoomOut();
-
+    if(map){
+        map.zoomOut();
+    }
 }
 
 
-/* =====================================================
-   BATTERY
-===================================================== */
+/* =========================================
+   DEMO FRIENDS
+========================================= */
 
-function updateBattery(){
+const demoFriends = [
 
-    if(
-        !navigator.getBattery
-    ){
+    {
+        name:"Маша",
+        status:"в сети",
+        img:"https://i.pravatar.cc/150?img=47",
+        lat:55.756,
+        lng:37.620
+    },
 
-        document.getElementById(
-            "battery"
-        ).textContent="🔋 —";
+    {
+        name:"Никита",
+        status:"был недавно",
+        img:"https://i.pravatar.cc/150?img=12",
+        lat:55.747,
+        lng:37.628
+    },
 
-        return;
+    {
+        name:"Артём",
+        status:"в сети",
+        img:"https://i.pravatar.cc/150?img=11",
+        lat:55.751,
+        lng:37.608
+    },
 
+    {
+        name:"Мия",
+        status:"в сети",
+        img:"https://i.pravatar.cc/150?img=32",
+        lat:55.760,
+        lng:37.614
     }
 
-
-    navigator.getBattery()
-    .then(
-        battery=>{
-
-            function update(){
-
-                let level=
-                    Math.round(
-                        battery.level*100
-                    );
-
-                document.getElementById(
-                    "battery"
-                ).textContent=
-                    "🔋 "+level+"%";
-
-            }
+];
 
 
-            update();
+function createDemoFriends(){
 
-            battery.addEventListener(
-                "levelchange",
-                update
-            );
+    demoFriends.forEach(friend => {
 
-        }
-    );
+        const icon =
+            L.divIcon({
 
+                className:"",
+
+                html:`
+                    <div class="friend-marker">
+                        <img src="${friend.img}">
+                    </div>
+                `,
+
+                iconSize:[50,50],
+
+                iconAnchor:[25,25]
+
+            });
+
+
+        const marker =
+            L.marker(
+                [friend.lat,friend.lng],
+                {
+                    icon
+                }
+            ).addTo(map);
+
+
+        marker.bindPopup(`
+            <div
+                style="
+                    color:#000;
+                    text-align:center;
+                    min-width:120px;
+                "
+            >
+                <strong>
+                    ${friend.name}
+                </strong>
+
+                <br>
+
+                <small>
+                    ${friend.status}
+                </small>
+            </div>
+        `);
+    });
+
+
+    renderFriends();
 }
 
 
-/* =====================================================
-   ONLINE
-===================================================== */
+function renderFriends(){
 
-function toggleOnline(){
-
-    online=!online;
-
-
-    let status=
-        document.getElementById(
-            "status"
-        );
-
-    let text=
-        document.getElementById(
-            "statusText"
-        );
-
-    let onlineText=
-        document.getElementById(
-            "onlineText"
-        );
-
-
-    if(online){
-
-        status.classList.remove(
-            "offline"
-        );
-
-        text.textContent=
-            "В сети";
-
-        onlineText.textContent=
-            "● в сети";
-
-    }else{
-
-        status.classList.add(
-            "offline"
-        );
-
-        text.textContent=
-            "Не в сети";
-
-        onlineText.textContent=
-            "● не в сети";
-
-    }
-
-}
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-function openScreen(name){
-
-    document.querySelectorAll(
-        ".screen"
-    ).forEach(
-        screen=>{
-            screen.classList.remove(
-                "active"
-            );
-        }
-    );
-
-
-    document
-        .getElementById(
-            name+"Screen"
-        )
-        .classList.add(
-            "active"
-        );
-
-
-    if(name==="friends"){
-
-        createFriends();
-
-    }
-
-
-    if(name==="chats"){
-
-        createChats();
-
-    }
-
-}
-
-
-function closeScreen(){
-
-    document.querySelectorAll(
-        ".screen"
-    ).forEach(
-        screen=>{
-            screen.classList.remove(
-                "active"
-            );
-        }
-    );
-
-}
-
-
-function goHome(){
-
-    closeScreen();
-
-}
-
-
-/* =====================================================
-   FRIENDS
-===================================================== */
-
-function createFriends(
-    search=""
-){
-
-    let list=
+    const container =
         document.getElementById(
             "friendsList"
         );
 
-    if(!list)return;
+    container.innerHTML = "";
 
 
-    let data=
-        friends.filter(
-            f=>
-                f.name
-                .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                )
-        );
+    demoFriends.forEach(friend => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "friend";
+
+        div.dataset.name =
+            friend.name.toLowerCase();
 
 
-    list.innerHTML=
-        data.map(
-            friend=>`
+        div.innerHTML = `
 
-                <div class="friend">
+            <img
+                class="friend-avatar"
+                src="${friend.img}"
+            >
 
-                    <div class="friend-avatar">
+            <div class="friend-info">
 
-                        ${friend.name.charAt(0)}
-
-                    </div>
-
-                    <div class="friend-info">
-
-                        <b>
-                            ${friend.name}
-                        </b>
-
-                        <small
-                            class="${
-                                friend.online
-                                ?"online":""
-                            }">
-
-                            ${
-                                friend.online
-                                ?"● В сети"
-                                :"● Не в сети"
-                            }
-
-                            ·
-
-                            ${Math.floor(
-                                Math.random()*5
-                            )+1} км
-
-                        </small>
-
-                    </div>
-
-                    <span>
-                        ›
-                    </span>
-
+                <div class="friend-name">
+                    ${friend.name}
                 </div>
 
-            `
-        ).join("");
-
-}
-
-
-function searchFriends(value){
-
-    createFriends(value);
-
-}
-
-
-function addFriend(){
-
-    let name=
-        prompt(
-            "Введи имя или LINK-код друга:"
-        );
-
-
-    if(
-        name
-    ){
-
-        alert(
-            "Заявка отправлена пользователю "+
-            name
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   CHATS
-===================================================== */
-
-function createChats(){
-
-    let chats=[
-
-        [
-            "звёзды района",
-            "маша: ща буду",
-            "21:40"
-        ],
-
-        [
-            "никитос",
-            "достали блочить!!!",
-            "21:35"
-        ],
-
-        [
-            "артём",
-            "ой всё 😂",
-            "21:30"
-        ],
-
-        [
-            "маша",
-            "ты где?",
-            "21:20"
-        ],
-
-        [
-            "игорёк",
-            "🎵 голосовое",
-            "21:10"
-        ],
-
-        [
-            "алёна",
-            "📷 фотография",
-            "20:55"
-        ],
-
-        [
-            "бродяги",
-            "гоу созвон",
-            "20:40"
-        ]
-
-    ];
-
-
-    document.getElementById(
-        "chatList"
-    ).innerHTML=
-
-        chats.map(
-            chat=>`
-
-                <div class="chat">
-
-                    <div class="chat-avatar">
-
-                        ${chat[0].charAt(0)}
-
-                    </div>
-
-                    <div class="chat-info">
-
-                        <b>
-                            ${chat[0]}
-                        </b>
-
-                        <small>
-                            ${chat[1]}
-                        </small>
-
-                    </div>
-
-                    <div class="time">
-                        ${chat[2]}
-                    </div>
-
+                <div class="friend-status">
+                    ${friend.status}
                 </div>
 
-            `
-        ).join("");
+            </div>
 
+            <div class="online"></div>
+
+        `;
+
+
+        container.appendChild(div);
+    });
 }
 
 
-/* =====================================================
-   CHECKIN
-===================================================== */
+function filterFriends(){
 
-function newCheckin(){
+    const query =
+        document.getElementById(
+            "friendSearch"
+        ).value.toLowerCase();
 
-    alert(
-        "📍 Чекин создан!\n\n"+
-        "Твои друзья смогут увидеть,\n"+
-        "где ты сейчас."
-    );
 
+    document
+        .querySelectorAll(".friend")
+        .forEach(friend => {
+
+            friend.style.display =
+                friend.dataset.name
+                    .includes(query)
+                    ? "flex"
+                    : "none";
+
+        });
 }
 
 
-/* =====================================================
-   PROFILE
-===================================================== */
+/* =========================================
+   BATTERY
+========================================= */
 
-function loadProfile(){
+async function initBattery(){
 
-    let name=
-        localStorage.getItem(
-            "linkName"
-        )
-        ||"Никс";
+    if(!navigator.getBattery){
 
+        document.getElementById("battery")
+            .textContent = "—";
 
-    document.getElementById(
-        "mapName"
-    ).textContent=name;
+        return;
+    }
 
 
-    document.getElementById(
-        "profileName"
-    ).textContent=name;
+    try{
+
+        const battery =
+            await navigator.getBattery();
 
 
-    document.getElementById(
-        "nameInput"
-    ).value=name;
+        function updateBattery(){
+
+            const percent =
+                Math.round(
+                    battery.level * 100
+                );
+
+            document.getElementById("battery")
+                .textContent =
+                percent + "%";
+
+        }
 
 
-    updateAvatar();
+        updateBattery();
 
-
-    let music=
-        localStorage.getItem(
-            "linkMusic"
+        battery.addEventListener(
+            "levelchange",
+            updateBattery
         );
 
+    }catch(e){
 
-    let artist=
-        localStorage.getItem(
-            "linkArtist"
-        );
-
-
-    if(music){
-
-        document.getElementById(
-            "musicTitle"
-        ).textContent=music;
+        document.getElementById("battery")
+            .textContent = "—";
 
     }
-
-
-    if(artist){
-
-        document.getElementById(
-            "musicArtist"
-        ).textContent=artist;
-
-    }
-
 }
 
 
-function saveProfile(){
-
-    let name=
-        document.getElementById(
-            "nameInput"
-        ).value.trim();
-
-
-    let music=
-        document.getElementById(
-            "musicInput"
-        ).value.trim();
-
-
-    let artist=
-        document.getElementById(
-            "artistInput"
-        ).value.trim();
-
-
-    if(!name){
-
-        name="Никс";
-
-    }
-
-
-    localStorage.setItem(
-        "linkName",
-        name
-    );
-
-
-    localStorage.setItem(
-        "linkMusic",
-        music
-    );
-
-
-    localStorage.setItem(
-        "linkArtist",
-        artist
-    );
-
-
-    document.getElementById(
-        "mapName"
-    ).textContent=name;
-
-
-    document.getElementById(
-        "profileName"
-    ).textContent=name;
-
-
-    document.getElementById(
-        "musicTitle"
-    ).textContent=
-        music ||
-        "Музыка не указана";
-
-
-    document.getElementById(
-        "musicArtist"
-    ).textContent=
-        artist ||
-        "Открой профиль";
-
-
-    updateAvatar();
-
-    createMyMarker();
-
-    alert(
-        "Профиль сохранён!"
-    );
-
-}
-
-
-/* =====================================================
+/* =========================================
    AVATAR
-===================================================== */
+========================================= */
+
+function openAvatar(){
+
+    document
+        .getElementById("avatarModal")
+        .classList.add("show");
+}
+
+
+function closeModal(){
+
+    document
+        .querySelectorAll(".modal")
+        .forEach(modal =>
+            modal.classList.remove("show")
+        );
+}
+
 
 function changeAvatar(event){
 
-    let file=
+    const file =
         event.target.files[0];
 
+    if(!file){
+        return;
+    }
 
-    if(!file)return;
 
-
-    let reader=
+    const reader =
         new FileReader();
 
 
-    reader.onload=
-        function(){
+    reader.onload = function(){
 
-            localStorage.setItem(
-                "linkAvatar",
-                reader.result
+        const image =
+            reader.result;
+
+
+        localStorage.setItem(
+            "linkAvatar",
+            image
+        );
+
+
+        document.getElementById(
+            "profileAvatar"
+        ).src = image;
+
+
+        if(userMarker){
+
+            userMarker.setIcon(
+                createMyIcon()
             );
 
+        }
 
-            updateAvatar();
+        closeModal();
 
-
-            createMyMarker();
-
-        };
+    };
 
 
     reader.readAsDataURL(file);
-
 }
 
 
-function updateAvatar(){
+/* =========================================
+   FRIEND MODAL
+========================================= */
 
-    let name=
-        localStorage.getItem(
-            "linkName"
-        )
-        ||"Никс";
+function openFriendsModal(){
+
+    document
+        .getElementById("friendsModal")
+        .classList.add("show");
+}
 
 
-    let avatar=
+/* =========================================
+   LOCATION TOGGLE
+========================================= */
+
+function toggleLocation(event){
+
+    event.stopPropagation();
+
+    const toggle =
+        document.getElementById(
+            "locationToggle"
+        );
+
+
+    toggle.classList.toggle("active");
+
+
+    if(toggle.classList.contains("active")){
+
+        locateMe();
+
+    }else{
+
+        if(watchId !== null){
+
+            navigator.geolocation.clearWatch(
+                watchId
+            );
+
+            watchId = null;
+        }
+
+        document.getElementById(
+            "onlineText"
+        ).textContent =
+            "● геопозиция выключена";
+    }
+}
+
+
+/* =========================================
+   LOAD AVATAR
+========================================= */
+
+function loadSavedAvatar(){
+
+    const avatar =
         localStorage.getItem(
             "linkAvatar"
         );
 
 
-    let elements=[
-
-        document.getElementById(
-            "mapAvatar"
-        ),
-
-        document.getElementById(
-            "profileAvatar"
-        ),
-
-        document.getElementById(
-            "navAvatar"
-        )
-
-    ];
+    if(!avatar){
+        return;
+    }
 
 
-    elements.forEach(
-        element=>{
+    document.getElementById(
+        "profileAvatar"
+    ).src = avatar;
+}
 
-            if(!element)return;
+
+/* =========================================
+   START
+========================================= */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        initMap();
+
+        initBattery();
+
+        loadSavedAvatar();
+
+    }
+);
 
 
-            if(avatar){
+/* =========================================
+   CLOSE MODALS BY BACKGROUND
+========================================= */
 
-                element.innerHTML=
-                    `<img src="${avatar}">`;
+document
+    .querySelectorAll(".modal")
+    .forEach(modal => {
 
-            }else{
+        modal.addEventListener(
+            "click",
+            function(event){
 
-                element.innerHTML=
-                    name
-                    .charAt(0)
-                    .toUpperCase();
+                if(event.target === modal){
+
+                    closeModal();
+
+                }
 
             }
+        );
 
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SETTINGS
-===================================================== */
-
-function switchSetting(
-    element
-){
-
-    element.classList.toggle(
-        "on"
-    );
-
-}
-
-
-function toggleLocation(
-    element
-){
-
-    element.classList.toggle(
-        "on"
-    );
-
-
-    if(
-        element.classList.contains(
-            "on"
-        )
-    ){
-
-        startLocation();
-
-    }else{
-
-        stopLocation();
-
-    }
-
-}
-
-
-/* =====================================================
-   RESET
-===================================================== */
-
-function resetApp(){
-
-    if(
-        confirm(
-            "Удалить сохранённые данные LINK?"
-        )
-    ){
-
-        localStorage.clear();
-
-        location.reload();
-
-    }
-
-}
+    });
 
 </script>
 
