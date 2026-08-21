@@ -1,38 +1,46 @@
+index.html
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+>
 
 <title>BLINK</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
     --bg:#f3f3f5;
     --card:#ffffff;
     --text:#111114;
-    --muted:#7d7d85;
-    --line:#e6e6ea;
+    --muted:#777780;
+    --line:#e5e5ea;
     --nav:#111114;
-    --navText:#ffffff;
-    --shadow:0 10px 35px rgba(0,0,0,.13);
+    --nav-text:#ffffff;
+    --accent:#2563eb;
 }
 
 body.dark{
-    --bg:#09090b;
+    --bg:#08080a;
     --card:#17171b;
     --text:#ffffff;
-    --muted:#9999a2;
+    --muted:#9898a2;
     --line:#29292f;
-    --nav:#111114;
-    --navText:#ffffff;
-    --shadow:0 10px 40px rgba(0,0,0,.45);
+    --nav:#17171b;
+    --nav-text:#ffffff;
 }
 
 *{
@@ -40,14 +48,24 @@ body.dark{
     -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
-    margin:0;
+html,
+body{
     width:100%;
     height:100%;
+    margin:0;
     overflow:hidden;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
     background:var(--bg);
     color:var(--text);
+}
+
+button,
+input{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
 }
 
 #map{
@@ -56,128 +74,205 @@ html,body{
     z-index:1;
 }
 
-/* ===== ВЕРХ ===== */
+/* =========================
+   ВЕРХНЯЯ ЧАСТЬ
+========================= */
 
 .header{
     position:fixed;
+    z-index:20;
     top:18px;
     left:18px;
     right:18px;
-    z-index:20;
+
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:space-between;
+
     pointer-events:none;
 }
 
 .logo{
-    font-size:37px;
+    font-size:36px;
     font-weight:900;
     letter-spacing:-2px;
     color:var(--text);
-    text-shadow:0 2px 15px rgba(255,255,255,.15);
 }
 
-.locate{
+.icon-button{
     width:54px;
     height:54px;
+
+    border:1px solid var(--line);
     border-radius:50%;
-    border:0;
+
     background:var(--card);
     color:var(--text);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
     font-size:25px;
-    box-shadow:var(--shadow);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.15);
+
     pointer-events:auto;
-    cursor:pointer;
 }
+
+/* =========================
+   СТАТИСТИКА
+========================= */
 
 .stats{
     position:fixed;
     z-index:20;
-    top:105px;
+
+    top:95px;
     left:18px;
-    width:175px;
+
+    min-width:180px;
+
     padding:17px;
+
+    border:1px solid var(--line);
+    border-radius:23px;
+
     background:var(--card);
-    border-radius:22px;
-    box-shadow:var(--shadow);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.13);
 }
 
-.stats small{
+.stats-title{
     color:var(--muted);
     font-size:13px;
 }
 
 .distance{
-    font-size:26px;
-    font-weight:800;
     margin-top:7px;
+
+    font-size:27px;
+    font-weight:800;
 }
 
 .goal{
-    margin-top:10px;
+    margin-top:9px;
+
+    font-size:12px;
     color:var(--muted);
-    font-size:13px;
 }
 
-/* ===== НИЖНЕЕ МЕНЮ ===== */
+.status{
+    margin-top:10px;
+
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    color:var(--muted);
+    font-size:11px;
+}
+
+.status-dot{
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+    background:#22c55e;
+}
+
+.status-dot.offline{
+    background:#9ca3af;
+}
+
+/* =========================
+   НИЖНЕЕ МЕНЮ
+========================= */
 
 .nav{
     position:fixed;
     z-index:100;
-    bottom:20px;
+
     left:50%;
+    bottom:18px;
+
     transform:translateX(-50%);
-    width:min(520px,calc(100% - 28px));
+
+    width:min(540px, calc(100% - 28px));
     height:82px;
-    background:var(--nav);
-    border-radius:30px;
+
     display:flex;
     align-items:center;
     justify-content:space-around;
-    box-shadow:0 15px 50px rgba(0,0,0,.35);
+
+    border-radius:30px;
+
+    background:var(--nav);
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35);
 }
 
 .nav button{
-    width:75px;
+    width:78px;
     height:64px;
+
     border:0;
     border-radius:20px;
+
     background:transparent;
-    color:#a9a9b0;
+    color:#96969f;
+
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     gap:5px;
-    font-size:11px;
-    cursor:pointer;
-}
 
-.nav .icon{
-    font-size:23px;
+    font-size:11px;
 }
 
 .nav button.active{
-    color:white;
-    font-weight:bold;
+    color:var(--nav-text);
+    font-weight:700;
 }
 
-/* ===== ПАНЕЛИ ===== */
+.nav-icon{
+    font-size:22px;
+}
+
+/* =========================
+   ВЫЕЗЖАЮЩИЕ ПАНЕЛИ
+========================= */
 
 .sheet{
     position:fixed;
     z-index:80;
+
     left:0;
     right:0;
     bottom:-100%;
+
     height:78vh;
-    padding:14px 18px 115px;
+
+    padding:
+        15px
+        18px
+        115px;
+
     overflow-y:auto;
-    background:var(--bg);
+
     border-radius:32px 32px 0 0;
-    box-shadow:0 -15px 50px rgba(0,0,0,.28);
-    transition:bottom .4s cubic-bezier(.2,.8,.2,1);
+
+    background:var(--bg);
+
+    box-shadow:
+        0 -15px 50px rgba(0,0,0,.25);
+
+    transition:
+        bottom .38s cubic-bezier(.2,.8,.2,1);
 }
 
 .sheet.show{
@@ -185,27 +280,39 @@ html,body{
 }
 
 .handle{
-    width:42px;
+    width:44px;
     height:5px;
+
+    margin:0 auto 24px;
+
+    border-radius:10px;
+
     background:var(--line);
-    border-radius:20px;
-    margin:0 auto 25px;
 }
 
 .sheet h1{
+    margin:0 0 22px;
+
     font-size:29px;
-    margin:0 0 24px;
 }
+
+/* =========================
+   КАРТОЧКИ
+========================= */
 
 .card{
-    background:var(--card);
+    margin-bottom:15px;
+    padding:18px;
+
     border:1px solid var(--line);
     border-radius:25px;
-    padding:18px;
-    margin-bottom:15px;
+
+    background:var(--card);
 }
 
-/* ===== ПРОФИЛЬ ===== */
+/* =========================
+   ПРОФИЛЬ
+========================= */
 
 .profile-top{
     display:flex;
@@ -215,29 +322,46 @@ html,body{
 
 .avatar-wrap{
     position:relative;
+
+    width:82px;
+    height:82px;
+
+    flex-shrink:0;
 }
 
 .avatar{
     width:82px;
     height:82px;
+
     border-radius:50%;
+
     object-fit:cover;
+
     background:#222;
+
     border:3px solid var(--card);
 }
 
-.avatar-btn{
+.avatar-change{
     position:absolute;
+
     right:-3px;
-    bottom:0;
-    width:32px;
-    height:32px;
-    border:0;
+    bottom:-3px;
+
+    width:33px;
+    height:33px;
+
+    border:1px solid var(--line);
     border-radius:50%;
+
     background:var(--card);
     color:var(--text);
-    box-shadow:var(--shadow);
-    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:15px;
 }
 
 .profile-name{
@@ -245,136 +369,219 @@ html,body{
     font-weight:800;
 }
 
-.username{
-    color:var(--muted);
+.profile-login{
     margin-top:5px;
+
+    color:var(--muted);
+    font-size:14px;
 }
 
-.edit-profile{
-    margin-top:20px;
+.online-text{
+    margin-top:7px;
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    color:var(--muted);
+    font-size:12px;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+input[type="text"],
+input[type="email"],
+input[type="password"]{
     width:100%;
-    padding:16px;
+
+    padding:15px;
+
+    border:1px solid var(--line);
+    border-radius:17px;
+
+    outline:none;
+
     background:var(--bg);
     color:var(--text);
-    border:1px solid var(--line);
-    border-radius:18px;
+
     font-size:16px;
-    text-align:left;
-    cursor:pointer;
 }
 
-.section-title{
-    margin:25px 0 12px;
+input:focus{
+    border-color:var(--accent);
+}
+
+/* =========================
+   КНОПКИ
+========================= */
+
+.primary{
+    width:100%;
+
+    margin-top:13px;
+    padding:16px;
+
+    border:0;
+    border-radius:17px;
+
+    background:var(--text);
+    color:var(--card);
+
+    font-size:16px;
+    font-weight:700;
+}
+
+.secondary{
+    width:100%;
+
+    margin-top:10px;
+    padding:15px;
+
+    border:1px solid var(--line);
+    border-radius:17px;
+
+    background:transparent;
+    color:var(--text);
+
+    font-size:15px;
+}
+
+/* =========================
+   СТАТИСТИКА ПРОФИЛЯ
+========================= */
+
+.section-label{
+    margin:24px 0 11px;
+
     color:var(--muted);
-    font-size:13px;
-    letter-spacing:.5px;
+
+    font-size:12px;
+    letter-spacing:.6px;
 }
 
 .stat-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
     gap:9px;
 }
 
-.stat{
-    padding:16px 10px;
+.stat-box{
+    padding:15px 8px;
+
     text-align:center;
-    background:var(--card);
+
     border:1px solid var(--line);
     border-radius:21px;
+
+    background:var(--card);
 }
 
 .stat-icon{
-    font-size:21px;
-    margin-bottom:10px;
+    font-size:20px;
 }
 
-.stat-number{
-    font-size:17px;
+.stat-value{
+    margin-top:10px;
+
+    font-size:16px;
     font-weight:800;
 }
 
-.stat-label{
-    margin-top:6px;
-    font-size:11px;
+.stat-name{
+    margin-top:5px;
+
     color:var(--muted);
+    font-size:10px;
 }
 
-/* ===== СПИСКИ ===== */
+/* =========================
+   СПИСКИ
+========================= */
 
-.menu-list{
+.menu{
     overflow:hidden;
     padding:0;
 }
 
 .menu-row{
     width:100%;
+
     padding:18px;
+
     border:0;
     border-bottom:1px solid var(--line);
+
     background:transparent;
     color:var(--text);
+
     display:flex;
     align-items:center;
     justify-content:space-between;
+
     text-align:left;
     font-size:16px;
-    cursor:pointer;
 }
 
 .menu-row:last-child{
     border-bottom:0;
 }
 
-.row-left{
+.menu-left{
     display:flex;
     align-items:center;
     gap:14px;
 }
 
-.row-icon{
-    font-size:20px;
-}
-
 .arrow{
     color:var(--muted);
-    font-size:21px;
+    font-size:22px;
 }
 
-/* ===== НАСТРОЙКИ ===== */
-
-.setting-group{
-    margin-top:8px;
-}
+/* =========================
+   НАСТРОЙКИ
+========================= */
 
 .setting-title{
+    margin:20px 0 9px;
+
     color:var(--muted);
+
     font-size:12px;
-    margin:18px 0 8px;
     letter-spacing:.5px;
 }
 
 .setting{
-    min-height:64px;
-    padding:14px 0;
+    min-height:65px;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
+
     border-bottom:1px solid var(--line);
 }
 
 .setting:last-child{
-    border:0;
+    border-bottom:0;
 }
 
 .setting-left{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:13px;
 }
+
+/* =========================
+   SWITCH
+========================= */
 
 .switch{
     position:relative;
+
     width:52px;
     height:31px;
 }
@@ -386,145 +593,222 @@ html,body{
 .slider{
     position:absolute;
     inset:0;
-    background:#c7c7cc;
+
     border-radius:20px;
-    cursor:pointer;
+
+    background:#c6c6cc;
+
     transition:.25s;
 }
 
-.slider:before{
+.slider::before{
     content:"";
+
     position:absolute;
+
+    top:3px;
+    left:3px;
+
     width:25px;
     height:25px;
-    left:3px;
-    top:3px;
-    background:white;
+
     border-radius:50%;
+
+    background:white;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.2);
+
     transition:.25s;
-    box-shadow:0 2px 6px rgba(0,0,0,.2);
 }
 
 .switch input:checked + .slider{
-    background:#111;
+    background:var(--text);
 }
 
-body.dark .switch input:checked + .slider{
-    background:#fff;
-}
-
-body.dark .switch input:checked + .slider:before{
-    background:#111;
-}
-
-.switch input:checked + .slider:before{
+.switch input:checked + .slider::before{
     transform:translateX(21px);
 }
 
-input[type=text]{
-    width:100%;
-    padding:15px;
-    border-radius:16px;
-    border:1px solid var(--line);
-    background:var(--bg);
-    color:var(--text);
-    font-size:16px;
-    outline:none;
-}
+/* =========================
+   АВАТАР НА КАРТЕ
+========================= */
 
-.save-btn{
-    width:100%;
-    margin-top:12px;
-    padding:16px;
-    border:0;
-    border-radius:17px;
-    background:var(--text);
-    color:var(--card);
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
+.map-avatar{
+    width:64px;
+    height:64px;
 
-/* ===== МАРКЕР ===== */
-
-.user-marker{
-    width:62px;
-    height:62px;
-    border-radius:50%;
-    border:4px solid white;
-    background:#111;
     overflow:hidden;
+
+    border:4px solid white;
+    border-radius:50%;
+
+    background:#111;
+
     box-shadow:
-        0 0 0 8px rgba(0,0,0,.12),
-        0 8px 20px rgba(0,0,0,.35);
+        0 0 0 10px rgba(37,99,235,.14),
+        0 8px 25px rgba(0,0,0,.3);
 }
 
-.user-marker img{
+.map-avatar img{
     width:100%;
     height:100%;
+
     object-fit:cover;
-}
-
-.pulse{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    background:rgba(0,0,0,.08);
-    animation:pulse 2s infinite;
-}
-
-body.dark .pulse{
-    background:rgba(255,255,255,.08);
-}
-
-@keyframes pulse{
-    0%{transform:scale(.65);opacity:.9}
-    100%{transform:scale(1.2);opacity:0}
-}
-
-.empty{
-    text-align:center;
-    color:var(--muted);
-    padding:35px 10px;
 }
 
 .leaflet-control-attribution{
     display:none;
+}
+
+/* =========================
+   УВЕДОМЛЕНИЕ
+========================= */
+
+.toast{
+    position:fixed;
+    z-index:200;
+
+    left:50%;
+    top:-100px;
+
+    transform:translateX(-50%);
+
+    max-width:calc(100% - 40px);
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    background:var(--text);
+    color:var(--card);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.3);
+
+    font-size:14px;
+
+    transition:.35s;
+}
+
+.toast.show{
+    top:25px;
+}
+
+/* =========================
+   ДРУЗЬЯ
+========================= */
+
+.empty{
+    padding:40px 15px;
+
+    text-align:center;
+
+    color:var(--muted);
+}
+
+.empty-icon{
+    margin-bottom:12px;
+
+    font-size:45px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- КАРТА -->
+
 <div id="map"></div>
 
-<div class="header">
-    <div class="logo">BLINK</div>
 
-    <button class="locate" onclick="locateMe()">⌖</button>
+<!-- УВЕДОМЛЕНИЯ -->
+
+<div
+    class="toast"
+    id="toast"
+>
 </div>
 
+
+<!-- ВЕРХ -->
+
+<div class="header">
+
+    <div class="logo">
+        BLINK
+    </div>
+
+    <button
+        class="icon-button"
+        onclick="centerOnMe()"
+        title="Моя позиция"
+    >
+        ◎
+    </button>
+
+</div>
+
+
+<!-- СТАТИСТИКА -->
+
 <div class="stats">
-    <small>Сегодня перемещено</small>
-    <div class="distance" id="distance">0 м</div>
-    <div class="goal">Цель: 10 км</div>
+
+    <div class="stats-title">
+        Сегодня перемещено
+    </div>
+
+    <div
+        class="distance"
+        id="distanceTop"
+    >
+        0 м
+    </div>
+
+    <div class="goal">
+        GPS: <span id="gpsAccuracy">ожидание...</span>
+    </div>
+
+    <div class="status">
+
+        <div
+            class="status-dot offline"
+            id="statusDot"
+        ></div>
+
+        <span id="statusText">
+            Поиск позиции...
+        </span>
+
+    </div>
+
 </div>
 
 
 <!-- ДРУЗЬЯ -->
 
-<div class="sheet" id="friendsSheet">
+<div
+    class="sheet"
+    id="friendsSheet"
+>
 
     <div class="handle"></div>
 
     <h1>Друзья</h1>
 
     <div class="card empty">
-        <div style="font-size:45px">◌</div>
-        <h3>Пока никого нет</h3>
-        <div>
-            Когда появятся друзья, они будут отображаться здесь и на карте.
+
+        <div class="empty-icon">
+            ◌
         </div>
+
+        <b>Пока друзей нет</b>
+
+        <p>
+            Здесь будут отображаться пользователи,
+            которых ты добавишь в друзья.
+        </p>
+
     </div>
 
 </div>
@@ -532,113 +816,195 @@ body.dark .pulse{
 
 <!-- ПРОФИЛЬ -->
 
-<div class="sheet" id="profileSheet">
+<div
+    class="sheet"
+    id="profileSheet"
+>
 
     <div class="handle"></div>
 
-    <div class="profile-top">
+    <h1>Профиль</h1>
 
-        <div class="avatar-wrap">
 
-            <img
-                id="avatar"
-                class="avatar"
-                src="https://via.placeholder.com/150"
-                alt="Аватар">
+    <div class="card">
+
+        <div class="profile-top">
+
+            <div class="avatar-wrap">
+
+                <img
+                    class="avatar"
+                    id="avatar"
+                    alt="Аватар"
+                >
+
+                <button
+                    class="avatar-change"
+                    onclick="document.getElementById('avatarInput').click()"
+                >
+                    📷
+                </button>
+
+            </div>
+
+
+            <div>
+
+                <div
+                    class="profile-name"
+                    id="profileName"
+                >
+                    BLINK User
+                </div>
+
+                <div
+                    class="profile-login"
+                    id="profileEmail"
+                >
+                    Локальный профиль
+                </div>
+
+                <div class="online-text">
+
+                    <div class="status-dot"></div>
+
+                    В сети
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <input
+            type="file"
+            id="avatarInput"
+            accept="image/*"
+            hidden
+        >
+
+
+        <button
+            class="secondary"
+            onclick="toggleEditProfile()"
+        >
+            Изменить профиль
+        </button>
+
+
+        <div
+            id="editProfile"
+            style="display:none;margin-top:15px"
+        >
+
+            <input
+                id="nameInput"
+                type="text"
+                placeholder="Введите ник"
+            >
 
             <button
-                class="avatar-btn"
-                onclick="document.getElementById('avatarInput').click()">
-                📷
+                class="primary"
+                onclick="saveProfile()"
+            >
+                Сохранить профиль
             </button>
 
         </div>
 
-        <div>
-            <div class="profile-name" id="profileName">
-                Alex Blink
-            </div>
-
-            <div class="username" id="username">
-                @alexblink
-            </div>
-        </div>
-
-    </div>
-
-    <div class="card" style="margin-top:20px">
-
-        <div style="font-weight:bold;margin-bottom:12px">
-            Изменить профиль
-        </div>
-
-        <input
-            id="nameInput"
-            type="text"
-            placeholder="Введите ник">
-
-        <input
-            id="avatarInput"
-            type="file"
-            accept="image/*"
-            style="display:none">
-
-        <button class="save-btn" onclick="saveProfile()">
-            Сохранить
-        </button>
-
     </div>
 
 
-    <div class="section-title">СТАТИСТИКА</div>
+    <div class="section-label">
+        СТАТИСТИКА
+    </div>
+
 
     <div class="stat-grid">
 
-        <div class="stat">
-            <div class="stat-icon">〽</div>
-            <div class="stat-number" id="todayDistance">0 м</div>
-            <div class="stat-label">Сегодня</div>
-        </div>
+        <div class="stat-box">
 
-        <div class="stat">
-            <div class="stat-icon">▣</div>
-            <div class="stat-number">0 км</div>
-            <div class="stat-label">За неделю</div>
-        </div>
-
-        <div class="stat">
             <div class="stat-icon">⌁</div>
-            <div class="stat-number">0 км</div>
-            <div class="stat-label">За месяц</div>
+
+            <div
+                class="stat-value"
+                id="todayDistance"
+            >
+                0 м
+            </div>
+
+            <div class="stat-name">
+                Сегодня
+            </div>
+
+        </div>
+
+
+        <div class="stat-box">
+
+            <div class="stat-icon">◫</div>
+
+            <div
+                class="stat-value"
+                id="weekDistance"
+            >
+                0 м
+            </div>
+
+            <div class="stat-name">
+                За неделю
+            </div>
+
+        </div>
+
+
+        <div class="stat-box">
+
+            <div class="stat-icon">↗</div>
+
+            <div
+                class="stat-value"
+                id="monthDistance"
+            >
+                0 м
+            </div>
+
+            <div class="stat-name">
+                Всего
+            </div>
+
         </div>
 
     </div>
 
 
-    <div class="card menu-list" style="margin-top:18px">
+    <div
+        class="card menu"
+        style="margin-top:18px"
+    >
 
         <button class="menu-row">
-            <span class="row-left">
-                <span class="row-icon">♧</span>
+
+            <span class="menu-left">
+                <span>♧</span>
                 Мои друзья
             </span>
+
             <span class="arrow">›</span>
+
         </button>
 
-        <button class="menu-row">
-            <span class="row-left">
-                <span class="row-icon">♜</span>
-                Достижения
-            </span>
-            <span class="arrow">›</span>
-        </button>
 
         <button class="menu-row">
-            <span class="row-left">
-                <span class="row-icon">⌁</span>
+
+            <span class="menu-left">
+                <span>⌁</span>
                 История перемещений
             </span>
+
             <span class="arrow">›</span>
+
         </button>
 
     </div>
@@ -648,30 +1014,40 @@ body.dark .pulse{
 
 <!-- НАСТРОЙКИ -->
 
-<div class="sheet" id="settingsSheet">
+<div
+    class="sheet"
+    id="settingsSheet"
+>
 
     <div class="handle"></div>
 
     <h1>Настройки</h1>
 
 
-    <div class="setting-title">ОСНОВНЫЕ</div>
+    <div class="setting-title">
+        ОСНОВНЫЕ
+    </div>
 
-    <div class="card setting-group">
+
+    <div class="card">
 
         <div class="setting">
 
             <div class="setting-left">
-                <span class="row-icon">☾</span>
+                <span>☾</span>
                 <span>Тёмная тема</span>
             </div>
 
             <label class="switch">
+
                 <input
                     type="checkbox"
                     id="themeSwitch"
-                    onchange="toggleTheme()">
+                    onchange="toggleTheme()"
+                >
+
                 <span class="slider"></span>
+
             </label>
 
         </div>
@@ -680,17 +1056,21 @@ body.dark .pulse{
         <div class="setting">
 
             <div class="setting-left">
-                <span class="row-icon">⌖</span>
+                <span>⌖</span>
                 <span>Геолокация</span>
             </div>
 
             <label class="switch">
+
                 <input
                     type="checkbox"
-                    checked
                     id="locationSwitch"
-                    onchange="toggleLocation()">
+                    checked
+                    onchange="toggleLocation()"
+                >
+
                 <span class="slider"></span>
+
             </label>
 
         </div>
@@ -699,41 +1079,36 @@ body.dark .pulse{
         <div class="setting">
 
             <div class="setting-left">
-                <span class="row-icon">♧</span>
-                <span>Уведомления</span>
+                <span>☁</span>
+                <span>Supabase</span>
             </div>
 
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-            </label>
-
-        </div>
-
-
-        <div class="setting">
-
-            <div class="setting-left">
-                <span class="row-icon">⌗</span>
-                <span>Единицы измерения</span>
-            </div>
-
-            <span class="arrow">км ›</span>
+            <span
+                id="supabaseStatus"
+                style="color:var(--muted);font-size:12px"
+            >
+                подключён
+            </span>
 
         </div>
 
     </div>
 
 
-    <div class="setting-title">АККАУНТ</div>
+    <div class="setting-title">
+        АККАУНТ
+    </div>
 
-    <div class="card menu-list">
 
-        <button class="menu-row"
-                onclick="openProfileEdit()">
+    <div class="card menu">
 
-            <span class="row-left">
-                <span class="row-icon">✎</span>
+        <button
+            class="menu-row"
+            onclick="toggleEditProfile(); openPage('profile')"
+        >
+
+            <span class="menu-left">
+                <span>✎</span>
                 Изменить ник
             </span>
 
@@ -741,11 +1116,14 @@ body.dark .pulse{
 
         </button>
 
-        <button class="menu-row"
-                onclick="document.getElementById('avatarInput').click()">
 
-            <span class="row-left">
-                <span class="row-icon">▧</span>
+        <button
+            class="menu-row"
+            onclick="document.getElementById('avatarInput').click()"
+        >
+
+            <span class="menu-left">
+                <span>▧</span>
                 Изменить аватар
             </span>
 
@@ -753,69 +1131,67 @@ body.dark .pulse{
 
         </button>
 
-        <button class="menu-row"
-                style="color:#e53935">
-
-            <span class="row-left">
-                <span class="row-icon">↪</span>
-                Выйти из аккаунта
-            </span>
-
-            <span class="arrow">›</span>
-
-        </button>
-
     </div>
 
-    <div style="
-        text-align:center;
-        color:var(--muted);
-        font-size:13px;
-        margin-top:28px;
-    ">
-        Версия 1.0.0
+
+    <div
+        style="
+            text-align:center;
+            margin-top:25px;
+            color:var(--muted);
+            font-size:12px;
+        "
+    >
+        BLINK • версия 1.0
     </div>
 
 </div>
 
 
-<!-- НИЖНЕЕ МЕНЮ -->
+<!-- НИЖНЯЯ НАВИГАЦИЯ -->
 
 <div class="nav">
 
     <button
-        id="mapNav"
         class="active"
-        onclick="openPage('map')">
+        id="mapNav"
+        onclick="openPage('map')"
+    >
 
-        <span class="icon">⌑</span>
+        <span class="nav-icon">⌑</span>
         Карта
 
     </button>
 
+
     <button
         id="friendsNav"
-        onclick="openPage('friends')">
+        onclick="openPage('friends')"
+    >
 
-        <span class="icon">♧</span>
+        <span class="nav-icon">♧</span>
         Друзья
 
     </button>
 
+
     <button
         id="profileNav"
-        onclick="openPage('profile')">
+        onclick="openPage('profile')"
+    >
 
-        <span class="icon">♙</span>
+        <span class="nav-icon">♙</span>
         Профиль
 
     </button>
 
+
     <button
         id="settingsNav"
-        onclick="openPage('settings')">
+        onclick="openPage('settings')"
+    >
 
-        <span class="icon">⚙</span>
+        <span class="nav-icon">⚙</span>
         Настройки
 
     </button>
@@ -825,372 +1201,735 @@ body.dark .pulse{
 
 <script>
 
-/* =========================
-   КАРТА
-========================= */
+/* ========================================
+   SUPABASE
+======================================== */
 
-let isDark = false;
+const SUPABASE_URL =
+    'https://pfglyeeiydnnfrkjkglk.supabase.co';
 
-const lightTiles =
-'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const SUPABASE_KEY =
+    'sb_publishable_mqY9TwP0DuU3_b8kNswqYg_SQT1rEKt';
 
-const darkTiles =
-'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+let supabaseClient = null;
 
-const map = L.map('map',{
-    zoomControl:false,
-    attributionControl:false
-}).setView([50.0647,19.9450],13);
+try {
 
-let tileLayer = L.tileLayer(lightTiles,{
-    maxZoom:20
-}).addTo(map);
+    supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
+    document
+        .getElementById('supabaseStatus')
+        .textContent = 'готов';
 
-/* =========================
-   ПРОФИЛЬ
-========================= */
+} catch(error) {
 
-let savedName =
-localStorage.getItem('blinkName') || 'Alex Blink';
+    console.error(error);
 
-let savedAvatar =
-localStorage.getItem('blinkAvatar');
+    document
+        .getElementById('supabaseStatus')
+        .textContent = 'ошибка';
 
-document.getElementById('profileName').textContent =
-savedName;
-
-document.getElementById('nameInput').value =
-savedName;
-
-document.getElementById('username').textContent =
-'@' + savedName
-    .toLowerCase()
-    .replace(/\s+/g,'');
-
-if(savedAvatar){
-    document.getElementById('avatar').src = savedAvatar;
 }
 
 
-/* =========================
-   АВАТАР
-========================= */
+/* ========================================
+   КАРТА
+======================================== */
 
-document
-.getElementById('avatarInput')
-.addEventListener('change',function(){
+let darkMode =
+    localStorage.getItem('blinkTheme') === 'dark';
 
-    const file = this.files[0];
+const map =
+    L.map(
+        'map',
+        {
+            zoomControl:false,
+            attributionControl:false
+        }
+    )
+    .setView(
+        [50.0647, 19.9450],
+        13
+    );
 
-    if(!file) return;
 
-    const reader = new FileReader();
+const lightTiles =
+    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
-    reader.onload = function(e){
+const darkTiles =
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
-        const image = e.target.result;
 
-        document.getElementById('avatar').src = image;
+let tileLayer =
+    L.tileLayer(
+        darkMode
+            ? darkTiles
+            : lightTiles,
+        {
+            maxZoom:20
+        }
+    )
+    .addTo(map);
 
-        localStorage.setItem(
-            'blinkAvatar',
-            image
-        );
 
-        updateUserMarker();
+if(darkMode){
 
-    };
+    document.body.classList.add('dark');
 
-    reader.readAsDataURL(file);
+    document
+        .getElementById('themeSwitch')
+        .checked = true;
 
-});
+}
+
+
+/* ========================================
+   ПРОФИЛЬ
+======================================== */
+
+const DEFAULT_AVATAR =
+    'https://api.dicebear.com/9.x/thumbs/svg?seed=blink';
+
+
+let profileName =
+    localStorage.getItem('blinkName')
+    || 'BLINK User';
+
+
+let profileAvatar =
+    localStorage.getItem('blinkAvatar')
+    || DEFAULT_AVATAR;
+
+
+function loadProfile(){
+
+    document
+        .getElementById('profileName')
+        .textContent =
+        profileName;
+
+    document
+        .getElementById('nameInput')
+        .value =
+        profileName;
+
+    document
+        .getElementById('avatar')
+        .src =
+        profileAvatar;
+
+}
+
+
+loadProfile();
+
+
+function toggleEditProfile(){
+
+    const edit =
+        document.getElementById('editProfile');
+
+    edit.style.display =
+        edit.style.display === 'none'
+        ? 'block'
+        : 'none';
+
+}
 
 
 function saveProfile(){
 
-    const name =
-    document.getElementById('nameInput')
-    .value
-    .trim();
+    const newName =
+        document
+            .getElementById('nameInput')
+            .value
+            .trim();
 
-    if(!name) return;
+    if(!newName){
 
-    savedName = name;
+        showToast(
+            'Введите ник'
+        );
+
+        return;
+
+    }
+
+    profileName =
+        newName;
 
     localStorage.setItem(
         'blinkName',
-        name
+        profileName
     );
 
-    document.getElementById('profileName')
-    .textContent = name;
-
-    document.getElementById('username')
-    .textContent =
-    '@' + name
-        .toLowerCase()
-        .replace(/\s+/g,'');
+    loadProfile();
 
     updateUserMarker();
+
+    showToast(
+        'Профиль сохранён'
+    );
 
 }
 
 
-/* =========================
-   МАРКЕР ПОЛЬЗОВАТЕЛЯ
-========================= */
+/* ========================================
+   АВАТАР
+======================================== */
+
+document
+    .getElementById('avatarInput')
+    .addEventListener(
+        'change',
+        function(event){
+
+            const file =
+                event.target.files[0];
+
+            if(!file) return;
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function(result){
+
+                    profileAvatar =
+                        result.target.result;
+
+                    localStorage.setItem(
+                        'blinkAvatar',
+                        profileAvatar
+                    );
+
+                    loadProfile();
+
+                    updateUserMarker();
+
+                    showToast(
+                        'Аватар обновлён'
+                    );
+
+                };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* ========================================
+   ГЕОЛОКАЦИЯ
+======================================== */
+
+let watchId = null;
 
 let userMarker = null;
+
 let accuracyCircle = null;
-let userPosition = null;
 
-function markerHTML(){
+let userLatLng = null;
 
-    const avatar =
-    localStorage.getItem('blinkAvatar') ||
-    document.getElementById('avatar').src;
+let lastPosition = null;
 
-    return `
-        <div class="user-marker">
-            <img src="${avatar}">
-        </div>
-    `;
+let totalDistance =
+    Number(
+        localStorage.getItem(
+            'blinkDistance'
+        )
+    ) || 0;
+
+
+/* ========================================
+   ФОРМАТ ДИСТАНЦИИ
+======================================== */
+
+function formatDistance(meters){
+
+    if(meters < 1000){
+
+        return Math.round(meters) + ' м';
+
+    }
+
+    return (
+        meters / 1000
+    )
+    .toFixed(2)
+    .replace('.', ',')
+    + ' км';
+
+}
+
+
+function updateDistanceUI(){
+
+    const value =
+        formatDistance(
+            totalDistance
+        );
+
+    document
+        .getElementById('distanceTop')
+        .textContent =
+        value;
+
+    document
+        .getElementById('todayDistance')
+        .textContent =
+        value;
+
+    document
+        .getElementById('weekDistance')
+        .textContent =
+        value;
+
+    document
+        .getElementById('monthDistance')
+        .textContent =
+        value;
+
+}
+
+
+updateDistanceUI();
+
+
+/* ========================================
+   РАССТОЯНИЕ GPS
+======================================== */
+
+function calculateDistance(
+    lat1,
+    lon1,
+    lat2,
+    lon2
+){
+
+    const R = 6371000;
+
+    const dLat =
+        (lat2 - lat1)
+        * Math.PI
+        / 180;
+
+    const dLon =
+        (lon2 - lon1)
+        * Math.PI
+        / 180;
+
+    const a =
+        Math.sin(dLat / 2)
+        * Math.sin(dLat / 2)
+
+        +
+
+        Math.cos(
+            lat1 * Math.PI / 180
+        )
+
+        *
+
+        Math.cos(
+            lat2 * Math.PI / 180
+        )
+
+        *
+
+        Math.sin(dLon / 2)
+        *
+        Math.sin(dLon / 2);
+
+    const c =
+        2
+        *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
+        );
+
+    return R * c;
+
+}
+
+
+/* ========================================
+   МАРКЕР
+======================================== */
+
+function createMarkerIcon(){
+
+    return L.divIcon({
+
+        className:'',
+
+        html:`
+            <div class="map-avatar">
+                <img
+                    src="${profileAvatar}"
+                    alt="Я"
+                >
+            </div>
+        `,
+
+        iconSize:
+            [64, 64],
+
+        iconAnchor:
+            [32, 32]
+
+    });
 
 }
 
 
 function updateUserMarker(){
 
-    if(!userPosition) return;
+    if(!userMarker) return;
 
-    if(userMarker){
-        userMarker.setIcon(
-            L.divIcon({
-                className:'',
-                html:markerHTML(),
-                iconSize:[62,62],
-                iconAnchor:[31,31]
-            })
-        );
-    }
-
-}
-
-
-/* =========================
-   ГЕОЛОКАЦИЯ И ДИСТАНЦИЯ
-========================= */
-
-let watchId = null;
-let lastPosition = null;
-let totalDistance = 0;
-
-
-function distanceBetween(lat1,lon1,lat2,lon2){
-
-    const R = 6371000;
-
-    const dLat =
-    (lat2-lat1) * Math.PI / 180;
-
-    const dLon =
-    (lon2-lon1) * Math.PI / 180;
-
-    const a =
-    Math.sin(dLat/2) *
-    Math.sin(dLat/2) +
-
-    Math.cos(lat1*Math.PI/180) *
-    Math.cos(lat2*Math.PI/180) *
-
-    Math.sin(dLon/2) *
-    Math.sin(dLon/2);
-
-    const c =
-    2 * Math.atan2(
-        Math.sqrt(a),
-        Math.sqrt(1-a)
+    userMarker.setIcon(
+        createMarkerIcon()
     );
 
-    return R*c;
-
 }
 
 
-function formatDistance(meters){
-
-    if(meters < 1000){
-        return Math.round(meters) + ' м';
-    }
-
-    return (
-        meters / 1000
-    ).toFixed(2).replace('.',',') + ' км';
-
-}
-
+/* ========================================
+   ЗАПУСК GPS
+======================================== */
 
 function startLocation(){
 
     if(!navigator.geolocation){
-        alert('Геолокация не поддерживается браузером');
+
+        showToast(
+            'Геолокация не поддерживается'
+        );
+
         return;
+
     }
 
-    if(watchId !== null) return;
+
+    if(watchId !== null){
+
+        return;
+
+    }
+
+
+    document
+        .getElementById('statusText')
+        .textContent =
+        'Поиск позиции...';
+
 
     watchId =
-    navigator.geolocation.watchPosition(
+        navigator
+            .geolocation
+            .watchPosition(
 
-        function(position){
+                handlePosition,
 
-            const lat =
-            position.coords.latitude;
+                handleLocationError,
 
-            const lng =
-            position.coords.longitude;
-
-            userPosition = [lat,lng];
-
-
-            if(lastPosition){
-
-                const moved =
-                distanceBetween(
-                    lastPosition.lat,
-                    lastPosition.lng,
-                    lat,
-                    lng
-                );
-
-                /*
-                   Игнорируем маленькие скачки GPS
-                */
-
-                if(moved > 3 && moved < 500){
-
-                    totalDistance += moved;
-
-                    document
-                    .getElementById('distance')
-                    .textContent =
-                    formatDistance(totalDistance);
-
-                    document
-                    .getElementById('todayDistance')
-                    .textContent =
-                    formatDistance(totalDistance);
-
+                {
+                    enableHighAccuracy:true,
+                    maximumAge:1000,
+                    timeout:20000
                 }
 
-            }
-
-
-            lastPosition = {
-                lat:lat,
-                lng:lng
-            };
-
-
-            const icon =
-            L.divIcon({
-                className:'',
-                html:markerHTML(),
-                iconSize:[62,62],
-                iconAnchor:[31,31]
-            });
-
-
-            if(!userMarker){
-
-                userMarker =
-                L.marker(
-                    [lat,lng],
-                    {icon:icon}
-                ).addTo(map);
-
-
-                accuracyCircle =
-                L.circle(
-                    [lat,lng],
-                    {
-                        radius:
-                        position.coords.accuracy || 30,
-
-                        color:'transparent',
-                        fillColor:
-                        isDark ? '#ffffff' : '#000000',
-
-                        fillOpacity:.08
-                    }
-                ).addTo(map);
-
-
-                map.setView([lat,lng],17);
-
-            }else{
-
-                userMarker.setLatLng([lat,lng]);
-
-                accuracyCircle.setLatLng([lat,lng]);
-
-                accuracyCircle.setRadius(
-                    position.coords.accuracy || 30
-                );
-
-            }
-
-        },
-
-        function(error){
-
-            console.log(
-                'Ошибка геолокации:',
-                error
             );
 
-        },
+}
 
-        {
-            enableHighAccuracy:true,
-            maximumAge:1000,
-            timeout:15000
+
+function handlePosition(position){
+
+    const latitude =
+        position.coords.latitude;
+
+    const longitude =
+        position.coords.longitude;
+
+    const accuracy =
+        position.coords.accuracy;
+
+
+    userLatLng =
+        [latitude, longitude];
+
+
+    document
+        .getElementById('gpsAccuracy')
+        .textContent =
+        '±'
+        + Math.round(accuracy)
+        + ' м';
+
+
+    document
+        .getElementById('statusText')
+        .textContent =
+        'Геолокация активна';
+
+
+    document
+        .getElementById('statusDot')
+        .classList.remove('offline');
+
+
+    /* Подсчёт перемещения */
+
+    if(lastPosition){
+
+        const moved =
+            calculateDistance(
+
+                lastPosition.latitude,
+                lastPosition.longitude,
+
+                latitude,
+                longitude
+
+            );
+
+
+        /*
+           Игнорируем совсем маленькие
+           GPS-скачки и огромные скачки.
+        */
+
+        if(
+            moved >= 5
+            &&
+            moved <= 500
+        ){
+
+            totalDistance += moved;
+
+            localStorage.setItem(
+                'blinkDistance',
+                totalDistance
+            );
+
+            updateDistanceUI();
+
         }
 
+    }
+
+
+    lastPosition = {
+
+        latitude:
+            latitude,
+
+        longitude:
+            longitude
+
+    };
+
+
+    /* Создание или обновление маркера */
+
+    if(!userMarker){
+
+        userMarker =
+            L.marker(
+                userLatLng,
+                {
+                    icon:
+                        createMarkerIcon()
+                }
+            )
+            .addTo(map);
+
+
+        accuracyCircle =
+            L.circle(
+                userLatLng,
+                {
+                    radius:accuracy,
+
+                    color:'transparent',
+
+                    fillColor:
+                        '#2563eb',
+
+                    fillOpacity:.10,
+
+                    interactive:false
+
+                }
+            )
+            .addTo(map);
+
+
+        map.setView(
+            userLatLng,
+            17
+        );
+
+    }
+
+    else{
+
+        userMarker.setLatLng(
+            userLatLng
+        );
+
+        accuracyCircle.setLatLng(
+            userLatLng
+        );
+
+        accuracyCircle.setRadius(
+            accuracy
+        );
+
+    }
+
+
+    /* Сохранение последней позиции */
+
+    localStorage.setItem(
+        'blinkLastPosition',
+
+        JSON.stringify({
+            latitude,
+            longitude,
+            updatedAt:
+                new Date()
+                    .toISOString()
+        })
+
+    );
+
+
+    /* Отправка в Supabase */
+
+    syncPositionToSupabase(
+        latitude,
+        longitude
     );
 
 }
 
+
+function handleLocationError(error){
+
+    console.error(error);
+
+    let message =
+        'Не удалось получить позицию';
+
+    if(
+        error.code
+        ===
+        error.PERMISSION_DENIED
+    ){
+
+        message =
+            'Разреши доступ к геолокации';
+
+    }
+
+    document
+        .getElementById('statusText')
+        .textContent =
+        message;
+
+    showToast(
+        message
+    );
+
+}
+
+
+/* ========================================
+   ОСТАНОВКА GPS
+======================================== */
 
 function stopLocation(){
 
     if(watchId !== null){
 
         navigator
-        .geolocation
-        .clearWatch(watchId);
+            .geolocation
+            .clearWatch(
+                watchId
+            );
 
         watchId = null;
+
+    }
+
+
+    document
+        .getElementById('statusText')
+        .textContent =
+        'Геолокация выключена';
+
+    document
+        .getElementById('statusDot')
+        .classList.add(
+            'offline'
+        );
+
+}
+
+
+/* ========================================
+   ПЕРЕКЛЮЧАТЕЛЬ GPS
+======================================== */
+
+function toggleLocation(){
+
+    const enabled =
+        document
+            .getElementById('locationSwitch')
+            .checked;
+
+
+    if(enabled){
+
+        startLocation();
+
+    }
+
+    else{
+
+        stopLocation();
 
     }
 
 }
 
 
-function locateMe(){
+/* ========================================
+   ЦЕНТР КАРТЫ
+======================================== */
 
-    if(userPosition){
+function centerOnMe(){
+
+    if(userLatLng){
 
         map.flyTo(
-            userPosition,
+            userLatLng,
             17,
             {
                 duration:1
             }
         );
 
-    }else{
+    }
+
+    else{
 
         startLocation();
 
@@ -1199,134 +1938,212 @@ function locateMe(){
 }
 
 
-function toggleLocation(){
-
-    const enabled =
-    document
-    .getElementById('locationSwitch')
-    .checked;
-
-    if(enabled){
-
-        startLocation();
-
-    }else{
-
-        stopLocation();
-
-        if(userMarker){
-            map.removeLayer(userMarker);
-            userMarker = null;
-        }
-
-        if(accuracyCircle){
-            map.removeLayer(accuracyCircle);
-            accuracyCircle = null;
-        }
-
-    }
-
-}
-
-
-/* =========================
-   ТЕМА
-========================= */
+/* ========================================
+   ТЁМНАЯ ТЕМА
+======================================== */
 
 function toggleTheme(){
 
-    isDark =
-    document
-    .getElementById('themeSwitch')
-    .checked;
+    darkMode =
+        document
+            .getElementById('themeSwitch')
+            .checked;
+
 
     document.body.classList.toggle(
         'dark',
-        isDark
+        darkMode
     );
 
-    map.removeLayer(tileLayer);
+
+    map.removeLayer(
+        tileLayer
+    );
+
 
     tileLayer =
-    L.tileLayer(
-        isDark
-        ? darkTiles
-        : lightTiles,
-        {
-            maxZoom:20
-        }
-    ).addTo(map);
+        L.tileLayer(
 
-    if(accuracyCircle){
+            darkMode
+                ? darkTiles
+                : lightTiles,
 
-        accuracyCircle.setStyle({
-            fillColor:
-            isDark
-            ? '#ffffff'
-            : '#000000'
-        });
+            {
+                maxZoom:20
+            }
 
-    }
+        )
+        .addTo(map);
+
 
     localStorage.setItem(
         'blinkTheme',
-        isDark ? 'dark' : 'light'
+
+        darkMode
+            ? 'dark'
+            : 'light'
     );
 
 }
 
 
-const savedTheme =
-localStorage.getItem('blinkTheme');
+/* ========================================
+   SUPABASE СИНХРОНИЗАЦИЯ
+======================================== */
 
-if(savedTheme === 'dark'){
+/*
+   Этот код не ломает приложение,
+   даже если таблица profiles
+   ещё не создана.
 
-    document
-    .getElementById('themeSwitch')
-    .checked = true;
+   Когда ты создашь таблицу profiles,
+   здесь можно будет сохранять
+   позицию пользователя в облако.
+*/
 
-    toggleTheme();
+async function syncPositionToSupabase(
+    latitude,
+    longitude
+){
+
+    if(!supabaseClient){
+
+        return;
+
+    }
+
+
+    /*
+       Пока нет авторизованного
+       пользователя, позиция
+       остаётся локально.
+    */
+
+    const {
+
+        data:{
+            user
+        },
+
+        error
+
+    }
+    =
+    await supabaseClient
+        .auth
+        .getUser();
+
+
+    if(error || !user){
+
+        return;
+
+    }
+
+
+    try{
+
+        await supabaseClient
+
+            .from('profiles')
+
+            .upsert({
+
+                id:
+                    user.id,
+
+                username:
+                    profileName,
+
+                latitude:
+                    latitude,
+
+                longitude:
+                    longitude,
+
+                total_distance:
+                    totalDistance,
+
+                is_online:
+                    true,
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+
+            });
+
+    }
+
+    catch(error){
+
+        console.log(
+            'Supabase sync:',
+            error
+        );
+
+    }
 
 }
 
 
-/* =========================
+/* ========================================
    НАВИГАЦИЯ
-========================= */
+======================================== */
 
 const sheets = [
+
     'friendsSheet',
+
     'profileSheet',
+
     'settingsSheet'
+
 ];
 
 
 function closeSheets(){
 
-    sheets.forEach(function(id){
+    sheets.forEach(
+        function(id){
 
-        document
-        .getElementById(id)
-        .classList.remove('show');
+            document
+                .getElementById(id)
+                .classList.remove(
+                    'show'
+                );
 
-    });
+        }
+    );
 
 }
 
 
-function setActive(id){
+function setActiveNav(id){
 
     document
-    .querySelectorAll('.nav button')
-    .forEach(function(button){
+        .querySelectorAll(
+            '.nav button'
+        )
 
-        button.classList.remove('active');
+        .forEach(
+            function(button){
 
-    });
+                button
+                    .classList
+                    .remove(
+                        'active'
+                    );
+
+            }
+        );
+
 
     document
-    .getElementById(id)
-    .classList.add('active');
+        .getElementById(id)
+        .classList.add(
+            'active'
+        );
 
 }
 
@@ -1335,63 +2152,129 @@ function openPage(page){
 
     closeSheets();
 
+
     if(page === 'map'){
 
-        setActive('mapNav');
+        setActiveNav(
+            'mapNav'
+        );
+
+        return;
 
     }
+
 
     if(page === 'friends'){
 
         document
-        .getElementById('friendsSheet')
-        .classList.add('show');
+            .getElementById(
+                'friendsSheet'
+            )
 
-        setActive('friendsNav');
+            .classList
+            .add(
+                'show'
+            );
+
+
+        setActiveNav(
+            'friendsNav'
+        );
 
     }
+
 
     if(page === 'profile'){
 
         document
-        .getElementById('profileSheet')
-        .classList.add('show');
+            .getElementById(
+                'profileSheet'
+            )
 
-        setActive('profileNav');
+            .classList
+            .add(
+                'show'
+            );
+
+
+        setActiveNav(
+            'profileNav'
+        );
 
     }
+
 
     if(page === 'settings'){
 
         document
-        .getElementById('settingsSheet')
-        .classList.add('show');
+            .getElementById(
+                'settingsSheet'
+            )
 
-        setActive('settingsNav');
+            .classList
+            .add(
+                'show'
+            );
+
+
+        setActiveNav(
+            'settingsNav'
+        );
 
     }
 
 }
 
 
-function openProfileEdit(){
+/* ========================================
+   TOAST
+======================================== */
 
-    openPage('profile');
+let toastTimer = null;
 
-    setTimeout(function(){
 
+function showToast(message){
+
+    const toast =
         document
-        .getElementById('nameInput')
-        .focus();
+            .getElementById('toast');
 
-    },400);
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        'show'
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+
+            function(){
+
+                toast.classList.remove(
+                    'show'
+                );
+
+            },
+
+            3000
+
+        );
 
 }
 
 
-/* =========================
+/* ========================================
    ЗАПУСК
-========================= */
+======================================== */
 
 startLocation();
 
