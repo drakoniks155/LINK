@@ -2,1088 +2,1405 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#080808">
-  <title>LINK — друзья и чат</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>LINK</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    /* ... весь CSS оставляем без изменений ... */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-    :root {
-      --bg: #080808;
-      --card: #121212;
-      --card2: #191919;
-      --text: #fff;
-      --muted: #989898;
-      --line: #292929;
-      --accent: #fff;
-      --danger: #ff6178;
-      --ok: #70ffad;
-      --radius: 18px;
-      --shadow: 0 10px 35px rgba(0, 0, 0, .4);
-    }
-    [data-theme="light"] {
-      --bg: #f5f5f5;
-      --card: #ffffff;
-      --card2: #f0f0f0;
-      --text: #000000;
-      --muted: #666666;
-      --line: #dddddd;
-      --accent: #000000;
-    }
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      overflow: hidden;
-    }
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-      border: 0;
-      outline: none;
-    }
-    button {
-      cursor: pointer;
+      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      background: none;
     }
-    .hidden {
-      display: none !important;
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-input: #1e1e1e;
+      --text-primary: #ffffff;
+      --text-secondary: #888888;
+      --text-muted: #555555;
+      --border-color: #2a2a2a;
+      --accent: #5b7cfa;
+      --accent-hover: #4a6ae8;
+      --accent-green: #4caf50;
+      --accent-red: #f44336;
+      --accent-yellow: #ffc107;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
+
+    [data-theme="light"] {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f0f0f0;
+      --text-primary: #1a1a1a;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --border-color: #e0e0e0;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+      user-select: none;
+    }
+
     #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
       position: relative;
-      width: 100%;
-      height: 100dvh;
-      background: var(--bg);
+      background: var(--bg-primary);
       overflow: hidden;
     }
-    #map {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-    }
-    .topbar {
-      position: absolute;
-      z-index: 1000;
-      top: 12px;
-      left: 12px;
-      right: 12px;
+
+    /* ===== STATUS BAR ===== */
+    #statusBar {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      pointer-events: none;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      min-height: 44px;
+      z-index: 100;
     }
-    .brand,
-    .status {
-      pointer-events: auto;
-      background: rgba(10, 10, 10, .88);
-      border: 1px solid rgba(255, 255, 255, .12);
-      backdrop-filter: blur(18px);
-      border-radius: var(--radius);
-      padding: 10px 14px;
-      box-shadow: var(--shadow);
+
+    #statusBar .brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.5px;
     }
-    .brand {
-      font-weight: 1000;
-      letter-spacing: 1px;
+
+    #statusBar .brand span {
+      color: var(--accent);
+    }
+
+    #statusBar .status-info {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-    .status {
-      max-width: 62%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: #ddd;
       font-size: 12px;
+      color: var(--text-secondary);
     }
-    .dot {
-      display: inline-block;
+
+    .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #777;
-      margin-right: 7px;
+      background: var(--text-muted);
+      flex-shrink: 0;
     }
-    .dot.live {
-      background: var(--ok);
-      box-shadow: 0 0 12px var(--ok);
+
+    .status-dot.online {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
     }
-    .map-actions {
+
+    .status-dot.offline {
+      background: var(--text-muted);
+    }
+
+    /* ===== PAGES ===== */
+    #pages {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page {
       position: absolute;
-      z-index: 1000;
-      right: 12px;
-      bottom: 110px;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px;
+      padding-bottom: 80px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      transform: translateY(8px);
+      background: var(--bg-primary);
+    }
+
+    .page.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .page::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .page::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 10px;
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    #bottomNav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 8px calc(6px + var(--safe-bottom));
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-btn {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-    .round-btn {
-      width: 48px;
-      height: 48px;
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 17px;
-      background: rgba(8, 8, 8, .9);
-      color: #fff;
-      font-size: 20px;
-      backdrop-filter: blur(15px);
-    }
-    .bottom {
-      position: absolute;
-      z-index: 1000;
-      left: 8px;
-      right: 8px;
-      bottom: 8px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 4px;
-      padding: 6px;
-      background: rgba(8, 8, 8, .93);
-      border: 1px solid rgba(255, 255, 255, .12);
-      backdrop-filter: blur(20px);
-      border-radius: 25px;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, .5);
-    }
-    .navbtn {
-      position: relative;
-      border: 0;
-      background: transparent;
-      color: #969696;
-      border-radius: var(--radius);
-      padding: 8px 2px;
-    }
-    .navbtn.active {
-      background: #fff;
-      color: #000;
-    }
-    .navicon {
-      display: block;
-      font-size: 18px;
-      line-height: 21px;
-    }
-    .navtext {
-      display: block;
-      font-size: 9px;
-      font-weight: 900;
-    }
-    .badge {
-      position: absolute;
-      top: 3px;
-      right: 15%;
-      min-width: 17px;
-      height: 17px;
-      line-height: 17px;
-      padding: 0 4px;
-      border-radius: 20px;
-      background: #ff4862;
-      color: #fff;
-      font-size: 9px;
-      font-weight: 900;
-      text-align: center;
-    }
-    .panel {
-      position: absolute;
-      z-index: 3000;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      background: rgba(0, 0, 0, .58);
-      backdrop-filter: blur(4px);
-    }
-    .sheet {
-      width: 100%;
-      max-height: 89dvh;
-      overflow: auto;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-bottom: 0;
-      border-radius: 28px 28px 0 0;
-      padding: 18px 16px 32px;
-      animation: up .22s ease-out;
-    }
-    @keyframes up {
-      from {
-        transform: translateY(30px);
-        opacity: 0;
-      }
-      to {
-        transform: none;
-        opacity: 1;
-      }
-    }
-    .handle {
-      width: 42px;
-      height: 4px;
-      border-radius: 20px;
-      background: #444;
-      margin: 0 auto 16px;
-    }
-    .sheet h2 {
-      margin: 4px 0 16px;
-      font-size: 22px;
-    }
-    .close {
-      float: right;
-      width: 36px;
-      height: 36px;
-      border: 0;
-      border-radius: 50%;
-      background: var(--card2);
-      color: var(--text);
-      font-size: 22px;
-    }
-    .field {
-      margin: 11px 0;
-    }
-    .field label {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: var(--card2);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 13px;
-    }
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #777;
-    }
-    .btn {
-      border: 0;
-      border-radius: 15px;
-      padding: 13px 15px;
-      background: #fff;
-      color: #000;
-      font-weight: 900;
-    }
-    .btn.full {
-      width: 100%;
-      margin-top: 8px;
-    }
-    .btn.secondary {
-      background: var(--card2);
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-    .btn.danger {
-      background: #2b1115;
-      color: #ff91a0;
-      border: 1px solid #57202b;
-    }
-    .btn.small {
-      padding: 8px 10px;
-      border-radius: 11px;
-      font-size: 11px;
-    }
-    .btn.primary {
-      background: var(--ok);
-      color: #000;
-    }
-    .row {
-      display: flex;
-      gap: 8px;
       align-items: center;
+      gap: 2px;
+      padding: 4px 12px;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+      border-radius: 12px;
+      min-width: 48px;
     }
-    .grow {
-      flex: 1;
-      min-width: 0;
+
+    .nav-btn .icon {
+      font-size: 22px;
+      line-height: 1;
     }
-    .auth {
+
+    .nav-btn .label {
+      font-size: 9px;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-btn.active {
+      color: var(--text-primary);
+    }
+
+    .nav-btn .badge {
       position: absolute;
-      z-index: 9000;
+      top: 0;
+      right: 4px;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 20px;
+      background: var(--accent-red);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    .nav-btn .badge.hidden {
+      display: none;
+    }
+
+    /* ===== AUTH ===== */
+    #authScreen {
+      position: fixed;
       inset: 0;
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: var(--bg);
+      background: var(--bg-primary);
     }
-    .authbox {
-      width: min(430px, 100%);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 25px;
+
+    #authScreen.hidden {
+      display: none;
     }
-    .logo {
-      font-size: 46px;
-      font-weight: 1000;
-      letter-spacing: -2px;
+
+    .auth-box {
+      width: 100%;
+      max-width: 360px;
+      padding: 32px 24px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
     }
-    .subtitle {
-      color: var(--muted);
-      margin: 6px 0 20px;
+
+    .auth-box .logo {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 4px;
     }
-    .auth-status {
-      min-height: 22px;
-      color: #aaa;
+
+    .auth-box .logo span {
+      color: var(--accent);
+    }
+
+    .auth-box .subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .auth-box .field {
+      margin-bottom: 14px;
+    }
+
+    .auth-box .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .auth-box .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+
+    .auth-box .field input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .auth-box .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .auth-box .btn:active {
+      opacity: 0.8;
+    }
+
+    .auth-box .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      margin-top: 8px;
+    }
+
+    .auth-box .auth-error {
+      color: var(--accent-red);
       font-size: 13px;
+      text-align: center;
       margin-top: 12px;
+      min-height: 20px;
     }
-    .avatar {
-      width: 64px;
-      height: 64px;
-      flex: none;
-      object-fit: cover;
-      border-radius: 50%;
-      background: var(--card2);
-      border: 2px solid var(--accent);
+
+    .auth-box .auth-switch {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
     }
-    .avatar.small {
-      width: 48px;
-      height: 48px;
-      border-width: 1px;
+
+    .auth-box .auth-switch a {
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
     }
-    .avatar.tiny {
-      width: 28px;
-      height: 28px;
-      border-width: 1px;
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      margin-bottom: 12px;
     }
-    .avatar.large {
-      width: 80px;
-      height: 80px;
-      border-width: 3px;
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
-    .avatar.animated {
-      animation: avatarPulse 3s ease-in-out infinite;
-    }
-    @keyframes avatarPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .avatar.wave {
-      animation: avatarWave 2s ease-in-out infinite;
-    }
-    @keyframes avatarWave {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-5deg); }
-      75% { transform: rotate(5deg); }
-    }
-    .avatar.bounce {
-      animation: avatarBounce 1.5s ease-in-out infinite;
-    }
-    @keyframes avatarBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    .friend,
-    .request,
-    .chat-item {
+
+    /* ===== FRIEND ITEMS ===== */
+    .friend-item, .request-item, .chat-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
     }
-    .friend-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+
+    .friend-item:last-child, .request-item:last-child, .chat-item:last-child {
+      border-bottom: none;
     }
-    .code {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .empty {
-      padding: 35px 10px;
-      color: var(--muted);
-      text-align: center;
-    }
-    .section-title {
-      margin: 20px 0 7px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-    .online-status {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin-left: 6px;
-      border-radius: 50%;
-      background: #777;
-    }
-    .online-status.online {
-      background: var(--ok);
-      box-shadow: 0 0 8px var(--ok);
-    }
-    .leaflet-control-attribution {
-      font-size: 8px !important;
-    }
-    .user-pin,
-    .friend-pin {
-      background: transparent;
-      border: 0;
-    }
-    .pin {
-      position: relative;
-      width: 48px;
-      height: 48px;
-      overflow: visible;
-    }
-    .pin img {
-      position: relative;
-      z-index: 2;
-      width: 48px;
-      height: 48px;
+
+    .friend-item .avatar, .request-item .avatar, .chat-item .avatar {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       object-fit: cover;
-      background: var(--card2);
-      border: 3px solid #fff;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, .55);
+      flex-shrink: 0;
+      background: var(--bg-input);
+      border: 2px solid transparent;
     }
-    .pin .ring {
-      position: absolute;
-      z-index: 1;
-      inset: -8px;
-      border: 2px solid rgba(255, 255, 255, .8);
-      border-radius: 50%;
-      animation: pulse 1.6s infinite;
+
+    .friend-item .avatar.online {
+      border-color: var(--accent-green);
     }
-    @keyframes pulse {
-      50% {
-        transform: scale(1.2);
-        opacity: .15;
-      }
+
+    .friend-item .info, .request-item .info, .chat-item .info {
+      flex: 1;
+      min-width: 0;
     }
-    .toast {
-      position: absolute;
-      z-index: 12000;
-      left: 50%;
-      bottom: 92px;
-      transform: translateX(-50%);
-      max-width: 90%;
-      padding: 11px 15px;
-      border-radius: 14px;
-      background: #fff;
-      color: #000;
-      font-size: 13px;
-      font-weight: 900;
-      text-align: center;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, .5);
-    }
-    .reaction-picker {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin: 12px 0;
-    }
-    .reaction-choice {
-      min-height: 64px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--card2);
-      color: var(--text);
-      font-size: 29px;
-    }
-    .reaction-choice.selected,
-    .reaction-choice:active {
-      background: #fff;
-      color: #000;
-      transform: scale(.95);
-    }
-    .reaction-info {
-      padding: 13px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--card2);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .chat-preview {
-      overflow: hidden;
+
+    .friend-item .info .name, .request-item .info .name, .chat-item .info .name {
+      font-weight: 600;
+      font-size: 14px;
       white-space: nowrap;
+      overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 190px;
     }
+
+    .friend-item .info .sub, .request-item .info .sub, .chat-item .info .sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .friend-item .info .sub .online-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .friend-item .info .sub .online-dot.online {
+      background: var(--accent-green);
+    }
+
+    .friend-item .actions, .request-item .actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .btn-sm:active {
+      opacity: 0.7;
+    }
+
+    .btn-sm.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-sm.secondary {
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-sm.danger {
+      background: var(--accent-red);
+      color: #fff;
+    }
+
+    .btn-sm.green {
+      background: var(--accent-green);
+      color: #fff;
+    }
+
+    .btn-sm.ghost {
+      background: none;
+      color: var(--text-secondary);
+    }
+
+    /* ===== CHAT ===== */
+    .chat-last-msg {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .chat-unread {
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 22px;
-      height: 22px;
       padding: 0 6px;
-      border-radius: 20px;
-      background: #fff;
-      color: #000;
-      font-size: 10px;
-      font-weight: 1000;
+      flex-shrink: 0;
     }
-    .chat-page {
-      position: absolute;
-      z-index: 4500;
+
+    /* ===== CHAT VIEW ===== */
+    #chatView {
+      position: fixed;
       inset: 0;
+      z-index: 2000;
       display: flex;
       flex-direction: column;
-      background: var(--bg);
+      background: var(--bg-primary);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .chat-header {
-      position: relative;
-      z-index: 2;
+
+    #chatView.open {
+      transform: translateX(0);
+    }
+
+    #chatView .chat-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 14px;
-      padding-top: max(14px, env(safe-area-inset-top));
-      border-bottom: 1px solid var(--line);
-      background: rgba(8, 8, 8, .96);
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      min-height: 56px;
     }
-    .chat-back {
-      width: 40px;
-      height: 40px;
-      border: 0;
+
+    #chatView .chat-header .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    #chatView .chat-header .chat-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: var(--card2);
-      color: var(--text);
-      font-size: 23px;
+      object-fit: cover;
     }
-    .chat-title {
-      min-width: 0;
+
+    #chatView .chat-header .chat-name {
       flex: 1;
-    }
-    .chat-name {
+      font-weight: 600;
+      font-size: 15px;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
-      font-weight: 1000;
     }
-    .chat-status {
-      margin-top: 2px;
-      color: var(--muted);
+
+    #chatView .chat-header .chat-status {
       font-size: 11px;
+      color: var(--text-secondary);
     }
-    .chat-actions {
-      display: flex;
-      gap: 6px;
-    }
-    .chat-action-btn {
-      width: 40px;
-      height: 40px;
-      border: 0;
-      border-radius: 50%;
-      background: var(--card2);
-      color: var(--text);
-      font-size: 18px;
-    }
-    .chat-action-btn.primary {
-      background: #fff;
-      color: #000;
-    }
-    .messages {
+
+    #chatView .messages-container {
       flex: 1;
-      overflow: auto;
-      padding: 16px 12px 120px;
-    }
-    .message-row {
+      overflow-y: auto;
+      padding: 12px 16px;
       display: flex;
-      margin: 7px 0;
+      flex-direction: column;
+      gap: 4px;
     }
-    .message-row.mine {
-      justify-content: flex-end;
-    }
-    .message-row.theirs {
-      justify-content: flex-start;
-    }
-    .message {
-      position: relative;
-      max-width: 78%;
-      padding: 10px 12px;
-      border-radius: 18px;
-      background: var(--card2);
-      word-break: break-word;
+
+    #chatView .messages-container .msg {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 16px;
       font-size: 14px;
-      line-height: 1.35;
+      line-height: 1.4;
+      word-wrap: break-word;
+      animation: msgIn 0.2s ease;
     }
-    .message.mine {
-      background: #fff;
-      color: #000;
-      border-bottom-right-radius: 5px;
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
-    .message.theirs {
-      border-bottom-left-radius: 5px;
+
+    #chatView .messages-container .msg.mine {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
+      border-bottom-right-radius: 4px;
     }
-    .message-time {
+
+    #chatView .messages-container .msg.theirs {
+      align-self: flex-start;
+      background: var(--bg-card);
+      border-bottom-left-radius: 4px;
+    }
+
+    #chatView .messages-container .msg .time {
+      font-size: 10px;
+      opacity: 0.6;
       margin-top: 4px;
-      font-size: 9px;
-      opacity: .55;
       text-align: right;
     }
-    .message-reactions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 5px;
-    }
-    .message-reaction {
-      border: 0;
-      border-radius: 999px;
-      padding: 4px 7px;
-      background: var(--card2);
-      color: var(--text);
+
+    #chatView .messages-container .msg .deleted {
+      font-style: italic;
+      color: var(--text-muted);
       font-size: 12px;
     }
-    .message.mine .message-reaction {
-      background: #ddd;
-      color: #000;
-    }
-    .chat-reaction-bar {
-      position: absolute;
-      z-index: 4;
-      left: 50%;
-      bottom: 73px;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 5px;
-      padding: 7px;
-      max-width: 94vw;
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: var(--card);
-      box-shadow: 0 10px 35px #000;
-    }
-    .quick-reaction {
-      width: 42px;
-      height: 42px;
-      flex: none;
-      border: 0;
-      border-radius: 14px;
-      background: var(--card2);
-      color: var(--text);
-      font-size: 21px;
-    }
-    .quick-reaction.recording {
-      background: #ff4444;
-      color: #fff;
-      animation: pulse-rec 0.8s infinite;
-    }
-    @keyframes pulse-rec {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.15);
-      }
-    }
-    .chat-input-area {
-      position: absolute;
-      z-index: 5;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      gap: 7px;
-      align-items: flex-end;
-      padding: 10px 10px max(10px, env(safe-area-inset-bottom));
-      background: rgba(8, 8, 8, .96);
-      border-top: 1px solid var(--line);
-    }
-    .chat-input {
-      min-height: 48px;
-      max-height: 100px;
-      resize: none;
-      flex: 1;
-      border-radius: 20px;
-      padding: 13px 15px;
-      background: var(--card2);
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-    .send-message {
-      width: 48px;
-      height: 48px;
-      flex: none;
-      border: 0;
-      border-radius: 50%;
-      background: #fff;
-      color: #000;
-      font-size: 18px;
-    }
-    .typing {
-      position: absolute;
-      left: 15px;
-      bottom: 116px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-    .voice-message {
+
+    /* ===== VOICE MESSAGE ===== */
+    .voice-msg {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 12px;
-      background: var(--card2);
+      padding: 6px 12px;
+      background: var(--bg-input);
       border-radius: 12px;
       min-width: 140px;
     }
-    .voice-message.mine {
-      background: #e0e0e0;
+
+    .voice-msg.mine {
+      background: rgba(255,255,255,0.15);
     }
-    .voice-play {
-      width: 34px;
-      height: 34px;
-      flex: none;
+
+    .voice-msg .play-btn {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
+      border: none;
       background: #fff;
       color: #000;
-      font-size: 14px;
-      border: 0;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .voice-timeline {
+
+    .voice-msg .timeline {
       flex: 1;
       height: 4px;
-      background: var(--line);
+      background: var(--text-muted);
       border-radius: 2px;
       position: relative;
       cursor: pointer;
     }
-    .voice-timeline .progress {
+
+    .voice-msg .timeline .progress {
       height: 100%;
-      background: var(--ok);
+      background: var(--accent);
       border-radius: 2px;
       width: 0%;
       transition: width 0.1s;
     }
-    .voice-time {
+
+    .voice-msg .duration {
       font-size: 10px;
-      color: var(--muted);
-      flex: none;
+      color: var(--text-secondary);
+      flex-shrink: 0;
       min-width: 32px;
       text-align: center;
     }
-    .recording-indicator {
-      position: absolute;
-      z-index: 6;
-      left: 50%;
-      bottom: 80px;
-      transform: translateX(-50%);
-      background: rgba(255, 0, 0, 0.9);
-      color: #fff;
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 700;
+
+    /* ===== CHAT INPUT ===== */
+    #chatView .chat-input-area {
       display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      padding-bottom: calc(10px + var(--safe-bottom));
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
       align-items: center;
-      gap: 10px;
+    }
+
+    #chatView .chat-input-area input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #chatView .chat-input-area input:focus {
+      border-color: var(--accent);
+    }
+
+    #chatView .chat-input-area .send-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    #chatView .chat-input-area .send-btn:active {
+      background: var(--accent-hover);
+    }
+
+    #chatView .chat-input-area .voice-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      border: 1px solid var(--border-color);
+    }
+
+    #chatView .chat-input-area .voice-btn.recording {
+      background: var(--accent-red);
+      color: #fff;
       animation: pulse-rec 0.8s infinite;
     }
-    .recording-indicator .dot-rec {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #fff;
+
+    @keyframes pulse-rec {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
-    .sticker-picker {
+
+    /* ===== REACTION PICKER ===== */
+    .reaction-picker {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 8px;
-      padding: 10px;
+      padding: 8px 0;
     }
-    .sticker {
-      font-size: 38px;
-      padding: 6px;
+
+    .reaction-picker .reaction-btn {
+      font-size: 28px;
+      padding: 8px;
+      border: 2px solid transparent;
       border-radius: 12px;
-      background: var(--card2);
-      border: 1px solid var(--line);
-      transition: transform .15s;
-    }
-    .sticker:active {
-      transform: scale(.9);
-    }
-    .toggle {
-      position: relative;
-      width: 48px;
-      height: 28px;
-      flex: none;
-      border: 0;
-      border-radius: 20px;
-      background: #333;
-    }
-    .toggle i {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #fff;
-      transition: .2s;
-    }
-    .toggle.on {
-      background: #fff;
-    }
-    .toggle.on i {
-      left: 23px;
-      background: #000;
-    }
-    .note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .stories-bar {
-      display: flex;
-      gap: 12px;
-      padding: 12px 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .stories-bar::-webkit-scrollbar {
-      display: none;
-    }
-    .story-avatar {
-      position: relative;
-      flex: none;
+      background: var(--bg-input);
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .story-avatar .avatar {
-      border: 3px solid #ff6b6b;
-      border-radius: 50%;
+
+    .reaction-picker .reaction-btn:active {
+      transform: scale(0.9);
     }
-    .story-avatar .add-story {
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #4ecdc4;
-      color: #fff;
-      font-size: 16px;
-      border: 2px solid var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    .reaction-picker .reaction-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent);
     }
-    .story-avatar .seen {
-      border-color: #888;
-    }
-    .story-viewer {
+
+    /* ===== BIG REACTION ===== */
+    .big-reaction-overlay {
       position: fixed;
-      z-index: 10000;
       inset: 0;
-      background: rgba(0,0,0,0.95);
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
+      pointer-events: none;
     }
-    .story-viewer .story-content {
-      max-width: 90vw;
-      max-height: 80vh;
-      border-radius: 16px;
+
+    .big-reaction-overlay .reaction-emoji {
+      font-size: 120px;
+      animation: bigReaction 1.5s ease-out forwards;
+      filter: drop-shadow(0 10px 40px rgba(0,0,0,0.8));
     }
-    .story-viewer .story-text {
-      font-size: 32px;
-      color: #fff;
-      text-align: center;
-      padding: 40px;
+
+    @keyframes bigReaction {
+      0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+      20% { transform: scale(1.4) rotate(5deg); opacity: 1; }
+      40% { transform: scale(1) rotate(0deg); }
+      80% { opacity: 1; }
+      100% { transform: scale(1.2) rotate(0deg); opacity: 0; }
     }
-    .story-viewer .story-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 32px;
-      color: #fff;
-      background: none;
-      border: none;
-    }
-    .story-viewer .story-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: rgba(255,255,255,0.3);
-    }
-    .story-viewer .story-progress .fill {
-      height: 100%;
-      background: #fff;
-      transition: width 0.1s linear;
-    }
-    .story-viewer .story-info {
-      position: absolute;
-      bottom: 40px;
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      color: #fff;
-      font-size: 14px;
-      opacity: 0.7;
-    }
-    .drawing-canvas {
+      padding: 10px 20px;
       border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-      touch-action: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow);
+      z-index: 99999;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      max-width: 90%;
     }
-    .drawing-tools {
+
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state .title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .empty-state .desc {
+      font-size: 13px;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-box {
       display: flex;
       gap: 8px;
-      padding: 8px 0;
-      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    /* ===== MAP ===== */
+    #map {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .leaflet-control-attribution {
+      font-size: 8px !important;
+    }
+
+    .custom-marker {
+      background: transparent;
+      border: none;
+    }
+
+    .custom-marker .marker-content {
+      position: relative;
+      width: 44px;
+      height: 44px;
+    }
+
+    .custom-marker .marker-content img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .custom-marker .marker-content .pulse {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-green);
+      animation: pulse-ring 1.5s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .custom-marker .marker-content .me-pulse {
+      border-color: var(--accent);
+    }
+
+    .map-controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .map-controls .map-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 18px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.2s;
     }
-    .drawing-tools .btn {
-      padding: 6px 12px;
+
+    .map-controls .map-btn:active {
+      background: var(--bg-input);
+    }
+
+    /* ===== LOCATION INFO ===== */
+    .location-info {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      z-index: 1000;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      max-width: 200px;
+      box-shadow: var(--shadow);
+    }
+
+    .location-info .coords {
+      font-family: monospace;
       font-size: 12px;
+      color: var(--text-primary);
     }
-    .color-picker {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 2px solid var(--line);
-      cursor: pointer;
-      padding: 0;
+
+    .location-info .accuracy {
+      font-size: 10px;
+      color: var(--text-muted);
     }
-    .font-selector {
+
+    /* ===== PROFILE VIEW ===== */
+    .profile-header {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 8px 0;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
     }
-    .font-selector .font-option {
-      padding: 8px 14px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      cursor: pointer;
-      background: var(--card2);
+
+    .profile-header .big-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
     }
-    .font-selector .font-option.active {
-      border-color: #fff;
-      background: #fff;
-      color: #000;
+
+    .profile-header .profile-info {
+      flex: 1;
     }
-    .font-comic { font-family: 'Comic Sans MS', cursive; }
-    .font-serif { font-family: 'Georgia', serif; }
-    .font-mono { font-family: 'Courier New', monospace; }
-    .font-emoji { font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif; }
-    .font-bold { font-weight: 900; }
-    .font-italic { font-style: italic; }
-    .font-underline { text-decoration: underline; }
-    .font-strike { text-decoration: line-through; }
-    .visibility-setting {
+
+    .profile-header .profile-info .display-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .profile-header .profile-info .username {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .profile-header .profile-info .friend-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+    }
+
+    .profile-stats .stat {
+      text-align: center;
+      flex: 1;
+    }
+
+    .profile-stats .stat .num {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .profile-stats .stat .label {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== SETTINGS ===== */
+    .setting-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
     }
-    .visibility-setting .toggle {
-      flex: none;
+
+    .setting-row:last-child {
+      border-bottom: none;
     }
-    #drawingContainer {
+
+    .setting-row .left .title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .setting-row .left .desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      width: 48px;
+      height: 28px;
+      background: var(--text-muted);
+      border-radius: 14px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch.on {
+      background: var(--accent);
+    }
+
+    .toggle-switch .thumb {
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.on .thumb {
+      transform: translateX(20px);
+    }
+
+    /* ===== MODAL / BOTTOM SHEET ===== */
+    .modal-overlay {
       position: fixed;
-      z-index: 5000;
       inset: 0;
-      background: rgba(0,0,0,0.9);
+      z-index: 5000;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
     }
-    @media(min-width:700px) {
-      .bottom {
-        left: 50%;
-        right: auto;
-        width: 600px;
-        transform: translateX(-50%);
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-overlay .bottom-sheet {
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      background: var(--bg-secondary);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px calc(20px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open .bottom-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-overlay .bottom-sheet .handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--text-muted);
+      margin: 0 auto 16px;
+    }
+
+    .modal-overlay .bottom-sheet .sheet-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal-overlay .bottom-sheet .field {
+      margin-bottom: 12px;
+    }
+
+    .modal-overlay .bottom-sheet .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .modal-overlay .bottom-sheet .field input,
+    .modal-overlay .bottom-sheet .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .modal-overlay .bottom-sheet .field input:focus,
+    .modal-overlay .bottom-sheet .field select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 10px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      #app {
+        max-width: 100%;
       }
-      .panel {
-        align-items: center;
-        justify-content: center;
+      .page {
+        padding: 12px;
+        padding-bottom: 80px;
       }
-      .sheet {
-        width: 540px;
-        max-height: 82vh;
-        border: 1px solid var(--line);
-        border-radius: 28px;
-      }
-      .chat-page {
-        left: 50%;
-        width: 600px;
-        transform: translateX(-50%);
-        border-left: 1px solid var(--line);
-        border-right: 1px var(--line);
+    }
+
+    @media (min-width: 481px) {
+      #app {
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- ===== AUTH ===== -->
+  <div id="authScreen">
+    <div class="auth-box">
+      <div class="logo">L<span>I</span>NK</div>
+      <div class="subtitle">Друзья рядом. Карта. Чаты.</div>
+      <form id="authForm" autocomplete="off">
+        <div id="authFields">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="authEmail" placeholder="example@mail.com" required>
+          </div>
+          <div class="field">
+            <label>Пароль</label>
+            <input type="password" id="authPassword" placeholder="••••••••" required minlength="6">
+          </div>
+        </div>
+        <button type="submit" class="btn" id="authSubmitBtn">Войти</button>
+        <div class="auth-error" id="authError"></div>
+        <div class="auth-switch">
+          <span id="authSwitchText">Нет аккаунта?</span>
+          <a id="authSwitchLink">Зарегистрироваться</a>
+        </div>
+        <button type="button" class="btn btn-secondary" id="authAnonBtn">Войти анонимно</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== APP ===== -->
   <div id="app">
-    <div id="map"></div>
-
-    <div class="topbar">
-      <div class="brand"><span>LINK</span><span id="themeToggle" style="font-size:16px;cursor:pointer;">🌙</span></div>
-      <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Подключение…</span></div>
+    <!-- Status Bar -->
+    <div id="statusBar">
+      <div class="brand">L<span>I</span>NK</div>
+      <div class="status-info">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Подключение...</span>
+      </div>
     </div>
 
-    <div class="map-actions">
-      <button class="round-btn" id="centerMeBtn">⌖</button>
-      <button class="round-btn" id="showAllBtn">⊙</button>
+    <!-- Pages -->
+    <div id="pages">
+      <!-- Map -->
+      <div class="page active" id="pageMap">
+        <div style="position:relative;height:100%;border-radius:var(--radius);overflow:hidden;">
+          <div id="map"></div>
+          <div class="map-controls">
+            <button class="map-btn" id="centerMapBtn" title="Центрировать">📍</button>
+            <button class="map-btn" id="toggleLocationBtn" title="Вкл/Выкл геолокацию">📡</button>
+            <button class="map-btn" id="savePlaceBtn" title="Сохранить место">⭐</button>
+          </div>
+          <div class="location-info" id="locationInfo">
+            <div class="coords" id="coordsDisplay">Ожидание GPS...</div>
+            <div class="accuracy" id="accuracyDisplay">Точность: ---</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friends -->
+      <div class="page" id="pageFriends">
+        <div class="card">
+          <div class="search-box">
+            <input type="text" id="friendSearchInput" placeholder="Поиск по имени или UID...">
+          </div>
+          <div class="search-box">
+            <input type="text" id="addFriendInput" placeholder="UID друга для добавления">
+            <button class="btn-sm primary" id="addFriendBtn">➕</button>
+          </div>
+        </div>
+
+        <div id="friendRequestsSection" class="card" style="display:none;">
+          <div class="card-title">📩 Входящие заявки</div>
+          <div id="friendRequestsList"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">👥 Друзья</div>
+          <div id="friendsList"></div>
+        </div>
+      </div>
+
+      <!-- Chats -->
+      <div class="page" id="pageChats">
+        <div class="card">
+          <div class="card-title">💬 Чаты</div>
+          <div id="chatsList"></div>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="page" id="pageProfile">
+        <div class="card">
+          <div class="profile-header">
+            <img class="big-avatar" id="profileAvatar" src="" alt="avatar">
+            <div class="profile-info">
+              <div class="display-name" id="profileDisplayName">Имя</div>
+              <div class="username" id="profileUid">UID: ---</div>
+              <div class="friend-count" id="profileFriendCount">0 друзей</div>
+            </div>
+          </div>
+          <button class="btn-sm primary" id="editProfileBtn" style="width:100%;padding:10px;">✏️ Редактировать профиль</button>
+        </div>
+
+        <div class="card">
+          <div class="profile-stats">
+            <div class="stat"><div class="num" id="statFriends">0</div><div class="label">Друзей</div></div>
+            <div class="stat"><div class="num" id="statMessages">0</div><div class="label">Сообщений</div></div>
+            <div class="stat"><div class="num" id="statOnline">0</div><div class="label">Онлайн</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="page" id="pageSettings">
+        <div class="card">
+          <div class="card-title">⚙️ Настройки</div>
+
+          <div class="setting-row">
+            <div class="left"><div class="title">🌙 Тёмная тема</div><div class="desc">Переключить тему</div></div>
+            <div class="toggle-switch on" id="themeToggle"><div class="thumb"></div></div>
+          </div>
+
+          <div class="setting-row">
+            <div class="left"><div class="title">📍 Геолокация</div><div class="desc">Показывать друзьям</div></div>
+            <div class="toggle-switch on" id="locationToggle"><div class="thumb"></div></div>
+          </div>
+
+          <div class="setting-row">
+            <div class="left"><div class="title">🟢 Онлайн-статус</div><div class="desc">Показывать друзьям</div></div>
+            <div class="toggle-switch on" id="onlineToggle"><div class="thumb"></div></div>
+          </div>
+
+          <div class="setting-row">
+            <div class="left"><div class="title">🔔 Уведомления</div><div class="desc">Входящие уведомления</div></div>
+            <div class="toggle-switch on" id="notifToggle"><div class="thumb"></div></div>
+          </div>
+
+          <div class="setting-row">
+            <div class="left"><div class="title">📡 Частота обновления GPS</div><div class="desc">Секунд между обновлениями</div></div>
+            <select id="gpsInterval" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;padding:6px 10px;font-size:13px;">
+              <option value="2">2 сек</option>
+              <option value="5" selected>5 сек</option>
+              <option value="10">10 сек</option>
+              <option value="30">30 сек</option>
+              <option value="60">60 сек</option>
+            </select>
+          </div>
+
+          <button class="btn-sm danger" id="logoutBtn" style="width:100%;padding:12px;margin-top:8px;">🚪 Выйти</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📍 Сохранённые места</div>
+          <div id="savedPlacesList"></div>
+        </div>
+      </div>
     </div>
 
-    <nav class="bottom">
-      <button class="navbtn active" data-page="map"><span class="navicon">🗺️</span><span class="navtext">Карта</span></button>
-      <button class="navbtn" data-page="friends"><span class="navicon">👥</span><span class="navtext">Друзья</span><span id="requestBadge" class="badge hidden">0</span></button>
-      <button class="navbtn" data-page="chats"><span class="navicon">💬</span><span class="navtext">Чаты</span><span id="chatBadge" class="badge hidden">0</span></button>
-      <button class="navbtn" data-page="profile"><span class="navicon">👤</span><span class="navtext">Профиль</span></button>
-      <button class="navbtn" data-page="settings"><span class="navicon">⚙️</span><span class="navtext">Настройки</span></button>
-      <button class="navbtn" data-page="more"><span class="navicon">➕</span><span class="navtext">Ещё</span></button>
-    </nav>
-
-    <div id="panel" class="panel hidden"><div id="sheet" class="sheet"></div></div>
-    <div id="toast" class="toast hidden"></div>
+    <!-- Bottom Nav -->
+    <div id="bottomNav">
+      <button class="nav-btn active" data-page="pageMap"><span class="icon">🗺️</span><span class="label">Карта</span></button>
+      <button class="nav-btn" data-page="pageFriends"><span class="icon">👥</span><span class="label">Друзья</span><span class="badge hidden" id="friendBadge">0</span></button>
+      <button class="nav-btn" data-page="pageChats"><span class="icon">💬</span><span class="label">Чаты</span><span class="badge hidden" id="chatBadge">0</span></button>
+      <button class="nav-btn" data-page="pageProfile"><span class="icon">👤</span><span class="label">Профиль</span></button>
+      <button class="nav-btn" data-page="pageSettings"><span class="icon">⚙️</span><span class="label">Настройки</span></button>
+    </div>
   </div>
 
-  <div id="reactionOverlay"></div>
-
-  <div id="auth" class="auth">
-    <div class="authbox">
-      <div class="logo">LINK</div>
-      <div class="subtitle">Друзья рядом. Карта. Чаты. Голосовые сообщения.</div>
-      <button id="startBtn" class="btn full">Начать</button>
-      <div id="authStatus" class="auth-status">Подключаем Firebase…</div>
-      <div class="note">Аккаунт создаётся автоматически.</div>
+  <!-- ===== CHAT VIEW ===== -->
+  <div id="chatView">
+    <div class="chat-header">
+      <button class="back-btn" id="chatBackBtn">‹</button>
+      <img class="chat-avatar" id="chatAvatar" src="" alt="">
+      <div style="flex:1;min-width:0;">
+        <div class="chat-name" id="chatName">Имя</div>
+        <div class="chat-status" id="chatStatus">В сети</div>
+      </div>
+      <button class="btn-sm ghost" id="chatReactionBtn" style="font-size:20px;">💜</button>
+    </div>
+    <div class="messages-container" id="messagesContainer"></div>
+    <div class="chat-input-area">
+      <button class="voice-btn" id="voiceRecordBtn">🎤</button>
+      <input type="text" id="chatInput" placeholder="Сообщение..." maxlength="1000">
+      <button class="send-btn" id="chatSendBtn">↑</button>
     </div>
   </div>
 
+  <!-- ===== TOAST ===== -->
+  <div id="toast"></div>
+
+  <!-- ===== MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="bottom-sheet" id="modalSheet">
+      <div class="handle"></div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ===== FIREBASE ===== -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js"
+      }
+    }
+  </script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    // ============================================================
+    // FIREBASE CONFIG (СОХРАНЯЮ ИЗ СТАРОГО КОДА)
+    // ============================================================
+    import { initializeApp } from 'firebase/app';
+    import { 
+      getAuth, 
+      signInAnonymously, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      updateProfile
+    } from 'firebase/auth';
+    import { 
+      getDatabase, 
+      ref, 
+      set, 
+      get, 
+      update, 
+      remove, 
+      push, 
+      onValue,
+      onDisconnect,
+      serverTimestamp
+    } from 'firebase/database';
 
     const firebaseConfig = {
       apiKey: "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
@@ -1099,40 +1416,50 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
-    const $ = id => document.getElementById(id);
 
-    // ===== VARIABLES =====
-    let user = null;
-    let profile = null;
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const $ = (id) => document.getElementById(id);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    const pages = {
+      map: $('pageMap'),
+      friends: $('pageFriends'),
+      chats: $('pageChats'),
+      profile: $('pageProfile'),
+      settings: $('pageSettings')
+    };
+
+    const navBtns = $$('.nav-btn');
+    const statusDot = $('statusDot');
+    const statusText = $('statusText');
+    const toastEl = $('toast');
+    let toastTimer = null;
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let currentUser = null;
+    let currentProfile = null;
+    let allFriends = {};
+    let incomingRequests = {};
+    let chatMeta = {};
+    let currentChatId = null;
+    let currentChatFriendId = null;
+
+    // Map
     let map = null;
     let meMarker = null;
     let friendMarkers = new Map();
     let friendLocationListeners = new Map();
-    let friends = {};
-    let incomingRequests = {};
-    let incomingReactions = {};
-    let chatMeta = {};
-    let chatUnsubscribers = new Map();
     let watchId = null;
-    let lastPosition = null;
-    let locationSharing = true;
-    let currentPage = "map";
-    let profileUnsubscribe = null;
-    let friendsUnsubscribe = null;
-    let requestsUnsubscribe = null;
-    let reactionsUnsubscribe = null;
-    let chatsUnsubscribe = null;
-    let selectedReaction = "❤️";
-    let currentChatFriendId = null;
-    let currentChatId = null;
-    let typingTimer = null;
-    let typingStopTimer = null;
-    let isDarkTheme = true;
-    let storiesUnsubscribe = null;
-    let hideOnlineSettings = {};
-    let currentFont = 'default';
+    let lastLocation = null;
+    let locationEnabled = true;
+    let onlineVisible = true;
+    let notifEnabled = true;
 
-    // ===== VOICE RECORDING =====
+    // Voice
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
@@ -1141,94 +1468,1439 @@
     let recordingStartTime = 0;
     let stream = null;
 
-    const REACTIONS = ["❤️", "🔥", "😂", "🎉", "😱", "⚡", "👋", "😎", "💀", "🥳", "💯", "✨"];
-    const STICKERS = ["😊", "😂", "🥰", "😍", "🤩", "😎", "🤔", "😏", "😅", "🤗", "😇", "🤪", "🥳", "😭", "😤", "🤯"];
-    const FONTS = ['default', 'comic', 'serif', 'mono', 'emoji', 'bold', 'italic', 'underline', 'strike'];
-    const ANIMATIONS = ['none', 'pulse', 'wave', 'bounce'];
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(text, duration = 2200) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), duration);
+    }
 
-    // ===== MAP =====
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+    function navigateTo(pageId) {
+      Object.values(pages).forEach(p => p.classList.remove('active'));
+      const page = document.getElementById(pageId);
+      if (page) page.classList.add('active');
+      
+      navBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === pageId);
+      });
+
+      if (pageId === 'pageMap' && map) {
+        setTimeout(() => map.invalidateSize(), 100);
+      }
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigateTo(btn.dataset.page);
+        if (btn.dataset.page === 'pageFriends') renderFriends();
+        if (btn.dataset.page === 'pageChats') renderChats();
+        if (btn.dataset.page === 'pageProfile') renderProfile();
+      });
+    });
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    const authScreen = $('authScreen');
+    const authForm = $('authForm');
+    const authEmail = $('authEmail');
+    const authPassword = $('authPassword');
+    const authSubmitBtn = $('authSubmitBtn');
+    const authError = $('authError');
+    const authSwitchText = $('authSwitchText');
+    const authSwitchLink = $('authSwitchLink');
+    const authAnonBtn = $('authAnonBtn');
+    let isLoginMode = true;
+
+    authSwitchLink.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      authSubmitBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+      authSwitchText.textContent = isLoginMode ? 'Нет аккаунта?' : 'Уже есть аккаунт?';
+      authSwitchLink.textContent = isLoginMode ? 'Зарегистрироваться' : 'Войти';
+      authError.textContent = '';
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authError.textContent = '';
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.textContent = '⏳';
+
+      try {
+        const email = authEmail.value.trim();
+        const password = authPassword.value;
+
+        if (isLoginMode) {
+          await signInWithEmailAndPassword(auth, email, password);
+        } else {
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          await createUserProfile(cred.user);
+        }
+      } catch (err) {
+        authError.textContent = err.message || 'Ошибка авторизации';
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+      }
+    });
+
+    authAnonBtn.addEventListener('click', async () => {
+      authError.textContent = '';
+      authAnonBtn.disabled = true;
+      authAnonBtn.textContent = '⏳';
+      try {
+        await signInAnonymously(auth);
+      } catch (err) {
+        authError.textContent = err.message || 'Ошибка анонимного входа';
+      } finally {
+        authAnonBtn.disabled = false;
+        authAnonBtn.textContent = 'Войти анонимно';
+      }
+    });
+
+    async function createUserProfile(user) {
+      const profileRef = ref(db, `profiles/${user.uid}`);
+      const snap = await get(profileRef);
+      if (!snap.exists()) {
+        const code = await createFriendCode();
+        const displayName = `LINK${Math.floor(100 + Math.random() * 900)}`;
+        await set(profileRef, {
+          name: displayName,
+          friendCode: code,
+          avatar: '',
+          locationSharing: true,
+          online: true,
+          onlineVisible: true,
+          createdAt: Date.now(),
+          lastSeen: Date.now()
+        });
+        await set(ref(db, `friendCodes/${code}`), user.uid);
+        if (user.displayName) {
+          await update(profileRef, { name: user.displayName });
+        }
+      }
+    }
+
+    async function createFriendCode() {
+      for (let i = 0; i < 30; i++) {
+        const code = String(Math.floor(1000 + Math.random() * 9000));
+        const snap = await get(ref(db, `friendCodes/${code}`));
+        if (!snap.exists()) return code;
+      }
+      return String(Math.floor(1000 + Math.random() * 9000));
+    }
+
+    // ============================================================
+    // AUTH STATE
+    // ============================================================
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        authScreen.classList.add('hidden');
+        await loadUserProfile();
+        initApp();
+      } else {
+        authScreen.classList.remove('hidden');
+        cleanupApp();
+      }
+    });
+
+    // ============================================================
+    // USER PROFILE
+    // ============================================================
+    async function loadUserProfile() {
+      if (!currentUser) return;
+      const snap = await get(ref(db, `profiles/${currentUser.uid}`));
+      if (snap.exists()) {
+        currentProfile = snap.val();
+        if (!currentProfile.name) {
+          const name = `LINK${Math.floor(100 + Math.random() * 900)}`;
+          await update(ref(db, `profiles/${currentUser.uid}`), { name });
+          currentProfile.name = name;
+        }
+      } else {
+        await createUserProfile(currentUser);
+        const snap2 = await get(ref(db, `profiles/${currentUser.uid}`));
+        currentProfile = snap2.val();
+      }
+    }
+
+    // ============================================================
+    // STATUS
+    // ============================================================
+    function updateStatus(online) {
+      statusDot.className = 'status-dot ' + (online ? 'online' : 'offline');
+      statusText.textContent = online ? 'В сети' : 'Не в сети';
+    }
+
+    // ============================================================
+    // INIT APP
+    // ============================================================
+    function initApp() {
+      updateStatus(true);
+      initMap();
+      startLocationTracking();
+      subscribeFriends();
+      subscribeRequests();
+      subscribeChats();
+      subscribeOnlineStatus();
+      subscribeReactions();
+      updateUI();
+      renderSavedPlaces();
+    }
+
+    function cleanupApp() {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      if (meMarker && map) {
+        map.removeLayer(meMarker);
+        meMarker = null;
+      }
+      friendMarkers.forEach(m => { if (map) map.removeLayer(m); });
+      friendMarkers.clear();
+      if (currentUser) {
+        update(ref(db, `profiles/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
+      }
+    }
+
+    // ============================================================
+    // ONLINE STATUS (с onDisconnect)
+    // ============================================================
+    function subscribeOnlineStatus() {
+      if (!currentUser) return;
+      const statusRef = ref(db, `profiles/${currentUser.uid}`);
+      onDisconnect(statusRef).update({ online: false, lastSeen: Date.now() });
+      
+      setInterval(() => {
+        if (currentUser) {
+          update(statusRef, { 
+            online: true, 
+            lastSeen: Date.now(),
+            onlineVisible: onlineVisible
+          });
+        }
+      }, 30000);
+    }
+
+    // ============================================================
+    // MAP
+    // ============================================================
     function initMap() {
-      map = L.map("map", { zoomControl: true }).setView([20, 0], 2);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      map = L.map('map', {
+        zoomControl: false,
+        attributionControl: true
+      }).setView([55.7558, 37.6173], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: "© OpenStreetMap contributors"
+        attribution: '© OpenStreetMap'
       }).addTo(map);
+
+      L.control.zoom({ position: 'topright' }).addTo(map);
+
+      $('centerMapBtn').addEventListener('click', () => {
+        if (lastLocation) {
+          map.setView([lastLocation.lat, lastLocation.lng], 17);
+        } else {
+          showToast('Геолокация не определена');
+        }
+      });
+
+      $('toggleLocationBtn').addEventListener('click', () => {
+        locationEnabled = !locationEnabled;
+        if (locationEnabled) {
+          startLocationTracking();
+        } else {
+          stopLocationTracking();
+        }
+        updateLocationToggleUI();
+        if (currentUser) {
+          update(ref(db, `profiles/${currentUser.uid}`), { locationSharing: locationEnabled });
+        }
+        showToast(locationEnabled ? '📍 Геолокация включена' : '📍 Геолокация выключена');
+      });
+
+      $('savePlaceBtn').addEventListener('click', () => {
+        if (!lastLocation) {
+          showToast('Сначала определите геолокацию');
+          return;
+        }
+        const name = prompt('Название места:');
+        if (name && name.trim()) {
+          savePlace(name.trim(), lastLocation.lat, lastLocation.lng);
+        }
+      });
     }
 
-    // ===== HELPERS =====
-    function escapeHtml(s) {
-      return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[c]));
+    function updateLocationToggleUI() {
+      const btn = $('toggleLocationBtn');
+      btn.style.opacity = locationEnabled ? '1' : '0.4';
     }
 
-    function defaultAvatar(name = "") {
-      const letter = String(name || "?").trim().slice(0, 1).toUpperCase() || "?";
-      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="#242424"/><text x="80" y="105" text-anchor="middle" font-family="Arial" font-size="72" fill="white">${letter}</text></svg>`
+    // ============================================================
+    // LOCATION TRACKING (РЕАЛЬНОЕ ВРЕМЯ)
+    // ============================================================
+    function startLocationTracking() {
+      if (!navigator.geolocation) {
+        showToast('Геолокация не поддерживается');
+        return;
+      }
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+
+      const interval = parseInt($('gpsInterval')?.value || '5') * 1000;
+
+      watchId = navigator.geolocation.watchPosition(
+        async (pos) => {
+          const loc = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy || 0,
+            speed: pos.coords.speed || 0,
+            altitude: pos.coords.altitude || 0,
+            updatedAt: Date.now()
+          };
+          lastLocation = loc;
+
+          // Обновляем отображение координат
+          updateLocationDisplay(loc);
+
+          // Обновляем маркер с плавной анимацией
+          updateMyMarker(loc);
+
+          // Отправляем в Firebase
+          if (currentUser && locationEnabled) {
+            await set(ref(db, `locations/${currentUser.uid}`), loc);
+          }
+        },
+        (err) => {
+          console.warn('GPS error:', err.message);
+          if (err.code === 1) {
+            showToast('Разрешите доступ к геолокации');
+          }
+          $('coordsDisplay').textContent = 'GPS: ошибка';
+          $('accuracyDisplay').textContent = `Ошибка: ${err.message}`;
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 2000,
+          timeout: 10000
+        }
       );
     }
 
-    function avatarUrl(p) {
-      return p?.avatar || defaultAvatar(p?.name || "?");
+    function updateLocationDisplay(loc) {
+      const coordsEl = $('coordsDisplay');
+      const accEl = $('accuracyDisplay');
+      
+      coordsEl.textContent = `${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}`;
+      
+      let accText = `Точность: ${loc.accuracy.toFixed(0)}м`;
+      if (loc.speed > 0) {
+        accText += ` | Скорость: ${(loc.speed * 3.6).toFixed(1)} км/ч`;
+      }
+      if (loc.altitude > 0) {
+        accText += ` | Высота: ${loc.altitude.toFixed(0)}м`;
+      }
+      accText += ` | ${new Date(loc.updatedAt).toLocaleTimeString()}`;
+      accEl.textContent = accText;
     }
 
-    function setStatus(text, live = false) {
-      $("statusText").textContent = text;
-      $("statusDot").classList.toggle("live", !!live);
+    function stopLocationTracking() {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      if (currentUser) {
+        remove(ref(db, `locations/${currentUser.uid}`));
+      }
+      if (meMarker && map) {
+        map.removeLayer(meMarker);
+        meMarker = null;
+      }
+      $('coordsDisplay').textContent = 'Геолокация выключена';
+      $('accuracyDisplay').textContent = '---';
     }
 
-    function toast(text) {
-      $("toast").textContent = text;
-      $("toast").classList.remove("hidden");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => $("toast").classList.add("hidden"), 2800);
+    // ============================================================
+    // MY MARKER (ПЛАВНАЯ АНИМАЦИЯ)
+    // ============================================================
+    function updateMyMarker(loc) {
+      if (!map) return;
+      const pos = [loc.lat, loc.lng];
+      
+      if (!meMarker) {
+        meMarker = L.marker(pos, {
+          icon: createMarkerIcon(currentProfile, true),
+          zIndexOffset: 1000
+        }).addTo(map);
+        meMarker.bindPopup('<b>Вы</b>');
+      } else {
+        // Плавное перемещение
+        meMarker.setLatLng(pos);
+        meMarker.setIcon(createMarkerIcon(currentProfile, true));
+      }
     }
 
-    function openPanel(html) {
-      $("sheet").innerHTML = `<div class="handle"></div>${html}`;
-      $("panel").classList.remove("hidden");
+    function createMarkerIcon(profile, isMe = false) {
+      const avatar = profile?.avatar || defaultAvatar(profile?.name || '?');
+      return L.divIcon({
+        className: 'custom-marker',
+        html: `
+          <div class="marker-content">
+            ${isMe ? '<div class="pulse me-pulse"></div>' : ''}
+            <img src="${avatar}" alt="">
+          </div>
+        `,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+        popupAnchor: [0, -22]
+      });
     }
 
-    function closePanel() { $("panel").classList.add("hidden"); }
-    window.closePanel = closePanel;
-    $("panel").onclick = e => { if (e.target === $("panel")) closePanel(); };
-
-    function formatTime(timestamp) {
-      if (!timestamp) return "";
-      try { return new Date(timestamp).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; }
+    function defaultAvatar(name) {
+      const letter = (name || '?')[0].toUpperCase();
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+          <rect width="80" height="80" fill="#2a2a2a" rx="40"/>
+          <text x="40" y="52" text-anchor="middle" font-family="Arial" font-size="36" fill="white">${letter}</text>
+        </svg>
+      `)}`;
     }
 
-    function formatDuration(seconds) {
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      return m > 0 ? `${m}:${s.toString().padStart(2, "0")}` : `${s}s`;
+    // ============================================================
+    // FRIEND MARKERS (С ПЛАВНЫМ ДВИЖЕНИЕМ)
+    // ============================================================
+    function updateFriendMarker(uid, profile, location) {
+      if (!map) return;
+      const pos = [location.lat, location.lng];
+      
+      if (friendMarkers.has(uid)) {
+        const marker = friendMarkers.get(uid);
+        marker.setLatLng(pos);
+        marker.setIcon(createMarkerIcon(profile));
+      } else {
+        const marker = L.marker(pos, {
+          icon: createMarkerIcon(profile),
+          zIndexOffset: 500
+        }).addTo(map);
+        marker.bindPopup(`<b>${profile?.name || 'Друг'}</b>`);
+        friendMarkers.set(uid, marker);
+      }
     }
 
-    function friendlyError(error) {
-      const code = error?.code || "";
-      if (code.includes("auth/operation-not-allowed")) return "В Firebase не включён Anonymous Authentication.";
-      if (code.includes("permission-denied")) return "Firebase отклонил доступ. Проверь Database Rules.";
-      if (code.includes("network-request-failed")) return "Нет подключения к интернету.";
-      return error?.message || "Неизвестная ошибка";
+    function removeFriendMarker(uid) {
+      if (friendMarkers.has(uid)) {
+        const marker = friendMarkers.get(uid);
+        if (map) map.removeLayer(marker);
+        friendMarkers.delete(uid);
+        if (friendLocationListeners.has(uid)) {
+          friendLocationListeners.get(uid)();
+          friendLocationListeners.delete(uid);
+        }
+      }
     }
 
-    function getChatId(uid1, uid2) {
-      return [uid1, uid2].sort().join("_");
+    // ============================================================
+    // SAVED PLACES
+    // ============================================================
+    async function savePlace(name, lat, lng) {
+      if (!currentUser) return;
+      const placeRef = push(ref(db, `places/${currentUser.uid}`));
+      await set(placeRef, {
+        name: name,
+        lat: lat,
+        lng: lng,
+        createdAt: Date.now()
+      });
+      showToast(`⭐ "${name}" сохранено`);
+      renderSavedPlaces();
     }
 
-    function compressImage(file, maxSize = 256, quality = .78) {
+    function renderSavedPlaces() {
+      const container = $('savedPlacesList');
+      if (!currentUser) {
+        container.innerHTML = '<div class="empty-state"><div class="desc">Войдите чтобы сохранять места</div></div>';
+        return;
+      }
+
+      onValue(ref(db, `places/${currentUser.uid}`), (snap) => {
+        const data = snap.val() || {};
+        const entries = Object.entries(data);
+        if (!entries.length) {
+          container.innerHTML = '<div class="empty-state"><div class="desc">Нет сохранённых мест</div></div>';
+          return;
+        }
+        container.innerHTML = entries.map(([id, place]) => `
+          <div class="friend-item" style="cursor:pointer;">
+            <div class="info">
+              <div class="name">⭐ ${escapeHtml(place.name)}</div>
+              <div class="sub">${place.lat.toFixed(5)}, ${place.lng.toFixed(5)}</div>
+            </div>
+            <div class="actions">
+              <button class="btn-sm ghost" data-place-id="${id}" data-lat="${place.lat}" data-lng="${place.lng}">📍</button>
+              <button class="btn-sm danger" data-place-id="${id}">✕</button>
+            </div>
+          </div>
+        `).join('');
+
+        container.querySelectorAll('[data-place-id]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.placeId;
+            const lat = parseFloat(btn.dataset.lat);
+            const lng = parseFloat(btn.dataset.lng);
+            if (!isNaN(lat) && !isNaN(lng) && map) {
+              map.setView([lat, lng], 16);
+              navigateTo('pageMap');
+            }
+          });
+        });
+
+        container.querySelectorAll('.btn-sm.danger[data-place-id]').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.placeId;
+            if (confirm('Удалить место?')) {
+              await remove(ref(db, `places/${currentUser.uid}/${id}`));
+              showToast('Место удалено');
+            }
+          });
+        });
+      });
+    }
+
+    // ============================================================
+    // FRIENDS SYSTEM
+    // ============================================================
+    function subscribeFriends() {
+      if (!currentUser) return;
+      onValue(ref(db, `friends/${currentUser.uid}`), async (snap) => {
+        const data = snap.val() || {};
+        allFriends = {};
+        for (const [uid, val] of Object.entries(data)) {
+          const profileSnap = await get(ref(db, `profiles/${uid}`));
+          if (profileSnap.exists()) {
+            allFriends[uid] = profileSnap.val();
+          }
+        }
+        renderFriends();
+        renderChats();
+        updateBadges();
+        subscribeFriendLocations();
+      });
+    }
+
+    function subscribeFriendLocations() {
+      // Очищаем старые подписки
+      for (const [uid, unsub] of friendLocationListeners) {
+        if (!allFriends[uid]) {
+          unsub();
+          friendLocationListeners.delete(uid);
+          removeFriendMarker(uid);
+        }
+      }
+
+      for (const uid of Object.keys(allFriends)) {
+        if (friendLocationListeners.has(uid)) continue;
+        
+        const unsub = onValue(ref(db, `locations/${uid}`), (snap) => {
+          const loc = snap.val();
+          if (loc && allFriends[uid]) {
+            updateFriendMarker(uid, allFriends[uid], loc);
+          } else {
+            removeFriendMarker(uid);
+          }
+        });
+        friendLocationListeners.set(uid, unsub);
+      }
+    }
+
+    function subscribeRequests() {
+      if (!currentUser) return;
+      onValue(ref(db, `friendRequests/${currentUser.uid}`), (snap) => {
+        incomingRequests = snap.val() || {};
+        renderFriends();
+        updateBadges();
+      });
+    }
+
+    function renderFriends() {
+      const list = $('friendsList');
+      const requestsSection = $('friendRequestsSection');
+      const requestsList = $('friendRequestsList');
+
+      // Requests
+      const reqEntries = Object.entries(incomingRequests);
+      if (reqEntries.length) {
+        requestsSection.style.display = 'block';
+        requestsList.innerHTML = reqEntries.map(([uid, req]) => `
+          <div class="request-item">
+            <img class="avatar" src="${req.profile?.avatar || defaultAvatar(req.profile?.name || 'Пользователь')}" alt="">
+            <div class="info">
+              <div class="name">${escapeHtml(req.profile?.name || 'Пользователь')}</div>
+              <div class="sub">Хочет добавить в друзья</div>
+            </div>
+            <div class="actions">
+              <button class="btn-sm green" data-uid="${uid}">✓</button>
+              <button class="btn-sm danger" data-uid="${uid}">✕</button>
+            </div>
+          </div>
+        `).join('');
+
+        requestsList.querySelectorAll('.btn-sm.green').forEach(btn => {
+          btn.addEventListener('click', () => acceptRequest(btn.dataset.uid));
+        });
+        requestsList.querySelectorAll('.btn-sm.danger').forEach(btn => {
+          btn.addEventListener('click', () => rejectRequest(btn.dataset.uid));
+        });
+      } else {
+        requestsSection.style.display = 'none';
+      }
+
+      // Friends
+      const friendEntries = Object.entries(allFriends);
+      if (!friendEntries.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">👥</div>
+            <div class="title">Нет друзей</div>
+            <div class="desc">Добавьте друзей по UID или примите заявку</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = friendEntries.map(([uid, profile]) => {
+        const isOnline = profile.online && (profile.onlineVisible !== false);
+        return `
+          <div class="friend-item" data-uid="${uid}">
+            <img class="avatar ${isOnline ? 'online' : ''}" src="${profile?.avatar || defaultAvatar(profile?.name || '?')}" alt="">
+            <div class="info">
+              <div class="name">${escapeHtml(profile?.name || 'Друг')}</div>
+              <div class="sub">
+                <span class="online-dot ${isOnline ? 'online' : ''}"></span>
+                ${isOnline ? 'В сети' : 'Не в сети'}
+                ${profile.lastSeen ? ` • ${new Date(profile.lastSeen).toLocaleTimeString()}` : ''}
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn-sm primary chat-btn" data-uid="${uid}">💬</button>
+              <button class="btn-sm secondary location-btn" data-uid="${uid}">📍</button>
+              <button class="btn-sm ghost reaction-btn" data-uid="${uid}">💜</button>
+              <button class="btn-sm danger remove-btn" data-uid="${uid}">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Chat button
+      list.querySelectorAll('.chat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uid = btn.dataset.uid;
+          if (allFriends[uid]) {
+            openChat(uid);
+          }
+        });
+      });
+
+      // Location button
+      list.querySelectorAll('.location-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uid = btn.dataset.uid;
+          get(ref(db, `locations/${uid}`)).then(snap => {
+            const loc = snap.val();
+            if (loc && map) {
+              map.setView([loc.lat, loc.lng], 15);
+              navigateTo('pageMap');
+            } else {
+              showToast('Локация друга недоступна');
+            }
+          });
+        });
+      });
+
+      // Reaction button
+      list.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uid = btn.dataset.uid;
+          openReactionPicker(uid);
+        });
+      });
+
+      // Remove button
+      list.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const uid = btn.dataset.uid;
+          if (confirm('Удалить друга?')) {
+            await remove(ref(db, `friends/${currentUser.uid}/${uid}`));
+            await remove(ref(db, `friends/${uid}/${currentUser.uid}`));
+            showToast('Друг удалён');
+          }
+        });
+      });
+
+      // Click on friend -> view profile
+      list.querySelectorAll('.friend-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const uid = item.dataset.uid;
+          if (allFriends[uid]) {
+            showFriendProfile(uid);
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // REACTIONS (ОТПРАВКА МНОГО МНОГО РЕАКЦИЙ)
+    // ============================================================
+    const REACTIONS_LIST = ['❤️', '🔥', '😂', '🎉', '😱', '⚡', '👋', '😎', '💀', '🥳', '💯', '✨', '💜', '😍'];
+
+    function openReactionPicker(friendUid) {
+      const content = `
+        <div class="sheet-title">💜 Отправить реакцию</div>
+        <div class="reaction-picker">
+          ${REACTIONS_LIST.map(emoji => `
+            <button class="reaction-btn" data-emoji="${emoji}" data-friend="${friendUid}">${emoji}</button>
+          `).join('')}
+        </div>
+        <div style="margin-top:8px;">
+          <label style="color:var(--text-secondary);font-size:12px;">Количество (до 1000)</label>
+          <input type="number" id="reactionCount" value="1" min="1" max="1000" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);">
+        </div>
+        <button class="btn-sm primary" id="sendBigReaction" style="width:100%;padding:12px;margin-top:8px;">💥 Отправить</button>
+      `;
+
+      openModal(content, '');
+
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const emoji = btn.dataset.emoji;
+          const uid = btn.dataset.friend;
+          const count = parseInt(document.getElementById('reactionCount').value) || 1;
+          sendReaction(uid, emoji, Math.min(1000, Math.max(1, count)));
+          closeModal();
+        });
+      });
+
+      document.getElementById('sendBigReaction')?.addEventListener('click', () => {
+        const selected = document.querySelector('.reaction-btn.selected');
+        const uid = selected?.dataset.friend;
+        const emoji = selected?.dataset.emoji;
+        const count = parseInt(document.getElementById('reactionCount').value) || 1;
+        if (uid && emoji) {
+          sendReaction(uid, emoji, Math.min(1000, Math.max(1, count)));
+          closeModal();
+        } else {
+          showToast('Выберите реакцию');
+        }
+      });
+
+      document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.reaction-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+
+    async function sendReaction(friendUid, emoji, count = 1) {
+      if (!currentUser) return;
+      
+      try {
+        // Отправляем несколько реакций подряд для эффекта "много"
+        const reactionRef = push(ref(db, `reactions/${friendUid}`));
+        await set(reactionRef, {
+          emoji: emoji,
+          count: Math.min(1000, count),
+          fromUid: currentUser.uid,
+          fromName: currentProfile?.name || 'Друг',
+          createdAt: Date.now()
+        });
+        
+        showToast(`${emoji} ×${Math.min(1000, count)} отправлено!`);
+      } catch (err) {
+        showToast('Ошибка: ' + err.message);
+      }
+    }
+
+    // Подписка на входящие реакции
+    function subscribeReactions() {
+      if (!currentUser) return;
+      onValue(ref(db, `reactions/${currentUser.uid}`), (snap) => {
+        const data = snap.val() || {};
+        for (const [id, reaction] of Object.entries(data)) {
+          if (reaction._shown) continue;
+          reaction._shown = true;
+          showBigReaction(reaction.emoji || '❤️', reaction.fromName || 'Друг', reaction.count || 1);
+          // Удаляем после показа
+          remove(ref(db, `reactions/${currentUser.uid}/${id}`));
+        }
+      });
+    }
+
+    function showBigReaction(emoji, fromName, count) {
+      const overlay = document.createElement('div');
+      overlay.className = 'big-reaction-overlay';
+      
+      const countText = count > 1 ? ` ×${count}` : '';
+      
+      overlay.innerHTML = `
+        <div style="text-align:center;">
+          <div class="reaction-emoji">${emoji}</div>
+          <div style="color:#fff;font-size:20px;font-weight:700;text-shadow:0 4px 20px rgba(0,0,0,0.8);margin-top:10px;">
+            ${fromName} отправил ${countText}
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      // Вибрация
+      if (navigator.vibrate) {
+        navigator.vibrate(count > 5 ? [80, 40, 100] : [50]);
+      }
+      
+      setTimeout(() => overlay.remove(), 2000);
+    }
+
+    async function acceptRequest(uid) {
+      const req = incomingRequests[uid];
+      if (!req) return;
+      const fromProfile = req.profile || {};
+      const myProfile = { 
+        name: currentProfile?.name || 'Пользователь',
+        avatar: currentProfile?.avatar || ''
+      };
+      
+      await update(ref(db), {
+        [`friends/${currentUser.uid}/${uid}`]: { since: Date.now() },
+        [`friends/${uid}/${currentUser.uid}`]: { since: Date.now() },
+        [`friendRequests/${currentUser.uid}/${uid}`]: null
+      });
+
+      const chatId = [currentUser.uid, uid].sort().join('_');
+      await update(ref(db), {
+        [`chats/${chatId}/participants/${currentUser.uid}`]: true,
+        [`chats/${chatId}/participants/${uid}`]: true
+      });
+
+      showToast('Заявка принята 🎉');
+    }
+
+    async function rejectRequest(uid) {
+      await remove(ref(db, `friendRequests/${currentUser.uid}/${uid}`));
+      showToast('Заявка отклонена');
+    }
+
+    $('addFriendBtn').addEventListener('click', async () => {
+      const input = $('addFriendInput');
+      const uid = input.value.trim();
+      if (!uid) { showToast('Введите UID друга'); return; }
+      if (uid === currentUser.uid) { showToast('Нельзя добавить себя'); return; }
+
+      try {
+        const snap = await get(ref(db, `profiles/${uid}`));
+        if (!snap.exists()) {
+          showToast('Пользователь не найден');
+          return;
+        }
+        const exists = await get(ref(db, `friends/${currentUser.uid}/${uid}`));
+        if (exists.exists()) {
+          showToast('Этот пользователь уже в друзьях');
+          return;
+        }
+
+        const profile = snap.val();
+        await set(ref(db, `friendRequests/${uid}/${currentUser.uid}`), {
+          fromUid: currentUser.uid,
+          createdAt: Date.now(),
+          profile: {
+            name: currentProfile?.name || 'Пользователь',
+            avatar: currentProfile?.avatar || ''
+          }
+        });
+        showToast('Заявка отправлена ✨');
+        input.value = '';
+      } catch (err) {
+        showToast('Ошибка: ' + err.message);
+      }
+    });
+
+    // ============================================================
+    // FRIEND PROFILE VIEW
+    // ============================================================
+    async function showFriendProfile(uid) {
+      const snap = await get(ref(db, `profiles/${uid}`));
+      if (!snap.exists()) return;
+      const p = snap.val();
+
+      const content = `
+        <div style="text-align:center;padding:8px 0;">
+          <img src="${p.avatar || defaultAvatar(p.name || '?')}" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--accent);object-fit:cover;">
+          <div style="font-size:20px;font-weight:700;margin-top:8px;">${escapeHtml(p.name || 'Пользователь')}</div>
+          <div style="color:var(--text-secondary);font-size:13px;">
+            ${p.online && p.onlineVisible !== false ? '🟢 В сети' : '⚫ Не в сети'}
+          </div>
+          <div style="color:var(--text-muted);font-size:12px;margin-top:4px;">UID: ${uid}</div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+            <button class="btn-sm primary" id="profileChatBtn">💬 Написать</button>
+            <button class="btn-sm secondary" id="profileMapBtn">📍 Показать на карте</button>
+            <button class="btn-sm ghost" id="profileReactionBtn">💜 Реакция</button>
+          </div>
+        </div>
+      `;
+
+      openModal(content, 'Профиль друга');
+
+      document.getElementById('profileChatBtn')?.addEventListener('click', () => {
+        closeModal();
+        openChat(uid);
+      });
+
+      document.getElementById('profileMapBtn')?.addEventListener('click', () => {
+        closeModal();
+        get(ref(db, `locations/${uid}`)).then(snap => {
+          const loc = snap.val();
+          if (loc && map) {
+            map.setView([loc.lat, loc.lng], 15);
+            navigateTo('pageMap');
+          } else {
+            showToast('Локация недоступна');
+          }
+        });
+      });
+
+      document.getElementById('profileReactionBtn')?.addEventListener('click', () => {
+        closeModal();
+        openReactionPicker(uid);
+      });
+    }
+
+    // ============================================================
+    // CHATS
+    // ============================================================
+    function subscribeChats() {
+      if (!currentUser) return;
+      onValue(ref(db, `userChats/${currentUser.uid}`), (snap) => {
+        chatMeta = snap.val() || {};
+        renderChats();
+        updateBadges();
+      });
+    }
+
+    function renderChats() {
+      const list = $('chatsList');
+      const entries = Object.entries(chatMeta).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
+
+      if (!entries.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">💬</div>
+            <div class="title">Нет чатов</div>
+            <div class="desc">Начните общение с другом</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = entries.map(([chatId, meta]) => {
+        const uid = meta.friendUid;
+        const profile = allFriends[uid] || {};
+        const unread = meta.unread?.[currentUser.uid] || 0;
+        return `
+          <div class="chat-item" data-chatid="${chatId}" data-uid="${uid}">
+            <img class="avatar" src="${profile.avatar || defaultAvatar(profile.name || '?')}" alt="">
+            <div class="info">
+              <div class="name">${escapeHtml(profile.name || 'Друг')}</div>
+              <div class="chat-last-msg">${escapeHtml(meta.lastText || 'Начните общение')}</div>
+            </div>
+            ${unread ? `<div class="chat-unread">${unread > 99 ? '99+' : unread}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      list.querySelectorAll('.chat-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const uid = item.dataset.uid;
+          if (allFriends[uid]) {
+            openChat(uid);
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // OPEN CHAT
+    // ============================================================
+    function openChat(friendUid) {
+      if (!allFriends[friendUid]) {
+        showToast('Друг не найден');
+        return;
+      }
+
+      currentChatFriendId = friendUid;
+      currentChatId = [currentUser.uid, friendUid].sort().join('_');
+
+      const chatView = $('chatView');
+      const avatar = $('chatAvatar');
+      const name = $('chatName');
+      const status = $('chatStatus');
+
+      const profile = allFriends[friendUid];
+      avatar.src = profile.avatar || defaultAvatar(profile.name || '?');
+      name.textContent = profile.name || 'Друг';
+      status.textContent = profile.online && profile.onlineVisible !== false ? '🟢 В сети' : '⚫ Не в сети';
+
+      chatView.classList.add('open');
+      loadMessages();
+    }
+
+    $('chatBackBtn').addEventListener('click', () => {
+      $('chatView').classList.remove('open');
+      currentChatId = null;
+      currentChatFriendId = null;
+    });
+
+    // ============================================================
+    // MESSAGES
+    // ============================================================
+    function loadMessages() {
+      if (!currentChatId) return;
+      const container = $('messagesContainer');
+      
+      if (window._msgUnsubscribe) {
+        window._msgUnsubscribe();
+        window._msgUnsubscribe = null;
+      }
+
+      window._msgUnsubscribe = onValue(ref(db, `chats/${currentChatId}/messages`), (snap) => {
+        const data = snap.val() || {};
+        renderMessages(data);
+        markChatRead();
+      });
+    }
+
+    function renderMessages(messages) {
+      const container = $('messagesContainer');
+      const entries = Object.entries(messages)
+        .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
+
+      if (!entries.length) {
+        container.innerHTML = `
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:14px;">
+            Начните общение 👋
+          </div>
+        `;
+        return;
+      }
+
+      const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
+
+      container.innerHTML = entries.map(([id, msg]) => {
+        const mine = msg.senderUid === currentUser.uid;
+        const isDeleted = msg.deleted === true;
+        
+        let content = '';
+        if (isDeleted) {
+          content = '<span class="deleted">Сообщение удалено</span>';
+        } else if (msg.type === 'voice') {
+          content = `
+            <div class="voice-msg ${mine ? 'mine' : ''}">
+              <button class="play-btn" data-audio="${escapeHtml(msg.data || '')}">▶</button>
+              <div class="timeline">
+                <div class="progress" style="width:0%"></div>
+              </div>
+              <span class="duration">${formatDuration(msg.duration || 3)}</span>
+            </div>
+          `;
+        } else {
+          content = escapeHtml(msg.text || '');
+        }
+        
+        return `
+          <div class="msg ${mine ? 'mine' : 'theirs'}">
+            ${content}
+            ${!isDeleted && !msg.type ? `<div class="time">${formatTime(msg.createdAt)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      // Voice play buttons
+      container.querySelectorAll('.play-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const data = btn.dataset.audio;
+          if (data) {
+            playVoiceMessage(btn, data);
+          }
+        });
+      });
+
+      // Voice timelines
+      container.querySelectorAll('.timeline').forEach(tl => {
+        tl.addEventListener('click', (e) => {
+          const rect = tl.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const playBtn = tl.parentElement.querySelector('.play-btn');
+          if (playBtn && playBtn._audio) {
+            playBtn._audio.currentTime = x * playBtn._audio.duration;
+          }
+        });
+      });
+
+      if (isAtBottom || entries.length > 0) {
+        setTimeout(() => {
+          container.scrollTop = container.scrollHeight;
+        }, 50);
+      }
+    }
+
+    // ============================================================
+    // VOICE MESSAGES
+    // ============================================================
+    function playVoiceMessage(btn, data) {
+      try {
+        const audioData = data.split(',')[1] || data;
+        const byteCharacters = atob(audioData);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+
+        const audio = new Audio(url);
+        const timeline = btn.parentElement.querySelector('.timeline');
+        const progress = timeline?.querySelector('.progress');
+
+        if (btn._audio && !btn._audio.paused) {
+          btn._audio.pause();
+          btn.textContent = '▶';
+          return;
+        }
+
+        btn._audio = audio;
+        audio.play();
+        btn.textContent = '⏸';
+
+        audio.ontimeupdate = () => {
+          if (progress && audio.duration) {
+            progress.style.width = (audio.currentTime / audio.duration * 100) + '%';
+          }
+        };
+
+        audio.onended = () => {
+          btn.textContent = '▶';
+          if (progress) progress.style.width = '0%';
+        };
+
+        audio.onerror = () => {
+          showToast('Ошибка воспроизведения');
+          btn.textContent = '▶';
+        };
+      } catch (e) {
+        showToast('Ошибка воспроизведения');
+      }
+    }
+
+    // ============================================================
+    // VOICE RECORDING
+    // ============================================================
+    const voiceRecordBtn = $('voiceRecordBtn');
+    let isVoiceRecording = false;
+
+    voiceRecordBtn.addEventListener('click', async () => {
+      if (isVoiceRecording) {
+        stopVoiceRecording();
+        return;
+      }
+      await startVoiceRecording();
+    });
+
+    async function startVoiceRecording() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          if (blob.size > 1000) {
+            const reader = new FileReader();
+            reader.onload = async () => {
+              const base64 = reader.result;
+              await sendVoiceMessage(base64, recordingSeconds);
+            };
+            reader.readAsDataURL(blob);
+          } else {
+            showToast('Запись слишком короткая');
+          }
+          cleanupRecording();
+        };
+
+        mediaRecorder.start(100);
+        isVoiceRecording = true;
+        recordingSeconds = 0;
+        recordingStartTime = Date.now();
+
+        voiceRecordBtn.classList.add('recording');
+        voiceRecordBtn.textContent = '⏹️';
+
+        recordingTimer = setInterval(() => {
+          recordingSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+          if (recordingSeconds >= 60) {
+            showToast('Максимум 60 секунд');
+            stopVoiceRecording();
+          }
+        }, 200);
+
+        showToast('🎤 Запись...');
+      } catch (e) {
+        showToast('Нет доступа к микрофону');
+      }
+    }
+
+    function stopVoiceRecording() {
+      if (mediaRecorder && isVoiceRecording) {
+        mediaRecorder.stop();
+      }
+      cleanupRecording();
+    }
+
+    function cleanupRecording() {
+      isVoiceRecording = false;
+      clearInterval(recordingTimer);
+      voiceRecordBtn.classList.remove('recording');
+      voiceRecordBtn.textContent = '🎤';
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
+
+    async function sendVoiceMessage(base64, duration) {
+      if (!currentChatId || !currentUser) return;
+      const msgRef = push(ref(db, `chats/${currentChatId}/messages`));
+      await set(msgRef, {
+        senderUid: currentUser.uid,
+        type: 'voice',
+        data: base64,
+        duration: duration || 3,
+        createdAt: Date.now()
+      });
+
+      const friendUid = currentChatFriendId;
+      const friendProfile = allFriends[friendUid] || {};
+      const myProfile = { 
+        name: currentProfile?.name || 'Пользователь',
+        avatar: currentProfile?.avatar || ''
+      };
+
+      const oldUnread = chatMeta[currentChatId]?.unread?.[friendUid] || 0;
+
+      await update(ref(db), {
+        [`userChats/${currentUser.uid}/${currentChatId}`]: {
+          friendUid: friendUid,
+          friendProfile: friendProfile,
+          lastText: '🎤 Голосовое сообщение',
+          updatedAt: Date.now(),
+          [`unread/${currentUser.uid}`]: 0
+        },
+        [`userChats/${friendUid}/${currentChatId}`]: {
+          friendUid: currentUser.uid,
+          friendProfile: myProfile,
+          lastText: '🎤 Голосовое сообщение',
+          updatedAt: Date.now(),
+          [`unread/${friendUid}`]: oldUnread + 1
+        }
+      });
+
+      showToast('Голосовое отправлено');
+    }
+
+    // ============================================================
+    // SEND MESSAGE
+    // ============================================================
+    $('chatSendBtn').addEventListener('click', sendMessage);
+    $('chatInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
+      const input = $('chatInput');
+      const text = input.value.trim();
+      if (!text || !currentChatId || !currentUser) return;
+
+      input.value = '';
+
+      const msgRef = push(ref(db, `chats/${currentChatId}/messages`));
+      await set(msgRef, {
+        senderUid: currentUser.uid,
+        text: text,
+        createdAt: Date.now()
+      });
+
+      const friendUid = currentChatFriendId;
+      const friendProfile = allFriends[friendUid] || {};
+      const myProfile = { 
+        name: currentProfile?.name || 'Пользователь',
+        avatar: currentProfile?.avatar || ''
+      };
+
+      const oldUnread = chatMeta[currentChatId]?.unread?.[friendUid] || 0;
+
+      await update(ref(db), {
+        [`userChats/${currentUser.uid}/${currentChatId}`]: {
+          friendUid: friendUid,
+          friendProfile: friendProfile,
+          lastText: text,
+          updatedAt: Date.now(),
+          [`unread/${currentUser.uid}`]: 0
+        },
+        [`userChats/${friendUid}/${currentChatId}`]: {
+          friendUid: currentUser.uid,
+          friendProfile: myProfile,
+          lastText: text,
+          updatedAt: Date.now(),
+          [`unread/${friendUid}`]: oldUnread + 1
+        }
+      });
+    }
+
+    async function markChatRead() {
+      if (!currentChatId || !currentUser) return;
+      await update(ref(db, `userChats/${currentUser.uid}/${currentChatId}`), {
+        [`unread/${currentUser.uid}`]: 0
+      });
+    }
+
+    // ============================================================
+    // CHAT REACTION BUTTON
+    // ============================================================
+    $('chatReactionBtn').addEventListener('click', () => {
+      if (currentChatFriendId) {
+        openReactionPicker(currentChatFriendId);
+      }
+    });
+
+    // ============================================================
+    // PROFILE
+    // ============================================================
+    function renderProfile() {
+      if (!currentProfile) return;
+      const avatar = $('profileAvatar');
+      const name = $('profileDisplayName');
+      const uid = $('profileUid');
+      const friendCount = $('profileFriendCount');
+      const statFriends = $('statFriends');
+      const statMessages = $('statMessages');
+      const statOnline = $('statOnline');
+
+      avatar.src = currentProfile.avatar || defaultAvatar(currentProfile.name || '?');
+      name.textContent = currentProfile.name || 'Пользователь';
+      uid.textContent = `UID: ${currentUser.uid}`;
+      const friendsCount = Object.keys(allFriends).length;
+      friendCount.textContent = `${friendsCount} друзей`;
+      statFriends.textContent = friendsCount;
+
+      let msgCount = 0;
+      for (const chatId of Object.keys(chatMeta)) {
+        const meta = chatMeta[chatId];
+        if (meta.unread?.[currentUser.uid] !== undefined) {
+          msgCount += meta.unread[currentUser.uid] || 0;
+        }
+      }
+      statMessages.textContent = msgCount + Object.keys(chatMeta).length * 5;
+
+      let onlineCount = 0;
+      for (const [uid, profile] of Object.entries(allFriends)) {
+        if (profile.online && profile.onlineVisible !== false) onlineCount++;
+      }
+      statOnline.textContent = onlineCount;
+    }
+
+    $('editProfileBtn').addEventListener('click', () => {
+      const content = `
+        <div class="field">
+          <label>Имя</label>
+          <input type="text" id="editNameInput" value="${escapeHtml(currentProfile?.name || '')}" maxlength="30">
+        </div>
+        <div class="field">
+          <label>Фото (URL)</label>
+          <input type="text" id="editAvatarInput" value="${escapeHtml(currentProfile?.avatar || '')}" placeholder="Ссылка на фото">
+          <div style="margin-top:8px;">
+            <input type="file" id="editAvatarFile" accept="image/*" style="padding:8px;">
+          </div>
+        </div>
+        <button class="btn-sm primary" id="saveProfileBtn" style="width:100%;padding:12px;">💾 Сохранить</button>
+      `;
+
+      openModal(content, 'Редактировать профиль');
+
+      document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        const name = document.getElementById('editNameInput').value.trim();
+        if (!name) { showToast('Введите имя'); return; }
+
+        const updates = { name };
+
+        const fileInput = document.getElementById('editAvatarFile');
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          try {
+            const dataUrl = await compressImage(file, 256, 0.78);
+            updates.avatar = dataUrl;
+          } catch (err) {
+            showToast('Ошибка загрузки фото');
+            return;
+          }
+        } else {
+          const avatarUrl = document.getElementById('editAvatarInput').value.trim();
+          if (avatarUrl) updates.avatar = avatarUrl;
+        }
+
+        await update(ref(db, `profiles/${currentUser.uid}`), updates);
+        currentProfile = { ...currentProfile, ...updates };
+        renderProfile();
+        closeModal();
+        showToast('Профиль обновлён ✅');
+      });
+    });
+
+    function compressImage(file, maxSize, quality) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
           const img = new Image();
           img.onload = () => {
             const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-            const width = Math.round(img.width * scale);
-            const height = Math.round(img.height * scale);
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL("image/jpeg", quality));
+            const w = Math.round(img.width * scale);
+            const h = Math.round(img.height * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
           };
           img.onerror = reject;
           img.src = reader.result;
@@ -1238,1746 +2910,169 @@
       });
     }
 
-    // ===== NAVIGATION =====
-    document.querySelectorAll(".navbtn").forEach(btn => {
-      btn.onclick = () => openPage(btn.dataset.page);
+    // ============================================================
+    // BADGES
+    // ============================================================
+    function updateBadges() {
+      const reqCount = Object.keys(incomingRequests).length;
+      const friendBadge = $('friendBadge');
+      friendBadge.textContent = reqCount;
+      friendBadge.classList.toggle('hidden', reqCount === 0);
+
+      let unreadCount = 0;
+      for (const meta of Object.values(chatMeta)) {
+        unreadCount += meta.unread?.[currentUser?.uid] || 0;
+      }
+      const chatBadge = $('chatBadge');
+      chatBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+      chatBadge.classList.toggle('hidden', unreadCount === 0);
+    }
+
+    // ============================================================
+    // SETTINGS
+    // ============================================================
+    // Theme
+    const themeToggle = $('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeToggle.classList.toggle('on', !isDark);
+      localStorage.setItem('link_theme', isDark ? 'light' : 'dark');
     });
 
-    function openPage(page) {
-      currentPage = page;
-      document.querySelectorAll(".navbtn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.page === page);
-      });
-      if (page === "map") { closePanel();
-        setTimeout(() => map.invalidateSize(), 100); }
-      if (page === "friends") renderFriends();
-      if (page === "chats") renderChats();
-      if (page === "profile") renderProfile();
-      if (page === "settings") renderSettings();
-      if (page === "more") renderMore();
+    const savedTheme = localStorage.getItem('link_theme');
+    if (savedTheme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      themeToggle.classList.remove('on');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.classList.add('on');
     }
 
-    // ===== MAP MARKERS =====
-    function markerIcon(p, isMe = false) {
-      return L.divIcon({
-        className: isMe ? "user-pin" : "friend-pin",
-        html: `<div class="pin">${isMe ? '<div class="ring"></div>' : ""}<img src="${avatarUrl(p)}"></div>`,
-        iconSize: [48, 48],
-        iconAnchor: [24, 24]
-      });
-    }
-
-    function renderMeMarker() {
-      if (!lastPosition || !profile) return;
-      const pos = [lastPosition.lat, lastPosition.lng];
-      if (!meMarker) {
-        meMarker = L.marker(pos, { icon: markerIcon(profile, true), zIndexOffset: 1000 }).addTo(map);
-        meMarker.bindPopup("<b>Ты</b>");
+    // Location toggle
+    const locationToggle = $('locationToggle');
+    locationToggle.addEventListener('click', () => {
+      locationEnabled = !locationEnabled;
+      locationToggle.classList.toggle('on', locationEnabled);
+      if (locationEnabled) {
+        startLocationTracking();
       } else {
-        meMarker.setLatLng(pos);
-        meMarker.setIcon(markerIcon(profile, true));
+        stopLocationTracking();
       }
-    }
-
-    function upsertFriendMarker(friendId, friendProfile, location) {
-      const lat = Number(location.lat);
-      const lng = Number(location.lng);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-      if (!friendMarkers.has(friendId)) {
-        const marker = L.marker([lat, lng], { icon: markerIcon(friendProfile), zIndexOffset: 500 }).addTo(map);
-        marker.on("click", () => openFriendReactionPanel(friendId));
-        friendMarkers.set(friendId, marker);
-      } else {
-        const marker = friendMarkers.get(friendId);
-        marker.setLatLng([lat, lng]);
-        marker.setIcon(markerIcon(friendProfile));
+      if (currentUser) {
+        update(ref(db, `profiles/${currentUser.uid}`), { locationSharing: locationEnabled });
       }
-    }
+      showToast(locationEnabled ? '📍 Геолокация включена' : '📍 Геолокация выключена');
+    });
 
-    function removeFriendMarker(friendId, unsubscribe = true) {
-      const marker = friendMarkers.get(friendId);
-      if (marker) { map.removeLayer(marker);
-        friendMarkers.delete(friendId); }
-      if (unsubscribe && friendLocationListeners.has(friendId)) {
-        friendLocationListeners.get(friendId)();
-        friendLocationListeners.delete(friendId);
+    // Online toggle (СКРЫТИЕ СТАТУСА)
+    const onlineToggle = $('onlineToggle');
+    onlineToggle.addEventListener('click', () => {
+      onlineVisible = !onlineVisible;
+      onlineToggle.classList.toggle('on', onlineVisible);
+      if (currentUser) {
+        update(ref(db, `profiles/${currentUser.uid}`), { onlineVisible: onlineVisible });
       }
-    }
+      showToast(onlineVisible ? '🟢 Статус виден всем' : '🔴 Статус скрыт от всех');
+    });
 
-    $("centerMeBtn").onclick = () => {
-      if (!lastPosition) { toast("Геолокация ещё не получена."); return; }
-      map.setView([lastPosition.lat, lastPosition.lng], 17);
-    };
+    // Notifications toggle
+    const notifToggle = $('notifToggle');
+    notifToggle.addEventListener('click', () => {
+      notifEnabled = !notifEnabled;
+      notifToggle.classList.toggle('on', notifEnabled);
+      showToast(notifEnabled ? '🔔 Уведомления включены' : '🔕 Уведомления выключены');
+    });
 
-    $("showAllBtn").onclick = () => {
-      const markers = [meMarker, ...friendMarkers.values()].filter(Boolean);
-      if (!markers.length) { toast("Нет активных пользователей."); return; }
-      map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [60, 60] });
-    };
-
-    // ===== AUTH =====
-    $("startBtn").onclick = async () => {
-      $("startBtn").disabled = true;
-      try {
-        $("authStatus").textContent = "Входим в LINK…";
-        await signInAnonymously(auth);
-      } catch (error) {
-        console.error(error);
-        $("authStatus").textContent = "Ошибка: " + friendlyError(error);
-        $("startBtn").disabled = false;
-      }
-    };
-
-    onAuthStateChanged(auth, async firebaseUser => {
-      if (!firebaseUser) return;
-      if (user?.uid === firebaseUser.uid) return;
-      try {
-        user = firebaseUser;
-        $("authStatus").textContent = "Создаём профиль…";
-        await ensureProfile();
-        $("auth").classList.add("hidden");
-        subscribeProfile();
-        subscribeFriends();
-        subscribeIncomingRequests();
-        subscribeIncomingReactions();
-        subscribeChats();
-        subscribeStories();
-        loadHideOnlineSettings();
-
-        if (profile.locationSharing !== false) {
-          locationSharing = true;
-          startLocation();
-        } else {
-          locationSharing = false;
-          setStatus("Геолокация выключена", false);
-        }
-        setStatus("LINK подключён", true);
-      } catch (error) {
-        console.error(error);
-        $("authStatus").textContent = "Ошибка: " + friendlyError(error);
-        $("auth").classList.remove("hidden");
-        $("startBtn").disabled = false;
+    // GPS interval
+    $('gpsInterval').addEventListener('change', () => {
+      if (locationEnabled) {
+        startLocationTracking();
+        showToast('Интервал обновлён');
       }
     });
 
-    // ===== PROFILE =====
-    async function ensureProfile() {
-      const profileRef = ref(db, `profiles/${user.uid}`);
-      const snap = await get(profileRef);
-      if (!snap.exists()) {
-        const code = await createUniqueFriendCode();
-        profile = {
-          name: `LINK ${Math.floor(100 + Math.random() * 900)}`,
-          friendCode: code,
-          avatar: "",
-          locationSharing: true,
-          createdAt: Date.now(),
-          lastActive: Date.now(),
-          avatarAnimation: "none",
-          fontPreference: "default"
-        };
-        await update(ref(db), {
-          [`profiles/${user.uid}`]: profile,
-          [`friendCodes/${code}`]: user.uid
-        });
-      } else {
-        profile = snap.val();
-        if (!profile.friendCode) {
-          const code = await createUniqueFriendCode();
-          await update(ref(db), {
-            [`profiles/${user.uid}/friendCode`]: code,
-            [`friendCodes/${code}`]: user.uid
-          });
-          profile.friendCode = code;
+    // Logout
+    $('logoutBtn').addEventListener('click', async () => {
+      if (confirm('Выйти из аккаунта?')) {
+        if (currentUser) {
+          await update(ref(db, `profiles/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
         }
-        await update(profileRef, { lastActive: Date.now() });
+        await signOut(auth);
+        showToast('Выход выполнен');
       }
-    }
-
-    async function createUniqueFriendCode() {
-      for (let i = 0; i < 30; i++) {
-        const code = String(Math.floor(1000 + Math.random() * 9000));
-        const snap = await get(ref(db, `friendCodes/${code}`));
-        if (!snap.exists()) return code;
-      }
-      throw new Error("Не удалось создать свободный код.");
-    }
-
-    function subscribeProfile() {
-      if (profileUnsubscribe) profileUnsubscribe();
-      profileUnsubscribe = onValue(ref(db, `profiles/${user.uid}`), snap => {
-        if (!snap.exists()) return;
-        profile = snap.val();
-        renderMeMarker();
-        if (currentPage === "profile") renderProfile();
-      });
-    }
-
-    // ===== FRIENDS =====
-    function subscribeFriends() {
-      if (friendsUnsubscribe) friendsUnsubscribe();
-      friendsUnsubscribe = onValue(ref(db, `friends/${user.uid}`), snap => {
-        const next = snap.val() || {};
-        for (const id of Object.keys(friends)) {
-          if (!next[id]) removeFriendMarker(id);
-        }
-        friends = next;
-        Object.keys(friends).forEach(subscribeFriendLocation);
-        if (currentPage === "friends") renderFriends();
-        if (currentPage === "chats") renderChats();
-      });
-    }
-
-    function subscribeFriendLocation(friendId) {
-      if (friendLocationListeners.has(friendId)) return;
-      const unsubscribe = onValue(ref(db, `locations/${friendId}`), async snap => {
-        const location = snap.val();
-        if (!location) { removeFriendMarker(friendId, false); return; }
-        if (Date.now() - location.updatedAt > 5 * 60 * 1000) { removeFriendMarker(friendId, false); return; }
-        const profileSnap = await get(ref(db, `profiles/${friendId}`));
-        if (!profileSnap.exists()) return;
-        upsertFriendMarker(friendId, profileSnap.val(), location);
-      });
-      friendLocationListeners.set(friendId, unsubscribe);
-    }
-
-    // ===== FRIEND REQUESTS =====
-    function subscribeIncomingRequests() {
-      if (requestsUnsubscribe) requestsUnsubscribe();
-      requestsUnsubscribe = onValue(ref(db, `friendRequests/${user.uid}`), snap => {
-        incomingRequests = snap.val() || {};
-        const count = Object.keys(incomingRequests).length;
-        $("requestBadge").textContent = count;
-        $("requestBadge").classList.toggle("hidden", count === 0);
-        if (currentPage === "friends") renderFriends();
-      });
-    }
-
-    function renderFriends() {
-      const requestIds = Object.keys(incomingRequests);
-      const friendIds = Object.keys(friends);
-
-      const requestsHtml = requestIds.length ? `
-        <div class="section-title">Входящие заявки</div>
-        ${requestIds.map(uid => {
-          const p = incomingRequests[uid]?.profile || {};
-          return `<div class="request">
-            <img class="avatar small" src="${avatarUrl(p)}">
-            <div class="grow"><b>${escapeHtml(p.name || "Пользователь")}</b><div class="code">Хочет добавить тебя в друзья</div></div>
-            <button class="btn small" onclick="window.acceptRequest('${uid}')">✓</button>
-            <button class="btn small secondary" onclick="window.rejectRequest('${uid}')">×</button>
-          </div>`;
-        }).join("")}
-      ` : "";
-
-      const friendsHtml = friendIds.length ? `
-        <div class="section-title">Мои друзья</div>
-        ${friendIds.map(uid => {
-          const p = friends[uid]?.profile || {};
-          const online = friendMarkers.has(uid);
-          return `<div class="friend">
-            <img class="avatar small ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(p)}">
-            <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span></div></div>
-            <div class="friend-actions">
-              <button class="btn small" onclick="window.openChat('${uid}')">💬</button>
-              <button class="btn small secondary" onclick="window.openFriendReactionPanel('${uid}')">💜</button>
-              <button class="btn small danger" onclick="window.removeFriend('${uid}')">×</button>
-            </div>
-          </div>`;
-        }).join("")}
-      ` : `<div class="empty">Пока нет друзей.<br>Добавь друга по коду!</div>`;
-
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Друзья</h2>
-        <div class="field">
-          <label>Добавить друга по 4-значному коду</label>
-          <div class="row">
-            <input id="friendCodeInput" maxlength="4" inputmode="numeric" placeholder="1234">
-            <button id="sendRequestBtn" class="btn">Добавить</button>
-          </div>
-        </div>
-        ${requestsHtml}
-        ${friendsHtml}
-      `);
-
-      $("sendRequestBtn").onclick = sendFriendRequest;
-    }
-
-    async function sendFriendRequest() {
-      const code = $("friendCodeInput").value.replace(/\D/g, "").slice(0, 4);
-      if (!/^\d{4}$/.test(code)) { toast("Введи 4 цифры."); return; }
-      const codeSnap = await get(ref(db, `friendCodes/${code}`));
-      if (!codeSnap.exists()) { toast("Пользователь не найден."); return; }
-      const targetUid = codeSnap.val();
-      if (targetUid === user.uid) { toast("Нельзя добавить себя."); return; }
-      const existing = await get(ref(db, `friends/${user.uid}/${targetUid}`));
-      if (existing.exists()) { toast("Этот пользователь уже твой друг."); return; }
-      await set(ref(db, `friendRequests/${targetUid}/${user.uid}`), {
-        fromUid: user.uid,
-        createdAt: Date.now(),
-        profile: { name: profile.name, friendCode: profile.friendCode, avatar: profile.avatar || "" }
-      });
-      toast("Заявка отправлена ✨");
-    }
-
-    window.acceptRequest = async fromUid => {
-      const req = incomingRequests[fromUid];
-      if (!req) return;
-      const fromProfile = req.profile || {};
-      const myProfile = { name: profile.name, friendCode: profile.friendCode, avatar: profile.avatar || "" };
-      const chatId = getChatId(user.uid, fromUid);
-      await update(ref(db), {
-        [`friends/${user.uid}/${fromUid}`]: { since: Date.now(), profile: fromProfile },
-        [`friends/${fromUid}/${user.uid}`]: { since: Date.now(), profile: myProfile },
-        [`friendRequests/${user.uid}/${fromUid}`]: null,
-        [`chats/${chatId}/participants/${user.uid}`]: true,
-        [`chats/${chatId}/participants/${fromUid}`]: true,
-        [`userChats/${user.uid}/${chatId}`]: { friendUid: fromUid, friendProfile: fromProfile, updatedAt: Date.now() },
-        [`userChats/${fromUid}/${chatId}`]: { friendUid: user.uid, friendProfile: myProfile, updatedAt: Date.now() }
-      });
-      toast("Друг добавлен 🎉");
-    };
-
-    window.rejectRequest = async fromUid => {
-      await remove(ref(db, `friendRequests/${user.uid}/${fromUid}`));
-      toast("Заявка отклонена.");
-    };
-
-    window.removeFriend = async friendUid => {
-      if (!confirm("Удалить друга?")) return;
-      await update(ref(db), {
-        [`friends/${user.uid}/${friendUid}`]: null,
-        [`friends/${friendUid}/${user.uid}`]: null
-      });
-      toast("Друг удалён.");
-    };
-
-    // ===== GEOLOCATION =====
-    function startLocation() {
-      if (!navigator.geolocation) { toast("Геолокация не поддерживается."); return; }
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      watchId = navigator.geolocation.watchPosition(
-        async pos => {
-          lastPosition = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-            accuracy: pos.coords.accuracy || 0,
-            updatedAt: Date.now()
-          };
-          renderMeMarker();
-          await set(ref(db, `locations/${user.uid}`), lastPosition);
-          setStatus("Геолокация в реальном времени", true);
-        },
-        error => {
-          if (error.code === 1) setStatus("Разреши геолокацию", false);
-          else setStatus("GPS временно недоступен", false);
-        },
-        { enableHighAccuracy: true, maximumAge: 3000, timeout: 15000 }
-      );
-    }
-
-    // ===== STORIES (НОМЕР 3) =====
-    function subscribeStories() {
-      if (storiesUnsubscribe) storiesUnsubscribe();
-      storiesUnsubscribe = onValue(ref(db, `stories`), snap => {
-        const data = snap.val() || {};
-        if (currentPage === "map") renderStoriesBar(data);
-      });
-    }
-
-    function renderStoriesBar(allStories) {
-      const existing = document.getElementById("storiesBar");
-      if (existing) existing.remove();
-
-      const bar = document.createElement("div");
-      bar.id = "storiesBar";
-      bar.className = "stories-bar";
-      bar.style.cssText = "position:absolute;z-index:900;top:70px;left:12px;right:12px;background:rgba(8,8,8,0.85);border-radius:16px;padding:8px 12px;backdrop-filter:blur(10px);overflow-x:auto;";
-
-      // My story
-      const myStory = document.createElement("div");
-      myStory.className = "story-avatar";
-      myStory.innerHTML = `
-        <img class="avatar small" src="${avatarUrl(profile)}">
-        <div class="add-story">+</div>
-      `;
-      myStory.onclick = () => createStory();
-      bar.appendChild(myStory);
-
-      // Friends stories
-      for (const [uid, stories] of Object.entries(allStories)) {
-        if (uid === user.uid) continue;
-        if (!friends[uid]) continue;
-        const latest = Object.values(stories).sort((a,b) => b.createdAt - a.createdAt)[0];
-        if (!latest) continue;
-        if (Date.now() > latest.expiresAt) continue;
-
-        const storyEl = document.createElement("div");
-        storyEl.className = "story-avatar";
-        const viewed = latest.views && latest.views[user.uid];
-        storyEl.innerHTML = `
-          <img class="avatar small ${viewed ? 'seen' : ''}" src="${avatarUrl(friends[uid]?.profile || {})}">
-        `;
-        storyEl.onclick = () => viewStory(uid, stories);
-        bar.appendChild(storyEl);
-      }
-
-      document.getElementById("app").appendChild(bar);
-    }
-
-    async function createStory() {
-      const type = confirm("Опубликовать фото? (OK - фото, Отмена - текст)");
-      if (type) {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.onchange = async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const data = await compressImage(file, 800, 0.7);
-          const storyRef = push(ref(db, `stories/${user.uid}`));
-          await set(storyRef, {
-            type: "image",
-            data: data,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 86400000,
-            views: {}
-          });
-          toast("История опубликована 📸");
-        };
-        input.click();
-      } else {
-        const text = prompt("Введите текст истории:");
-        if (text && text.trim()) {
-          const storyRef = push(ref(db, `stories/${user.uid}`));
-          await set(storyRef, {
-            type: "text",
-            data: text.trim(),
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 86400000,
-            views: {}
-          });
-          toast("История опубликована ✍️");
-        }
-      }
-    }
-
-    function viewStory(uid, stories) {
-      const storyList = Object.values(stories)
-        .filter(s => Date.now() < s.expiresAt)
-        .sort((a,b) => a.createdAt - b.createdAt);
-      
-      if (!storyList.length) { toast("Нет активных историй"); return; }
-
-      let index = 0;
-      const viewer = document.createElement("div");
-      viewer.className = "story-viewer";
-      
-      function showStory() {
-        const story = storyList[index];
-        if (!story) { viewer.remove(); return; }
-        
-        viewer.innerHTML = `
-          <div class="story-progress"><div class="fill" style="width:0%"></div></div>
-          <button class="story-close" onclick="this.closest('.story-viewer').remove()">✕</button>
-          ${story.type === "image" ? `<img class="story-content" src="${story.data}">` : `<div class="story-text">${escapeHtml(story.data)}</div>`}
-          <div class="story-info">${index+1}/${storyList.length}</div>
-        `;
-
-        // Mark as viewed
-        const storyKey = Object.keys(stories)[index];
-        if (storyKey) {
-          update(ref(db, `stories/${uid}/${storyKey}/views/${user.uid}`), true);
-        }
-
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 2;
-          const fill = viewer.querySelector('.fill');
-          if (fill) fill.style.width = progress + '%';
-          if (progress >= 100) {
-            clearInterval(interval);
-            index++;
-            if (index < storyList.length) showStory();
-            else viewer.remove();
-          }
-        }, 50);
-
-        viewer.onclick = (e) => {
-          if (e.target === viewer) {
-            clearInterval(interval);
-            viewer.remove();
-          }
-        };
-      }
-
-      document.body.appendChild(viewer);
-      showStory();
-    }
-
-    // ===== PLAYLISTS (НОМЕР 9) =====
-    window.createPlaylist = async function() {
-      const name = prompt("Название плейлиста:");
-      if (!name?.trim()) return;
-      
-      const playlistId = push(ref(db, `playlists/${user.uid}`)).key;
-      await set(ref(db, `playlists/${user.uid}/${playlistId}`), {
-        name: name.trim(),
-        tracks: [],
-        createdAt: Date.now(),
-        sharedWith: {}
-      });
-      toast("Плейлист создан 🎵");
-      renderPlaylists();
-    };
-
-    window.sharePlaylist = async function(playlistId) {
-      const friendIds = Object.keys(friends);
-      if (!friendIds.length) { toast("Нет друзей для шаринга"); return; }
-      
-      const friend = friendIds[0];
-      await update(ref(db, `playlists/${user.uid}/${playlistId}/sharedWith/${friend}`), true);
-      await update(ref(db, `sharedPlaylists/${friend}/${playlistId}`), {
-        ownerUid: user.uid,
-        ownerName: profile.name,
-        playlistId: playlistId
-      });
-      toast("Плейлист отправлен другу");
-    };
-
-    function renderPlaylists() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>🎵 Плейлисты</h2>
-        <button class="btn full" onclick="window.createPlaylist()">Создать плейлист</button>
-        <div id="playlistList"></div>
-      `);
-
-      onValue(ref(db, `playlists/${user.uid}`), snap => {
-        const data = snap.val() || {};
-        const container = document.getElementById("playlistList");
-        if (!container) return;
-        
-        const entries = Object.entries(data);
-        container.innerHTML = entries.length ? entries.map(([id, pl]) => `
-          <div class="friend">
-            <div class="grow"><b>${escapeHtml(pl.name)}</b><div class="code">${pl.tracks?.length || 0} треков</div></div>
-            <button class="btn small" onclick="window.sharePlaylist('${id}')">📤</button>
-          </div>
-        `).join("") : `<div class="empty">Нет плейлистов</div>`;
-      });
-    }
-
-    // ===== HIDE AND SEEK GPS (НОМЕР 26) =====
-    let hideSeekGame = null;
-
-    window.startHideSeek = function() {
-      const friendIds = Object.keys(friends);
-      if (!friendIds.length) { toast("Нужен друг для игры"); return; }
-      
-      const friendId = friendIds[0];
-      const gameId = push(ref(db, `hideSeekGames`)).key;
-      
-      hideSeekGame = {
-        id: gameId,
-        seeker: user.uid,
-        hider: friendId,
-        status: "waiting",
-        startTime: Date.now()
-      };
-
-      set(ref(db, `hideSeekGames/${gameId}`), hideSeekGame);
-      
-      // Подписка на игру
-      onValue(ref(db, `hideSeekGames/${gameId}`), snap => {
-        const game = snap.val();
-        if (!game) return;
-        if (game.status === "playing") {
-          toast("Игра началась! Ищи друга на карте 🕵️");
-          get(ref(db, `locations/${friendId}`)).then(snap => {
-            if (snap.exists()) {
-              map.setView([snap.val().lat, snap.val().lng], 15);
-            }
-          });
-        }
-        if (game.status === "found") {
-          toast("🎉 Друг найден!");
-          if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
-        }
-      });
-
-      toast("Игра начата! Друг должен найти тебя");
-    };
-
-    // ===== CUSTOM STICKER PACKS (НОМЕР 32) =====
-    window.createStickerPack = async function() {
-      const name = prompt("Название набора стикеров:");
-      if (!name?.trim()) return;
-
-      const packId = push(ref(db, `stickerPacks/${user.uid}`)).key;
-      await set(ref(db, `stickerPacks/${user.uid}/${packId}`), {
-        name: name.trim(),
-        stickers: [],
-        createdAt: Date.now()
-      });
-      toast("Набор создан! Добавь стикеры");
-      window.addStickerToPack(packId);
-    };
-
-    window.addStickerToPack = function(packId) {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "image/png";
-      input.multiple = true;
-      input.onchange = async (e) => {
-        const files = e.target.files;
-        for (const file of files) {
-          const data = await compressImage(file, 200, 0.8);
-          const stickerRef = push(ref(db, `stickerPacks/${user.uid}/${packId}/stickers`));
-          await set(stickerRef, {
-            data: data,
-            createdAt: Date.now()
-          });
-        }
-        toast(`Добавлено ${files.length} стикеров`);
-        renderStickerPacks();
-      };
-      input.click();
-    };
-
-    window.useStickerPack = function(packId) {
-      toast("Стикерпак доступен в чате через кнопку стикеров");
-    };
-
-    function renderStickerPacks() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>🎨 Мои стикерпаки</h2>
-        <button class="btn full" onclick="window.createStickerPack()">Создать набор</button>
-        <div id="stickerPackList"></div>
-      `);
-
-      onValue(ref(db, `stickerPacks/${user.uid}`), snap => {
-        const data = snap.val() || {};
-        const container = document.getElementById("stickerPackList");
-        if (!container) return;
-        
-        container.innerHTML = Object.entries(data).map(([id, pack]) => `
-          <div class="friend">
-            <div class="grow"><b>${escapeHtml(pack.name)}</b><div class="code">${pack.stickers?.length || 0} стикеров</div></div>
-            <button class="btn small" onclick="window.addStickerToPack('${id}')">➕</button>
-            <button class="btn small secondary" onclick="window.useStickerPack('${id}')">📤</button>
-          </div>
-        `).join("") || `<div class="empty">Нет наборов</div>`;
-      });
-    }
-
-    // ===== ANIMATED AVATARS (НОМЕР 33) =====
-    function renderAvatarSettings() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>✨ Анимация аватара</h2>
-        <div class="section-title">Выбери стиль</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;">
-          ${ANIMATIONS.map(anim => `
-            <button class="btn ${profile?.avatarAnimation === anim ? 'primary' : 'secondary'} small" 
-                    onclick="window.setAvatarAnimation('${anim}')">
-              ${anim === 'none' ? '⏸' : anim === 'pulse' ? '💓' : anim === 'wave' ? '👋' : '💃'}
-              ${anim}
-            </button>
-          `).join("")}
-        </div>
-        <div class="note">Анимация будет видна друзьям</div>
-      `);
-    }
-
-    window.setAvatarAnimation = async function(anim) {
-      await update(ref(db, `profiles/${user.uid}/avatarAnimation`), anim);
-      profile.avatarAnimation = anim;
-      toast("Анимация обновлена");
-      renderAvatarSettings();
-    };
-
-    // ===== DRAWING IN CHATS (НОМЕР 35) =====
-    window.openDrawing = function() {
-      const container = document.createElement("div");
-      container.id = "drawingContainer";
-      
-      let isDrawing = false;
-      let lastX = 0, lastY = 0;
-      let color = '#000000';
-      let size = 3;
-
-      container.innerHTML = `
-        <div style="background:var(--card);border-radius:20px;padding:20px;max-width:500px;width:100%;">
-          <h3 style="color:#fff;margin-bottom:10px;">🎨 Рисование</h3>
-          <canvas id="drawCanvas" class="drawing-canvas" width="400" height="400"></canvas>
-          <div class="drawing-tools">
-            <input type="color" id="drawColor" class="color-picker" value="#000000">
-            <input type="range" id="drawSize" min="1" max="20" value="3" style="width:80px;">
-            <button class="btn small" id="clearDrawBtn">🗑️</button>
-            <button class="btn small primary" id="sendDrawBtn">📤 Отправить</button>
-            <button class="btn small secondary" id="closeDrawBtn">✕</button>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(container);
-
-      const canvas = document.getElementById("drawCanvas");
-      const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      function getPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = ((e.clientX || e.touches?.[0]?.clientX || 0) - rect.left) * (canvas.width / rect.width);
-        const y = ((e.clientY || e.touches?.[0]?.clientY || 0) - rect.top) * (canvas.height / rect.height);
-        return { x, y };
-      }
-
-      function startDraw(e) {
-        e.preventDefault();
-        isDrawing = true;
-        const pos = getPos(e);
-        lastX = pos.x;
-        lastY = pos.y;
-      }
-
-      function draw(e) {
-        e.preventDefault();
-        if (!isDrawing) return;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = size;
-        ctx.lineCap = "round";
-        ctx.stroke();
-        lastX = pos.x;
-        lastY = pos.y;
-      }
-
-      function endDraw(e) {
-        isDrawing = false;
-      }
-
-      canvas.addEventListener("mousedown", startDraw);
-      canvas.addEventListener("mousemove", draw);
-      canvas.addEventListener("mouseup", endDraw);
-      canvas.addEventListener("mouseleave", endDraw);
-      canvas.addEventListener("touchstart", startDraw, { passive: false });
-      canvas.addEventListener("touchmove", draw, { passive: false });
-      canvas.addEventListener("touchend", endDraw);
-
-      document.getElementById("drawColor").onchange = (e) => { color = e.target.value; };
-      document.getElementById("drawSize").onchange = (e) => { size = e.target.value; };
-      
-      document.getElementById("clearDrawBtn").onclick = () => {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      };
-
-      document.getElementById("sendDrawBtn").onclick = async () => {
-        const data = canvas.toDataURL("image/png");
-        if (!currentChatId) { toast("Открой чат сначала"); return; }
-        const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
-        await set(messageRef, {
-          senderUid: user.uid,
-          type: "image",
-          data: data,
-          createdAt: Date.now()
-        });
-        await updateChatMeta(currentChatId, "🎨 Рисунок");
-        container.remove();
-        toast("Рисунок отправлен");
-      };
-
-      document.getElementById("closeDrawBtn").onclick = () => container.remove();
-    };
-
-    // ===== CUSTOM FONTS (НОМЕР 42) =====
-    function renderFontSettings() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>🔤 Шрифты в чатах</h2>
-        <div class="section-title">Выбери стиль</div>
-        <div class="font-selector">
-          ${FONTS.map(f => `
-            <button class="font-option ${profile?.fontPreference === f ? 'active' : ''}" 
-                    onclick="window.setFontPreference('${f}')">
-              ${f === 'default' ? 'Обычный' : f === 'comic' ? 'Comic' : f === 'serif' ? 'Serif' : f === 'mono' ? 'Mono' : f === 'emoji' ? '😊' : f === 'bold' ? 'B' : f === 'italic' ? 'I' : f === 'underline' ? 'U' : 'S'}
-            </button>
-          `).join("")}
-        </div>
-        <div class="note" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};">
-          Пример текста с выбранным шрифтом
-        </div>
-      `);
-    }
-
-    window.setFontPreference = async function(font) {
-      await update(ref(db, `profiles/${user.uid}/fontPreference`), font);
-      profile.fontPreference = font;
-      toast("Шрифт обновлён");
-      renderFontSettings();
-    };
-
-    function getFontClass(font) {
-      const map = {
-        'comic': 'font-comic',
-        'serif': 'font-serif',
-        'mono': 'font-mono',
-        'emoji': 'font-emoji',
-        'bold': 'font-bold',
-        'italic': 'font-italic',
-        'underline': 'font-underline',
-        'strike': 'font-strike'
-      };
-      return map[font] || '';
-    }
-
-    // ===== MESSAGE REACTIONS (НОМЕР 50) =====
-    window.addMessageReaction = async function(messageId, emoji) {
-      if (!currentChatId) return;
-      const path = `chats/${currentChatId}/messages/${messageId}/reactions/${emoji}`;
-      const snap = await get(ref(db, path));
-      const old = snap.val() || { count: 0, users: {} };
-      old.count = (old.count || 0) + 1;
-      old.users = old.users || {};
-      old.users[user.uid] = (old.users[user.uid] || 0) + 1;
-      await set(ref(db, path), old);
-    };
-
-    // ===== UNDO SEND (НОМЕР 54) =====
-    async function sendMessageWithUndo(text) {
-      if (!currentChatId) return;
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      const messageId = messageRef.key;
-      
-      await set(messageRef, {
-        senderUid: user.uid,
-        text: text,
-        type: "text",
-        createdAt: Date.now(),
-        canUndo: true
-      });
-      
-      // Показываем кнопку отмены
-      const undoBtn = document.createElement("button");
-      undoBtn.textContent = "↩️ Отменить";
-      undoBtn.className = "btn small";
-      undoBtn.style.cssText = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;background:#fff;color:#000;padding:10px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);";
-      undoBtn.onclick = async () => {
-        await remove(ref(db, `chats/${chatId}/messages/${messageId}`));
-        undoBtn.remove();
-        toast("Сообщение отменено");
-        clearTimeout(timer);
-      };
-      document.body.appendChild(undoBtn);
-      
-      const timer = setTimeout(() => {
-        undoBtn.remove();
-        update(ref(db, `chats/${chatId}/messages/${messageId}/canUndo`), false);
-      }, 5000);
-    }
-
-    // ===== SELF-DESTRUCTING MESSAGES (НОМЕР 55) =====
-    window.sendSelfDestructingMessage = async function(text, seconds = 10) {
-      if (!currentChatId) return;
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      
-      await set(messageRef, {
-        senderUid: user.uid,
-        text: text,
-        type: "self_destruct",
-        expiresAt: Date.now() + seconds * 1000,
-        createdAt: Date.now()
-      });
-      
-      toast(`Сообщение исчезнет через ${seconds} секунд`);
-      
-      setTimeout(async () => {
-        await remove(ref(db, `chats/${chatId}/messages/${messageRef.key}`));
-      }, seconds * 1000);
-    };
-
-    // ===== HIDE ONLINE STATUS (НОМЕР 85) =====
-    function renderHideOnlineSettings() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>👻 Скрыть "В сети"</h2>
-        <div class="section-title">Выбери друзей, от которых хочешь скрыть статус</div>
-        <div id="hideOnlineList">
-          ${Object.keys(friends).map(uid => {
-            const p = friends[uid]?.profile || {};
-            const hidden = hideOnlineSettings[uid] || false;
-            return `
-              <div class="visibility-setting">
-                <div class="grow">
-                  <img class="avatar tiny" src="${avatarUrl(p)}" style="vertical-align:middle;margin-right:8px;">
-                  ${escapeHtml(p.name || "Друг")}
-                </div>
-                <button class="toggle ${hidden ? 'on' : ''}" onclick="window.toggleHideOnline('${uid}')"><i></i></button>
-              </div>
-            `;
-          }).join("") || `<div class="empty">Нет друзей</div>`
-        }
-        </div>
-        <div class="note">Когда скрыто, ты будешь отображаться как "Не в сети" для выбранных друзей</div>
-      `);
-    }
-
-    window.toggleHideOnline = async function(uid) {
-      hideOnlineSettings[uid] = !hideOnlineSettings[uid];
-      await update(ref(db, `profiles/${user.uid}/hideOnline`), hideOnlineSettings);
-      renderHideOnlineSettings();
-    };
-
-    async function loadHideOnlineSettings() {
-      const snap = await get(ref(db, `profiles/${user.uid}/hideOnline`));
-      hideOnlineSettings = snap.val() || {};
-    }
-
-    // ===== CHATS =====
-    function subscribeChats() {
-      if (chatsUnsubscribe) chatsUnsubscribe();
-      chatsUnsubscribe = onValue(ref(db, `userChats/${user.uid}`), snap => {
-        chatMeta = snap.val() || {};
-        updateChatBadge();
-        if (currentPage === "chats") renderChats();
-      });
-    }
-
-    function updateChatBadge() {
-      let count = 0;
-      Object.values(chatMeta).forEach(chat => {
-        count += Number(chat.unread?.[user.uid] || 0);
-      });
-      $("chatBadge").textContent = count > 99 ? "99+" : count;
-      $("chatBadge").classList.toggle("hidden", count === 0);
-    }
-
-    function renderChats() {
-      const entries = Object.entries(chatMeta).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
-      const html = entries.length ? entries.map(([chatId, chat]) => {
-        const p = chat.friendProfile || {};
-        const unread = Number(chat.unread?.[user.uid] || 0);
-        return `<div class="chat-item" onclick="window.openChat('${chat.friendUid}')">
-          <img class="avatar small" src="${avatarUrl(p)}">
-          <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code chat-preview">${escapeHtml(chat.lastText || "Начните общение")}</div></div>
-          ${unread ? `<div class="chat-unread">${unread > 99 ? "99+" : unread}</div>` : ""}
-        </div>`;
-      }).join("") : `<div class="empty">Здесь появятся чаты с друзьями 💬</div>`;
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Чаты</h2>
-        ${html}
-      `);
-    }
-
-    // ===== OPEN CHAT =====
-    window.openChat = async function(friendUid) {
-      const friend = friends[friendUid];
-      if (!friend) { toast("Друг не найден."); return; }
-      const friendProfile = friend.profile || {};
-      currentChatFriendId = friendUid;
-      currentChatId = getChatId(user.uid, friendUid);
-      closePanel();
-
-      const old = document.getElementById("chatPage");
-      if (old) old.remove();
-
-      const page = document.createElement("div");
-      page.id = "chatPage";
-      page.className = "chat-page";
-      page.innerHTML = `
-        <div class="chat-header">
-          <button class="chat-back" id="chatBackBtn">‹</button>
-          <img class="avatar small ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(friendProfile)}">
-          <div class="chat-title"><div class="chat-name">${escapeHtml(friendProfile.name || "Друг")}</div><div class="chat-status" id="typingStatus">В сети</div></div>
-          <div class="chat-actions">
-            <button class="chat-action-btn" id="chatFontBtn" title="Шрифт">🔤</button>
-            <button class="chat-action-btn" id="chatDrawBtn" title="Рисовать">🎨</button>
-            <button class="chat-action-btn" id="chatStickerPackBtn" title="Стикерпаки">📦</button>
-            <button class="chat-action-btn primary" id="chatMapBtn">🗺️</button>
-          </div>
-        </div>
-        <div id="messages" class="messages" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};"></div>
-        <div id="typingText" class="typing hidden">печатает…</div>
-        <div id="quickReactionBar" class="chat-reaction-bar">
-          ${REACTIONS.slice(0, 6).map(e => `<button class="quick-reaction" data-emoji="${e}">${e}</button>`).join("")}
-          <button class="quick-reaction" id="stickerBtn">😊</button>
-          <button class="quick-reaction" id="voiceBtn">🎤</button>
-          <button class="quick-reaction" id="selfDestructBtn">💣</button>
-        </div>
-        <div class="chat-input-area">
-          <input id="chatInput" class="chat-input" maxlength="1000" placeholder="Сообщение…" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};">
-          <button id="sendMessageBtn" class="send-message">↑</button>
-        </div>
-      `;
-      document.body.appendChild(page);
-
-      document.getElementById("chatBackBtn").onclick = closeChat;
-      document.getElementById("chatMapBtn").onclick = () => { closeChat();
-        window.showFriendOnMap(friendUid); };
-      document.getElementById("chatFontBtn").onclick = renderFontSettings;
-      document.getElementById("chatDrawBtn").onclick = window.openDrawing;
-      document.getElementById("chatStickerPackBtn").onclick = renderStickerPacks;
-      document.getElementById("sendMessageBtn").onclick = () => {
-        const text = document.getElementById("chatInput").value.trim();
-        if (text) sendMessageWithUndo(text);
-        document.getElementById("chatInput").value = "";
-      };
-      document.getElementById("chatInput").addEventListener("keydown", e => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          const text = document.getElementById("chatInput").value.trim();
-          if (text) sendMessageWithUndo(text);
-          document.getElementById("chatInput").value = "";
-        }
-      });
-      document.getElementById("chatInput").oninput = handleTyping;
-      document.getElementById("stickerBtn").onclick = showStickerPicker;
-      document.getElementById("voiceBtn").onclick = toggleVoiceRecording;
-      document.getElementById("selfDestructBtn").onclick = () => {
-        const seconds = prompt("Секунд до самоуничтожения (5-60):", "10");
-        if (seconds) {
-          const sec = Math.min(60, Math.max(5, parseInt(seconds) || 10));
-          const msg = prompt("Текст сообщения:");
-          if (msg) window.sendSelfDestructingMessage(msg, sec);
-        }
-      };
-
-      document.querySelectorAll(".quick-reaction").forEach(btn => {
-        const emoji = btn.dataset.emoji;
-        if (!emoji) return;
-        btn.addEventListener("click", () => sendQuickReaction(emoji));
-      });
-
-      subscribeCurrentChat();
-      await markChatRead();
-    };
-
-    window.closeChat = function() {
-      stopTyping();
-      stopVoiceRecording();
-      currentChatFriendId = null;
-      currentChatId = null;
-      document.getElementById("chatPage")?.remove();
-      openPage("chats");
-    };
-
-    // ===== VOICE RECORDING =====
-    async function toggleVoiceRecording() {
-      if (isRecording) {
-        stopVoiceRecording();
-        return;
-      }
-      await startVoiceRecording();
-    }
-
-    async function startVoiceRecording() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        mediaRecorder.ondataavailable = event => {
-          if (event.data.size > 0) audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = async () => {
-          const blob = new Blob(audioChunks, { type: "audio/webm" });
-          if (blob.size > 1000) {
-            const reader = new FileReader();
-            reader.onload = async () => {
-              const base64 = reader.result;
-              await sendVoiceMessage(base64, recordingSeconds);
-            };
-            reader.readAsDataURL(blob);
-          } else {
-            toast("Запись слишком короткая");
-          }
-          cleanupRecording();
-        };
-
-        mediaRecorder.start(100);
-        isRecording = true;
-        recordingSeconds = 0;
-        recordingStartTime = Date.now();
-
-        const voiceBtn = document.getElementById("voiceBtn");
-        if (voiceBtn) {
-          voiceBtn.textContent = "⏹️";
-          voiceBtn.classList.add("recording");
-        }
-
-        const indicator = document.createElement("div");
-        indicator.id = "recordingIndicator";
-        indicator.className = "recording-indicator";
-        indicator.innerHTML = `<span class="dot-rec"></span> Запись: <span id="recordingTime">0s</span>`;
-        document.getElementById("chatPage")?.appendChild(indicator);
-
-        recordingTimer = setInterval(() => {
-          recordingSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
-          const timeEl = document.getElementById("recordingTime");
-          if (timeEl) timeEl.textContent = formatDuration(recordingSeconds);
-          if (recordingSeconds >= 60) {
-            toast("Максимум 60 секунд");
-            stopVoiceRecording();
-          }
-        }, 200);
-
-        toast("🎤 Запись началась...");
-
-      } catch (e) {
-        console.error(e);
-        toast("Нет доступа к микрофону");
-      }
-    }
-
-    function stopVoiceRecording() {
-      if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
-      }
-      cleanupRecording();
-    }
-
-    function cleanupRecording() {
-      isRecording = false;
-      clearInterval(recordingTimer);
-      const voiceBtn = document.getElementById("voiceBtn");
-      if (voiceBtn) {
-        voiceBtn.textContent = "🎤";
-        voiceBtn.classList.remove("recording");
-      }
-      const indicator = document.getElementById("recordingIndicator");
-      if (indicator) indicator.remove();
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-    }
-
-    async function sendVoiceMessage(base64, duration) {
-      if (!currentChatId) return;
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      await set(messageRef, {
-        senderUid: user.uid,
-        type: "voice",
-        data: base64,
-        duration: duration || 3,
-        createdAt: Date.now()
-      });
-      await updateChatMeta(chatId, "🎤 Голосовое сообщение");
-      toast("Голосовое сообщение отправлено");
-    }
-
-    // ===== STICKERS =====
-    function showStickerPicker() {
-      const existing = document.getElementById("stickerPicker");
-      if (existing) { existing.remove(); return; }
-      const div = document.createElement("div");
-      div.id = "stickerPicker";
-      div.style.cssText = `
-        position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
-        background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-        padding: 12px; max-width: 90vw; z-index: 6;
-      `;
-      div.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin:0 auto;">
-          ${STICKERS.map(s => `<button class="sticker" data-sticker="${s}">${s}</button>`).join("")}
-        </div>
-        <div style="margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">Мои стикерпаки</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin:4px auto 0;" id="customStickers"></div>
-      `;
-      document.getElementById("chatPage")?.appendChild(div);
-      
-      // Load custom stickers
-      onValue(ref(db, `stickerPacks/${user.uid}`), snap => {
-        const data = snap.val() || {};
-        const container = div.querySelector("#customStickers");
-        if (!container) return;
-        const allStickers = [];
-        for (const pack of Object.values(data)) {
-          if (pack.stickers) {
-            for (const sticker of Object.values(pack.stickers)) {
-              allStickers.push(sticker.data);
-            }
-          }
-        }
-        container.innerHTML = allStickers.slice(0, 8).map(s => `
-          <button class="sticker" onclick="window.sendCustomSticker('${s}')">
-            <img src="${s}" style="width:40px;height:40px;object-fit:contain;border-radius:8px;">
-          </button>
-        `).join("") || `<div style="color:var(--muted);font-size:10px;grid-column:span 4;text-align:center;">Нет стикеров</div>`;
-      });
-
-      div.querySelectorAll(".sticker[data-sticker]").forEach(btn => {
-        btn.onclick = () => {
-          sendSticker(btn.dataset.sticker);
-          div.remove();
-        };
-      });
-      
-      setTimeout(() => {
-        document.addEventListener("click", function closePicker(e) {
-          if (!div.contains(e.target) && e.target.id !== "stickerBtn") {
-            div.remove();
-            document.removeEventListener("click", closePicker);
-          }
-        });
-      }, 100);
-    }
-
-    window.sendCustomSticker = async function(data) {
-      if (!currentChatId) return;
-      const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
-      await set(messageRef, {
-        senderUid: user.uid,
-        type: "image",
-        data: data,
-        createdAt: Date.now()
-      });
-      await updateChatMeta(currentChatId, "🖼️ Стикер");
-      toast("Стикер отправлен");
-      document.getElementById("stickerPicker")?.remove();
-    };
-
-    async function sendSticker(emoji) {
-      if (!currentChatId) return;
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      await set(messageRef, {
-        senderUid: user.uid,
-        type: "sticker",
-        emoji: emoji,
-        createdAt: Date.now()
-      });
-      await updateChatMeta(chatId, `😊 Стикер`);
-    }
-
-    // ===== CHAT MESSAGES =====
-    function subscribeCurrentChat() {
-      const chatId = currentChatId;
-      if (!chatId) return;
-      if (chatUnsubscribers.has(chatId)) {
-        chatUnsubscribers.get(chatId)();
-        chatUnsubscribers.delete(chatId);
-      }
-      const unsubscribe = onValue(ref(db, `chats/${chatId}/messages`), snap => {
-        if (currentChatId !== chatId) return;
-        renderMessages(snap.val() || {});
-      });
-      chatUnsubscribers.set(chatId, unsubscribe);
-      subscribeTyping(chatId);
-    }
-
-    function renderMessages(messages) {
-      const container = document.getElementById("messages");
-      if (!container) return;
-      const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-      const entries = Object.entries(messages)
-        .filter(([id, msg]) => {
-          if (msg.type === "self_destruct" && Date.now() > msg.expiresAt) return false;
-          return true;
-        })
-        .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
-
-      const fontClass = profile?.fontPreference ? getFontClass(profile.fontPreference) : '';
-
-      container.innerHTML = entries.length ? entries.map(([id, message]) => {
-        const mine = message.senderUid === user.uid;
-        const reactions = message.reactions || {};
-        const reactionHtml = Object.entries(reactions).map(([emoji, data]) =>
-          `<button class="message-reaction" onclick="window.addMessageReaction('${id}','${encodeURIComponent(emoji)}')">${emoji} ${data?.count || 1}</button>`
-        ).join("");
-
-        let content = "";
-        if (message.type === "reaction") {
-          content = `<div style="font-size:40px">${escapeHtml(message.emoji || "❤️")}</div>`;
-        } else if (message.type === "sticker") {
-          content = `<div style="font-size:58px">${escapeHtml(message.emoji || "😊")}</div>`;
-        } else if (message.type === "image") {
-          content = `<img src="${message.data}" style="max-width:200px;border-radius:12px;">`;
-        } else if (message.type === "voice") {
-          const duration = message.duration || 3;
-          const data = message.data || "";
-          content = `
-            <div class="voice-message ${mine ? "mine" : ""}">
-              <button class="voice-play" onclick="window.toggleVoicePlay(this, '${escapeHtml(data)}')">▶</button>
-              <div class="voice-timeline" onclick="window.seekVoice(this, event)">
-                <div class="progress" style="width:0%"></div>
-              </div>
-              <span class="voice-time">${formatDuration(duration)}</span>
-            </div>
-          `;
-        } else if (message.type === "self_destruct") {
-          content = `💣 ${escapeHtml(message.text || "")}`;
-        } else {
-          content = escapeHtml(message.text || "");
-        }
-
-        const isSelfDestruct = message.type === "self_destruct" && Date.now() < message.expiresAt;
-        const timeLeft = isSelfDestruct ? Math.ceil((message.expiresAt - Date.now()) / 1000) : 0;
-
-        return `
-          <div class="message-row ${mine ? "mine" : "theirs"}">
-            <div class="message ${mine ? "mine" : "theirs"} ${fontClass}" ${mine ? `oncontextmenu="window.deleteMessage('${id}');return false;"` : ""}>
-              ${content}
-              ${isSelfDestruct ? `<div style="font-size:9px;color:var(--muted);">⏱️ ${timeLeft}s</div>` : ""}
-              ${reactionHtml ? `<div class="message-reactions">${reactionHtml}</div>` : ""}
-              <div class="message-time">${formatTime(message.createdAt)}</div>
-            </div>
-          </div>
-        `;
-      }).join("") : `<div class="empty">Напиши первое сообщение 👋</div>`;
-
-      if (nearBottom) {
-        requestAnimationFrame(() => { container.scrollTop = container.scrollHeight; });
-      }
-      markChatRead();
-    }
-
-    // ===== VOICE PLAYER =====
-    window.toggleVoicePlay = function(btn, data) {
-      if (!data) { toast("Аудио недоступно"); return; }
-      try {
-        const audioData = data.split(",")[1] || data;
-        const byteCharacters = atob(audioData);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "audio/webm" });
-        const url = URL.createObjectURL(blob);
-
-        const audio = new Audio(url);
-        const timeline = btn.parentElement.querySelector(".voice-timeline");
-        const progress = timeline?.querySelector(".progress");
-
-        if (btn._audio && !btn._audio.paused) {
-          btn._audio.pause();
-          btn.textContent = "▶";
-          return;
-        }
-
-        btn._audio = audio;
-        audio.play();
-        btn.textContent = "⏸";
-
-        audio.ontimeupdate = () => {
-          if (progress && audio.duration) {
-            progress.style.width = (audio.currentTime / audio.duration * 100) + "%";
-          }
-        };
-
-        audio.onended = () => {
-          btn.textContent = "▶";
-          if (progress) progress.style.width = "0%";
-        };
-
-        audio.onerror = () => {
-          toast("Ошибка воспроизведения");
-          btn.textContent = "▶";
-        };
-
-      } catch (e) {
-        console.error(e);
-        toast("Ошибка воспроизведения");
-      }
-    };
-
-    window.seekVoice = function(timeline, event) {
-      const rect = timeline.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width;
-      const btn = timeline.parentElement.querySelector(".voice-play");
-      if (btn && btn._audio && btn._audio.duration) {
-        btn._audio.currentTime = x * btn._audio.duration;
-      }
-    };
-
-    // ===== CHAT META =====
-    async function sendChatMessage() {
-      const input = document.getElementById("chatInput");
-      if (!input || !currentChatId) return;
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = "";
-      await stopTyping();
-      await sendMessageWithUndo(text);
-    }
-
-    async function sendQuickReaction(emoji) {
-      if (!currentChatId) return;
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      await set(messageRef, { senderUid: user.uid, type: "reaction", emoji, createdAt: Date.now() });
-      await updateChatMeta(chatId, `${emoji} Реакция`);
-    }
-
-    window.deleteMessage = async function(messageId) {
-      if (!currentChatId) return;
-      if (!confirm("Удалить сообщение?")) return;
-      await remove(ref(db, `chats/${currentChatId}/messages/${messageId}`));
-    };
-
-    async function updateChatMeta(chatId, lastText) {
-      const friendUid = currentChatFriendId;
-      const friendProfile = friends[friendUid]?.profile || {};
-      const myProfile = { name: profile.name, friendCode: profile.friendCode, avatar: profile.avatar || "" };
-      const oldUnread = Number(chatMeta[chatId]?.unread?.[friendUid] || 0);
-
-      await update(ref(db), {
-        [`userChats/${user.uid}/${chatId}/friendUid`]: friendUid,
-        [`userChats/${user.uid}/${chatId}/friendProfile`]: friendProfile,
-        [`userChats/${user.uid}/${chatId}/lastText`]: lastText,
-        [`userChats/${user.uid}/${chatId}/updatedAt`]: Date.now(),
-        [`userChats/${user.uid}/${chatId}/unread/${user.uid}`]: 0,
-        [`userChats/${friendUid}/${chatId}/friendUid`]: user.uid,
-        [`userChats/${friendUid}/${chatId}/friendProfile`]: myProfile,
-        [`userChats/${friendUid}/${chatId}/lastText`]: lastText,
-        [`userChats/${friendUid}/${chatId}/updatedAt`]: Date.now(),
-        [`userChats/${friendUid}/${chatId}/unread/${friendUid}`]: oldUnread + 1
-      });
-    }
-
-    async function markChatRead() {
-      if (!currentChatId || !user) return;
-      await update(ref(db, `userChats/${user.uid}/${currentChatId}`), { [`unread/${user.uid}`]: 0 });
-    }
-
-    // ===== TYPING =====
-    function handleTyping() {
-      if (!currentChatId || !currentChatFriendId) return;
-      clearTimeout(typingStopTimer);
-      update(ref(db, `chats/${currentChatId}/typing/${user.uid}`), {
-        name: profile.name,
-        active: true,
-        updatedAt: Date.now()
-      });
-      typingStopTimer = setTimeout(stopTyping, 1800);
-    }
-
-    async function stopTyping() {
-      if (!currentChatId || !user) return;
-      clearTimeout(typingStopTimer);
-      try { await remove(ref(db, `chats/${currentChatId}/typing/${user.uid}`)); } catch (e) {}
-    }
-
-    function subscribeTyping(chatId) {
-      onValue(ref(db, `chats/${chatId}/typing`), snap => {
-        if (currentChatId !== chatId) return;
-        const data = snap.val() || {};
-        const friendTyping = data[currentChatFriendId];
-        const typingText = document.getElementById("typingText");
-        const typingStatus = document.getElementById("typingStatus");
-        if (friendTyping?.active) {
-          typingText?.classList.remove("hidden");
-          if (typingStatus) typingStatus.textContent = "печатает…";
-        } else {
-          typingText?.classList.add("hidden");
-          if (typingStatus) typingStatus.textContent = "В сети";
-        }
-      });
-    }
-
-    // ===== BIG REACTION PANEL =====
-    window.openFriendReactionPanel = function(friendUid) {
-      const friendProfile = friends[friendUid]?.profile || {};
-      selectedReaction = "❤️";
-
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Большая реакция</h2>
-        <div class="friend">
-          <img class="avatar" src="${avatarUrl(friendProfile)}">
-          <div><b>${escapeHtml(friendProfile.name || "Друг")}</b><div class="code">Реакция появится у друга на весь экран</div></div>
-        </div>
-        <div class="section-title">Реакция</div>
-        <div class="reaction-picker" id="reactionPicker">
-          ${REACTIONS.map(e => `<button class="reaction-choice ${e === "❤️" ? "selected" : ""}" data-reaction="${e}">${e}</button>`).join("")}
-        </div>
-        <div class="field"><label>Количество от 1 до 20 000</label><input id="reactionCount" type="number" min="1" max="20000" value="1"></div>
-        <div class="reaction-info">При 20 000 реакций телефон не создаёт 20 000 отдельных HTML-элементов. LINK показывает настоящее число и создаёт красивую анимацию частиц.</div>
-        <button id="sendReactionBtn" class="btn full">Отправить реакцию</button>
-      `);
-
-      document.querySelectorAll(".reaction-choice").forEach(button => {
-        button.onclick = () => {
-          selectedReaction = button.dataset.reaction;
-          document.querySelectorAll(".reaction-choice").forEach(item => {
-            item.classList.toggle("selected", item === button);
-          });
-        };
-      });
-
-      document.getElementById("sendReactionBtn").onclick = () => sendReaction(friendUid);
-    };
-
-    async function sendReaction(friendUid) {
-      let count = Math.floor(Number(document.getElementById("reactionCount").value) || 1);
-      count = Math.max(1, Math.min(20000, count));
-      document.getElementById("reactionCount").value = count;
-      const btn = document.getElementById("sendReactionBtn");
-      btn.disabled = true;
-
-      try {
-        const reactionRef = push(ref(db, `reactions/${friendUid}`));
-        await set(reactionRef, {
-          emoji: selectedReaction,
-          count,
-          fromUid: user.uid,
-          fromName: profile.name || "Друг",
-          createdAt: Date.now()
-        });
-        toast(`${selectedReaction} ×${count.toLocaleString("ru-RU")} отправлено!`);
-        closePanel();
-      } catch (error) {
-        console.error(error);
-        toast("Ошибка: " + friendlyError(error));
-        btn.disabled = false;
-      }
-    }
-
-    // ===== INCOMING BIG REACTIONS =====
-    function subscribeIncomingReactions() {
-      if (reactionsUnsubscribe) reactionsUnsubscribe();
-      reactionsUnsubscribe = onValue(ref(db, `reactions/${user.uid}`), async snap => {
-        const data = snap.val() || {};
-        for (const reactionId of Object.keys(data)) {
-          if (incomingReactions[reactionId]) continue;
-          incomingReactions[reactionId] = true;
-          const reaction = data[reactionId];
-          await playIncomingReaction(reaction, reactionId);
-        }
-      });
-    }
-
-    async function playIncomingReaction(reaction, reactionId) {
-      if (!reaction) return;
-      openPage("map");
-      createReactionExplosion({
-        emoji: reaction.emoji || "❤️",
-        count: Math.max(1, Math.min(20000, Number(reaction.count) || 1)),
-        fromName: reaction.fromName || "Друг",
-        fromUid: reaction.fromUid || ""
-      });
-      try { await remove(ref(db, `reactions/${user.uid}/${reactionId}`)); } catch (e) {}
-    }
-
-    function createReactionExplosion({ emoji, count, fromName, fromUid }) {
-      const overlay = document.getElementById("reactionOverlay");
-      overlay.innerHTML = "";
-
-      const dark = document.createElement("div");
-      dark.style.cssText = "position:absolute;inset:0;background:rgba(0,0,0,.28);animation:fadeReaction 4.7s ease forwards;";
-      overlay.appendChild(dark);
-
-      const counter = document.createElement("div");
-      counter.style.cssText = "position:absolute;z-index:5;top:20px;left:50%;transform:translateX(-50%);padding:10px 17px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(15px);font-weight:1000;";
-      counter.textContent = `${emoji} × ${count.toLocaleString("ru-RU")}`;
-      overlay.appendChild(counter);
-
-      const center = document.createElement("div");
-      center.style.cssText = "position:absolute;z-index:3;top:50%;left:50%;width:min(90vw,430px);text-align:center;transform:translate(-50%,-50%);animation:centerReaction 4.7s ease forwards;";
-      center.innerHTML = `
-        <div style="font-size:clamp(100px,30vw,180px);filter:drop-shadow(0 15px 35px #000);animation:emojiDance 1.1s infinite alternate ease-in-out;">${emoji}</div>
-        <div style="margin-top:10px;font-size:clamp(20px,6vw,30px);font-weight:1000;">${escapeHtml(fromName)} отправил тебе реакцию</div>
-        <div style="margin-top:5px;font-size:clamp(34px,11vw,60px);font-weight:1000;">×${count.toLocaleString("ru-RU")}</div>
-        <div style="margin-top:7px;color:#ddd;font-size:13px;">Реакции разлетаются по карте ✨</div>
-      `;
-      overlay.appendChild(center);
-
-      const particleCount = Math.min(420, Math.max(30, Math.floor(Math.sqrt(count) * 4)));
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement("div");
-        particle.style.cssText = `
-          position:absolute;left:50%;top:50%;z-index:2;font-size:${18 + Math.random() * 34}px;
-          transform:translate(-50%,-50%);
-          animation:particleFly ${2.2 + Math.random() * 2}s ease-out forwards;
-          animation-delay:${Math.random() * .6}s;
-        `;
-        particle.textContent = emoji;
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 40 + Math.random() * Math.max(innerWidth, innerHeight) * .9;
-        particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
-        particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
-        particle.style.setProperty("--scale", String(.6 + Math.random() * 1.8));
-        particle.style.setProperty("--rotate", `${-360 + Math.random() * 720}deg`);
-        overlay.appendChild(particle);
-      }
-
-      const style = document.createElement("style");
-      style.textContent = `
-        @keyframes fadeReaction { 0%{opacity:0} 10%{opacity:1} 85%{opacity:1} 100%{opacity:0} }
-        @keyframes centerReaction { 0%{opacity:0;transform:translate(-50%,-50%) scale(.3)} 12%{opacity:1;transform:translate(-50%,-50%) scale(1.08)} 20%{transform:translate(-50%,-50%) scale(1)} 85%{opacity:1} 100%{opacity:0;transform:translate(-50%,-50%) scale(.8)} }
-        @keyframes emojiDance { from{transform:rotate(-6deg) scale(.96)} to{transform:rotate(6deg) scale(1.08)} }
-        @keyframes particleFly { 0%{opacity:0;transform:translate(-50%,-50%) scale(.2)} 8%{opacity:1} 75%{opacity:1} 100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--scale)) rotate(var(--rotate))} }
-      `;
-      overlay.appendChild(style);
-
-      if (navigator.vibrate) {
-        navigator.vibrate(count >= 10000 ? [80, 40, 100, 40, 160] : count >= 1000 ? [60, 40, 90] : [50]);
-      }
-      setTimeout(() => { overlay.innerHTML = ""; }, 4800);
-    }
-
-    // ===== SHOW FRIEND ON MAP =====
-    window.showFriendOnMap = async function(friendUid) {
-      const snap = await get(ref(db, `locations/${friendUid}`));
-      if (!snap.exists()) { toast("Геолокация друга недоступна."); return; }
-      const loc = snap.val();
-      closePanel();
-      openPage("map");
-      map.setView([Number(loc.lat), Number(loc.lng)], 17);
-      friendMarkers.get(friendUid)?.openPopup();
-    };
-
-    // ===== PROFILE PAGE =====
-    function renderProfile() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Профиль</h2>
-        <div class="friend">
-          <img id="profileAvatar" class="avatar ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(profile)}">
-          <div class="grow"><b>${escapeHtml(profile.name)}</b><div class="code">Код друга: <b>${profile.friendCode}</b></div></div>
-        </div>
-        <div class="field"><label>Имя</label><input id="profileNameInput" maxlength="30" value="${escapeHtml(profile.name || "")}"></div>
-        <div class="field"><label>Фото профиля</label><input id="avatarInput" type="file" accept="image/*"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button class="btn secondary" onclick="renderAvatarSettings()">✨ Аватар</button>
-          <button class="btn secondary" onclick="renderFontSettings()">🔤 Шрифт</button>
-        </div>
-        <button id="saveProfileBtn" class="btn full">Сохранить</button>
-      `);
-
-      document.getElementById("saveProfileBtn").onclick = saveProfile;
-      document.getElementById("avatarInput").onchange = uploadAvatar;
-    }
-
-    async function saveProfile() {
-      const name = document.getElementById("profileNameInput").value.trim();
-      if (!name) { toast("Введите имя."); return; }
-      await update(ref(db, `profiles/${user.uid}`), { name });
-      toast("Профиль сохранён.");
-    }
-
-    async function uploadAvatar(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      if (!file.type.startsWith("image/")) { toast("Выбери изображение."); return; }
-      const avatar = await compressImage(file, 256, .78);
-      await update(ref(db, `profiles/${user.uid}`), { avatar });
-      profile.avatar = avatar;
-      document.getElementById("profileAvatar").src = avatar;
-      renderMeMarker();
-      toast("Аватар обновлён ✨");
-    }
-
-    // ===== SETTINGS =====
-    function renderSettings() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Настройки</h2>
-        <div class="friend" style="border:0">
-          <div class="grow"><b>📍 Показывать геолокацию</b><div class="code">Друзья смогут видеть тебя на карте.</div></div>
-          <button id="locationToggle" class="toggle ${locationSharing ? "on" : ""}"><i></i></button>
-        </div>
-        <div class="friend" style="border:0">
-          <div class="grow"><b>🌙 Тёмная тема</b><div class="code">Переключить тему приложения</div></div>
-          <button id="themeToggleBtn" class="toggle ${isDarkTheme ? "on" : ""}"><i></i></button>
-        </div>
-        <button class="btn full secondary" onclick="renderHideOnlineSettings()">👻 Скрыть "В сети"</button>
-        <button class="btn full secondary" onclick="renderStickerPacks()">🎨 Мои стикерпаки</button>
-        <button class="btn full secondary" onclick="renderPlaylists()">🎵 Плейлисты</button>
-        <button class="btn full primary" onclick="window.startHideSeek()">🕵️ Прятки с друзьями</button>
-        <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
-        <div class="note">Версия 2.0 • ${Object.keys(friends).length} друзей</div>
-      `);
-
-      document.getElementById("locationToggle").onclick = toggleLocation;
-      document.getElementById("hideLocationBtn").onclick = async () => {
-        await remove(ref(db, `locations/${user.uid}`));
-        toast("Геолокация скрыта.");
-      };
-      document.getElementById("themeToggleBtn").onclick = toggleTheme;
-    }
-
-    async function toggleLocation() {
-      locationSharing = !locationSharing;
-      await update(ref(db, `profiles/${user.uid}`), { locationSharing });
-      if (locationSharing) {
-        startLocation();
-      } else {
-        if (watchId !== null) { navigator.geolocation.clearWatch(watchId);
-          watchId = null; }
-        await remove(ref(db, `locations/${user.uid}`));
-        if (meMarker) { map.removeLayer(meMarker);
-          meMarker = null; }
-        setStatus("Геолокация выключена", false);
-      }
-      renderSettings();
-    }
-
-    function toggleTheme() {
-      isDarkTheme = !isDarkTheme;
-      document.documentElement.setAttribute("data-theme", isDarkTheme ? "dark" : "light");
-      const btn = document.getElementById("themeToggleBtn");
-      if (btn) btn.classList.toggle("on", isDarkTheme);
-      document.getElementById("themeToggle").textContent = isDarkTheme ? "🌙" : "☀️";
-      localStorage.setItem("link_theme", isDarkTheme ? "dark" : "light");
-    }
-
-    // ===== MORE PAGE =====
-    function renderMore() {
-      openPanel(`
-        <button class="close" onclick="closePanel()">×</button>
-        <h2>Ещё возможности</h2>
-        <div class="section-title">🎯 Статистика</div>
-        <div class="friend" style="border:0"><div class="grow"><b>Друзей</b><div class="code">${Object.keys(friends).length} человек</div></div></div>
-        <div class="section-title">📱 Быстрый доступ</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0;">
-          <button class="btn secondary small" onclick="openPage('map');closePanel();">🗺️ Карта</button>
-          <button class="btn secondary small" onclick="openPage('friends');closePanel();">👥 Друзья</button>
-          <button class="btn secondary small" onclick="openPage('chats');closePanel();">💬 Чаты</button>
-          <button class="btn secondary small" onclick="openPage('profile');closePanel();">👤 Профиль</button>
-          <button class="btn secondary small" onclick="openPage('settings');closePanel();">⚙️ Настройки</button>
-        </div>
-        <div class="section-title">🎨 О приложении</div>
-        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>🎨 Новое: истории, плейлисты, прятки, стикерпаки, анимированные аватары, рисование, шрифты, реакции, отмена отправки, самоуничтожение, скрытие "в сети"!</div>
-      `);
-    }
-
-    // ===== THEME INIT =====
-    const savedTheme = localStorage.getItem("link_theme");
-    if (savedTheme) {
-      isDarkTheme = savedTheme === "dark";
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }
-
-    // ===== CLEANUP =====
-    window.addEventListener("beforeunload", () => {
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      stopTyping();
-      stopVoiceRecording();
     });
 
-    window.addEventListener("online", () => {
-      toast("Интернет восстановлен.");
-      if (locationSharing && watchId === null) startLocation();
-    });
-    window.addEventListener("offline", () => setStatus("Нет интернета", false));
+    // ============================================================
+    // MODAL
+    // ============================================================
+    function openModal(content, title = '') {
+      const overlay = $('modalOverlay');
+      const sheet = $('modalSheet');
+      const contentEl = $('modalContent');
+      
+      contentEl.innerHTML = `
+        ${title ? `<div class="sheet-title">${title}</div>` : ''}
+        ${content}
+      `;
+      
+      overlay.classList.add('open');
+    }
 
-    // ===== START =====
-    initMap();
+    window.closeModal = function() {
+      $('modalOverlay').classList.remove('open');
+    };
+
+    $('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        closeModal();
+      }
+    });
+
+    // ============================================================
+    // UTILITY
+    // ============================================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, (c) => {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return map[c];
+      });
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return '';
+      try {
+        return new Date(timestamp).toLocaleTimeString('ru-RU', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      } catch {
+        return '';
+      }
+    }
+
+    function formatDuration(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return m > 0 ? `${m}:${s.toString().padStart(2, '0')}` : `${s}s`;
+    }
+
+    // ============================================================
+    // UPDATE UI
+    // ============================================================
+    function updateUI() {
+      renderProfile();
+      renderFriends();
+      renderChats();
+      renderSavedPlaces();
+      updateBadges();
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    console.log('LINK v4.0 — Полная версия с реакциями, голосовыми, скрытием статуса');
   </script>
 </body>
 </html>
