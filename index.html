@@ -444,11 +444,97 @@
     .leaflet-control-attribution {
       font-size: 8px !important;
     }
-    .user-pin,
-    .friend-pin {
-      background: transparent;
-      border: 0;
+
+    /* ===== НОВЫЙ СТИЛЬ ДЛЯ ПЛАВАЮЩИХ ТОЧЕК ===== */
+    .floating-pin {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      animation: floatPin 2.8s ease-in-out infinite;
     }
+    @keyframes floatPin {
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .floating-pin .pin-avatar {
+      position: relative;
+      z-index: 3;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: block;
+      margin: 0 auto;
+    }
+    .floating-pin .pin-avatar:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    .floating-pin .pulse-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2.5px solid var(--ok);
+      animation: pulseRingFloat 2.8s ease-out infinite;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .floating-pin .pulse-ring:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .floating-pin .pulse-ring:nth-child(2) {
+      animation-delay: 0.9s;
+    }
+    .floating-pin .pulse-ring:nth-child(3) {
+      animation-delay: 1.8s;
+    }
+
+    @keyframes pulseRingFloat {
+      0% {
+        width: 48px;
+        height: 48px;
+        opacity: 1;
+      }
+      100% {
+        width: 80px;
+        height: 80px;
+        opacity: 0;
+      }
+    }
+
+    .floating-pin.me .pulse-ring {
+      border-color: var(--ok);
+    }
+    .floating-pin.friend .pulse-ring {
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .floating-pin.delay-1 {
+      animation-delay: 0s;
+    }
+    .floating-pin.delay-2 {
+      animation-delay: 0.7s;
+    }
+    .floating-pin.delay-3 {
+      animation-delay: 1.4s;
+    }
+    .floating-pin.delay-4 {
+      animation-delay: 2.1s;
+    }
+    /* ===== КОНЕЦ НОВОГО СТИЛЯ ===== */
+
     .pin {
       position: relative;
       width: 48px;
@@ -1093,6 +1179,9 @@
       <button class="round-btn" id="showAllBtn">⊙</button>
     </div>
 
+    <!-- ТЕСТОВАЯ КНОПКА ДЛЯ ГЕОЛОКАЦИИ -->
+    <button class="round-btn" id="testLocationBtn" style="position:absolute;z-index:2000;bottom:180px;right:12px;width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:17px;background:rgba(8,8,8,.9);color:#fff;font-size:20px;backdrop-filter:blur(15px);">📍</button>
+
     <nav class="bottom">
       <button class="navbtn active" data-page="map"><span class="navicon">🗺️</span><span class="navtext">Карта</span></button>
       <button class="navbtn" data-page="friends"><span class="navicon">👥</span><span class="navtext">Друзья</span><span id="requestBadge" class="badge hidden">0</span></button>
@@ -1257,10 +1346,124 @@
     }
 
     function playCallSound() {
-      // Vibrate pattern for incoming call
       if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200, 100, 300]);
       }
+    }
+
+    // ===== НОВАЯ ФУНКЦИЯ ДЛЯ ПЛАВАЮЩЕЙ ИКОНКИ =====
+    function createFloatingIcon(avatarUrl, isMe = false, delay = 0) {
+      const color = isMe ? 'var(--ok)' : 'rgba(255,255,255,0.6)';
+      const delayClass = delay === 0 ? '' : `delay-${(delay % 4) + 1}`;
+
+      return L.divIcon({
+        className: 'floating-pin',
+        html: `
+          <div class="floating-pin ${isMe ? 'me' : 'friend'} ${delayClass}" style="animation-delay: ${delay}s;">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <img class="pin-avatar" src="${avatarUrl}" style="border-color: ${isMe ? 'var(--ok)' : '#ffffff'};">
+          </div>
+        `,
+        iconSize: [56, 56],
+        iconAnchor: [28, 56],
+        popupAnchor: [0, -56]
+      });
+    }
+
+    // ===== MAP MARKERS С ПЛАВАНИЕМ =====
+    function renderMeMarker() {
+      if (!lastPosition || !profile) return;
+      const pos = [lastPosition.lat, lastPosition.lng];
+
+      // Используем плавающую иконку
+      const icon = createFloatingIcon(avatarUrl(profile), true, 0);
+
+      if (!meMarker) {
+        meMarker = L.marker(pos, { icon, zIndexOffset: 1000 }).addTo(map);
+        meMarker.bindPopup("<b>✨ Ты</b><br>" + escapeHtml(profile.name || "Пользователь"));
+      } else {
+        meMarker.setLatLng(pos);
+        meMarker.setIcon(icon);
+      }
+    }
+
+    function upsertFriendMarker(friendId, friendProfile, location) {
+      const lat = Number(location.lat);
+      const lng = Number(location.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+      // Случайная задержка для разных друзей
+      const delay = Math.random() * 2.8;
+      const icon = createFloatingIcon(avatarUrl(friendProfile), false, delay);
+
+      if (!friendMarkers.has(friendId)) {
+        const marker = L.marker([lat, lng], { icon, zIndexOffset: 500 }).addTo(map);
+        marker.on("click", () => openFriendReactionPanel(friendId));
+        marker.bindPopup(`
+          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
+          <span style="color:var(--ok);">🟢 В сети</span>
+        `);
+        friendMarkers.set(friendId, marker);
+      } else {
+        const marker = friendMarkers.get(friendId);
+        marker.setLatLng([lat, lng]);
+        marker.setIcon(icon);
+        marker.setPopupContent(`
+          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
+          <span style="color:var(--ok);">🟢 В сети</span>
+        `);
+      }
+    }
+
+    function removeFriendMarker(friendId, unsubscribe = true) {
+      const marker = friendMarkers.get(friendId);
+      if (marker) { map.removeLayer(marker);
+        friendMarkers.delete(friendId); }
+      if (unsubscribe && friendLocationListeners.has(friendId)) {
+        friendLocationListeners.get(friendId)();
+        friendLocationListeners.delete(friendId);
+      }
+    }
+
+    // ===== ТЕСТОВАЯ ГЕОЛОКАЦИЯ =====
+    function testLocation() {
+      if (!navigator.geolocation) {
+        toast("❌ Геолокация не поддерживается");
+        return;
+      }
+
+      toast("📍 Запрашиваю геопозицию...");
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          console.log("📍 Получена геопозиция:", lat, lng);
+
+          lastPosition = {
+            lat: lat,
+            lng: lng,
+            accuracy: pos.coords.accuracy || 0,
+            updatedAt: Date.now()
+          };
+
+          toast(`📍 Твоя позиция: ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+
+          if (user) {
+            set(ref(db, `locations/${user.uid}`), lastPosition);
+          }
+
+          renderMeMarker();
+          map.setView([lat, lng], 15);
+        },
+        (error) => {
+          console.error("❌ Ошибка геолокации:", error);
+          toast("❌ Ошибка: " + (error.message || "Не удалось получить геопозицию"));
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
     }
 
     // ===== NAVIGATION =====
@@ -1282,55 +1485,12 @@
       if (page === "more") renderMore();
     }
 
-    // ===== MAP MARKERS =====
-    function markerIcon(p, isMe = false) {
-      return L.divIcon({
-        className: isMe ? "user-pin" : "friend-pin",
-        html: `<div class="pin">${isMe ? '<div class="ring"></div>' : ""}<img src="${avatarUrl(p)}"></div>`,
-        iconSize: [48, 48],
-        iconAnchor: [24, 24]
-      });
-    }
-
-    function renderMeMarker() {
-      if (!lastPosition || !profile) return;
-      const pos = [lastPosition.lat, lastPosition.lng];
-      if (!meMarker) {
-        meMarker = L.marker(pos, { icon: markerIcon(profile, true), zIndexOffset: 1000 }).addTo(map);
-        meMarker.bindPopup("<b>Ты</b>");
-      } else {
-        meMarker.setLatLng(pos);
-        meMarker.setIcon(markerIcon(profile, true));
-      }
-    }
-
-    function upsertFriendMarker(friendId, friendProfile, location) {
-      const lat = Number(location.lat);
-      const lng = Number(location.lng);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-      if (!friendMarkers.has(friendId)) {
-        const marker = L.marker([lat, lng], { icon: markerIcon(friendProfile), zIndexOffset: 500 }).addTo(map);
-        marker.on("click", () => openFriendReactionPanel(friendId));
-        friendMarkers.set(friendId, marker);
-      } else {
-        const marker = friendMarkers.get(friendId);
-        marker.setLatLng([lat, lng]);
-        marker.setIcon(markerIcon(friendProfile));
-      }
-    }
-
-    function removeFriendMarker(friendId, unsubscribe = true) {
-      const marker = friendMarkers.get(friendId);
-      if (marker) { map.removeLayer(marker);
-        friendMarkers.delete(friendId); }
-      if (unsubscribe && friendLocationListeners.has(friendId)) {
-        friendLocationListeners.get(friendId)();
-        friendLocationListeners.delete(friendId);
-      }
-    }
-
+    // ===== MAP BUTTONS =====
     $("centerMeBtn").onclick = () => {
-      if (!lastPosition) { toast("Геолокация ещё не получена."); return; }
+      if (!lastPosition) {
+        toast("📍 Нажми кнопку 📍 для получения позиции");
+        return;
+      }
       map.setView([lastPosition.lat, lastPosition.lng], 17);
     };
 
@@ -1339,6 +1499,9 @@
       if (!markers.length) { toast("Нет активных пользователей."); return; }
       map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [60, 60] });
     };
+
+    // Кнопка тестовой геолокации
+    $("testLocationBtn").onclick = testLocation;
 
     // ===== AUTH =====
     $("startBtn").onclick = async () => {
@@ -1376,6 +1539,10 @@
           setStatus("Геолокация выключена", false);
         }
         setStatus("LINK подключён", true);
+
+        // Автозапрос геолокации
+        setTimeout(testLocation, 1500);
+
       } catch (error) {
         console.error(error);
         $("authStatus").textContent = "Ошибка: " + friendlyError(error);
@@ -1499,7 +1666,7 @@
           const online = friendMarkers.has(uid);
           return `<div class="friend">
             <img class="avatar small" src="${avatarUrl(p)}">
-            <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span></div></div>
+            <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span> ${online ? '🟢 В сети' : '⚫ Не в сети'}</div></div>
             <div class="friend-actions">
               <button class="btn small" onclick="openChat('${uid}')">💬</button>
               <button class="btn small secondary" onclick="openFriendReactionPanel('${uid}')">💜</button>
@@ -1521,6 +1688,7 @@
         </div>
         ${requestsHtml}
         ${friendsHtml}
+        <div class="note">📍 Точки друзей плавно покачиваются на карте! 🌀</div>
       `);
 
       $("sendRequestBtn").onclick = sendFriendRequest;
@@ -1604,7 +1772,6 @@
       const callsRef = ref(db, `calls/${user.uid}`);
       const unsubscribe = onValue(callsRef, snap => {
         const data = snap.val() || {};
-        // Process incoming calls
         for (const [callId, call] of Object.entries(data)) {
           if (call.to === user.uid && call.status === "ringing" && !call._processed) {
             call._processed = true;
@@ -1620,7 +1787,6 @@
 
       const friendProfile = friends[call.from]?.profile || { name: "Друг" };
 
-      // Show notification banner
       const notification = document.createElement("div");
       notification.className = "call-notification";
       notification.id = "callNotification";
@@ -1637,7 +1803,6 @@
       `;
       document.body.appendChild(notification);
 
-      // Also show fullscreen call UI
       showCallUI(callId, call, friendProfile, "incoming");
 
       document.getElementById("acceptCallBtn").onclick = () => {
@@ -1652,7 +1817,6 @@
         document.getElementById("callOverlay")?.remove();
       };
 
-      // Auto-reject after 30 seconds
       setTimeout(() => {
         if (document.getElementById("callNotification")) {
           rejectCall(callId, call);
@@ -1710,7 +1874,6 @@
           endCall(callId);
           overlay.remove();
         };
-        // Start timer for outgoing call
         startCallTimer();
       }
     }
@@ -1723,7 +1886,6 @@
       toast("Вызов принят 🎉");
       isCallActive = true;
       startCallTimer();
-      // Update UI to active call state
       const overlay = document.getElementById("callOverlay");
       if (overlay) {
         const status = overlay.querySelector(".call-status");
@@ -1771,7 +1933,6 @@
       }, 1000);
     }
 
-    // ===== MAKE CALL =====
     async function makeCall(friendUid, type = "audio") {
       if (isCallActive) { toast("Уже в вызове"); return; }
 
@@ -1791,8 +1952,6 @@
       };
 
       await set(ref(db, `calls/${friendUid}/${callId}`), call);
-
-      // Also add to caller's calls
       await set(ref(db, `calls/${user.uid}/${callId}`), {
         ...call,
         to: friendUid,
@@ -1803,7 +1962,6 @@
       toast(`📞 Вызов ${friendProfile.name}...`);
       showCallUI(callId, call, friendProfile, "outgoing");
 
-      // Subscribe to call status changes
       const callRef = ref(db, `calls/${friendUid}/${callId}`);
       const unsubscribe = onValue(callRef, snap => {
         const data = snap.val();
@@ -1840,7 +1998,6 @@
       });
       callSubscriptions.push(unsubscribe);
 
-      // Auto-end after 60 seconds if no answer
       setTimeout(() => {
         if (document.getElementById("callOverlay") && !isCallActive) {
           endCall(callId);
@@ -2336,7 +2493,7 @@
         const typingStatus = $("typingStatus");
         if (friendTyping?.active) {
           typingText?.classList.remove("hidden");
-          if (typingStatus) typingStatus.textContent = "печатает…";
+          if (typingStatus) typingStatus.textContent = "✍️ печатает…";
         } else {
           typingText?.classList.add("hidden");
           if (typingStatus) typingStatus.textContent = "В сети";
@@ -2373,9 +2530,9 @@
       `;
       overlay.innerHTML = `
         <div style="width:min(360px,100%);padding:25px;border:1px solid #383838;border-radius:30px;background:#111;text-align:center;">
-          <img style="width:90px;height:90px;border:3px solid #fff;border-radius:50%;object-fit:cover;" src="${avatarUrl(friendProfile)}">
+          <img style="width:90px;height:90px;border:3px solid var(--ok);border-radius:50%;object-fit:cover;" src="${avatarUrl(friendProfile)}">
           <div style="margin-top:12px;font-size:75px;">${emoji}</div>
-          <div style="margin-top:8px;font-size:40px;font-weight:1000;">${count.toLocaleString("ru-RU")}</div>
+          <div style="margin-top:8px;font-size:40px;font-weight:1000;color:var(--ok);">${count.toLocaleString("ru-RU")}</div>
           <div style="margin-top:6px;color:#aaa;font-size:13px;">Ты отправил эту реакцию пользователю <b>${escapeHtml(friendProfile.name || "другу")}</b> ${count === 1 ? "раз" : "раз"}</div>
           <button class="btn full" id="closeHoldBtn">Закрыть</button>
         </div>
@@ -2549,6 +2706,7 @@
         <div class="field"><label>Имя</label><input id="profileNameInput" maxlength="30" value="${escapeHtml(profile.name || "")}"></div>
         <div class="field"><label>Фото профиля</label><input id="avatarInput" type="file" accept="image/*"></div>
         <button id="saveProfileBtn" class="btn full">Сохранить</button>
+        <div class="note">📍 Твоя точка на карте плавно покачивается! 🌀</div>
       `);
 
       $("saveProfileBtn").onclick = saveProfile;
@@ -2612,6 +2770,7 @@
         </div>
         <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
         <div class="note">Версия 2.0 • ${Object.keys(friends).length} друзей</div>
+        <div class="note">🌀 Точки на карте плавно покачиваются!</div>
       `);
 
       $("locationToggle").onclick = toggleLocation;
@@ -2662,7 +2821,7 @@
           <button class="btn secondary small" onclick="openPage('settings');closePanel();">⚙️ Настройки</button>
         </div>
         <div class="section-title">🎨 О приложении</div>
-        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>📞 Новое: голосовые и видеозвонки!</div>
+        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>🌀 Твоя точка и точки друзей плавно покачиваются на карте!</div>
       `);
     }
 
