@@ -1,46 +1,44 @@
-index.html
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
->
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-<title>BLINK</title>
+<title>LINK</title>
 
 <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
->
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 <style>
+
 :root{
-    --bg:#f3f3f5;
+    --bg:#f5f5f7;
     --card:#ffffff;
     --text:#111114;
     --muted:#777780;
-    --line:#e5e5ea;
+    --line:#e2e2e7;
+    --accent:#111114;
     --nav:#111114;
-    --nav-text:#ffffff;
-    --accent:#2563eb;
+    --navText:#ffffff;
 }
 
 body.dark{
-    --bg:#08080a;
-    --card:#17171b;
+    --bg:#09090b;
+    --card:#18181c;
     --text:#ffffff;
-    --muted:#9898a2;
+    --muted:#92929c;
     --line:#29292f;
-    --nav:#17171b;
-    --nav-text:#ffffff;
+    --accent:#ffffff;
+    --nav:#18181c;
+    --navText:#ffffff;
 }
 
 *{
@@ -50,23 +48,27 @@ body.dark{
 
 html,
 body{
+    margin:0;
     width:100%;
     height:100%;
-    margin:0;
     overflow:hidden;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
     background:var(--bg);
     color:var(--text);
 }
 
 button,
 input{
-    font-family:inherit;
+    font:inherit;
 }
 
 button{
     cursor:pointer;
 }
+
+/* =========================
+   КАРТА
+========================= */
 
 #map{
     position:fixed;
@@ -74,32 +76,135 @@ button{
     z-index:1;
 }
 
+.leaflet-control-attribution{
+    display:none;
+}
+
 /* =========================
-   ВЕРХНЯЯ ЧАСТЬ
+   АВТОРИЗАЦИЯ
 ========================= */
 
-.header{
+#authScreen{
     position:fixed;
-    z-index:20;
+    inset:0;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:#09090b;
+    color:white;
+}
+
+.auth-box{
+    width:100%;
+    max-width:420px;
+}
+
+.auth-logo{
+    margin-bottom:35px;
+    text-align:center;
+
+    font-size:48px;
+    font-weight:900;
+    letter-spacing:-3px;
+}
+
+.auth-subtitle{
+    margin-bottom:25px;
+    text-align:center;
+    color:#999;
+}
+
+.auth-card{
+    padding:22px;
+    border:1px solid #2b2b31;
+    border-radius:30px;
+    background:#16161a;
+}
+
+.auth-card h2{
+    margin:0 0 20px;
+}
+
+.auth-card input{
+    width:100%;
+    margin-bottom:10px;
+    padding:16px;
+
+    border:1px solid #303038;
+    border-radius:16px;
+
+    outline:none;
+
+    background:#0f0f12;
+    color:white;
+}
+
+.auth-button{
+    width:100%;
+    padding:16px;
+
+    border:0;
+    border-radius:16px;
+
+    background:white;
+    color:black;
+
+    font-weight:bold;
+}
+
+.auth-switch{
+    width:100%;
+    margin-top:12px;
+
+    border:0;
+    background:transparent;
+    color:#aaa;
+
+    padding:10px;
+}
+
+.auth-error{
+    min-height:20px;
+    margin-top:12px;
+
+    text-align:center;
+    color:#ff7777;
+    font-size:13px;
+}
+
+/* =========================
+   ВЕРХ
+========================= */
+
+.topbar{
+    position:fixed;
+    z-index:50;
+
     top:18px;
     left:18px;
     right:18px;
 
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
 
     pointer-events:none;
 }
 
 .logo{
-    font-size:36px;
+    font-size:34px;
     font-weight:900;
     letter-spacing:-2px;
-    color:var(--text);
+
+    text-shadow:0 3px 20px rgba(0,0,0,.15);
 }
 
-.icon-button{
+.round-button{
     width:54px;
     height:54px;
 
@@ -109,62 +214,49 @@ button{
     background:var(--card);
     color:var(--text);
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    font-size:24px;
 
-    font-size:25px;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,.15);
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
 
     pointer-events:auto;
 }
 
 /* =========================
-   СТАТИСТИКА
+   КАРТОЧКА РАССТОЯНИЯ
 ========================= */
 
-.stats{
+.distance-card{
     position:fixed;
-    z-index:20;
+    z-index:40;
 
-    top:95px;
+    top:92px;
     left:18px;
 
     min-width:180px;
 
-    padding:17px;
+    padding:16px 18px;
 
     border:1px solid var(--line);
-    border-radius:23px;
+    border-radius:24px;
 
     background:var(--card);
 
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.13);
+    box-shadow:0 10px 30px rgba(0,0,0,.13);
 }
 
-.stats-title{
+.small-label{
     color:var(--muted);
-    font-size:13px;
-}
-
-.distance{
-    margin-top:7px;
-
-    font-size:27px;
-    font-weight:800;
-}
-
-.goal{
-    margin-top:9px;
-
     font-size:12px;
-    color:var(--muted);
 }
 
-.status{
+.distance-value{
+    margin-top:6px;
+
+    font-size:28px;
+    font-weight:900;
+}
+
+.gps-row{
     margin-top:10px;
 
     display:flex;
@@ -172,26 +264,52 @@ button{
     gap:7px;
 
     color:var(--muted);
-    font-size:11px;
+    font-size:12px;
 }
 
-.status-dot{
+.gps-dot{
     width:8px;
     height:8px;
 
     border-radius:50%;
+    background:#777;
+}
+
+.gps-dot.active{
     background:#22c55e;
 }
 
-.status-dot.offline{
-    background:#9ca3af;
+/* =========================
+   МОЙ МАРКЕР
+========================= */
+
+.user-marker{
+    width:64px;
+    height:64px;
+
+    border:4px solid white;
+    border-radius:50%;
+
+    overflow:hidden;
+
+    background:#111;
+
+    box-shadow:
+    0 0 0 9px rgba(255,255,255,.25),
+    0 8px 25px rgba(0,0,0,.3);
+}
+
+.user-marker img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 /* =========================
    НИЖНЕЕ МЕНЮ
 ========================= */
 
-.nav{
+.bottom-nav{
     position:fixed;
     z-index:100;
 
@@ -200,51 +318,51 @@ button{
 
     transform:translateX(-50%);
 
-    width:min(540px, calc(100% - 28px));
-    height:82px;
+    width:min(560px,calc(100% - 28px));
+    height:78px;
 
     display:flex;
     align-items:center;
     justify-content:space-around;
 
-    border-radius:30px;
+    border-radius:28px;
 
     background:var(--nav);
 
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.35);
+    box-shadow:0 15px 50px rgba(0,0,0,.3);
 }
 
-.nav button{
-    width:78px;
-    height:64px;
+.nav-button{
+    width:82px;
+    height:62px;
 
     border:0;
     border-radius:20px;
 
     background:transparent;
-    color:#96969f;
+    color:#8c8c95;
 
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:5px;
 
-    font-size:11px;
+    gap:4px;
+
+    font-size:10px;
 }
 
-.nav button.active{
-    color:var(--nav-text);
-    font-weight:700;
-}
-
-.nav-icon{
+.nav-button span:first-child{
     font-size:22px;
 }
 
+.nav-button.active{
+    color:var(--navText);
+    font-weight:bold;
+}
+
 /* =========================
-   ВЫЕЗЖАЮЩИЕ ПАНЕЛИ
+   ПАНЕЛИ
 ========================= */
 
 .sheet{
@@ -257,10 +375,7 @@ button{
 
     height:78vh;
 
-    padding:
-        15px
-        18px
-        115px;
+    padding:15px 18px 120px;
 
     overflow-y:auto;
 
@@ -268,11 +383,9 @@ button{
 
     background:var(--bg);
 
-    box-shadow:
-        0 -15px 50px rgba(0,0,0,.25);
+    box-shadow:0 -20px 50px rgba(0,0,0,.25);
 
-    transition:
-        bottom .38s cubic-bezier(.2,.8,.2,1);
+    transition:bottom .35s cubic-bezier(.2,.8,.2,1);
 }
 
 .sheet.show{
@@ -280,10 +393,10 @@ button{
 }
 
 .handle{
-    width:44px;
+    width:45px;
     height:5px;
 
-    margin:0 auto 24px;
+    margin:0 auto 22px;
 
     border-radius:10px;
 
@@ -292,8 +405,7 @@ button{
 
 .sheet h1{
     margin:0 0 22px;
-
-    font-size:29px;
+    font-size:30px;
 }
 
 /* =========================
@@ -301,7 +413,7 @@ button{
 ========================= */
 
 .card{
-    margin-bottom:15px;
+    margin-bottom:14px;
     padding:18px;
 
     border:1px solid var(--line);
@@ -314,22 +426,18 @@ button{
    ПРОФИЛЬ
 ========================= */
 
-.profile-top{
+.profile-header{
     display:flex;
     align-items:center;
     gap:16px;
 }
 
-.avatar-wrap{
+.avatar-box{
     position:relative;
-
-    width:82px;
-    height:82px;
-
     flex-shrink:0;
 }
 
-.avatar{
+.profile-avatar{
     width:82px;
     height:82px;
 
@@ -338,45 +446,37 @@ button{
     object-fit:cover;
 
     background:#222;
-
-    border:3px solid var(--card);
 }
 
-.avatar-change{
+.avatar-edit{
     position:absolute;
 
     right:-3px;
     bottom:-3px;
 
-    width:33px;
-    height:33px;
+    width:32px;
+    height:32px;
 
     border:1px solid var(--line);
     border-radius:50%;
 
     background:var(--card);
     color:var(--text);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:15px;
 }
 
 .profile-name{
     font-size:24px;
-    font-weight:800;
+    font-weight:900;
 }
 
-.profile-login{
+.profile-email{
     margin-top:5px;
 
     color:var(--muted);
-    font-size:14px;
+    font-size:13px;
 }
 
-.online-text{
+.online{
     margin-top:7px;
 
     display:flex;
@@ -387,40 +487,35 @@ button{
     font-size:12px;
 }
 
+.online-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+    background:#22c55e;
+}
+
 /* =========================
    INPUT
 ========================= */
 
-input[type="text"],
-input[type="email"],
-input[type="password"]{
+.text-input{
     width:100%;
-
+    margin-top:12px;
     padding:15px;
 
     border:1px solid var(--line);
-    border-radius:17px;
+    border-radius:16px;
 
     outline:none;
 
     background:var(--bg);
     color:var(--text);
-
-    font-size:16px;
 }
 
-input:focus{
-    border-color:var(--accent);
-}
-
-/* =========================
-   КНОПКИ
-========================= */
-
-.primary{
+.primary-button{
     width:100%;
-
-    margin-top:13px;
+    margin-top:12px;
     padding:16px;
 
     border:0;
@@ -429,14 +524,12 @@ input:focus{
     background:var(--text);
     color:var(--card);
 
-    font-size:16px;
-    font-weight:700;
+    font-weight:bold;
 }
 
-.secondary{
+.secondary-button{
     width:100%;
-
-    margin-top:10px;
+    margin-top:12px;
     padding:15px;
 
     border:1px solid var(--line);
@@ -444,140 +537,65 @@ input:focus{
 
     background:transparent;
     color:var(--text);
-
-    font-size:15px;
 }
 
 /* =========================
-   СТАТИСТИКА ПРОФИЛЯ
+   СТАТИСТИКА
 ========================= */
 
-.section-label{
-    margin:24px 0 11px;
+.section-title{
+    margin:24px 0 10px;
 
     color:var(--muted);
-
     font-size:12px;
-    letter-spacing:.6px;
 }
 
-.stat-grid{
+.stats-grid{
     display:grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap:9px;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
 }
 
-.stat-box{
-    padding:15px 8px;
-
-    text-align:center;
+.stat-card{
+    padding:18px;
 
     border:1px solid var(--line);
-    border-radius:21px;
+    border-radius:22px;
 
     background:var(--card);
 }
 
-.stat-icon{
-    font-size:20px;
+.stat-number{
+    margin-top:7px;
+
+    font-size:21px;
+    font-weight:900;
 }
 
-.stat-value{
-    margin-top:10px;
-
-    font-size:16px;
-    font-weight:800;
-}
-
-.stat-name{
-    margin-top:5px;
+.stat-text{
+    margin-top:4px;
 
     color:var(--muted);
-    font-size:10px;
+    font-size:11px;
 }
 
 /* =========================
-   СПИСКИ
+   SETTINGS
 ========================= */
 
-.menu{
-    overflow:hidden;
-    padding:0;
-}
-
-.menu-row{
-    width:100%;
-
-    padding:18px;
-
-    border:0;
-    border-bottom:1px solid var(--line);
-
-    background:transparent;
-    color:var(--text);
-
+.setting-row{
     display:flex;
     align-items:center;
     justify-content:space-between;
 
-    text-align:left;
-    font-size:16px;
-}
-
-.menu-row:last-child{
-    border-bottom:0;
-}
-
-.menu-left{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.arrow{
-    color:var(--muted);
-    font-size:22px;
-}
-
-/* =========================
-   НАСТРОЙКИ
-========================= */
-
-.setting-title{
-    margin:20px 0 9px;
-
-    color:var(--muted);
-
-    font-size:12px;
-    letter-spacing:.5px;
-}
-
-.setting{
-    min-height:65px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    min-height:62px;
 
     border-bottom:1px solid var(--line);
 }
 
-.setting:last-child{
+.setting-row:last-child{
     border-bottom:0;
 }
-
-.setting-left{
-    display:flex;
-    align-items:center;
-    gap:13px;
-}
-
-/* =========================
-   SWITCH
-========================= */
 
 .switch{
     position:relative;
@@ -590,91 +608,68 @@ input:focus{
     display:none;
 }
 
-.slider{
+.switch-slider{
     position:absolute;
     inset:0;
 
     border-radius:20px;
+    background:#777;
 
-    background:#c6c6cc;
-
-    transition:.25s;
+    transition:.2s;
 }
 
-.slider::before{
+.switch-slider:before{
     content:"";
 
     position:absolute;
 
-    top:3px;
-    left:3px;
-
     width:25px;
     height:25px;
 
-    border-radius:50%;
+    left:3px;
+    top:3px;
 
+    border-radius:50%;
     background:white;
 
-    box-shadow:
-        0 2px 6px rgba(0,0,0,.2);
-
-    transition:.25s;
+    transition:.2s;
 }
 
-.switch input:checked + .slider{
-    background:var(--text);
+.switch input:checked + .switch-slider{
+    background:#22c55e;
 }
 
-.switch input:checked + .slider::before{
+.switch input:checked + .switch-slider:before{
     transform:translateX(21px);
 }
 
 /* =========================
-   АВАТАР НА КАРТЕ
+   EMPTY
 ========================= */
 
-.map-avatar{
-    width:64px;
-    height:64px;
-
-    overflow:hidden;
-
-    border:4px solid white;
-    border-radius:50%;
-
-    background:#111;
-
-    box-shadow:
-        0 0 0 10px rgba(37,99,235,.14),
-        0 8px 25px rgba(0,0,0,.3);
+.empty{
+    padding:45px 20px;
+    text-align:center;
+    color:var(--muted);
 }
 
-.map-avatar img{
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-}
-
-.leaflet-control-attribution{
-    display:none;
+.empty-icon{
+    margin-bottom:15px;
+    font-size:45px;
 }
 
 /* =========================
-   УВЕДОМЛЕНИЕ
+   TOAST
 ========================= */
 
 .toast{
     position:fixed;
-    z-index:200;
+    z-index:2000;
 
-    left:50%;
     top:-100px;
+    left:50%;
 
     transform:translateX(-50%);
-
-    max-width:calc(100% - 40px);
 
     padding:14px 18px;
 
@@ -683,66 +678,110 @@ input:focus{
     background:var(--text);
     color:var(--card);
 
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.3);
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
 
-    font-size:14px;
-
-    transition:.35s;
+    transition:.3s;
 }
 
 .toast.show{
     top:25px;
 }
 
-/* =========================
-   ДРУЗЬЯ
-========================= */
-
-.empty{
-    padding:40px 15px;
-
-    text-align:center;
-
-    color:var(--muted);
-}
-
-.empty-icon{
-    margin-bottom:12px;
-
-    font-size:45px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- КАРТА -->
+<!-- =========================
+     АВТОРИЗАЦИЯ
+========================= -->
+
+<div id="authScreen">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            LINK
+        </div>
+
+        <div class="auth-subtitle">
+            Твоя карта и твои друзья
+        </div>
+
+        <div class="auth-card">
+
+            <h2 id="authTitle">
+                Вход
+            </h2>
+
+            <input
+                id="emailInput"
+                type="email"
+                placeholder="Email"
+            >
+
+            <input
+                id="passwordInput"
+                type="password"
+                placeholder="Пароль"
+            >
+
+            <button
+                class="auth-button"
+                id="authButton"
+            >
+                Войти
+            </button>
+
+            <button
+                class="auth-switch"
+                id="switchAuthButton"
+            >
+                Нет аккаунта? Регистрация
+            </button>
+
+            <div
+                class="auth-error"
+                id="authError"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     КАРТА
+========================= -->
 
 <div id="map"></div>
 
 
-<!-- УВЕДОМЛЕНИЯ -->
+<!-- =========================
+     TOAST
+========================= -->
 
 <div
     class="toast"
     id="toast"
->
-</div>
+></div>
 
 
-<!-- ВЕРХ -->
+<!-- =========================
+     ВЕРХ
+========================= -->
 
-<div class="header">
+<div class="topbar">
 
     <div class="logo">
-        BLINK
+        LINK
     </div>
 
     <button
-        class="icon-button"
-        onclick="centerOnMe()"
-        title="Моя позиция"
+        class="round-button"
+        id="locationButton"
     >
         ◎
     </button>
@@ -750,34 +789,32 @@ input:focus{
 </div>
 
 
-<!-- СТАТИСТИКА -->
+<!-- =========================
+     РАССТОЯНИЕ
+========================= -->
 
-<div class="stats">
+<div class="distance-card">
 
-    <div class="stats-title">
+    <div class="small-label">
         Сегодня перемещено
     </div>
 
     <div
-        class="distance"
-        id="distanceTop"
+        class="distance-value"
+        id="distanceValue"
     >
         0 м
     </div>
 
-    <div class="goal">
-        GPS: <span id="gpsAccuracy">ожидание...</span>
-    </div>
-
-    <div class="status">
+    <div class="gps-row">
 
         <div
-            class="status-dot offline"
-            id="statusDot"
+            class="gps-dot"
+            id="gpsDot"
         ></div>
 
-        <span id="statusText">
-            Поиск позиции...
+        <span id="gpsStatus">
+            GPS выключен
         </span>
 
     </div>
@@ -785,7 +822,9 @@ input:focus{
 </div>
 
 
-<!-- ДРУЗЬЯ -->
+<!-- =========================
+     ДРУЗЬЯ
+========================= -->
 
 <div
     class="sheet"
@@ -799,14 +838,15 @@ input:focus{
     <div class="card empty">
 
         <div class="empty-icon">
-            ◌
+            ♧
         </div>
 
-        <b>Пока друзей нет</b>
+        <b>Пока здесь никого нет</b>
 
         <p>
-            Здесь будут отображаться пользователи,
-            которых ты добавишь в друзья.
+            Скоро здесь можно будет
+            добавлять друзей и видеть
+            их на карте.
         </p>
 
     </div>
@@ -814,7 +854,9 @@ input:focus{
 </div>
 
 
-<!-- ПРОФИЛЬ -->
+<!-- =========================
+     ПРОФИЛЬ
+========================= -->
 
 <div
     class="sheet"
@@ -825,28 +867,25 @@ input:focus{
 
     <h1>Профиль</h1>
 
-
     <div class="card">
 
-        <div class="profile-top">
+        <div class="profile-header">
 
-            <div class="avatar-wrap">
+            <div class="avatar-box">
 
                 <img
-                    class="avatar"
-                    id="avatar"
-                    alt="Аватар"
+                    class="profile-avatar"
+                    id="profileAvatar"
                 >
 
                 <button
-                    class="avatar-change"
-                    onclick="document.getElementById('avatarInput').click()"
+                    class="avatar-edit"
+                    id="avatarButton"
                 >
                     📷
                 </button>
 
             </div>
-
 
             <div>
 
@@ -854,19 +893,19 @@ input:focus{
                     class="profile-name"
                     id="profileName"
                 >
-                    BLINK User
+                    Пользователь
                 </div>
 
                 <div
-                    class="profile-login"
+                    class="profile-email"
                     id="profileEmail"
                 >
-                    Локальный профиль
+                    -
                 </div>
 
-                <div class="online-text">
+                <div class="online">
 
-                    <div class="status-dot"></div>
+                    <div class="online-dot"></div>
 
                     В сети
 
@@ -876,7 +915,6 @@ input:focus{
 
         </div>
 
-
         <input
             type="file"
             id="avatarInput"
@@ -884,135 +922,80 @@ input:focus{
             hidden
         >
 
+        <input
+            class="text-input"
+            id="nicknameInput"
+            placeholder="Твой ник"
+        >
 
         <button
-            class="secondary"
-            onclick="toggleEditProfile()"
+            class="primary-button"
+            id="saveProfileButton"
         >
-            Изменить профиль
+            Сохранить профиль
         </button>
 
-
-        <div
-            id="editProfile"
-            style="display:none;margin-top:15px"
-        >
-
-            <input
-                id="nameInput"
-                type="text"
-                placeholder="Введите ник"
-            >
-
-            <button
-                class="primary"
-                onclick="saveProfile()"
-            >
-                Сохранить профиль
-            </button>
-
-        </div>
-
     </div>
 
-
-    <div class="section-label">
-        СТАТИСТИКА
+    <div class="section-title">
+        ПЕРЕМЕЩЕНИЯ
     </div>
 
+    <div class="stats-grid">
 
-    <div class="stat-grid">
+        <div class="stat-card">
 
-        <div class="stat-box">
-
-            <div class="stat-icon">⌁</div>
+            <div class="small-label">
+                Сейчас
+            </div>
 
             <div
-                class="stat-value"
-                id="todayDistance"
+                class="stat-number"
+                id="profileDistance"
             >
                 0 м
             </div>
 
-            <div class="stat-name">
-                Сегодня
+            <div class="stat-text">
+                всего пройдено
             </div>
 
         </div>
 
+        <div class="stat-card">
 
-        <div class="stat-box">
-
-            <div class="stat-icon">◫</div>
+            <div class="small-label">
+                GPS
+            </div>
 
             <div
-                class="stat-value"
-                id="weekDistance"
+                class="stat-number"
+                id="accuracyValue"
             >
-                0 м
+                —
             </div>
 
-            <div class="stat-name">
-                За неделю
-            </div>
-
-        </div>
-
-
-        <div class="stat-box">
-
-            <div class="stat-icon">↗</div>
-
-            <div
-                class="stat-value"
-                id="monthDistance"
-            >
-                0 м
-            </div>
-
-            <div class="stat-name">
-                Всего
+            <div class="stat-text">
+                точность
             </div>
 
         </div>
 
     </div>
 
-
-    <div
-        class="card menu"
-        style="margin-top:18px"
+    <button
+        class="secondary-button"
+        id="logoutButton"
     >
-
-        <button class="menu-row">
-
-            <span class="menu-left">
-                <span>♧</span>
-                Мои друзья
-            </span>
-
-            <span class="arrow">›</span>
-
-        </button>
-
-
-        <button class="menu-row">
-
-            <span class="menu-left">
-                <span>⌁</span>
-                История перемещений
-            </span>
-
-            <span class="arrow">›</span>
-
-        </button>
-
-    </div>
+        Выйти из аккаунта
+    </button>
 
 </div>
 
 
-<!-- НАСТРОЙКИ -->
+<!-- =========================
+     НАСТРОЙКИ
+========================= -->
 
 <div
     class="sheet"
@@ -1023,70 +1006,57 @@ input:focus{
 
     <h1>Настройки</h1>
 
-
-    <div class="setting-title">
-        ОСНОВНЫЕ
-    </div>
-
-
     <div class="card">
 
-        <div class="setting">
+        <div class="setting-row">
 
-            <div class="setting-left">
-                <span>☾</span>
-                <span>Тёмная тема</span>
-            </div>
+            <span>
+                🌙 Тёмная тема
+            </span>
 
             <label class="switch">
 
                 <input
                     type="checkbox"
                     id="themeSwitch"
-                    onchange="toggleTheme()"
                 >
 
-                <span class="slider"></span>
+                <span
+                    class="switch-slider"
+                ></span>
 
             </label>
 
         </div>
 
+        <div class="setting-row">
 
-        <div class="setting">
-
-            <div class="setting-left">
-                <span>⌖</span>
-                <span>Геолокация</span>
-            </div>
+            <span>
+                📍 Геолокация
+            </span>
 
             <label class="switch">
 
                 <input
                     type="checkbox"
                     id="locationSwitch"
-                    checked
-                    onchange="toggleLocation()"
                 >
 
-                <span class="slider"></span>
+                <span
+                    class="switch-slider"
+                ></span>
 
             </label>
 
         </div>
 
+        <div class="setting-row">
 
-        <div class="setting">
+            <span>
+                🔥 Firebase
+            </span>
 
-            <div class="setting-left">
-                <span>☁</span>
-                <span>Supabase</span>
-            </div>
-
-            <span
-                id="supabaseStatus"
-                style="color:var(--muted);font-size:12px"
-            >
+            <span id="firebaseStatus">
                 подключён
             </span>
 
@@ -1094,104 +1064,51 @@ input:focus{
 
     </div>
 
-
-    <div class="setting-title">
-        АККАУНТ
-    </div>
-
-
-    <div class="card menu">
-
-        <button
-            class="menu-row"
-            onclick="toggleEditProfile(); openPage('profile')"
-        >
-
-            <span class="menu-left">
-                <span>✎</span>
-                Изменить ник
-            </span>
-
-            <span class="arrow">›</span>
-
-        </button>
-
-
-        <button
-            class="menu-row"
-            onclick="document.getElementById('avatarInput').click()"
-        >
-
-            <span class="menu-left">
-                <span>▧</span>
-                Изменить аватар
-            </span>
-
-            <span class="arrow">›</span>
-
-        </button>
-
-    </div>
-
-
-    <div
-        style="
-            text-align:center;
-            margin-top:25px;
-            color:var(--muted);
-            font-size:12px;
-        "
-    >
-        BLINK • версия 1.0
-    </div>
-
 </div>
 
 
-<!-- НИЖНЯЯ НАВИГАЦИЯ -->
+<!-- =========================
+     НИЖНЕЕ МЕНЮ
+========================= -->
 
-<div class="nav">
+<div class="bottom-nav">
 
     <button
-        class="active"
-        id="mapNav"
-        onclick="openPage('map')"
+        class="nav-button active"
+        data-page="map"
     >
 
-        <span class="nav-icon">⌑</span>
+        <span>⌖</span>
         Карта
 
     </button>
 
-
     <button
-        id="friendsNav"
-        onclick="openPage('friends')"
+        class="nav-button"
+        data-page="friends"
     >
 
-        <span class="nav-icon">♧</span>
+        <span>♧</span>
         Друзья
 
     </button>
 
-
     <button
-        id="profileNav"
-        onclick="openPage('profile')"
+        class="nav-button"
+        data-page="profile"
     >
 
-        <span class="nav-icon">♙</span>
+        <span>◉</span>
         Профиль
 
     </button>
 
-
     <button
-        id="settingsNav"
-        onclick="openPage('settings')"
+        class="nav-button"
+        data-page="settings"
     >
 
-        <span class="nav-icon">⚙</span>
+        <span>⚙</span>
         Настройки
 
     </button>
@@ -1199,261 +1116,221 @@ input:focus{
 </div>
 
 
-<script>
+<!-- =========================
+     FIREBASE
+========================= -->
 
-/* ========================================
-   SUPABASE
-======================================== */
+<script type="module">
 
-const SUPABASE_URL =
-    'https://pfglyeeiydnnfrkjkglk.supabase.co';
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
-const SUPABASE_KEY =
-    'sb_publishable_mqY9TwP0DuU3_b8kNswqYg_SQT1rEKt';
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-let supabaseClient = null;
+import {
+    getDatabase,
+    ref,
+    set,
+    update,
+    get,
+    onDisconnect
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
-try {
 
-    supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
+/* =========================
+   FIREBASE CONFIG
+========================= */
 
-    document
-        .getElementById('supabaseStatus')
-        .textContent = 'готов';
+const firebaseConfig = {
 
-} catch(error) {
+    apiKey:
+    "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
 
-    console.error(error);
+    authDomain:
+    "link-69afb.firebaseapp.com",
 
-    document
-        .getElementById('supabaseStatus')
-        .textContent = 'ошибка';
+    databaseURL:
+    "https://link-69afb-default-rtdb.firebaseio.com",
 
-}
+    projectId:
+    "link-69afb",
 
+    storageBucket:
+    "link-69afb.firebasestorage.app",
 
-/* ========================================
-   КАРТА
-======================================== */
+    messagingSenderId:
+    "488681419482",
 
-let darkMode =
-    localStorage.getItem('blinkTheme') === 'dark';
+    appId:
+    "1:488681419482:web:9c4cd030e20137a4946be3",
 
-const map =
-    L.map(
-        'map',
-        {
-            zoomControl:false,
-            attributionControl:false
-        }
-    )
-    .setView(
-        [50.0647, 19.9450],
-        13
-    );
+    measurementId:
+    "G-6T5XDS5W43"
 
+};
 
-const lightTiles =
-    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
-const darkTiles =
-    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const app =
+    initializeApp(firebaseConfig);
 
+const auth =
+    getAuth(app);
 
-let tileLayer =
-    L.tileLayer(
-        darkMode
-            ? darkTiles
-            : lightTiles,
-        {
-            maxZoom:20
-        }
-    )
-    .addTo(map);
+const database =
+    getDatabase(app);
 
 
-if(darkMode){
+/* =========================
+   СОСТОЯНИЕ
+========================= */
 
-    document.body.classList.add('dark');
+let currentUser = null;
 
-    document
-        .getElementById('themeSwitch')
-        .checked = true;
+let registerMode = false;
 
-}
+let map = null;
 
-
-/* ========================================
-   ПРОФИЛЬ
-======================================== */
-
-const DEFAULT_AVATAR =
-    'https://api.dicebear.com/9.x/thumbs/svg?seed=blink';
-
-
-let profileName =
-    localStorage.getItem('blinkName')
-    || 'BLINK User';
-
-
-let profileAvatar =
-    localStorage.getItem('blinkAvatar')
-    || DEFAULT_AVATAR;
-
-
-function loadProfile(){
-
-    document
-        .getElementById('profileName')
-        .textContent =
-        profileName;
-
-    document
-        .getElementById('nameInput')
-        .value =
-        profileName;
-
-    document
-        .getElementById('avatar')
-        .src =
-        profileAvatar;
-
-}
-
-
-loadProfile();
-
-
-function toggleEditProfile(){
-
-    const edit =
-        document.getElementById('editProfile');
-
-    edit.style.display =
-        edit.style.display === 'none'
-        ? 'block'
-        : 'none';
-
-}
-
-
-function saveProfile(){
-
-    const newName =
-        document
-            .getElementById('nameInput')
-            .value
-            .trim();
-
-    if(!newName){
-
-        showToast(
-            'Введите ник'
-        );
-
-        return;
-
-    }
-
-    profileName =
-        newName;
-
-    localStorage.setItem(
-        'blinkName',
-        profileName
-    );
-
-    loadProfile();
-
-    updateUserMarker();
-
-    showToast(
-        'Профиль сохранён'
-    );
-
-}
-
-
-/* ========================================
-   АВАТАР
-======================================== */
-
-document
-    .getElementById('avatarInput')
-    .addEventListener(
-        'change',
-        function(event){
-
-            const file =
-                event.target.files[0];
-
-            if(!file) return;
-
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                function(result){
-
-                    profileAvatar =
-                        result.target.result;
-
-                    localStorage.setItem(
-                        'blinkAvatar',
-                        profileAvatar
-                    );
-
-                    loadProfile();
-
-                    updateUserMarker();
-
-                    showToast(
-                        'Аватар обновлён'
-                    );
-
-                };
-
-            reader.readAsDataURL(file);
-
-        }
-    );
-
-
-/* ========================================
-   ГЕОЛОКАЦИЯ
-======================================== */
-
-let watchId = null;
+let tiles = null;
 
 let userMarker = null;
 
 let accuracyCircle = null;
 
-let userLatLng = null;
+let watchId = null;
+
+let currentLat = null;
+
+let currentLng = null;
 
 let lastPosition = null;
 
-let totalDistance =
-    Number(
-        localStorage.getItem(
-            'blinkDistance'
+let totalDistance = 0;
+
+let nickname = "";
+
+let avatar =
+    localStorage.getItem("linkAvatar")
+    ||
+    "https://api.dicebear.com/9.x/thumbs/svg?seed=LINK";
+
+
+/* =========================
+   КАРТА
+========================= */
+
+function createMap(){
+
+    map =
+        L.map(
+            "map",
+            {
+                zoomControl:false
+            }
         )
-    ) || 0;
+        .setView(
+            [52.3676,4.9041],
+            13
+        );
+
+    loadMapTheme();
+
+}
 
 
-/* ========================================
-   ФОРМАТ ДИСТАНЦИИ
-======================================== */
+function loadMapTheme(){
+
+    const dark =
+        document.body.classList.contains("dark");
+
+    if(tiles){
+
+        map.removeLayer(tiles);
+
+    }
+
+    const url =
+        dark
+
+        ?
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+
+        :
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+
+    tiles =
+        L.tileLayer(
+            url,
+            {
+                maxZoom:20
+            }
+        )
+        .addTo(map);
+
+}
+
+
+/* =========================
+   АВАТАР-МАРКЕР
+========================= */
+
+function createMarkerIcon(){
+
+    return L.divIcon({
+
+        className:"",
+
+        html:`
+
+        <div class="user-marker">
+
+            <img
+                src="${avatar}"
+                alt="Моя позиция"
+            >
+
+        </div>
+
+        `,
+
+        iconSize:[64,64],
+
+        iconAnchor:[32,32]
+
+    });
+
+}
+
+
+function updateMarkerIcon(){
+
+    if(userMarker){
+
+        userMarker.setIcon(
+            createMarkerIcon()
+        );
+
+    }
+
+}
+
+
+/* =========================
+   ФОРМАТ РАССТОЯНИЯ
+========================= */
 
 function formatDistance(meters){
 
     if(meters < 1000){
 
-        return Math.round(meters) + ' м';
+        return Math.round(meters) + " м";
 
     }
 
@@ -1461,8 +1338,8 @@ function formatDistance(meters){
         meters / 1000
     )
     .toFixed(2)
-    .replace('.', ',')
-    + ' км';
+    .replace(".",",")
+    + " км";
 
 }
 
@@ -1470,41 +1347,26 @@ function formatDistance(meters){
 function updateDistanceUI(){
 
     const value =
-        formatDistance(
-            totalDistance
-        );
+        formatDistance(totalDistance);
 
     document
-        .getElementById('distanceTop')
+        .getElementById("distanceValue")
         .textContent =
         value;
 
     document
-        .getElementById('todayDistance')
-        .textContent =
-        value;
-
-    document
-        .getElementById('weekDistance')
-        .textContent =
-        value;
-
-    document
-        .getElementById('monthDistance')
+        .getElementById("profileDistance")
         .textContent =
         value;
 
 }
 
 
-updateDistanceUI();
+/* =========================
+   РАСЧЁТ GPS РАССТОЯНИЯ
+========================= */
 
-
-/* ========================================
-   РАССТОЯНИЕ GPS
-======================================== */
-
-function calculateDistance(
+function distanceBetween(
     lat1,
     lon1,
     lat2,
@@ -1514,107 +1376,72 @@ function calculateDistance(
     const R = 6371000;
 
     const dLat =
-        (lat2 - lat1)
-        * Math.PI
-        / 180;
+        (lat2-lat1)
+        *
+        Math.PI
+        /
+        180;
 
     const dLon =
-        (lon2 - lon1)
-        * Math.PI
-        / 180;
+        (lon2-lon1)
+        *
+        Math.PI
+        /
+        180;
 
     const a =
-        Math.sin(dLat / 2)
-        * Math.sin(dLat / 2)
+
+        Math.sin(dLat/2)
+        *
+        Math.sin(dLat/2)
 
         +
 
         Math.cos(
-            lat1 * Math.PI / 180
+            lat1*Math.PI/180
         )
 
         *
 
         Math.cos(
-            lat2 * Math.PI / 180
+            lat2*Math.PI/180
         )
 
         *
 
-        Math.sin(dLon / 2)
+        Math.sin(dLon/2)
         *
-        Math.sin(dLon / 2);
+        Math.sin(dLon/2);
+
 
     const c =
         2
         *
         Math.atan2(
             Math.sqrt(a),
-            Math.sqrt(1 - a)
+            Math.sqrt(1-a)
         );
 
-    return R * c;
+    return R*c;
 
 }
 
 
-/* ========================================
-   МАРКЕР
-======================================== */
-
-function createMarkerIcon(){
-
-    return L.divIcon({
-
-        className:'',
-
-        html:`
-            <div class="map-avatar">
-                <img
-                    src="${profileAvatar}"
-                    alt="Я"
-                >
-            </div>
-        `,
-
-        iconSize:
-            [64, 64],
-
-        iconAnchor:
-            [32, 32]
-
-    });
-
-}
-
-
-function updateUserMarker(){
-
-    if(!userMarker) return;
-
-    userMarker.setIcon(
-        createMarkerIcon()
-    );
-
-}
-
-
-/* ========================================
-   ЗАПУСК GPS
-======================================== */
+/* =========================
+   ГЕОЛОКАЦИЯ
+========================= */
 
 function startLocation(){
 
     if(!navigator.geolocation){
 
         showToast(
-            'Геолокация не поддерживается'
+            "Геолокация не поддерживается"
         );
 
         return;
 
     }
-
 
     if(watchId !== null){
 
@@ -1622,34 +1449,55 @@ function startLocation(){
 
     }
 
-
     document
-        .getElementById('statusText')
+        .getElementById("gpsStatus")
         .textContent =
-        'Поиск позиции...';
+        "Поиск GPS...";
 
 
     watchId =
-        navigator
-            .geolocation
-            .watchPosition(
+        navigator.geolocation.watchPosition(
 
-                handlePosition,
+            handlePosition,
 
-                handleLocationError,
+            handleLocationError,
 
-                {
-                    enableHighAccuracy:true,
-                    maximumAge:1000,
-                    timeout:20000
-                }
+            {
+                enableHighAccuracy:true,
+                maximumAge:1000,
+                timeout:20000
+            }
 
-            );
+        );
 
 }
 
 
-function handlePosition(position){
+function stopLocation(){
+
+    if(watchId !== null){
+
+        navigator.geolocation.clearWatch(
+            watchId
+        );
+
+        watchId = null;
+
+    }
+
+    document
+        .getElementById("gpsStatus")
+        .textContent =
+        "GPS выключен";
+
+    document
+        .getElementById("gpsDot")
+        .classList.remove("active");
+
+}
+
+
+async function handlePosition(position){
 
     const latitude =
         position.coords.latitude;
@@ -1661,27 +1509,26 @@ function handlePosition(position){
         position.coords.accuracy;
 
 
-    userLatLng =
-        [latitude, longitude];
+    currentLat = latitude;
+
+    currentLng = longitude;
 
 
     document
-        .getElementById('gpsAccuracy')
+        .getElementById("gpsStatus")
         .textContent =
-        '±'
-        + Math.round(accuracy)
-        + ' м';
+        "GPS активно";
 
 
     document
-        .getElementById('statusText')
+        .getElementById("gpsDot")
+        .classList.add("active");
+
+
+    document
+        .getElementById("accuracyValue")
         .textContent =
-        'Геолокация активна';
-
-
-    document
-        .getElementById('statusDot')
-        .classList.remove('offline');
+        "±" + Math.round(accuracy) + " м";
 
 
     /* Подсчёт перемещения */
@@ -1689,10 +1536,10 @@ function handlePosition(position){
     if(lastPosition){
 
         const moved =
-            calculateDistance(
+            distanceBetween(
 
-                lastPosition.latitude,
-                lastPosition.longitude,
+                lastPosition.lat,
+                lastPosition.lng,
 
                 latitude,
                 longitude
@@ -1701,22 +1548,16 @@ function handlePosition(position){
 
 
         /*
-           Игнорируем совсем маленькие
-           GPS-скачки и огромные скачки.
+        Игнорируем GPS-шум.
         */
 
         if(
             moved >= 5
             &&
-            moved <= 500
+            moved < 1000
         ){
 
             totalDistance += moved;
-
-            localStorage.setItem(
-                'blinkDistance',
-                totalDistance
-            );
 
             updateDistanceUI();
 
@@ -1727,25 +1568,22 @@ function handlePosition(position){
 
     lastPosition = {
 
-        latitude:
-            latitude,
+        lat:latitude,
 
-        longitude:
-            longitude
+        lng:longitude
 
     };
 
 
-    /* Создание или обновление маркера */
+    /* Маркер */
 
     if(!userMarker){
 
         userMarker =
             L.marker(
-                userLatLng,
+                [latitude,longitude],
                 {
-                    icon:
-                        createMarkerIcon()
+                    icon:createMarkerIcon()
                 }
             )
             .addTo(map);
@@ -1753,26 +1591,22 @@ function handlePosition(position){
 
         accuracyCircle =
             L.circle(
-                userLatLng,
+                [latitude,longitude],
                 {
                     radius:accuracy,
 
-                    color:'transparent',
+                    color:"transparent",
 
-                    fillColor:
-                        '#2563eb',
+                    fillColor:"#3388ff",
 
-                    fillOpacity:.10,
-
-                    interactive:false
-
+                    fillOpacity:.12
                 }
             )
             .addTo(map);
 
 
         map.setView(
-            userLatLng,
+            [latitude,longitude],
             17
         );
 
@@ -1781,11 +1615,11 @@ function handlePosition(position){
     else{
 
         userMarker.setLatLng(
-            userLatLng
+            [latitude,longitude]
         );
 
         accuracyCircle.setLatLng(
-            userLatLng
+            [latitude,longitude]
         );
 
         accuracyCircle.setRadius(
@@ -1795,323 +1629,167 @@ function handlePosition(position){
     }
 
 
-    /* Сохранение последней позиции */
+    /* Firebase */
 
-    localStorage.setItem(
-        'blinkLastPosition',
-
-        JSON.stringify({
-            latitude,
-            longitude,
-            updatedAt:
-                new Date()
-                    .toISOString()
-        })
-
-    );
-
-
-    /* Отправка в Supabase */
-
-    syncPositionToSupabase(
-        latitude,
-        longitude
-    );
+    await syncUser();
 
 }
 
 
 function handleLocationError(error){
 
-    console.error(error);
-
-    let message =
-        'Не удалось получить позицию';
-
-    if(
-        error.code
-        ===
-        error.PERMISSION_DENIED
-    ){
-
-        message =
-            'Разреши доступ к геолокации';
-
-    }
+    console.log(error);
 
     document
-        .getElementById('statusText')
+        .getElementById("gpsStatus")
         .textContent =
-        message;
+        "Нет доступа к GPS";
+
+
+    document
+        .getElementById("gpsDot")
+        .classList.remove("active");
+
 
     showToast(
-        message
+        "Разреши доступ к геолокации"
     );
 
 }
 
 
-/* ========================================
-   ОСТАНОВКА GPS
-======================================== */
+/* =========================
+   FIREBASE ПРОФИЛЬ
+========================= */
 
-function stopLocation(){
+async function createUserProfile(){
 
-    if(watchId !== null){
+    if(!currentUser){
 
-        navigator
-            .geolocation
-            .clearWatch(
-                watchId
-            );
-
-        watchId = null;
+        return;
 
     }
 
-
-    document
-        .getElementById('statusText')
-        .textContent =
-        'Геолокация выключена';
-
-    document
-        .getElementById('statusDot')
-        .classList.add(
-            'offline'
+    const userRef =
+        ref(
+            database,
+            "users/" + currentUser.uid
         );
 
-}
+
+    const snapshot =
+        await get(userRef);
 
 
-/* ========================================
-   ПЕРЕКЛЮЧАТЕЛЬ GPS
-======================================== */
+    if(snapshot.exists()){
 
-function toggleLocation(){
+        const data =
+            snapshot.val();
 
-    const enabled =
-        document
-            .getElementById('locationSwitch')
-            .checked;
+        nickname =
+            data.nickname
+            ||
+            currentUser.email
+                .split("@")[0];
 
-
-    if(enabled){
-
-        startLocation();
+        totalDistance =
+            Number(
+                data.totalDistance
+            )
+            ||
+            0;
 
     }
 
     else{
 
-        stopLocation();
-
-    }
-
-}
+        nickname =
+            currentUser.email
+                .split("@")[0];
 
 
-/* ========================================
-   ЦЕНТР КАРТЫ
-======================================== */
-
-function centerOnMe(){
-
-    if(userLatLng){
-
-        map.flyTo(
-            userLatLng,
-            17,
+        await set(
+            userRef,
             {
-                duration:1
+
+                nickname:nickname,
+
+                email:
+                currentUser.email,
+
+                latitude:null,
+
+                longitude:null,
+
+                totalDistance:0,
+
+                online:true,
+
+                updatedAt:
+                Date.now()
+
             }
         );
 
     }
 
-    else{
 
-        startLocation();
+    updateProfileUI();
 
-    }
-
-}
+    updateDistanceUI();
 
 
-/* ========================================
-   ТЁМНАЯ ТЕМА
-======================================== */
-
-function toggleTheme(){
-
-    darkMode =
-        document
-            .getElementById('themeSwitch')
-            .checked;
-
-
-    document.body.classList.toggle(
-        'dark',
-        darkMode
-    );
-
-
-    map.removeLayer(
-        tileLayer
-    );
-
-
-    tileLayer =
-        L.tileLayer(
-
-            darkMode
-                ? darkTiles
-                : lightTiles,
-
-            {
-                maxZoom:20
-            }
-
-        )
-        .addTo(map);
-
-
-    localStorage.setItem(
-        'blinkTheme',
-
-        darkMode
-            ? 'dark'
-            : 'light'
-    );
+    onDisconnect(userRef)
+        .update({
+            online:false
+        });
 
 }
 
 
-/* ========================================
-   SUPABASE СИНХРОНИЗАЦИЯ
-======================================== */
+/* =========================
+   СОХРАНЕНИЕ В FIREBASE
+========================= */
 
-/*
-   Этот код не ломает приложение,
-   даже если таблица profiles
-   ещё не создана.
+async function syncUser(){
 
-   Когда ты создашь таблицу profiles,
-   здесь можно будет сохранять
-   позицию пользователя в облако.
-*/
-
-async function syncPositionToSupabase(
-    latitude,
-    longitude
-){
-
-    if(!supabaseClient){
+    if(
+        !currentUser
+        ||
+        currentLat === null
+    ){
 
         return;
 
     }
 
 
-    /*
-       Пока нет авторизованного
-       пользователя, позиция
-       остаётся локально.
-    */
-
-    const {
-
-        data:{
-            user
-        },
-
-        error
-
-    }
-    =
-    await supabaseClient
-        .auth
-        .getUser();
-
-
-    if(error || !user){
-
-        return;
-
-    }
-
-
-    try{
-
-        await supabaseClient
-
-            .from('profiles')
-
-            .upsert({
-
-                id:
-                    user.id,
-
-                username:
-                    profileName,
-
-                latitude:
-                    latitude,
-
-                longitude:
-                    longitude,
-
-                total_distance:
-                    totalDistance,
-
-                is_online:
-                    true,
-
-                updated_at:
-                    new Date()
-                        .toISOString()
-
-            });
-
-    }
-
-    catch(error){
-
-        console.log(
-            'Supabase sync:',
-            error
+    const userRef =
+        ref(
+            database,
+            "users/" + currentUser.uid
         );
 
-    }
 
-}
+    await update(
+        userRef,
+        {
 
+            nickname:nickname,
 
-/* ========================================
-   НАВИГАЦИЯ
-======================================== */
+            email:
+            currentUser.email,
 
-const sheets = [
+            latitude:currentLat,
 
-    'friendsSheet',
+            longitude:currentLng,
 
-    'profileSheet',
+            totalDistance:totalDistance,
 
-    'settingsSheet'
+            online:true,
 
-];
-
-
-function closeSheets(){
-
-    sheets.forEach(
-        function(id){
-
-            document
-                .getElementById(id)
-                .classList.remove(
-                    'show'
-                );
+            updatedAt:
+            Date.now()
 
         }
     );
@@ -2119,164 +1797,658 @@ function closeSheets(){
 }
 
 
-function setActiveNav(id){
+/* =========================
+   ПРОФИЛЬ
+========================= */
+
+function updateProfileUI(){
 
     document
-        .querySelectorAll(
-            '.nav button'
-        )
+        .getElementById("profileName")
+        .textContent =
+        nickname
+        ||
+        "Пользователь";
 
-        .forEach(
-            function(button){
 
-                button
-                    .classList
-                    .remove(
-                        'active'
-                    );
+    document
+        .getElementById("nicknameInput")
+        .value =
+        nickname
+        ||
+        "";
+
+
+    document
+        .getElementById("profileEmail")
+        .textContent =
+        currentUser
+        ?
+        currentUser.email
+        :
+        "";
+
+
+    document
+        .getElementById("profileAvatar")
+        .src =
+        avatar;
+
+
+    updateMarkerIcon();
+
+}
+
+
+document
+    .getElementById("saveProfileButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const newNickname =
+                document
+                    .getElementById("nicknameInput")
+                    .value
+                    .trim();
+
+
+            if(!newNickname){
+
+                showToast(
+                    "Введите ник"
+                );
+
+                return;
 
             }
-        );
 
+
+            nickname =
+                newNickname;
+
+
+            updateProfileUI();
+
+            await syncUser();
+
+
+            showToast(
+                "Профиль сохранён"
+            );
+
+        }
+    );
+
+
+/* =========================
+   АВАТАР
+========================= */
+
+document
+    .getElementById("avatarButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("avatarInput")
+                .click();
+
+        }
+    );
+
+
+document
+    .getElementById("avatarInput")
+    .addEventListener(
+        "change",
+        event => {
+
+            const file =
+                event.target.files[0];
+
+            if(!file){
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                result => {
+
+                    avatar =
+                        result.target.result;
+
+
+                    /*
+                    Пока Firebase Storage
+                    не подключён, аватар
+                    хранится на телефоне.
+                    */
+
+                    localStorage.setItem(
+                        "linkAvatar",
+                        avatar
+                    );
+
+
+                    updateProfileUI();
+
+                    showToast(
+                        "Аватар изменён"
+                    );
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+/* =========================
+   AUTH
+========================= */
+
+document
+    .getElementById("switchAuthButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            registerMode =
+                !registerMode;
+
+
+            document
+                .getElementById("authTitle")
+                .textContent =
+                registerMode
+                ?
+                "Регистрация"
+                :
+                "Вход";
+
+
+            document
+                .getElementById("authButton")
+                .textContent =
+                registerMode
+                ?
+                "Создать аккаунт"
+                :
+                "Войти";
+
+
+            document
+                .getElementById("switchAuthButton")
+                .textContent =
+                registerMode
+                ?
+                "Уже есть аккаунт? Войти"
+                :
+                "Нет аккаунта? Регистрация";
+
+
+            document
+                .getElementById("authError")
+                .textContent =
+                "";
+
+        }
+    );
+
+
+document
+    .getElementById("authButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            const email =
+                document
+                    .getElementById("emailInput")
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("passwordInput")
+                    .value;
+
+
+            const errorBox =
+                document
+                    .getElementById("authError");
+
+
+            errorBox.textContent =
+                "";
+
+
+            if(
+                !email
+                ||
+                !password
+            ){
+
+                errorBox.textContent =
+                "Введите email и пароль";
+
+                return;
+
+            }
+
+
+            try{
+
+                if(registerMode){
+
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                }
+
+                else{
+
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                }
+
+            }
+
+            catch(error){
+
+                console.error(error);
+
+
+                if(
+                    error.code ===
+                    "auth/email-already-in-use"
+                ){
+
+                    errorBox.textContent =
+                    "Этот email уже зарегистрирован";
+
+                }
+
+                else if(
+                    error.code ===
+                    "auth/invalid-credential"
+                ){
+
+                    errorBox.textContent =
+                    "Неверный email или пароль";
+
+                }
+
+                else if(
+                    error.code ===
+                    "auth/weak-password"
+                ){
+
+                    errorBox.textContent =
+                    "Пароль слишком короткий";
+
+                }
+
+                else{
+
+                    errorBox.textContent =
+                    "Ошибка: " + error.code;
+
+                }
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   СОСТОЯНИЕ АВТОРИЗАЦИИ
+========================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(user){
+
+            currentUser = user;
+
+
+            document
+                .getElementById("authScreen")
+                .style.display =
+                "none";
+
+
+            await createUserProfile();
+
+            startLocation();
+
+        }
+
+        else{
+
+            currentUser = null;
+
+            document
+                .getElementById("authScreen")
+                .style.display =
+                "flex";
+
+        }
+
+    }
+);
+
+
+/* =========================
+   ВЫХОД
+========================= */
+
+document
+    .getElementById("logoutButton")
+    .addEventListener(
+        "click",
+        async () => {
+
+            if(currentUser){
+
+                await update(
+                    ref(
+                        database,
+                        "users/" + currentUser.uid
+                    ),
+                    {
+                        online:false
+                    }
+                );
+
+            }
+
+
+            stopLocation();
+
+            await signOut(auth);
+
+        }
+    );
+
+
+/* =========================
+   ЦЕНТР НА МНЕ
+========================= */
+
+document
+    .getElementById("locationButton")
+    .addEventListener(
+        "click",
+        () => {
+
+            if(
+                currentLat !== null
+            ){
+
+                map.flyTo(
+                    [
+                        currentLat,
+                        currentLng
+                    ],
+                    17,
+                    {
+                        duration:1
+                    }
+                );
+
+            }
+
+            else{
+
+                startLocation();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   ТЕМА
+========================= */
+
+const savedTheme =
+    localStorage.getItem("linkTheme");
+
+
+if(savedTheme === "dark"){
+
+    document.body.classList.add("dark");
 
     document
-        .getElementById(id)
-        .classList.add(
-            'active'
-        );
+        .getElementById("themeSwitch")
+        .checked = true;
 
 }
 
 
-function openPage(page){
+document
+    .getElementById("themeSwitch")
+    .addEventListener(
+        "change",
+        event => {
 
-    closeSheets();
+            document
+                .body
+                .classList
+                .toggle(
+                    "dark",
+                    event.target.checked
+                );
 
 
-    if(page === 'map'){
+            localStorage.setItem(
+                "linkTheme",
 
-        setActiveNav(
-            'mapNav'
-        );
-
-        return;
-
-    }
-
-
-    if(page === 'friends'){
-
-        document
-            .getElementById(
-                'friendsSheet'
-            )
-
-            .classList
-            .add(
-                'show'
+                event.target.checked
+                ?
+                "dark"
+                :
+                "light"
             );
 
 
-        setActiveNav(
-            'friendsNav'
-        );
+            loadMapTheme();
 
-    }
-
-
-    if(page === 'profile'){
-
-        document
-            .getElementById(
-                'profileSheet'
-            )
-
-            .classList
-            .add(
-                'show'
-            );
+        }
+    );
 
 
-        setActiveNav(
-            'profileNav'
-        );
+/* =========================
+   GPS SWITCH
+========================= */
 
-    }
+document
+    .getElementById("locationSwitch")
+    .addEventListener(
+        "change",
+        event => {
+
+            if(event.target.checked){
+
+                startLocation();
+
+            }
+
+            else{
+
+                stopLocation();
+
+            }
+
+        }
+    );
 
 
-    if(page === 'settings'){
-
-        document
-            .getElementById(
-                'settingsSheet'
-            )
-
-            .classList
-            .add(
-                'show'
-            );
+document
+    .getElementById("locationSwitch")
+    .checked = true;
 
 
-        setActiveNav(
-            'settingsNav'
-        );
+/* =========================
+   НАВИГАЦИЯ
+========================= */
 
-    }
+const sheets = {
+
+    friends:
+    document.getElementById(
+        "friendsSheet"
+    ),
+
+    profile:
+    document.getElementById(
+        "profileSheet"
+    ),
+
+    settings:
+    document.getElementById(
+        "settingsSheet"
+    )
+
+};
+
+
+function closeSheets(){
+
+    Object.values(sheets)
+    .forEach(
+        sheet => {
+
+            sheet
+                .classList
+                .remove("show");
+
+        }
+    );
 
 }
 
 
-/* ========================================
+document
+    .querySelectorAll(".nav-button")
+    .forEach(
+        button => {
+
+            button
+                .addEventListener(
+                    "click",
+                    () => {
+
+                        const page =
+                            button.dataset.page;
+
+
+                        closeSheets();
+
+
+                        document
+                            .querySelectorAll(
+                                ".nav-button"
+                            )
+                            .forEach(
+                                nav => {
+
+                                    nav
+                                        .classList
+                                        .remove("active");
+
+                                }
+                            );
+
+
+                        button
+                            .classList
+                            .add("active");
+
+
+                        if(
+                            page !== "map"
+                        ){
+
+                            sheets[page]
+                                .classList
+                                .add("show");
+
+                        }
+
+                    }
+                );
+
+        }
+    );
+
+
+/* =========================
    TOAST
-======================================== */
+========================= */
 
-let toastTimer = null;
+let toastTimer;
 
 
-function showToast(message){
+function showToast(text){
 
     const toast =
-        document
-            .getElementById('toast');
+        document.getElementById("toast");
 
 
     toast.textContent =
-        message;
+        text;
 
 
-    toast.classList.add(
-        'show'
-    );
+    toast.classList.add("show");
 
 
-    clearTimeout(
-        toastTimer
-    );
+    clearTimeout(toastTimer);
 
 
     toastTimer =
         setTimeout(
+            () => {
 
-            function(){
-
-                toast.classList.remove(
-                    'show'
-                );
+                toast
+                    .classList
+                    .remove("show");
 
             },
-
             3000
-
         );
 
 }
 
 
-/* ========================================
+/* =========================
    ЗАПУСК
-======================================== */
+========================= */
 
-startLocation();
+createMap();
 
 </script>
 
