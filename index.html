@@ -307,22 +307,6 @@
       background: var(--ok);
       color: #000;
     }
-    .btn.call-accept {
-      background: #34c759;
-      color: #fff;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 28px;
-    }
-    .btn.call-reject {
-      background: #ff3b30;
-      color: #fff;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 28px;
-    }
     .row {
       display: flex;
       gap: 8px;
@@ -392,6 +376,28 @@
       height: 80px;
       border-width: 3px;
     }
+    .avatar.animated {
+      animation: avatarPulse 3s ease-in-out infinite;
+    }
+    @keyframes avatarPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .avatar.wave {
+      animation: avatarWave 2s ease-in-out infinite;
+    }
+    @keyframes avatarWave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .avatar.bounce {
+      animation: avatarBounce 1.5s ease-in-out infinite;
+    }
+    @keyframes avatarBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
 
     /* FRIENDS */
     .friend,
@@ -444,97 +450,11 @@
     .leaflet-control-attribution {
       font-size: 8px !important;
     }
-
-    /* ===== НОВЫЙ СТИЛЬ ДЛЯ ПЛАВАЮЩИХ ТОЧЕК ===== */
-    .floating-pin {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      cursor: pointer;
-      animation: floatPin 2.8s ease-in-out infinite;
+    .user-pin,
+    .friend-pin {
+      background: transparent;
+      border: 0;
     }
-    @keyframes floatPin {
-      0%,
-      100% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-12px);
-      }
-    }
-
-    .floating-pin .pin-avatar {
-      position: relative;
-      z-index: 3;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: block;
-      margin: 0 auto;
-    }
-    .floating-pin .pin-avatar:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
-    }
-
-    .floating-pin .pulse-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 2.5px solid var(--ok);
-      animation: pulseRingFloat 2.8s ease-out infinite;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .floating-pin .pulse-ring:nth-child(1) {
-      animation-delay: 0s;
-    }
-    .floating-pin .pulse-ring:nth-child(2) {
-      animation-delay: 0.9s;
-    }
-    .floating-pin .pulse-ring:nth-child(3) {
-      animation-delay: 1.8s;
-    }
-
-    @keyframes pulseRingFloat {
-      0% {
-        width: 48px;
-        height: 48px;
-        opacity: 1;
-      }
-      100% {
-        width: 80px;
-        height: 80px;
-        opacity: 0;
-      }
-    }
-
-    .floating-pin.me .pulse-ring {
-      border-color: var(--ok);
-    }
-    .floating-pin.friend .pulse-ring {
-      border-color: rgba(255, 255, 255, 0.6);
-    }
-
-    .floating-pin.delay-1 {
-      animation-delay: 0s;
-    }
-    .floating-pin.delay-2 {
-      animation-delay: 0.7s;
-    }
-    .floating-pin.delay-3 {
-      animation-delay: 1.4s;
-    }
-    .floating-pin.delay-4 {
-      animation-delay: 2.1s;
-    }
-    /* ===== КОНЕЦ НОВОГО СТИЛЯ ===== */
-
     .pin {
       position: relative;
       width: 48px;
@@ -966,175 +886,162 @@
       line-height: 1.5;
     }
 
-    /* ===== CALL UI ===== */
-    .call-overlay {
-      position: fixed;
-      z-index: 20000;
-      inset: 0;
+    /* STORIES */
+    .stories-bar {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(20px);
-      animation: callIn 0.4s ease;
+      gap: 12px;
+      padding: 12px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
-    @keyframes callIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .stories-bar::-webkit-scrollbar {
+      display: none;
     }
-
-    .call-card {
-      text-align: center;
-      padding: 30px 24px 40px;
-      max-width: 360px;
-      width: 100%;
+    .story-avatar {
+      position: relative;
+      flex: none;
+      cursor: pointer;
     }
-    .call-card .avatar.large {
-      width: 100px;
-      height: 100px;
-      border-width: 4px;
-      border-color: #fff;
-      margin-bottom: 12px;
-    }
-    .call-card .call-name {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .call-card .call-status {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-    .call-card .call-status.incoming {
-      color: #70ffad;
-      animation: callPulse 1s infinite;
-    }
-    .call-card .call-status.ringing {
-      color: #ffd93d;
-      animation: callPulse 0.8s infinite;
-    }
-    @keyframes callPulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.3;
-      }
-    }
-
-    .call-actions {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 20px;
-    }
-    .call-actions .btn {
-      width: 64px;
-      height: 64px;
+    .story-avatar .avatar {
+      border: 3px solid #ff6b6b;
       border-radius: 50%;
-      font-size: 28px;
+    }
+    .story-avatar .add-story {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4ecdc4;
+      color: #fff;
+      font-size: 16px;
+      border: 2px solid var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 0;
     }
-    .call-actions .btn-accept {
-      background: #34c759;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(52, 199, 89, 0.4);
-    }
-    .call-actions .btn-accept:hover {
-      transform: scale(1.05);
-    }
-    .call-actions .btn-reject {
-      background: #ff3b30;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
-    }
-    .call-actions .btn-reject:hover {
-      transform: scale(1.05);
-    }
-    .call-actions .btn-end {
-      background: #ff3b30;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
+    .story-avatar .seen {
+      border-color: #888;
     }
 
-    /* Call timer */
-    .call-timer {
-      font-size: 16px;
-      color: var(--muted);
-      font-weight: 600;
-      margin-top: 12px;
-    }
-
-    /* Incoming call notification (top banner) */
-    .call-notification {
+    .story-viewer {
       position: fixed;
-      z-index: 15000;
+      z-index: 10000;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .story-viewer .story-content {
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 16px;
+    }
+    .story-viewer .story-text {
+      font-size: 32px;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    .story-viewer .story-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 32px;
+      color: #fff;
+      background: none;
+      border: none;
+    }
+    .story-viewer .story-progress {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      padding: 16px 20px;
-      padding-top: max(16px, env(safe-area-inset-top));
-      background: rgba(20, 20, 20, 0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      animation: slideDown 0.3s ease;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      height: 4px;
+      background: rgba(255,255,255,0.3);
     }
-    @keyframes slideDown {
-      from {
-        transform: translateY(-100%);
-      }
-      to {
-        transform: translateY(0);
-      }
+    .story-viewer .story-progress .fill {
+      height: 100%;
+      background: #fff;
+      transition: width 0.1s linear;
     }
-    .call-notification .call-info {
-      flex: 1;
-      min-width: 0;
+    .story-viewer .story-info {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      opacity: 0.7;
     }
-    .call-notification .call-info .name {
-      font-weight: 700;
-      font-size: 15px;
+
+    /* DRAWING */
+    .drawing-canvas {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      touch-action: none;
     }
-    .call-notification .call-info .type {
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .call-notification .call-btns {
+    .drawing-tools {
       display: flex;
       gap: 8px;
+      padding: 8px 0;
+      flex-wrap: wrap;
     }
-    .call-notification .call-btns .btn {
-      width: 44px;
-      height: 44px;
+    .drawing-tools .btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    .color-picker {
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      font-size: 20px;
+      border: 2px solid var(--line);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* FONTS */
+    .font-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .font-selector .font-option {
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--card2);
+    }
+    .font-selector .font-option.active {
+      border-color: #fff;
+      background: #fff;
+      color: #000;
+    }
+    .font-comic { font-family: 'Comic Sans MS', cursive; }
+    .font-serif { font-family: 'Georgia', serif; }
+    .font-mono { font-family: 'Courier New', monospace; }
+    .font-emoji { font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif; }
+    .font-bold { font-weight: 900; }
+    .font-italic { font-style: italic; }
+    .font-underline { text-decoration: underline; }
+    .font-strike { text-decoration: line-through; }
+
+    /* HIDE ONLINE */
+    .visibility-setting {
       display: flex;
       align-items: center;
-      justify-content: center;
-      border: 0;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
     }
-    .call-notification .call-btns .btn-accept {
-      background: #34c759;
-      color: #fff;
-    }
-    .call-notification .call-btns .btn-reject {
-      background: #ff3b30;
-      color: #fff;
+    .visibility-setting .toggle {
+      flex: none;
     }
 
     @media(min-width:700px) {
@@ -1179,9 +1086,6 @@
       <button class="round-btn" id="showAllBtn">⊙</button>
     </div>
 
-    <!-- ТЕСТОВАЯ КНОПКА ДЛЯ ГЕОЛОКАЦИИ -->
-    <button class="round-btn" id="testLocationBtn" style="position:absolute;z-index:2000;bottom:180px;right:12px;width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:17px;background:rgba(8,8,8,.9);color:#fff;font-size:20px;backdrop-filter:blur(15px);">📍</button>
-
     <nav class="bottom">
       <button class="navbtn active" data-page="map"><span class="navicon">🗺️</span><span class="navtext">Карта</span></button>
       <button class="navbtn" data-page="friends"><span class="navicon">👥</span><span class="navtext">Друзья</span><span id="requestBadge" class="badge hidden">0</span></button>
@@ -1200,7 +1104,7 @@
   <div id="auth" class="auth">
     <div class="authbox">
       <div class="logo">LINK</div>
-      <div class="subtitle">Друзья рядом. Карта. Чаты. Звонки.</div>
+      <div class="subtitle">Друзья рядом. Карта. Чаты. Голосовые сообщения.</div>
       <button id="startBtn" class="btn full">Начать</button>
       <div id="authStatus" class="auth-status">Подключаем Firebase…</div>
       <div class="note">Аккаунт создаётся автоматически.</div>
@@ -1211,7 +1115,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, remove, push, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
@@ -1256,13 +1160,8 @@
     let typingTimer = null;
     let typingStopTimer = null;
     let isDarkTheme = true;
-
-    // ===== CALL VARIABLES =====
-    let callSubscriptions = [];
-    let activeCall = null;
-    let callTimer = null;
-    let callSeconds = 0;
-    let isCallActive = false;
+    let storiesUnsubscribe = null;
+    let hideOnlineSettings = {};
 
     // ===== VOICE RECORDING =====
     let mediaRecorder = null;
@@ -1275,6 +1174,8 @@
 
     const REACTIONS = ["❤️", "🔥", "😂", "🎉", "😱", "⚡", "👋", "😎", "💀", "🥳", "💯", "✨"];
     const STICKERS = ["😊", "😂", "🥰", "😍", "🤩", "😎", "🤔", "😏", "😅", "🤗", "😇", "🤪", "🥳", "😭", "😤", "🤯"];
+    const FONTS = ['default', 'comic', 'serif', 'mono', 'emoji', 'bold', 'italic', 'underline', 'strike'];
+    const ANIMATIONS = ['none', 'pulse', 'wave', 'bounce'];
 
     // ===== MAP =====
     function initMap() {
@@ -1345,127 +1246,6 @@
       return [uid1, uid2].sort().join("_");
     }
 
-    function playCallSound() {
-      if (navigator.vibrate) {
-        navigator.vibrate([200, 100, 200, 100, 300]);
-      }
-    }
-
-    // ===== НОВАЯ ФУНКЦИЯ ДЛЯ ПЛАВАЮЩЕЙ ИКОНКИ =====
-    function createFloatingIcon(avatarUrl, isMe = false, delay = 0) {
-      const color = isMe ? 'var(--ok)' : 'rgba(255,255,255,0.6)';
-      const delayClass = delay === 0 ? '' : `delay-${(delay % 4) + 1}`;
-
-      return L.divIcon({
-        className: 'floating-pin',
-        html: `
-          <div class="floating-pin ${isMe ? 'me' : 'friend'} ${delayClass}" style="animation-delay: ${delay}s;">
-            <div class="pulse-ring"></div>
-            <div class="pulse-ring"></div>
-            <div class="pulse-ring"></div>
-            <img class="pin-avatar" src="${avatarUrl}" style="border-color: ${isMe ? 'var(--ok)' : '#ffffff'};">
-          </div>
-        `,
-        iconSize: [56, 56],
-        iconAnchor: [28, 56],
-        popupAnchor: [0, -56]
-      });
-    }
-
-    // ===== MAP MARKERS С ПЛАВАНИЕМ =====
-    function renderMeMarker() {
-      if (!lastPosition || !profile) return;
-      const pos = [lastPosition.lat, lastPosition.lng];
-
-      // Используем плавающую иконку
-      const icon = createFloatingIcon(avatarUrl(profile), true, 0);
-
-      if (!meMarker) {
-        meMarker = L.marker(pos, { icon, zIndexOffset: 1000 }).addTo(map);
-        meMarker.bindPopup("<b>✨ Ты</b><br>" + escapeHtml(profile.name || "Пользователь"));
-      } else {
-        meMarker.setLatLng(pos);
-        meMarker.setIcon(icon);
-      }
-    }
-
-    function upsertFriendMarker(friendId, friendProfile, location) {
-      const lat = Number(location.lat);
-      const lng = Number(location.lng);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-      // Случайная задержка для разных друзей
-      const delay = Math.random() * 2.8;
-      const icon = createFloatingIcon(avatarUrl(friendProfile), false, delay);
-
-      if (!friendMarkers.has(friendId)) {
-        const marker = L.marker([lat, lng], { icon, zIndexOffset: 500 }).addTo(map);
-        marker.on("click", () => openFriendReactionPanel(friendId));
-        marker.bindPopup(`
-          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
-          <span style="color:var(--ok);">🟢 В сети</span>
-        `);
-        friendMarkers.set(friendId, marker);
-      } else {
-        const marker = friendMarkers.get(friendId);
-        marker.setLatLng([lat, lng]);
-        marker.setIcon(icon);
-        marker.setPopupContent(`
-          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
-          <span style="color:var(--ok);">🟢 В сети</span>
-        `);
-      }
-    }
-
-    function removeFriendMarker(friendId, unsubscribe = true) {
-      const marker = friendMarkers.get(friendId);
-      if (marker) { map.removeLayer(marker);
-        friendMarkers.delete(friendId); }
-      if (unsubscribe && friendLocationListeners.has(friendId)) {
-        friendLocationListeners.get(friendId)();
-        friendLocationListeners.delete(friendId);
-      }
-    }
-
-    // ===== ТЕСТОВАЯ ГЕОЛОКАЦИЯ =====
-    function testLocation() {
-      if (!navigator.geolocation) {
-        toast("❌ Геолокация не поддерживается");
-        return;
-      }
-
-      toast("📍 Запрашиваю геопозицию...");
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          console.log("📍 Получена геопозиция:", lat, lng);
-
-          lastPosition = {
-            lat: lat,
-            lng: lng,
-            accuracy: pos.coords.accuracy || 0,
-            updatedAt: Date.now()
-          };
-
-          toast(`📍 Твоя позиция: ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
-
-          if (user) {
-            set(ref(db, `locations/${user.uid}`), lastPosition);
-          }
-
-          renderMeMarker();
-          map.setView([lat, lng], 15);
-        },
-        (error) => {
-          console.error("❌ Ошибка геолокации:", error);
-          toast("❌ Ошибка: " + (error.message || "Не удалось получить геопозицию"));
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    }
-
     // ===== NAVIGATION =====
     document.querySelectorAll(".navbtn").forEach(btn => {
       btn.onclick = () => openPage(btn.dataset.page);
@@ -1485,12 +1265,55 @@
       if (page === "more") renderMore();
     }
 
-    // ===== MAP BUTTONS =====
-    $("centerMeBtn").onclick = () => {
-      if (!lastPosition) {
-        toast("📍 Нажми кнопку 📍 для получения позиции");
-        return;
+    // ===== MAP MARKERS =====
+    function markerIcon(p, isMe = false) {
+      return L.divIcon({
+        className: isMe ? "user-pin" : "friend-pin",
+        html: `<div class="pin">${isMe ? '<div class="ring"></div>' : ""}<img src="${avatarUrl(p)}"></div>`,
+        iconSize: [48, 48],
+        iconAnchor: [24, 24]
+      });
+    }
+
+    function renderMeMarker() {
+      if (!lastPosition || !profile) return;
+      const pos = [lastPosition.lat, lastPosition.lng];
+      if (!meMarker) {
+        meMarker = L.marker(pos, { icon: markerIcon(profile, true), zIndexOffset: 1000 }).addTo(map);
+        meMarker.bindPopup("<b>Ты</b>");
+      } else {
+        meMarker.setLatLng(pos);
+        meMarker.setIcon(markerIcon(profile, true));
       }
+    }
+
+    function upsertFriendMarker(friendId, friendProfile, location) {
+      const lat = Number(location.lat);
+      const lng = Number(location.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      if (!friendMarkers.has(friendId)) {
+        const marker = L.marker([lat, lng], { icon: markerIcon(friendProfile), zIndexOffset: 500 }).addTo(map);
+        marker.on("click", () => openFriendReactionPanel(friendId));
+        friendMarkers.set(friendId, marker);
+      } else {
+        const marker = friendMarkers.get(friendId);
+        marker.setLatLng([lat, lng]);
+        marker.setIcon(markerIcon(friendProfile));
+      }
+    }
+
+    function removeFriendMarker(friendId, unsubscribe = true) {
+      const marker = friendMarkers.get(friendId);
+      if (marker) { map.removeLayer(marker);
+        friendMarkers.delete(friendId); }
+      if (unsubscribe && friendLocationListeners.has(friendId)) {
+        friendLocationListeners.get(friendId)();
+        friendLocationListeners.delete(friendId);
+      }
+    }
+
+    $("centerMeBtn").onclick = () => {
+      if (!lastPosition) { toast("Геолокация ещё не получена."); return; }
       map.setView([lastPosition.lat, lastPosition.lng], 17);
     };
 
@@ -1499,9 +1322,6 @@
       if (!markers.length) { toast("Нет активных пользователей."); return; }
       map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [60, 60] });
     };
-
-    // Кнопка тестовой геолокации
-    $("testLocationBtn").onclick = testLocation;
 
     // ===== AUTH =====
     $("startBtn").onclick = async () => {
@@ -1529,7 +1349,7 @@
         subscribeIncomingRequests();
         subscribeIncomingReactions();
         subscribeChats();
-        subscribeCalls();
+        subscribeStories();
 
         if (profile.locationSharing !== false) {
           locationSharing = true;
@@ -1539,10 +1359,6 @@
           setStatus("Геолокация выключена", false);
         }
         setStatus("LINK подключён", true);
-
-        // Автозапрос геолокации
-        setTimeout(testLocation, 1500);
-
       } catch (error) {
         console.error(error);
         $("authStatus").textContent = "Ошибка: " + friendlyError(error);
@@ -1563,7 +1379,9 @@
           avatar: "",
           locationSharing: true,
           createdAt: Date.now(),
-          lastActive: Date.now()
+          lastActive: Date.now(),
+          avatarAnimation: "none",
+          fontPreference: "default"
         };
         await update(ref(db), {
           [`profiles/${user.uid}`]: profile,
@@ -1665,8 +1483,8 @@
           const p = friends[uid]?.profile || {};
           const online = friendMarkers.has(uid);
           return `<div class="friend">
-            <img class="avatar small" src="${avatarUrl(p)}">
-            <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span> ${online ? '🟢 В сети' : '⚫ Не в сети'}</div></div>
+            <img class="avatar small ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(p)}">
+            <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span></div></div>
             <div class="friend-actions">
               <button class="btn small" onclick="openChat('${uid}')">💬</button>
               <button class="btn small secondary" onclick="openFriendReactionPanel('${uid}')">💜</button>
@@ -1688,7 +1506,6 @@
         </div>
         ${requestsHtml}
         ${friendsHtml}
-        <div class="note">📍 Точки друзей плавно покачиваются на карте! 🌀</div>
       `);
 
       $("sendRequestBtn").onclick = sendFriendRequest;
@@ -1767,245 +1584,578 @@
       );
     }
 
-    // ===== CALLS =====
-    function subscribeCalls() {
-      const callsRef = ref(db, `calls/${user.uid}`);
-      const unsubscribe = onValue(callsRef, snap => {
+    // ===== STORIES (НОМЕР 3) =====
+    function subscribeStories() {
+      if (storiesUnsubscribe) storiesUnsubscribe();
+      storiesUnsubscribe = onValue(ref(db, `stories`), snap => {
         const data = snap.val() || {};
-        for (const [callId, call] of Object.entries(data)) {
-          if (call.to === user.uid && call.status === "ringing" && !call._processed) {
-            call._processed = true;
-            showIncomingCall(callId, call);
-          }
-        }
+        if (currentPage === "map") renderStoriesBar(data);
       });
-      callSubscriptions.push(unsubscribe);
     }
 
-    function showIncomingCall(callId, call) {
-      playCallSound();
-
-      const friendProfile = friends[call.from]?.profile || { name: "Друг" };
-
-      const notification = document.createElement("div");
-      notification.className = "call-notification";
-      notification.id = "callNotification";
-      notification.innerHTML = `
-        <img class="avatar tiny" src="${avatarUrl(friendProfile)}">
-        <div class="call-info">
-          <div class="name">${escapeHtml(friendProfile.name || "Друг")}</div>
-          <div class="type">${call.type === "video" ? "📹 Видеозвонок" : "📞 Голосовой вызов"}</div>
-        </div>
-        <div class="call-btns">
-          <button class="btn btn-accept" id="acceptCallBtn">✓</button>
-          <button class="btn btn-reject" id="rejectCallBtn">✕</button>
-        </div>
-      `;
-      document.body.appendChild(notification);
-
-      showCallUI(callId, call, friendProfile, "incoming");
-
-      document.getElementById("acceptCallBtn").onclick = () => {
-        acceptCall(callId, call);
-        notification.remove();
-        document.getElementById("callOverlay")?.remove();
-      };
-
-      document.getElementById("rejectCallBtn").onclick = () => {
-        rejectCall(callId, call);
-        notification.remove();
-        document.getElementById("callOverlay")?.remove();
-      };
-
-      setTimeout(() => {
-        if (document.getElementById("callNotification")) {
-          rejectCall(callId, call);
-          notification.remove();
-          document.getElementById("callOverlay")?.remove();
-          toast("Вызов пропущен");
-        }
-      }, 30000);
-    }
-
-    function showCallUI(callId, call, friendProfile, mode = "incoming") {
-      const existing = document.getElementById("callOverlay");
+    function renderStoriesBar(allStories) {
+      const existing = document.getElementById("storiesBar");
       if (existing) existing.remove();
 
-      const overlay = document.createElement("div");
-      overlay.id = "callOverlay";
-      overlay.className = "call-overlay";
+      const bar = document.createElement("div");
+      bar.id = "storiesBar";
+      bar.className = "stories-bar";
+      bar.style.cssText = "position:absolute;z-index:900;top:70px;left:12px;right:12px;background:rgba(8,8,8,0.85);border-radius:16px;padding:8px 12px;backdrop-filter:blur(10px);overflow-x:auto;";
 
-      const isVideo = call.type === "video";
-      const statusText = mode === "incoming" ? "📞 Входящий вызов..." : "🔴 Вызов...";
+      // My story
+      const myStory = document.createElement("div");
+      myStory.className = "story-avatar";
+      myStory.innerHTML = `
+        <img class="avatar small" src="${avatarUrl(profile)}">
+        <div class="add-story">+</div>
+      `;
+      myStory.onclick = () => createStory();
+      bar.appendChild(myStory);
 
-      overlay.innerHTML = `
-        <div class="call-card">
-          <img class="avatar large" src="${avatarUrl(friendProfile)}">
-          <div class="call-name">${escapeHtml(friendProfile.name || "Друг")}</div>
-          <div class="call-status ${mode === "incoming" ? "incoming" : "ringing"}">${statusText}</div>
-          ${isVideo ? '<div style="font-size:40px;margin-bottom:10px;">📹</div>' : ''}
-          <div class="call-timer" id="callTimerDisplay">${formatDuration(0)}</div>
-          <div class="call-actions">
-            ${mode === "incoming" ? `
-              <button class="btn btn-accept" id="callAcceptBtn">✓</button>
-              <button class="btn btn-reject" id="callRejectBtn">✕</button>
-            ` : `
-              <button class="btn btn-end" id="callEndBtn">⏹</button>
-            `}
+      // Friends stories
+      for (const [uid, stories] of Object.entries(allStories)) {
+        if (uid === user.uid) continue;
+        if (!friends[uid]) continue;
+        const latest = Object.values(stories).sort((a,b) => b.createdAt - a.createdAt)[0];
+        if (!latest) continue;
+        if (Date.now() > latest.expiresAt) continue;
+
+        const storyEl = document.createElement("div");
+        storyEl.className = "story-avatar";
+        const viewed = latest.views && latest.views[user.uid];
+        storyEl.innerHTML = `
+          <img class="avatar small ${viewed ? 'seen' : ''}" src="${avatarUrl(friends[uid]?.profile || {})}">
+        `;
+        storyEl.onclick = () => viewStory(uid, stories);
+        bar.appendChild(storyEl);
+      }
+
+      document.getElementById("app").appendChild(bar);
+    }
+
+    async function createStory() {
+      const type = confirm("Опубликовать фото? (OK - фото, Отмена - текст)");
+      if (type) {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const data = await compressImage(file, 800, 0.7);
+          const storyRef = push(ref(db, `stories/${user.uid}`));
+          await set(storyRef, {
+            type: "image",
+            data: data,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + 86400000,
+            views: {}
+          });
+          toast("История опубликована 📸");
+        };
+        input.click();
+      } else {
+        const text = prompt("Введите текст истории:");
+        if (text && text.trim()) {
+          const storyRef = push(ref(db, `stories/${user.uid}`));
+          await set(storyRef, {
+            type: "text",
+            data: text.trim(),
+            createdAt: Date.now(),
+            expiresAt: Date.now() + 86400000,
+            views: {}
+          });
+          toast("История опубликована ✍️");
+        }
+      }
+    }
+
+    function viewStory(uid, stories) {
+      const storyList = Object.values(stories)
+        .filter(s => Date.now() < s.expiresAt)
+        .sort((a,b) => a.createdAt - b.createdAt);
+      
+      if (!storyList.length) { toast("Нет активных историй"); return; }
+
+      let index = 0;
+      const viewer = document.createElement("div");
+      viewer.className = "story-viewer";
+      
+      function showStory() {
+        const story = storyList[index];
+        if (!story) { viewer.remove(); return; }
+        
+        viewer.innerHTML = `
+          <div class="story-progress"><div class="fill" style="width:0%"></div></div>
+          <button class="story-close" onclick="this.closest('.story-viewer').remove()">✕</button>
+          ${story.type === "image" ? `<img class="story-content" src="${story.data}">` : `<div class="story-text">${escapeHtml(story.data)}</div>`}
+          <div class="story-info">${index+1}/${storyList.length}</div>
+        `;
+
+        // Mark as viewed
+        update(ref(db, `stories/${uid}/${Object.keys(stories)[index]}/views/${user.uid}`), true);
+
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 2;
+          const fill = viewer.querySelector('.fill');
+          if (fill) fill.style.width = progress + '%';
+          if (progress >= 100) {
+            clearInterval(interval);
+            index++;
+            if (index < storyList.length) showStory();
+            else viewer.remove();
+          }
+        }, 50);
+
+        viewer.onclick = (e) => {
+          if (e.target === viewer) {
+            clearInterval(interval);
+            viewer.remove();
+          }
+        };
+      }
+
+      document.body.appendChild(viewer);
+      showStory();
+    }
+
+    // ===== PLAYLISTS (НОМЕР 9) =====
+    async function createPlaylist() {
+      const name = prompt("Название плейлиста:");
+      if (!name?.trim()) return;
+      
+      const playlistId = push(ref(db, `playlists/${user.uid}`)).key;
+      await set(ref(db, `playlists/${user.uid}/${playlistId}`), {
+        name: name.trim(),
+        tracks: [],
+        createdAt: Date.now(),
+        sharedWith: {}
+      });
+      toast("Плейлист создан 🎵");
+      renderPlaylists();
+    }
+
+    async function sharePlaylist(playlistId) {
+      const friendIds = Object.keys(friends);
+      if (!friendIds.length) { toast("Нет друзей для шаринга"); return; }
+      
+      // Простой выбор друга
+      const friend = friendIds[0];
+      await update(ref(db, `playlists/${user.uid}/${playlistId}/sharedWith/${friend}`), true);
+      await update(ref(db, `sharedPlaylists/${friend}/${playlistId}`), {
+        ownerUid: user.uid,
+        ownerName: profile.name,
+        playlistId: playlistId
+      });
+      toast("Плейлист отправлен другу");
+    }
+
+    function renderPlaylists() {
+      openPanel(`
+        <button class="close" onclick="closePanel()">×</button>
+        <h2>🎵 Плейлисты</h2>
+        <button class="btn full" onclick="createPlaylist()">Создать плейлист</button>
+        <div id="playlistList"></div>
+      `);
+
+      onValue(ref(db, `playlists/${user.uid}`), snap => {
+        const data = snap.val() || {};
+        const container = document.getElementById("playlistList");
+        if (!container) return;
+        
+        const entries = Object.entries(data);
+        container.innerHTML = entries.length ? entries.map(([id, pl]) => `
+          <div class="friend">
+            <div class="grow"><b>${escapeHtml(pl.name)}</b><div class="code">${pl.tracks?.length || 0} треков</div></div>
+            <button class="btn small" onclick="sharePlaylist('${id}')">📤</button>
           </div>
+        `).join("") : `<div class="empty">Нет плейлистов</div>`;
+      });
+    }
+
+    // ===== HIDE AND SEEK GPS (НОМЕР 26) =====
+    let hideSeekGame = null;
+
+    function startHideSeek() {
+      const friendIds = Object.keys(friends);
+      if (!friendIds.length) { toast("Нужен друг для игры"); return; }
+      
+      const friendId = friendIds[0];
+      const gameId = push(ref(db, `hideSeekGames`)).key;
+      
+      hideSeekGame = {
+        id: gameId,
+        seeker: user.uid,
+        hider: friendId,
+        status: "waiting",
+        startTime: Date.now()
+      };
+
+      set(ref(db, `hideSeekGames/${gameId}`), hideSeekGame);
+      
+      // Подписка на игру
+      onValue(ref(db, `hideSeekGames/${gameId}`), snap => {
+        const game = snap.val();
+        if (!game) return;
+        if (game.status === "playing") {
+          toast("Игра началась! Ищи друга на карте 🕵️");
+          // Показать последнюю локацию друга
+          get(ref(db, `locations/${friendId}`)).then(snap => {
+            if (snap.exists()) {
+              map.setView([snap.val().lat, snap.val().lng], 15);
+              map.panTo([snap.val().lat, snap.val().lng]);
+            }
+          });
+        }
+        if (game.status === "found") {
+          toast("🎉 Друг найден!");
+          if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+        }
+      });
+
+      toast("Игра начата! Друг должен найти тебя");
+    }
+
+    function acceptHideSeek(gameId) {
+      update(ref(db, `hideSeekGames/${gameId}/status`), "playing");
+      toast("Игра началась! 🕵️");
+    }
+
+    // ===== CUSTOM STICKER PACKS (НОМЕР 32) =====
+    async function createStickerPack() {
+      const name = prompt("Название набора стикеров:");
+      if (!name?.trim()) return;
+
+      const packId = push(ref(db, `stickerPacks/${user.uid}`)).key;
+      await set(ref(db, `stickerPacks/${user.uid}/${packId}`), {
+        name: name.trim(),
+        stickers: [],
+        createdAt: Date.now()
+      });
+      toast("Набор создан! Добавь стикеры");
+      addStickerToPack(packId);
+    }
+
+    function addStickerToPack(packId) {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/png";
+      input.multiple = true;
+      input.onchange = async (e) => {
+        const files = e.target.files;
+        for (const file of files) {
+          const data = await compressImage(file, 200, 0.8);
+          const stickerRef = push(ref(db, `stickerPacks/${user.uid}/${packId}/stickers`));
+          await set(stickerRef, {
+            data: data,
+            createdAt: Date.now()
+          });
+        }
+        toast(`Добавлено ${files.length} стикеров`);
+      };
+      input.click();
+    }
+
+    function renderStickerPacks() {
+      openPanel(`
+        <button class="close" onclick="closePanel()">×</button>
+        <h2>🎨 Мои стикерпаки</h2>
+        <button class="btn full" onclick="createStickerPack()">Создать набор</button>
+        <div id="stickerPackList"></div>
+      `);
+
+      onValue(ref(db, `stickerPacks/${user.uid}`), snap => {
+        const data = snap.val() || {};
+        const container = document.getElementById("stickerPackList");
+        if (!container) return;
+        
+        container.innerHTML = Object.entries(data).map(([id, pack]) => `
+          <div class="friend">
+            <div class="grow"><b>${escapeHtml(pack.name)}</b><div class="code">${pack.stickers?.length || 0} стикеров</div></div>
+            <button class="btn small" onclick="addStickerToPack('${id}')">➕</button>
+            <button class="btn small secondary" onclick="useStickerPack('${id}')">📤</button>
+          </div>
+        `).join("") || `<div class="empty">Нет наборов</div>`;
+      });
+    }
+
+    function useStickerPack(packId) {
+      toast("Стикерпак доступен в чате через кнопку стикеров");
+      // В чате добавить возможность выбора из своих пакетов
+    }
+
+    // ===== ANIMATED AVATARS (НОМЕР 33) =====
+    function renderAvatarSettings() {
+      openPanel(`
+        <button class="close" onclick="closePanel()">×</button>
+        <h2>✨ Анимация аватара</h2>
+        <div class="section-title">Выбери стиль</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;">
+          ${ANIMATIONS.map(anim => `
+            <button class="btn ${profile?.avatarAnimation === anim ? 'primary' : 'secondary'} small" 
+                    onclick="setAvatarAnimation('${anim}')">
+              ${anim === 'none' ? '⏸' : anim === 'pulse' ? '💓' : anim === 'wave' ? '👋' : '💃'}
+              ${anim}
+            </button>
+          `).join("")}
+        </div>
+        <div class="note">Анимация будет видна друзьям</div>
+      `);
+    }
+
+    async function setAvatarAnimation(anim) {
+      await update(ref(db, `profiles/${user.uid}/avatarAnimation`), anim);
+      profile.avatarAnimation = anim;
+      toast("Анимация обновлена");
+      renderAvatarSettings();
+    }
+
+    // ===== DRAWING IN CHATS (НОМЕР 35) =====
+    function openDrawing() {
+      const container = document.createElement("div");
+      container.id = "drawingContainer";
+      container.style.cssText = "position:fixed;z-index:5000;inset:0;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;";
+
+      let isDrawing = false;
+      let lastX = 0, lastY = 0;
+      let color = '#000000';
+      let size = 3;
+
+      container.innerHTML = `
+        <canvas id="drawCanvas" class="drawing-canvas" width="400" height="500"></canvas>
+        <div class="drawing-tools">
+          <input type="color" id="drawColor" class="color-picker" value="#000000">
+          <input type="range" id="drawSize" min="1" max="20" value="3" style="width:80px;">
+          <button class="btn small" onclick="clearDrawing()">🗑️</button>
+          <button class="btn small primary" onclick="sendDrawing()">📤 Отправить</button>
+          <button class="btn small secondary" onclick="this.closest('#drawingContainer').remove()">✕</button>
         </div>
       `;
 
-      document.body.appendChild(overlay);
+      document.body.appendChild(container);
 
-      if (mode === "incoming") {
-        document.getElementById("callAcceptBtn").onclick = () => {
-          acceptCall(callId, call);
-          overlay.remove();
-          document.getElementById("callNotification")?.remove();
-        };
-        document.getElementById("callRejectBtn").onclick = () => {
-          rejectCall(callId, call);
-          overlay.remove();
-          document.getElementById("callNotification")?.remove();
-        };
-      } else {
-        document.getElementById("callEndBtn").onclick = () => {
-          endCall(callId);
-          overlay.remove();
-        };
-        startCallTimer();
+      const canvas = document.getElementById("drawCanvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX || e.touches?.[0]?.clientX || 0) - rect.left) * (canvas.width / rect.width);
+        const y = ((e.clientY || e.touches?.[0]?.clientY || 0) - rect.top) * (canvas.height / rect.height);
+        return { x, y };
       }
-    }
 
-    async function acceptCall(callId, call) {
-      await update(ref(db), {
-        [`calls/${user.uid}/${callId}/status`]: "active",
-        [`calls/${user.uid}/${callId}/acceptedAt`]: Date.now()
-      });
-      toast("Вызов принят 🎉");
-      isCallActive = true;
-      startCallTimer();
-      const overlay = document.getElementById("callOverlay");
-      if (overlay) {
-        const status = overlay.querySelector(".call-status");
-        if (status) {
-          status.textContent = "🟢 В разговоре";
-          status.className = "call-status";
-        }
-        const actions = overlay.querySelector(".call-actions");
-        if (actions) {
-          actions.innerHTML = `<button class="btn btn-end" id="callEndBtn">⏹</button>`;
-          document.getElementById("callEndBtn").onclick = () => {
-            endCall(callId);
-            overlay.remove();
-          };
-        }
+      function startDraw(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
       }
-    }
 
-    async function rejectCall(callId, call) {
-      await update(ref(db), {
-        [`calls/${user.uid}/${callId}/status`]: "rejected",
-        [`calls/${user.uid}/${callId}/rejectedAt`]: Date.now()
-      });
-      toast("Вызов отклонён");
-    }
+      function draw(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+      }
 
-    async function endCall(callId) {
-      await update(ref(db), {
-        [`calls/${user.uid}/${callId}/status`]: "ended",
-        [`calls/${user.uid}/${callId}/endedAt`]: Date.now()
-      });
-      isCallActive = false;
-      clearInterval(callTimer);
-      toast("Вызов завершён");
-      document.getElementById("callOverlay")?.remove();
-    }
+      function endDraw(e) {
+        isDrawing = false;
+      }
 
-    function startCallTimer() {
-      callSeconds = 0;
-      clearInterval(callTimer);
-      callTimer = setInterval(() => {
-        callSeconds++;
-        const display = document.getElementById("callTimerDisplay");
-        if (display) display.textContent = formatDuration(callSeconds);
-      }, 1000);
-    }
+      canvas.addEventListener("mousedown", startDraw);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", endDraw);
+      canvas.addEventListener("mouseleave", endDraw);
+      canvas.addEventListener("touchstart", startDraw, { passive: false });
+      canvas.addEventListener("touchmove", draw, { passive: false });
+      canvas.addEventListener("touchend", endDraw);
 
-    async function makeCall(friendUid, type = "audio") {
-      if (isCallActive) { toast("Уже в вызове"); return; }
+      document.getElementById("drawColor").onchange = (e) => { color = e.target.value; };
+      document.getElementById("drawSize").onchange = (e) => { size = e.target.value; };
 
-      const friendProfile = friends[friendUid]?.profile;
-      if (!friendProfile) { toast("Друг не найден"); return; }
-
-      const callId = push(ref(db, `calls/${friendUid}`)).key;
-
-      const call = {
-        from: user.uid,
-        to: friendUid,
-        type: type,
-        status: "ringing",
-        startedAt: Date.now(),
-        fromName: profile.name,
-        fromAvatar: profile.avatar || ""
+      window.clearDrawing = () => {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       };
 
-      await set(ref(db, `calls/${friendUid}/${callId}`), call);
-      await set(ref(db, `calls/${user.uid}/${callId}`), {
-        ...call,
-        to: friendUid,
-        toName: friendProfile.name,
-        toAvatar: friendProfile.avatar || ""
+      window.sendDrawing = async () => {
+        const data = canvas.toDataURL("image/png");
+        if (!currentChatId) { toast("Открой чат сначала"); return; }
+        const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
+        await set(messageRef, {
+          senderUid: user.uid,
+          type: "image",
+          data: data,
+          createdAt: Date.now()
+        });
+        await updateChatMeta(currentChatId, "🎨 Рисунок");
+        container.remove();
+        toast("Рисунок отправлен");
+      };
+    }
+
+    // ===== CUSTOM FONTS (НОМЕР 42) =====
+    function renderFontSettings() {
+      openPanel(`
+        <button class="close" onclick="closePanel()">×</button>
+        <h2>🔤 Шрифты в чатах</h2>
+        <div class="section-title">Выбери стиль</div>
+        <div class="font-selector">
+          ${FONTS.map(f => `
+            <button class="font-option ${profile?.fontPreference === f ? 'active' : ''}" 
+                    onclick="setFontPreference('${f}')">
+              ${f === 'default' ? 'Обычный' : f === 'comic' ? 'Comic' : f === 'serif' ? 'Serif' : f === 'mono' ? 'Mono' : f === 'emoji' ? '😊' : f === 'bold' ? 'B' : f === 'italic' ? 'I' : f === 'underline' ? 'U' : 'S'}
+            </button>
+          `).join("")}
+        </div>
+        <div class="note" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};">
+          Пример текста с выбранным шрифтом
+        </div>
+      `);
+    }
+
+    async function setFontPreference(font) {
+      await update(ref(db, `profiles/${user.uid}/fontPreference`), font);
+      profile.fontPreference = font;
+      toast("Шрифт обновлён");
+      renderFontSettings();
+    }
+
+    // Apply font to messages
+    function getFontClass(font) {
+      const map = {
+        'comic': 'font-comic',
+        'serif': 'font-serif',
+        'mono': 'font-mono',
+        'emoji': 'font-emoji',
+        'bold': 'font-bold',
+        'italic': 'font-italic',
+        'underline': 'font-underline',
+        'strike': 'font-strike'
+      };
+      return map[font] || '';
+    }
+
+    // ===== MESSAGE REACTIONS (НОМЕР 50) =====
+    async function addMessageReaction(messageId, emoji) {
+      if (!currentChatId) return;
+      const path = `chats/${currentChatId}/messages/${messageId}/reactions/${emoji}`;
+      const snap = await get(ref(db, path));
+      const old = snap.val() || { count: 0, users: {} };
+      old.count = (old.count || 0) + 1;
+      old.users = old.users || {};
+      old.users[user.uid] = (old.users[user.uid] || 0) + 1;
+      await set(ref(db, path), old);
+      incrementReactionStats(currentChatFriendId, emoji);
+    }
+
+    // ===== UNDO SEND (НОМЕР 54) =====
+    let messageTimers = new Map();
+
+    async function sendMessageWithUndo(text) {
+      if (!currentChatId) return;
+      const chatId = currentChatId;
+      const messageRef = push(ref(db, `chats/${chatId}/messages`));
+      const messageId = messageRef.key;
+      
+      await set(messageRef, {
+        senderUid: user.uid,
+        text: text,
+        type: "text",
+        createdAt: Date.now(),
+        canUndo: true
       });
+      
+      toast("Сообщение отправлено. Нажмите 'Отменить' в течение 5 секунд");
+      
+      // Показываем кнопку отмены
+      const undoBtn = document.createElement("button");
+      undoBtn.textContent = "↩️ Отменить";
+      undoBtn.className = "btn small";
+      undoBtn.style.cssText = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;";
+      undoBtn.onclick = async () => {
+        await remove(ref(db, `chats/${chatId}/messages/${messageId}`));
+        undoBtn.remove();
+        toast("Сообщение отменено");
+        clearTimeout(timer);
+      };
+      document.body.appendChild(undoBtn);
+      
+      const timer = setTimeout(() => {
+        undoBtn.remove();
+        update(ref(db, `chats/${chatId}/messages/${messageId}/canUndo`), false);
+      }, 5000);
+    }
 
-      toast(`📞 Вызов ${friendProfile.name}...`);
-      showCallUI(callId, call, friendProfile, "outgoing");
-
-      const callRef = ref(db, `calls/${friendUid}/${callId}`);
-      const unsubscribe = onValue(callRef, snap => {
-        const data = snap.val();
-        if (!data) return;
-        if (data.status === "active") {
-          isCallActive = true;
-          startCallTimer();
-          const overlay = document.getElementById("callOverlay");
-          if (overlay) {
-            const status = overlay.querySelector(".call-status");
-            if (status) {
-              status.textContent = "🟢 В разговоре";
-              status.className = "call-status";
-            }
-            const actions = overlay.querySelector(".call-actions");
-            if (actions) {
-              actions.innerHTML = `<button class="btn btn-end" id="callEndBtn">⏹</button>`;
-              document.getElementById("callEndBtn").onclick = () => {
-                endCall(callId);
-                overlay.remove();
-                unsubscribe();
-              };
-            }
-          }
-          toast("Собеседник ответил!");
-        }
-        if (data.status === "rejected" || data.status === "ended") {
-          isCallActive = false;
-          clearInterval(callTimer);
-          document.getElementById("callOverlay")?.remove();
-          unsubscribe();
-          toast(data.status === "rejected" ? "Вызов отклонён" : "Вызов завершён");
-        }
+    // ===== SELF-DESTRUCTING MESSAGES (НОМЕР 55) =====
+    async function sendSelfDestructingMessage(text, seconds = 10) {
+      if (!currentChatId) return;
+      const chatId = currentChatId;
+      const messageRef = push(ref(db, `chats/${chatId}/messages`));
+      
+      await set(messageRef, {
+        senderUid: user.uid,
+        text: text,
+        type: "self_destruct",
+        expiresAt: Date.now() + seconds * 1000,
+        createdAt: Date.now()
       });
-      callSubscriptions.push(unsubscribe);
+      
+      toast(`Сообщение исчезнет через ${seconds} секунд`);
+      
+      setTimeout(async () => {
+        await remove(ref(db, `chats/${chatId}/messages/${messageRef.key}`));
+      }, seconds * 1000);
+    }
 
-      setTimeout(() => {
-        if (document.getElementById("callOverlay") && !isCallActive) {
-          endCall(callId);
-          document.getElementById("callOverlay")?.remove();
-          toast("Вызов не отвечен");
-          unsubscribe();
+    // ===== HIDE ONLINE STATUS (НОМЕР 85) =====
+    function renderHideOnlineSettings() {
+      openPanel(`
+        <button class="close" onclick="closePanel()">×</button>
+        <h2>👻 Скрыть "В сети"</h2>
+        <div class="section-title">Выбери друзей, от которых хочешь скрыть статус</div>
+        <div id="hideOnlineList">
+          ${Object.keys(friends).map(uid => {
+            const p = friends[uid]?.profile || {};
+            const hidden = hideOnlineSettings[uid] || false;
+            return `
+              <div class="visibility-setting">
+                <div class="grow">
+                  <img class="avatar tiny" src="${avatarUrl(p)}" style="vertical-align:middle;margin-right:8px;">
+                  ${escapeHtml(p.name || "Друг")}
+                </div>
+                <button class="toggle ${hidden ? 'on' : ''}" onclick="toggleHideOnline('${uid}')"><i></i></button>
+              </div>
+            `;
+          }).join("") || `<div class="empty">Нет друзей</div>`
         }
-      }, 60000);
+        </div>
+        <div class="note">Когда скрыто, ты будешь отображаться как "Не в сети" для выбранных друзей</div>
+      `);
+    }
+
+    async function toggleHideOnline(uid) {
+      hideOnlineSettings[uid] = !hideOnlineSettings[uid];
+      await update(ref(db, `profiles/${user.uid}/hideOnline`), hideOnlineSettings);
+      renderHideOnlineSettings();
+    }
+
+    // Load hide online settings
+    async function loadHideOnlineSettings() {
+      const snap = await get(ref(db, `profiles/${user.uid}/hideOnline`));
+      hideOnlineSettings = snap.val() || {};
     }
 
     // ===== CHATS =====
@@ -2063,23 +2213,25 @@
       page.innerHTML = `
         <div class="chat-header">
           <button class="chat-back" id="chatBackBtn">‹</button>
-          <img class="avatar small" src="${avatarUrl(friendProfile)}">
+          <img class="avatar small ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(friendProfile)}">
           <div class="chat-title"><div class="chat-name">${escapeHtml(friendProfile.name || "Друг")}</div><div class="chat-status" id="typingStatus">В сети</div></div>
           <div class="chat-actions">
-            <button class="chat-action-btn" id="audioCallBtn" title="Голосовой вызов">📞</button>
-            <button class="chat-action-btn" id="videoCallBtn" title="Видеозвонок">📹</button>
+            <button class="chat-action-btn" id="chatFontBtn" title="Шрифт">🔤</button>
+            <button class="chat-action-btn" id="chatDrawBtn" title="Рисовать">🎨</button>
+            <button class="chat-action-btn" id="chatStickerPackBtn" title="Стикерпаки">📦</button>
             <button class="chat-action-btn primary" id="chatMapBtn">🗺️</button>
           </div>
         </div>
-        <div id="messages" class="messages"></div>
+        <div id="messages" class="messages" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};"></div>
         <div id="typingText" class="typing hidden">печатает…</div>
         <div id="quickReactionBar" class="chat-reaction-bar">
           ${REACTIONS.slice(0, 6).map(e => `<button class="quick-reaction" data-emoji="${e}">${e}</button>`).join("")}
           <button class="quick-reaction" id="stickerBtn">😊</button>
           <button class="quick-reaction" id="voiceBtn">🎤</button>
+          <button class="quick-reaction" id="selfDestructBtn">💣</button>
         </div>
         <div class="chat-input-area">
-          <input id="chatInput" class="chat-input" maxlength="1000" placeholder="Сообщение…">
+          <input id="chatInput" class="chat-input" maxlength="1000" placeholder="Сообщение…" style="font-family:${profile?.fontPreference === 'comic' ? 'Comic Sans MS' : profile?.fontPreference === 'serif' ? 'Georgia' : profile?.fontPreference === 'mono' ? 'Courier New' : 'inherit'};">
           <button id="sendMessageBtn" class="send-message">↑</button>
         </div>
       `;
@@ -2088,26 +2240,38 @@
       $("chatBackBtn").onclick = closeChat;
       $("chatMapBtn").onclick = () => { closeChat();
         showFriendOnMap(friendUid); };
-      $("audioCallBtn").onclick = () => makeCall(friendUid, "audio");
-      $("videoCallBtn").onclick = () => makeCall(friendUid, "video");
-      $("sendMessageBtn").onclick = sendChatMessage;
+      $("chatFontBtn").onclick = renderFontSettings;
+      $("chatDrawBtn").onclick = openDrawing;
+      $("chatStickerPackBtn").onclick = renderStickerPacks;
+      $("sendMessageBtn").onclick = () => {
+        const text = $("chatInput").value.trim();
+        if (text) sendMessageWithUndo(text);
+        $("chatInput").value = "";
+      };
       $("chatInput").addEventListener("keydown", e => {
-        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault();
-          sendChatMessage(); }
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          const text = $("chatInput").value.trim();
+          if (text) sendMessageWithUndo(text);
+          $("chatInput").value = "";
+        }
       });
       $("chatInput").oninput = handleTyping;
       $("stickerBtn").onclick = showStickerPicker;
       $("voiceBtn").onclick = toggleVoiceRecording;
+      $("selfDestructBtn").onclick = () => {
+        const text = prompt("Введите сообщение для самоуничтожения (секунд):", "10");
+        if (text) {
+          const seconds = parseInt(text) || 10;
+          const msg = prompt("Текст сообщения:");
+          if (msg) sendSelfDestructingMessage(msg, Math.min(60, Math.max(5, seconds)));
+        }
+      };
 
       document.querySelectorAll(".quick-reaction").forEach(btn => {
-        let timer = null;
         const emoji = btn.dataset.emoji;
         if (!emoji) return;
         btn.addEventListener("click", () => sendQuickReaction(emoji));
-        btn.addEventListener("touchstart", () => { timer = setTimeout(() => showReactionHold(emoji, friendUid), 600); }, { passive: true });
-        btn.addEventListener("touchend", () => clearTimeout(timer));
-        btn.addEventListener("mousedown", () => { timer = setTimeout(() => showReactionHold(emoji, friendUid), 600); });
-        btn.addEventListener("mouseup", () => clearTimeout(timer));
       });
 
       subscribeCurrentChat();
@@ -2241,14 +2405,40 @@
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;">
           ${STICKERS.map(s => `<button class="sticker" data-sticker="${s}">${s}</button>`).join("")}
         </div>
+        <div style="margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">Мои стикерпаки</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin-top:4px;" id="customStickers"></div>
       `;
       document.getElementById("chatPage")?.appendChild(div);
+      
+      // Load custom stickers
+      onValue(ref(db, `stickerPacks/${user.uid}`), snap => {
+        const data = snap.val() || {};
+        const container = div.querySelector("#customStickers");
+        if (!container) return;
+        const allStickers = [];
+        for (const pack of Object.values(data)) {
+          if (pack.stickers) {
+            for (const sticker of Object.values(pack.stickers)) {
+              allStickers.push(sticker.data);
+            }
+          }
+        }
+        container.innerHTML = allStickers.slice(0, 8).map(s => `
+          <button class="sticker" onclick="sendCustomSticker('${s}')">
+            <img src="${s}" style="width:40px;height:40px;object-fit:contain;border-radius:8px;">
+          </button>
+        `).join("") || `<div style="color:var(--muted);font-size:10px;">Нет стикеров</div>`;
+      });
+
       div.querySelectorAll(".sticker").forEach(btn => {
         btn.onclick = () => {
-          sendSticker(btn.dataset.sticker);
-          div.remove();
+          if (btn.dataset.sticker) {
+            sendSticker(btn.dataset.sticker);
+            div.remove();
+          }
         };
       });
+      
       setTimeout(() => {
         document.addEventListener("click", function closePicker(e) {
           if (!div.contains(e.target) && e.target.id !== "stickerBtn") {
@@ -2258,6 +2448,20 @@
         });
       }, 100);
     }
+
+    window.sendCustomSticker = async (data) => {
+      if (!currentChatId) return;
+      const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
+      await set(messageRef, {
+        senderUid: user.uid,
+        type: "image",
+        data: data,
+        createdAt: Date.now()
+      });
+      await updateChatMeta(currentChatId, "🖼️ Стикер");
+      toast("Стикер отправлен");
+      document.getElementById("stickerPicker")?.remove();
+    };
 
     async function sendSticker(emoji) {
       if (!currentChatId) return;
@@ -2292,13 +2496,20 @@
       const container = $("messages");
       if (!container) return;
       const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-      const entries = Object.entries(messages).sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
+      const entries = Object.entries(messages)
+        .filter(([id, msg]) => {
+          if (msg.type === "self_destruct" && Date.now() > msg.expiresAt) return false;
+          return true;
+        })
+        .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
+
+      const fontClass = profile?.fontPreference ? getFontClass(profile.fontPreference) : '';
 
       container.innerHTML = entries.length ? entries.map(([id, message]) => {
         const mine = message.senderUid === user.uid;
         const reactions = message.reactions || {};
         const reactionHtml = Object.entries(reactions).map(([emoji, data]) =>
-          `<button class="message-reaction" onclick="reactToMessage('${id}','${encodeURIComponent(emoji)}')">${emoji} ${data?.count || 1}</button>`
+          `<button class="message-reaction" onclick="addMessageReaction('${id}','${encodeURIComponent(emoji)}')">${emoji} ${data?.count || 1}</button>`
         ).join("");
 
         let content = "";
@@ -2306,6 +2517,8 @@
           content = `<div style="font-size:40px">${escapeHtml(message.emoji || "❤️")}</div>`;
         } else if (message.type === "sticker") {
           content = `<div style="font-size:58px">${escapeHtml(message.emoji || "😊")}</div>`;
+        } else if (message.type === "image") {
+          content = `<img src="${message.data}" style="max-width:200px;border-radius:12px;">`;
         } else if (message.type === "voice") {
           const duration = message.duration || 3;
           const data = message.data || "";
@@ -2318,14 +2531,20 @@
               <span class="voice-time">${formatDuration(duration)}</span>
             </div>
           `;
+        } else if (message.type === "self_destruct") {
+          content = `💣 ${escapeHtml(message.text || "")}`;
         } else {
           content = escapeHtml(message.text || "");
         }
 
+        const isSelfDestruct = message.type === "self_destruct" && Date.now() < message.expiresAt;
+        const timeLeft = isSelfDestruct ? Math.ceil((message.expiresAt - Date.now()) / 1000) : 0;
+
         return `
           <div class="message-row ${mine ? "mine" : "theirs"}">
-            <div class="message ${mine ? "mine" : "theirs"}" ${mine ? `oncontextmenu="deleteMessage('${id}');return false;"` : ""}>
+            <div class="message ${mine ? "mine" : "theirs"} ${fontClass}" ${mine ? `oncontextmenu="deleteMessage('${id}');return false;"` : ""}>
               ${content}
+              ${isSelfDestruct ? `<div style="font-size:9px;color:var(--muted);">⏱️ ${timeLeft}s</div>` : ""}
               ${reactionHtml ? `<div class="message-reactions">${reactionHtml}</div>` : ""}
               <div class="message-time">${formatTime(message.createdAt)}</div>
             </div>
@@ -2406,11 +2625,7 @@
       if (!text) return;
       input.value = "";
       await stopTyping();
-
-      const chatId = currentChatId;
-      const messageRef = push(ref(db, `chats/${chatId}/messages`));
-      await set(messageRef, { senderUid: user.uid, text, type: "text", createdAt: Date.now() });
-      await updateChatMeta(chatId, text);
+      await sendMessageWithUndo(text);
     }
 
     async function sendQuickReaction(emoji) {
@@ -2419,19 +2634,6 @@
       const messageRef = push(ref(db, `chats/${chatId}/messages`));
       await set(messageRef, { senderUid: user.uid, type: "reaction", emoji, createdAt: Date.now() });
       await updateChatMeta(chatId, `${emoji} Реакция`);
-      incrementReactionStats(currentChatFriendId, emoji);
-    }
-
-    async function reactToMessage(messageId, encodedEmoji) {
-      const emoji = decodeURIComponent(encodedEmoji);
-      if (!currentChatId) return;
-      const path = `chats/${currentChatId}/messages/${messageId}/reactions/${emoji}`;
-      const snap = await get(ref(db, path));
-      const old = snap.val() || { count: 0, users: {} };
-      old.count = (old.count || 0) + 1;
-      old.users = old.users || {};
-      old.users[user.uid] = (old.users[user.uid] || 0) + 1;
-      await set(ref(db, path), old);
       incrementReactionStats(currentChatFriendId, emoji);
     }
 
@@ -2493,7 +2695,7 @@
         const typingStatus = $("typingStatus");
         if (friendTyping?.active) {
           typingText?.classList.remove("hidden");
-          if (typingStatus) typingStatus.textContent = "✍️ печатает…";
+          if (typingStatus) typingStatus.textContent = "печатает…";
         } else {
           typingText?.classList.add("hidden");
           if (typingStatus) typingStatus.textContent = "В сети";
@@ -2508,38 +2710,6 @@
       const snap = await get(ref(db, path));
       const count = Number(snap.val()?.count || 0) + 1;
       await set(ref(db, path), { count, updatedAt: Date.now() });
-    }
-
-    // ===== LONG PRESS REACTION =====
-    async function showReactionHold(emoji, friendUid) {
-      const friendProfile = friends[friendUid]?.profile || {};
-      let count = 0;
-      try {
-        const snap = await get(ref(db, `reactionStats/${user.uid}/${friendUid}/${emoji}`));
-        count = Number(snap.val()?.count || 0);
-      } catch (e) {}
-
-      const old = document.getElementById("reactionHoldOverlay");
-      if (old) old.remove();
-
-      const overlay = document.createElement("div");
-      overlay.id = "reactionHoldOverlay";
-      overlay.style.cssText = `
-        position:fixed;z-index:15000;inset:0;display:flex;align-items:center;justify-content:center;
-        padding:25px;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);
-      `;
-      overlay.innerHTML = `
-        <div style="width:min(360px,100%);padding:25px;border:1px solid #383838;border-radius:30px;background:#111;text-align:center;">
-          <img style="width:90px;height:90px;border:3px solid var(--ok);border-radius:50%;object-fit:cover;" src="${avatarUrl(friendProfile)}">
-          <div style="margin-top:12px;font-size:75px;">${emoji}</div>
-          <div style="margin-top:8px;font-size:40px;font-weight:1000;color:var(--ok);">${count.toLocaleString("ru-RU")}</div>
-          <div style="margin-top:6px;color:#aaa;font-size:13px;">Ты отправил эту реакцию пользователю <b>${escapeHtml(friendProfile.name || "другу")}</b> ${count === 1 ? "раз" : "раз"}</div>
-          <button class="btn full" id="closeHoldBtn">Закрыть</button>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-      $("closeHoldBtn").onclick = () => overlay.remove();
-      overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
     }
 
     // ===== BIG REACTION PANEL =====
@@ -2700,13 +2870,16 @@
         <button class="close" onclick="closePanel()">×</button>
         <h2>Профиль</h2>
         <div class="friend">
-          <img id="profileAvatar" class="avatar" src="${avatarUrl(profile)}">
+          <img id="profileAvatar" class="avatar ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(profile)}">
           <div class="grow"><b>${escapeHtml(profile.name)}</b><div class="code">Код друга: <b>${profile.friendCode}</b></div></div>
         </div>
         <div class="field"><label>Имя</label><input id="profileNameInput" maxlength="30" value="${escapeHtml(profile.name || "")}"></div>
         <div class="field"><label>Фото профиля</label><input id="avatarInput" type="file" accept="image/*"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn secondary" onclick="renderAvatarSettings()">✨ Аватар</button>
+          <button class="btn secondary" onclick="renderFontSettings()">🔤 Шрифт</button>
+        </div>
         <button id="saveProfileBtn" class="btn full">Сохранить</button>
-        <div class="note">📍 Твоя точка на карте плавно покачивается! 🌀</div>
       `);
 
       $("saveProfileBtn").onclick = saveProfile;
@@ -2768,9 +2941,12 @@
           <div class="grow"><b>🌙 Тёмная тема</b><div class="code">Переключить тему приложения</div></div>
           <button id="themeToggleBtn" class="toggle ${isDarkTheme ? "on" : ""}"><i></i></button>
         </div>
+        <button class="btn full secondary" onclick="renderHideOnlineSettings()">👻 Скрыть "В сети"</button>
+        <button class="btn full secondary" onclick="renderStickerPacks()">🎨 Мои стикерпаки</button>
+        <button class="btn full secondary" onclick="renderPlaylists()">🎵 Плейлисты</button>
+        <button class="btn full primary" onclick="startHideSeek()">🕵️ Прятки с друзьями</button>
         <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
         <div class="note">Версия 2.0 • ${Object.keys(friends).length} друзей</div>
-        <div class="note">🌀 Точки на карте плавно покачиваются!</div>
       `);
 
       $("locationToggle").onclick = toggleLocation;
@@ -2821,7 +2997,7 @@
           <button class="btn secondary small" onclick="openPage('settings');closePanel();">⚙️ Настройки</button>
         </div>
         <div class="section-title">🎨 О приложении</div>
-        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>🌀 Твоя точка и точки друзей плавно покачиваются на карте!</div>
+        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>🎨 Новое: истории, плейлисты, прятки, стикерпаки, анимированные аватары, рисование, шрифты, реакции, отмена отправки, самоуничтожение, скрытие "в сети"!</div>
       `);
     }
 
@@ -2837,7 +3013,6 @@
       if (watchId !== null) navigator.geolocation.clearWatch(watchId);
       stopTyping();
       stopVoiceRecording();
-      callSubscriptions.forEach(unsub => unsub());
     });
 
     window.addEventListener("online", () => {
@@ -2848,6 +3023,7 @@
 
     // ===== START =====
     initMap();
+    loadHideOnlineSettings();
   </script>
 </body>
 </html>
