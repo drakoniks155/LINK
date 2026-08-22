@@ -72,6 +72,7 @@
       z-index: 1;
     }
 
+    /* TOP BAR */
     .topbar {
       position: absolute;
       z-index: 1000;
@@ -121,6 +122,7 @@
       box-shadow: 0 0 12px var(--ok);
     }
 
+    /* MAP BUTTONS */
     .map-actions {
       position: absolute;
       z-index: 1000;
@@ -141,6 +143,7 @@
       backdrop-filter: blur(15px);
     }
 
+    /* BOTTOM NAV */
     .bottom {
       position: absolute;
       z-index: 1000;
@@ -195,6 +198,7 @@
       text-align: center;
     }
 
+    /* PANELS */
     .panel {
       position: absolute;
       z-index: 3000;
@@ -247,6 +251,7 @@
       font-size: 22px;
     }
 
+    /* INPUTS */
     .field {
       margin: 11px 0;
     }
@@ -302,6 +307,22 @@
       background: var(--ok);
       color: #000;
     }
+    .btn.call-accept {
+      background: #34c759;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+    }
+    .btn.call-reject {
+      background: #ff3b30;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+    }
     .row {
       display: flex;
       gap: 8px;
@@ -312,6 +333,7 @@
       min-width: 0;
     }
 
+    /* AUTH */
     .auth {
       position: absolute;
       z-index: 9000;
@@ -345,6 +367,7 @@
       margin-top: 12px;
     }
 
+    /* AVATARS */
     .avatar {
       width: 64px;
       height: 64px;
@@ -364,7 +387,13 @@
       height: 28px;
       border-width: 1px;
     }
+    .avatar.large {
+      width: 80px;
+      height: 80px;
+      border-width: 3px;
+    }
 
+    /* FRIENDS */
     .friend,
     .request,
     .chat-item {
@@ -411,6 +440,7 @@
       box-shadow: 0 0 8px var(--ok);
     }
 
+    /* MAP MARKERS */
     .leaflet-control-attribution {
       font-size: 8px !important;
     }
@@ -451,6 +481,7 @@
       }
     }
 
+    /* TOAST */
     .toast {
       position: absolute;
       z-index: 12000;
@@ -468,6 +499,7 @@
       box-shadow: 0 12px 35px rgba(0, 0, 0, .5);
     }
 
+    /* REACTIONS */
     .reaction-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -498,6 +530,7 @@
       line-height: 1.5;
     }
 
+    /* CHATS */
     .chat-preview {
       overflow: hidden;
       white-space: nowrap;
@@ -517,6 +550,8 @@
       font-size: 10px;
       font-weight: 1000;
     }
+
+    /* CHAT PAGE */
     .chat-page {
       position: absolute;
       z-index: 4500;
@@ -560,14 +595,22 @@
       color: var(--muted);
       font-size: 11px;
     }
-    .chat-map-btn {
+    .chat-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-action-btn {
       width: 40px;
       height: 40px;
       border: 0;
       border-radius: 50%;
+      background: var(--card2);
+      color: var(--text);
+      font-size: 18px;
+    }
+    .chat-action-btn.primary {
       background: #fff;
       color: #000;
-      font-size: 18px;
     }
     .messages {
       flex: 1;
@@ -710,7 +753,7 @@
       font-size: 11px;
     }
 
-    /* Voice Message Player */
+    /* VOICE MESSAGE */
     .voice-message {
       display: flex;
       align-items: center;
@@ -759,7 +802,7 @@
       text-align: center;
     }
 
-    /* Recording indicator */
+    /* RECORDING INDICATOR */
     .recording-indicator {
       position: absolute;
       z-index: 6;
@@ -784,6 +827,7 @@
       background: #fff;
     }
 
+    /* STICKERS */
     .sticker-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -802,6 +846,7 @@
       transform: scale(.9);
     }
 
+    /* TOGGLE */
     .toggle {
       position: relative;
       width: 48px;
@@ -833,6 +878,177 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
+    }
+
+    /* ===== CALL UI ===== */
+    .call-overlay {
+      position: fixed;
+      z-index: 20000;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      animation: callIn 0.4s ease;
+    }
+    @keyframes callIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .call-card {
+      text-align: center;
+      padding: 30px 24px 40px;
+      max-width: 360px;
+      width: 100%;
+    }
+    .call-card .avatar.large {
+      width: 100px;
+      height: 100px;
+      border-width: 4px;
+      border-color: #fff;
+      margin-bottom: 12px;
+    }
+    .call-card .call-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .call-card .call-status {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .call-card .call-status.incoming {
+      color: #70ffad;
+      animation: callPulse 1s infinite;
+    }
+    .call-card .call-status.ringing {
+      color: #ffd93d;
+      animation: callPulse 0.8s infinite;
+    }
+    @keyframes callPulse {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .call-actions {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .call-actions .btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+    }
+    .call-actions .btn-accept {
+      background: #34c759;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(52, 199, 89, 0.4);
+    }
+    .call-actions .btn-accept:hover {
+      transform: scale(1.05);
+    }
+    .call-actions .btn-reject {
+      background: #ff3b30;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
+    }
+    .call-actions .btn-reject:hover {
+      transform: scale(1.05);
+    }
+    .call-actions .btn-end {
+      background: #ff3b30;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
+    }
+
+    /* Call timer */
+    .call-timer {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    /* Incoming call notification (top banner) */
+    .call-notification {
+      position: fixed;
+      z-index: 15000;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      padding-top: max(16px, env(safe-area-inset-top));
+      background: rgba(20, 20, 20, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideDown 0.3s ease;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+    .call-notification .call-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .call-notification .call-info .name {
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .call-notification .call-info .type {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .call-notification .call-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .call-notification .call-btns .btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+    }
+    .call-notification .call-btns .btn-accept {
+      background: #34c759;
+      color: #fff;
+    }
+    .call-notification .call-btns .btn-reject {
+      background: #ff3b30;
+      color: #fff;
     }
 
     @media(min-width:700px) {
@@ -895,7 +1111,7 @@
   <div id="auth" class="auth">
     <div class="authbox">
       <div class="logo">LINK</div>
-      <div class="subtitle">Друзья рядом. Карта. Чаты. Реакции.</div>
+      <div class="subtitle">Друзья рядом. Карта. Чаты. Звонки.</div>
       <button id="startBtn" class="btn full">Начать</button>
       <div id="authStatus" class="auth-status">Подключаем Firebase…</div>
       <div class="note">Аккаунт создаётся автоматически.</div>
@@ -951,6 +1167,13 @@
     let typingTimer = null;
     let typingStopTimer = null;
     let isDarkTheme = true;
+
+    // ===== CALL VARIABLES =====
+    let callSubscriptions = [];
+    let activeCall = null;
+    let callTimer = null;
+    let callSeconds = 0;
+    let isCallActive = false;
 
     // ===== VOICE RECORDING =====
     let mediaRecorder = null;
@@ -1031,6 +1254,13 @@
 
     function getChatId(uid1, uid2) {
       return [uid1, uid2].sort().join("_");
+    }
+
+    function playCallSound() {
+      // Vibrate pattern for incoming call
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200, 100, 300]);
+      }
     }
 
     // ===== NAVIGATION =====
@@ -1136,6 +1366,7 @@
         subscribeIncomingRequests();
         subscribeIncomingReactions();
         subscribeChats();
+        subscribeCalls();
 
         if (profile.locationSharing !== false) {
           locationSharing = true;
@@ -1368,6 +1599,258 @@
       );
     }
 
+    // ===== CALLS =====
+    function subscribeCalls() {
+      const callsRef = ref(db, `calls/${user.uid}`);
+      const unsubscribe = onValue(callsRef, snap => {
+        const data = snap.val() || {};
+        // Process incoming calls
+        for (const [callId, call] of Object.entries(data)) {
+          if (call.to === user.uid && call.status === "ringing" && !call._processed) {
+            call._processed = true;
+            showIncomingCall(callId, call);
+          }
+        }
+      });
+      callSubscriptions.push(unsubscribe);
+    }
+
+    function showIncomingCall(callId, call) {
+      playCallSound();
+
+      const friendProfile = friends[call.from]?.profile || { name: "Друг" };
+
+      // Show notification banner
+      const notification = document.createElement("div");
+      notification.className = "call-notification";
+      notification.id = "callNotification";
+      notification.innerHTML = `
+        <img class="avatar tiny" src="${avatarUrl(friendProfile)}">
+        <div class="call-info">
+          <div class="name">${escapeHtml(friendProfile.name || "Друг")}</div>
+          <div class="type">${call.type === "video" ? "📹 Видеозвонок" : "📞 Голосовой вызов"}</div>
+        </div>
+        <div class="call-btns">
+          <button class="btn btn-accept" id="acceptCallBtn">✓</button>
+          <button class="btn btn-reject" id="rejectCallBtn">✕</button>
+        </div>
+      `;
+      document.body.appendChild(notification);
+
+      // Also show fullscreen call UI
+      showCallUI(callId, call, friendProfile, "incoming");
+
+      document.getElementById("acceptCallBtn").onclick = () => {
+        acceptCall(callId, call);
+        notification.remove();
+        document.getElementById("callOverlay")?.remove();
+      };
+
+      document.getElementById("rejectCallBtn").onclick = () => {
+        rejectCall(callId, call);
+        notification.remove();
+        document.getElementById("callOverlay")?.remove();
+      };
+
+      // Auto-reject after 30 seconds
+      setTimeout(() => {
+        if (document.getElementById("callNotification")) {
+          rejectCall(callId, call);
+          notification.remove();
+          document.getElementById("callOverlay")?.remove();
+          toast("Вызов пропущен");
+        }
+      }, 30000);
+    }
+
+    function showCallUI(callId, call, friendProfile, mode = "incoming") {
+      const existing = document.getElementById("callOverlay");
+      if (existing) existing.remove();
+
+      const overlay = document.createElement("div");
+      overlay.id = "callOverlay";
+      overlay.className = "call-overlay";
+
+      const isVideo = call.type === "video";
+      const statusText = mode === "incoming" ? "📞 Входящий вызов..." : "🔴 Вызов...";
+
+      overlay.innerHTML = `
+        <div class="call-card">
+          <img class="avatar large" src="${avatarUrl(friendProfile)}">
+          <div class="call-name">${escapeHtml(friendProfile.name || "Друг")}</div>
+          <div class="call-status ${mode === "incoming" ? "incoming" : "ringing"}">${statusText}</div>
+          ${isVideo ? '<div style="font-size:40px;margin-bottom:10px;">📹</div>' : ''}
+          <div class="call-timer" id="callTimerDisplay">${formatDuration(0)}</div>
+          <div class="call-actions">
+            ${mode === "incoming" ? `
+              <button class="btn btn-accept" id="callAcceptBtn">✓</button>
+              <button class="btn btn-reject" id="callRejectBtn">✕</button>
+            ` : `
+              <button class="btn btn-end" id="callEndBtn">⏹</button>
+            `}
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      if (mode === "incoming") {
+        document.getElementById("callAcceptBtn").onclick = () => {
+          acceptCall(callId, call);
+          overlay.remove();
+          document.getElementById("callNotification")?.remove();
+        };
+        document.getElementById("callRejectBtn").onclick = () => {
+          rejectCall(callId, call);
+          overlay.remove();
+          document.getElementById("callNotification")?.remove();
+        };
+      } else {
+        document.getElementById("callEndBtn").onclick = () => {
+          endCall(callId);
+          overlay.remove();
+        };
+        // Start timer for outgoing call
+        startCallTimer();
+      }
+    }
+
+    async function acceptCall(callId, call) {
+      await update(ref(db), {
+        [`calls/${user.uid}/${callId}/status`]: "active",
+        [`calls/${user.uid}/${callId}/acceptedAt`]: Date.now()
+      });
+      toast("Вызов принят 🎉");
+      isCallActive = true;
+      startCallTimer();
+      // Update UI to active call state
+      const overlay = document.getElementById("callOverlay");
+      if (overlay) {
+        const status = overlay.querySelector(".call-status");
+        if (status) {
+          status.textContent = "🟢 В разговоре";
+          status.className = "call-status";
+        }
+        const actions = overlay.querySelector(".call-actions");
+        if (actions) {
+          actions.innerHTML = `<button class="btn btn-end" id="callEndBtn">⏹</button>`;
+          document.getElementById("callEndBtn").onclick = () => {
+            endCall(callId);
+            overlay.remove();
+          };
+        }
+      }
+    }
+
+    async function rejectCall(callId, call) {
+      await update(ref(db), {
+        [`calls/${user.uid}/${callId}/status`]: "rejected",
+        [`calls/${user.uid}/${callId}/rejectedAt`]: Date.now()
+      });
+      toast("Вызов отклонён");
+    }
+
+    async function endCall(callId) {
+      await update(ref(db), {
+        [`calls/${user.uid}/${callId}/status`]: "ended",
+        [`calls/${user.uid}/${callId}/endedAt`]: Date.now()
+      });
+      isCallActive = false;
+      clearInterval(callTimer);
+      toast("Вызов завершён");
+      document.getElementById("callOverlay")?.remove();
+    }
+
+    function startCallTimer() {
+      callSeconds = 0;
+      clearInterval(callTimer);
+      callTimer = setInterval(() => {
+        callSeconds++;
+        const display = document.getElementById("callTimerDisplay");
+        if (display) display.textContent = formatDuration(callSeconds);
+      }, 1000);
+    }
+
+    // ===== MAKE CALL =====
+    async function makeCall(friendUid, type = "audio") {
+      if (isCallActive) { toast("Уже в вызове"); return; }
+
+      const friendProfile = friends[friendUid]?.profile;
+      if (!friendProfile) { toast("Друг не найден"); return; }
+
+      const callId = push(ref(db, `calls/${friendUid}`)).key;
+
+      const call = {
+        from: user.uid,
+        to: friendUid,
+        type: type,
+        status: "ringing",
+        startedAt: Date.now(),
+        fromName: profile.name,
+        fromAvatar: profile.avatar || ""
+      };
+
+      await set(ref(db, `calls/${friendUid}/${callId}`), call);
+
+      // Also add to caller's calls
+      await set(ref(db, `calls/${user.uid}/${callId}`), {
+        ...call,
+        to: friendUid,
+        toName: friendProfile.name,
+        toAvatar: friendProfile.avatar || ""
+      });
+
+      toast(`📞 Вызов ${friendProfile.name}...`);
+      showCallUI(callId, call, friendProfile, "outgoing");
+
+      // Subscribe to call status changes
+      const callRef = ref(db, `calls/${friendUid}/${callId}`);
+      const unsubscribe = onValue(callRef, snap => {
+        const data = snap.val();
+        if (!data) return;
+        if (data.status === "active") {
+          isCallActive = true;
+          startCallTimer();
+          const overlay = document.getElementById("callOverlay");
+          if (overlay) {
+            const status = overlay.querySelector(".call-status");
+            if (status) {
+              status.textContent = "🟢 В разговоре";
+              status.className = "call-status";
+            }
+            const actions = overlay.querySelector(".call-actions");
+            if (actions) {
+              actions.innerHTML = `<button class="btn btn-end" id="callEndBtn">⏹</button>`;
+              document.getElementById("callEndBtn").onclick = () => {
+                endCall(callId);
+                overlay.remove();
+                unsubscribe();
+              };
+            }
+          }
+          toast("Собеседник ответил!");
+        }
+        if (data.status === "rejected" || data.status === "ended") {
+          isCallActive = false;
+          clearInterval(callTimer);
+          document.getElementById("callOverlay")?.remove();
+          unsubscribe();
+          toast(data.status === "rejected" ? "Вызов отклонён" : "Вызов завершён");
+        }
+      });
+      callSubscriptions.push(unsubscribe);
+
+      // Auto-end after 60 seconds if no answer
+      setTimeout(() => {
+        if (document.getElementById("callOverlay") && !isCallActive) {
+          endCall(callId);
+          document.getElementById("callOverlay")?.remove();
+          toast("Вызов не отвечен");
+          unsubscribe();
+        }
+      }, 60000);
+    }
+
     // ===== CHATS =====
     function subscribeChats() {
       if (chatsUnsubscribe) chatsUnsubscribe();
@@ -1425,7 +1908,11 @@
           <button class="chat-back" id="chatBackBtn">‹</button>
           <img class="avatar small" src="${avatarUrl(friendProfile)}">
           <div class="chat-title"><div class="chat-name">${escapeHtml(friendProfile.name || "Друг")}</div><div class="chat-status" id="typingStatus">В сети</div></div>
-          <button class="chat-map-btn" id="chatMapBtn">🗺️</button>
+          <div class="chat-actions">
+            <button class="chat-action-btn" id="audioCallBtn" title="Голосовой вызов">📞</button>
+            <button class="chat-action-btn" id="videoCallBtn" title="Видеозвонок">📹</button>
+            <button class="chat-action-btn primary" id="chatMapBtn">🗺️</button>
+          </div>
         </div>
         <div id="messages" class="messages"></div>
         <div id="typingText" class="typing hidden">печатает…</div>
@@ -1444,6 +1931,8 @@
       $("chatBackBtn").onclick = closeChat;
       $("chatMapBtn").onclick = () => { closeChat();
         showFriendOnMap(friendUid); };
+      $("audioCallBtn").onclick = () => makeCall(friendUid, "audio");
+      $("videoCallBtn").onclick = () => makeCall(friendUid, "video");
       $("sendMessageBtn").onclick = sendChatMessage;
       $("chatInput").addEventListener("keydown", e => {
         if (e.key === "Enter" && !e.shiftKey) { e.preventDefault();
@@ -1520,20 +2009,16 @@
         voiceBtn.textContent = "⏹️";
         voiceBtn.classList.add("recording");
 
-        // Show recording indicator
         const indicator = document.createElement("div");
         indicator.id = "recordingIndicator";
         indicator.className = "recording-indicator";
         indicator.innerHTML = `<span class="dot-rec"></span> Запись: <span id="recordingTime">0s</span>`;
         document.getElementById("chatPage")?.appendChild(indicator);
 
-        // Update timer every second
         recordingTimer = setInterval(() => {
           recordingSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
           const timeEl = document.getElementById("recordingTime");
           if (timeEl) timeEl.textContent = formatDuration(recordingSeconds);
-
-          // Auto-stop at 60 seconds
           if (recordingSeconds >= 60) {
             toast("Максимум 60 секунд");
             stopVoiceRecording();
@@ -1558,14 +2043,11 @@
     function cleanupRecording() {
       isRecording = false;
       clearInterval(recordingTimer);
-
       const voiceBtn = $("voiceBtn");
       voiceBtn.textContent = "🎤";
       voiceBtn.classList.remove("recording");
-
       const indicator = document.getElementById("recordingIndicator");
       if (indicator) indicator.remove();
-
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         stream = null;
@@ -1580,7 +2062,7 @@
         senderUid: user.uid,
         type: "voice",
         data: base64,
-        duration: duration || Math.floor(Math.random() * 10) + 3,
+        duration: duration || 3,
         createdAt: Date.now()
       });
       await updateChatMeta(chatId, "🎤 Голосовое сообщение");
@@ -1704,7 +2186,6 @@
     window.toggleVoicePlay = function(btn, data) {
       if (!data) { toast("Аудио недоступно"); return; }
       try {
-        // Decode base64
         const audioData = data.split(",")[1] || data;
         const byteCharacters = atob(audioData);
         const byteNumbers = new Array(byteCharacters.length);
@@ -2030,7 +2511,6 @@
         overlay.appendChild(particle);
       }
 
-      // Add keyframes dynamically
       const style = document.createElement("style");
       style.textContent = `
         @keyframes fadeReaction { 0%{opacity:0} 10%{opacity:1} 85%{opacity:1} 100%{opacity:0} }
@@ -2182,7 +2662,7 @@
           <button class="btn secondary small" onclick="openPage('settings');closePanel();">⚙️ Настройки</button>
         </div>
         <div class="section-title">🎨 О приложении</div>
-        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>🎤 Новое: голосовые сообщения с таймером!</div>
+        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>📞 Новое: голосовые и видеозвонки!</div>
       `);
     }
 
@@ -2198,6 +2678,7 @@
       if (watchId !== null) navigator.geolocation.clearWatch(watchId);
       stopTyping();
       stopVoiceRecording();
+      callSubscriptions.forEach(unsub => unsub());
     });
 
     window.addEventListener("online", () => {
