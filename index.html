@@ -7,6 +7,7 @@
   <title>LINK — друзья и чат</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
+    /* ... весь CSS оставляем без изменений ... */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -71,8 +72,6 @@
       inset: 0;
       z-index: 1;
     }
-
-    /* TOP BAR */
     .topbar {
       position: absolute;
       z-index: 1000;
@@ -121,8 +120,6 @@
       background: var(--ok);
       box-shadow: 0 0 12px var(--ok);
     }
-
-    /* MAP BUTTONS */
     .map-actions {
       position: absolute;
       z-index: 1000;
@@ -142,8 +139,6 @@
       font-size: 20px;
       backdrop-filter: blur(15px);
     }
-
-    /* BOTTOM NAV */
     .bottom {
       position: absolute;
       z-index: 1000;
@@ -197,8 +192,6 @@
       font-weight: 900;
       text-align: center;
     }
-
-    /* PANELS */
     .panel {
       position: absolute;
       z-index: 3000;
@@ -250,8 +243,6 @@
       color: var(--text);
       font-size: 22px;
     }
-
-    /* INPUTS */
     .field {
       margin: 11px 0;
     }
@@ -316,8 +307,6 @@
       flex: 1;
       min-width: 0;
     }
-
-    /* AUTH */
     .auth {
       position: absolute;
       z-index: 9000;
@@ -350,8 +339,6 @@
       font-size: 13px;
       margin-top: 12px;
     }
-
-    /* AVATARS */
     .avatar {
       width: 64px;
       height: 64px;
@@ -398,8 +385,6 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
-
-    /* FRIENDS */
     .friend,
     .request,
     .chat-item {
@@ -445,8 +430,6 @@
       background: var(--ok);
       box-shadow: 0 0 8px var(--ok);
     }
-
-    /* MAP MARKERS */
     .leaflet-control-attribution {
       font-size: 8px !important;
     }
@@ -486,8 +469,6 @@
         opacity: .15;
       }
     }
-
-    /* TOAST */
     .toast {
       position: absolute;
       z-index: 12000;
@@ -504,8 +485,6 @@
       text-align: center;
       box-shadow: 0 12px 35px rgba(0, 0, 0, .5);
     }
-
-    /* REACTIONS */
     .reaction-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -535,8 +514,6 @@
       font-size: 12px;
       line-height: 1.5;
     }
-
-    /* CHATS */
     .chat-preview {
       overflow: hidden;
       white-space: nowrap;
@@ -556,8 +533,6 @@
       font-size: 10px;
       font-weight: 1000;
     }
-
-    /* CHAT PAGE */
     .chat-page {
       position: absolute;
       z-index: 4500;
@@ -675,7 +650,6 @@
       background: #ddd;
       color: #000;
     }
-
     .chat-reaction-bar {
       position: absolute;
       z-index: 4;
@@ -716,7 +690,6 @@
         transform: scale(1.15);
       }
     }
-
     .chat-input-area {
       position: absolute;
       z-index: 5;
@@ -758,8 +731,6 @@
       color: var(--muted);
       font-size: 11px;
     }
-
-    /* VOICE MESSAGE */
     .voice-message {
       display: flex;
       align-items: center;
@@ -807,8 +778,6 @@
       min-width: 32px;
       text-align: center;
     }
-
-    /* RECORDING INDICATOR */
     .recording-indicator {
       position: absolute;
       z-index: 6;
@@ -832,8 +801,6 @@
       border-radius: 50%;
       background: #fff;
     }
-
-    /* STICKERS */
     .sticker-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -851,8 +818,6 @@
     .sticker:active {
       transform: scale(.9);
     }
-
-    /* TOGGLE */
     .toggle {
       position: relative;
       width: 48px;
@@ -885,8 +850,6 @@
       font-size: 12px;
       line-height: 1.5;
     }
-
-    /* STORIES */
     .stories-bar {
       display: flex;
       gap: 12px;
@@ -924,7 +887,6 @@
     .story-avatar .seen {
       border-color: #888;
     }
-
     .story-viewer {
       position: fixed;
       z-index: 10000;
@@ -977,8 +939,6 @@
       font-size: 14px;
       opacity: 0.7;
     }
-
-    /* DRAWING */
     .drawing-canvas {
       border-radius: 12px;
       border: 1px solid var(--line);
@@ -990,6 +950,8 @@
       gap: 8px;
       padding: 8px 0;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
     }
     .drawing-tools .btn {
       padding: 6px 12px;
@@ -1003,8 +965,6 @@
       cursor: pointer;
       padding: 0;
     }
-
-    /* FONTS */
     .font-selector {
       display: flex;
       gap: 8px;
@@ -1031,8 +991,6 @@
     .font-italic { font-style: italic; }
     .font-underline { text-decoration: underline; }
     .font-strike { text-decoration: line-through; }
-
-    /* HIDE ONLINE */
     .visibility-setting {
       display: flex;
       align-items: center;
@@ -1043,7 +1001,17 @@
     .visibility-setting .toggle {
       flex: none;
     }
-
+    #drawingContainer {
+      position: fixed;
+      z-index: 5000;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
     @media(min-width:700px) {
       .bottom {
         left: 50%;
@@ -1115,7 +1083,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, update, remove, push, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
@@ -1162,6 +1130,7 @@
     let isDarkTheme = true;
     let storiesUnsubscribe = null;
     let hideOnlineSettings = {};
+    let currentFont = 'default';
 
     // ===== VOICE RECORDING =====
     let mediaRecorder = null;
@@ -1244,6 +1213,29 @@
 
     function getChatId(uid1, uid2) {
       return [uid1, uid2].sort().join("_");
+    }
+
+    function compressImage(file, maxSize = 256, quality = .78) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const width = Math.round(img.width * scale);
+            const height = Math.round(img.height * scale);
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     }
 
     // ===== NAVIGATION =====
@@ -1350,6 +1342,7 @@
         subscribeIncomingReactions();
         subscribeChats();
         subscribeStories();
+        loadHideOnlineSettings();
 
         if (profile.locationSharing !== false) {
           locationSharing = true;
@@ -1471,8 +1464,8 @@
           return `<div class="request">
             <img class="avatar small" src="${avatarUrl(p)}">
             <div class="grow"><b>${escapeHtml(p.name || "Пользователь")}</b><div class="code">Хочет добавить тебя в друзья</div></div>
-            <button class="btn small" onclick="acceptRequest('${uid}')">✓</button>
-            <button class="btn small secondary" onclick="rejectRequest('${uid}')">×</button>
+            <button class="btn small" onclick="window.acceptRequest('${uid}')">✓</button>
+            <button class="btn small secondary" onclick="window.rejectRequest('${uid}')">×</button>
           </div>`;
         }).join("")}
       ` : "";
@@ -1486,9 +1479,9 @@
             <img class="avatar small ${profile?.avatarAnimation && profile.avatarAnimation !== 'none' ? profile.avatarAnimation : ''}" src="${avatarUrl(p)}">
             <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code">#${escapeHtml(p.friendCode || "")} <span class="online-status ${online ? "online" : ""}"></span></div></div>
             <div class="friend-actions">
-              <button class="btn small" onclick="openChat('${uid}')">💬</button>
-              <button class="btn small secondary" onclick="openFriendReactionPanel('${uid}')">💜</button>
-              <button class="btn small danger" onclick="removeFriend('${uid}')">×</button>
+              <button class="btn small" onclick="window.openChat('${uid}')">💬</button>
+              <button class="btn small secondary" onclick="window.openFriendReactionPanel('${uid}')">💜</button>
+              <button class="btn small danger" onclick="window.removeFriend('${uid}')">×</button>
             </div>
           </div>`;
         }).join("")}
@@ -1693,7 +1686,10 @@
         `;
 
         // Mark as viewed
-        update(ref(db, `stories/${uid}/${Object.keys(stories)[index]}/views/${user.uid}`), true);
+        const storyKey = Object.keys(stories)[index];
+        if (storyKey) {
+          update(ref(db, `stories/${uid}/${storyKey}/views/${user.uid}`), true);
+        }
 
         let progress = 0;
         const interval = setInterval(() => {
@@ -1721,7 +1717,7 @@
     }
 
     // ===== PLAYLISTS (НОМЕР 9) =====
-    async function createPlaylist() {
+    window.createPlaylist = async function() {
       const name = prompt("Название плейлиста:");
       if (!name?.trim()) return;
       
@@ -1734,13 +1730,12 @@
       });
       toast("Плейлист создан 🎵");
       renderPlaylists();
-    }
+    };
 
-    async function sharePlaylist(playlistId) {
+    window.sharePlaylist = async function(playlistId) {
       const friendIds = Object.keys(friends);
       if (!friendIds.length) { toast("Нет друзей для шаринга"); return; }
       
-      // Простой выбор друга
       const friend = friendIds[0];
       await update(ref(db, `playlists/${user.uid}/${playlistId}/sharedWith/${friend}`), true);
       await update(ref(db, `sharedPlaylists/${friend}/${playlistId}`), {
@@ -1749,13 +1744,13 @@
         playlistId: playlistId
       });
       toast("Плейлист отправлен другу");
-    }
+    };
 
     function renderPlaylists() {
       openPanel(`
         <button class="close" onclick="closePanel()">×</button>
         <h2>🎵 Плейлисты</h2>
-        <button class="btn full" onclick="createPlaylist()">Создать плейлист</button>
+        <button class="btn full" onclick="window.createPlaylist()">Создать плейлист</button>
         <div id="playlistList"></div>
       `);
 
@@ -1768,7 +1763,7 @@
         container.innerHTML = entries.length ? entries.map(([id, pl]) => `
           <div class="friend">
             <div class="grow"><b>${escapeHtml(pl.name)}</b><div class="code">${pl.tracks?.length || 0} треков</div></div>
-            <button class="btn small" onclick="sharePlaylist('${id}')">📤</button>
+            <button class="btn small" onclick="window.sharePlaylist('${id}')">📤</button>
           </div>
         `).join("") : `<div class="empty">Нет плейлистов</div>`;
       });
@@ -1777,7 +1772,7 @@
     // ===== HIDE AND SEEK GPS (НОМЕР 26) =====
     let hideSeekGame = null;
 
-    function startHideSeek() {
+    window.startHideSeek = function() {
       const friendIds = Object.keys(friends);
       if (!friendIds.length) { toast("Нужен друг для игры"); return; }
       
@@ -1800,11 +1795,9 @@
         if (!game) return;
         if (game.status === "playing") {
           toast("Игра началась! Ищи друга на карте 🕵️");
-          // Показать последнюю локацию друга
           get(ref(db, `locations/${friendId}`)).then(snap => {
             if (snap.exists()) {
               map.setView([snap.val().lat, snap.val().lng], 15);
-              map.panTo([snap.val().lat, snap.val().lng]);
             }
           });
         }
@@ -1815,15 +1808,10 @@
       });
 
       toast("Игра начата! Друг должен найти тебя");
-    }
-
-    function acceptHideSeek(gameId) {
-      update(ref(db, `hideSeekGames/${gameId}/status`), "playing");
-      toast("Игра началась! 🕵️");
-    }
+    };
 
     // ===== CUSTOM STICKER PACKS (НОМЕР 32) =====
-    async function createStickerPack() {
+    window.createStickerPack = async function() {
       const name = prompt("Название набора стикеров:");
       if (!name?.trim()) return;
 
@@ -1834,10 +1822,10 @@
         createdAt: Date.now()
       });
       toast("Набор создан! Добавь стикеры");
-      addStickerToPack(packId);
-    }
+      window.addStickerToPack(packId);
+    };
 
-    function addStickerToPack(packId) {
+    window.addStickerToPack = function(packId) {
       const input = document.createElement("input");
       input.type = "file";
       input.accept = "image/png";
@@ -1853,15 +1841,20 @@
           });
         }
         toast(`Добавлено ${files.length} стикеров`);
+        renderStickerPacks();
       };
       input.click();
-    }
+    };
+
+    window.useStickerPack = function(packId) {
+      toast("Стикерпак доступен в чате через кнопку стикеров");
+    };
 
     function renderStickerPacks() {
       openPanel(`
         <button class="close" onclick="closePanel()">×</button>
         <h2>🎨 Мои стикерпаки</h2>
-        <button class="btn full" onclick="createStickerPack()">Создать набор</button>
+        <button class="btn full" onclick="window.createStickerPack()">Создать набор</button>
         <div id="stickerPackList"></div>
       `);
 
@@ -1873,16 +1866,11 @@
         container.innerHTML = Object.entries(data).map(([id, pack]) => `
           <div class="friend">
             <div class="grow"><b>${escapeHtml(pack.name)}</b><div class="code">${pack.stickers?.length || 0} стикеров</div></div>
-            <button class="btn small" onclick="addStickerToPack('${id}')">➕</button>
-            <button class="btn small secondary" onclick="useStickerPack('${id}')">📤</button>
+            <button class="btn small" onclick="window.addStickerToPack('${id}')">➕</button>
+            <button class="btn small secondary" onclick="window.useStickerPack('${id}')">📤</button>
           </div>
         `).join("") || `<div class="empty">Нет наборов</div>`;
       });
-    }
-
-    function useStickerPack(packId) {
-      toast("Стикерпак доступен в чате через кнопку стикеров");
-      // В чате добавить возможность выбора из своих пакетов
     }
 
     // ===== ANIMATED AVATARS (НОМЕР 33) =====
@@ -1894,7 +1882,7 @@
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;">
           ${ANIMATIONS.map(anim => `
             <button class="btn ${profile?.avatarAnimation === anim ? 'primary' : 'secondary'} small" 
-                    onclick="setAvatarAnimation('${anim}')">
+                    onclick="window.setAvatarAnimation('${anim}')">
               ${anim === 'none' ? '⏸' : anim === 'pulse' ? '💓' : anim === 'wave' ? '👋' : '💃'}
               ${anim}
             </button>
@@ -1904,32 +1892,34 @@
       `);
     }
 
-    async function setAvatarAnimation(anim) {
+    window.setAvatarAnimation = async function(anim) {
       await update(ref(db, `profiles/${user.uid}/avatarAnimation`), anim);
       profile.avatarAnimation = anim;
       toast("Анимация обновлена");
       renderAvatarSettings();
-    }
+    };
 
     // ===== DRAWING IN CHATS (НОМЕР 35) =====
-    function openDrawing() {
+    window.openDrawing = function() {
       const container = document.createElement("div");
       container.id = "drawingContainer";
-      container.style.cssText = "position:fixed;z-index:5000;inset:0;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;";
-
+      
       let isDrawing = false;
       let lastX = 0, lastY = 0;
       let color = '#000000';
       let size = 3;
 
       container.innerHTML = `
-        <canvas id="drawCanvas" class="drawing-canvas" width="400" height="500"></canvas>
-        <div class="drawing-tools">
-          <input type="color" id="drawColor" class="color-picker" value="#000000">
-          <input type="range" id="drawSize" min="1" max="20" value="3" style="width:80px;">
-          <button class="btn small" onclick="clearDrawing()">🗑️</button>
-          <button class="btn small primary" onclick="sendDrawing()">📤 Отправить</button>
-          <button class="btn small secondary" onclick="this.closest('#drawingContainer').remove()">✕</button>
+        <div style="background:var(--card);border-radius:20px;padding:20px;max-width:500px;width:100%;">
+          <h3 style="color:#fff;margin-bottom:10px;">🎨 Рисование</h3>
+          <canvas id="drawCanvas" class="drawing-canvas" width="400" height="400"></canvas>
+          <div class="drawing-tools">
+            <input type="color" id="drawColor" class="color-picker" value="#000000">
+            <input type="range" id="drawSize" min="1" max="20" value="3" style="width:80px;">
+            <button class="btn small" id="clearDrawBtn">🗑️</button>
+            <button class="btn small primary" id="sendDrawBtn">📤 Отправить</button>
+            <button class="btn small secondary" id="closeDrawBtn">✕</button>
+          </div>
         </div>
       `;
 
@@ -1984,13 +1974,13 @@
 
       document.getElementById("drawColor").onchange = (e) => { color = e.target.value; };
       document.getElementById("drawSize").onchange = (e) => { size = e.target.value; };
-
-      window.clearDrawing = () => {
+      
+      document.getElementById("clearDrawBtn").onclick = () => {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       };
 
-      window.sendDrawing = async () => {
+      document.getElementById("sendDrawBtn").onclick = async () => {
         const data = canvas.toDataURL("image/png");
         if (!currentChatId) { toast("Открой чат сначала"); return; }
         const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
@@ -2004,7 +1994,9 @@
         container.remove();
         toast("Рисунок отправлен");
       };
-    }
+
+      document.getElementById("closeDrawBtn").onclick = () => container.remove();
+    };
 
     // ===== CUSTOM FONTS (НОМЕР 42) =====
     function renderFontSettings() {
@@ -2015,7 +2007,7 @@
         <div class="font-selector">
           ${FONTS.map(f => `
             <button class="font-option ${profile?.fontPreference === f ? 'active' : ''}" 
-                    onclick="setFontPreference('${f}')">
+                    onclick="window.setFontPreference('${f}')">
               ${f === 'default' ? 'Обычный' : f === 'comic' ? 'Comic' : f === 'serif' ? 'Serif' : f === 'mono' ? 'Mono' : f === 'emoji' ? '😊' : f === 'bold' ? 'B' : f === 'italic' ? 'I' : f === 'underline' ? 'U' : 'S'}
             </button>
           `).join("")}
@@ -2026,14 +2018,13 @@
       `);
     }
 
-    async function setFontPreference(font) {
+    window.setFontPreference = async function(font) {
       await update(ref(db, `profiles/${user.uid}/fontPreference`), font);
       profile.fontPreference = font;
       toast("Шрифт обновлён");
       renderFontSettings();
-    }
+    };
 
-    // Apply font to messages
     function getFontClass(font) {
       const map = {
         'comic': 'font-comic',
@@ -2049,7 +2040,7 @@
     }
 
     // ===== MESSAGE REACTIONS (НОМЕР 50) =====
-    async function addMessageReaction(messageId, emoji) {
+    window.addMessageReaction = async function(messageId, emoji) {
       if (!currentChatId) return;
       const path = `chats/${currentChatId}/messages/${messageId}/reactions/${emoji}`;
       const snap = await get(ref(db, path));
@@ -2058,12 +2049,9 @@
       old.users = old.users || {};
       old.users[user.uid] = (old.users[user.uid] || 0) + 1;
       await set(ref(db, path), old);
-      incrementReactionStats(currentChatFriendId, emoji);
-    }
+    };
 
     // ===== UNDO SEND (НОМЕР 54) =====
-    let messageTimers = new Map();
-
     async function sendMessageWithUndo(text) {
       if (!currentChatId) return;
       const chatId = currentChatId;
@@ -2078,13 +2066,11 @@
         canUndo: true
       });
       
-      toast("Сообщение отправлено. Нажмите 'Отменить' в течение 5 секунд");
-      
       // Показываем кнопку отмены
       const undoBtn = document.createElement("button");
       undoBtn.textContent = "↩️ Отменить";
       undoBtn.className = "btn small";
-      undoBtn.style.cssText = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;";
+      undoBtn.style.cssText = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;background:#fff;color:#000;padding:10px 20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);";
       undoBtn.onclick = async () => {
         await remove(ref(db, `chats/${chatId}/messages/${messageId}`));
         undoBtn.remove();
@@ -2100,7 +2086,7 @@
     }
 
     // ===== SELF-DESTRUCTING MESSAGES (НОМЕР 55) =====
-    async function sendSelfDestructingMessage(text, seconds = 10) {
+    window.sendSelfDestructingMessage = async function(text, seconds = 10) {
       if (!currentChatId) return;
       const chatId = currentChatId;
       const messageRef = push(ref(db, `chats/${chatId}/messages`));
@@ -2118,7 +2104,7 @@
       setTimeout(async () => {
         await remove(ref(db, `chats/${chatId}/messages/${messageRef.key}`));
       }, seconds * 1000);
-    }
+    };
 
     // ===== HIDE ONLINE STATUS (НОМЕР 85) =====
     function renderHideOnlineSettings() {
@@ -2136,7 +2122,7 @@
                   <img class="avatar tiny" src="${avatarUrl(p)}" style="vertical-align:middle;margin-right:8px;">
                   ${escapeHtml(p.name || "Друг")}
                 </div>
-                <button class="toggle ${hidden ? 'on' : ''}" onclick="toggleHideOnline('${uid}')"><i></i></button>
+                <button class="toggle ${hidden ? 'on' : ''}" onclick="window.toggleHideOnline('${uid}')"><i></i></button>
               </div>
             `;
           }).join("") || `<div class="empty">Нет друзей</div>`
@@ -2146,13 +2132,12 @@
       `);
     }
 
-    async function toggleHideOnline(uid) {
+    window.toggleHideOnline = async function(uid) {
       hideOnlineSettings[uid] = !hideOnlineSettings[uid];
       await update(ref(db, `profiles/${user.uid}/hideOnline`), hideOnlineSettings);
       renderHideOnlineSettings();
-    }
+    };
 
-    // Load hide online settings
     async function loadHideOnlineSettings() {
       const snap = await get(ref(db, `profiles/${user.uid}/hideOnline`));
       hideOnlineSettings = snap.val() || {};
@@ -2182,7 +2167,7 @@
       const html = entries.length ? entries.map(([chatId, chat]) => {
         const p = chat.friendProfile || {};
         const unread = Number(chat.unread?.[user.uid] || 0);
-        return `<div class="chat-item" onclick="openChat('${chat.friendUid}')">
+        return `<div class="chat-item" onclick="window.openChat('${chat.friendUid}')">
           <img class="avatar small" src="${avatarUrl(p)}">
           <div class="grow"><b>${escapeHtml(p.name || "Друг")}</b><div class="code chat-preview">${escapeHtml(chat.lastText || "Начните общение")}</div></div>
           ${unread ? `<div class="chat-unread">${unread > 99 ? "99+" : unread}</div>` : ""}
@@ -2237,34 +2222,34 @@
       `;
       document.body.appendChild(page);
 
-      $("chatBackBtn").onclick = closeChat;
-      $("chatMapBtn").onclick = () => { closeChat();
-        showFriendOnMap(friendUid); };
-      $("chatFontBtn").onclick = renderFontSettings;
-      $("chatDrawBtn").onclick = openDrawing;
-      $("chatStickerPackBtn").onclick = renderStickerPacks;
-      $("sendMessageBtn").onclick = () => {
-        const text = $("chatInput").value.trim();
+      document.getElementById("chatBackBtn").onclick = closeChat;
+      document.getElementById("chatMapBtn").onclick = () => { closeChat();
+        window.showFriendOnMap(friendUid); };
+      document.getElementById("chatFontBtn").onclick = renderFontSettings;
+      document.getElementById("chatDrawBtn").onclick = window.openDrawing;
+      document.getElementById("chatStickerPackBtn").onclick = renderStickerPacks;
+      document.getElementById("sendMessageBtn").onclick = () => {
+        const text = document.getElementById("chatInput").value.trim();
         if (text) sendMessageWithUndo(text);
-        $("chatInput").value = "";
+        document.getElementById("chatInput").value = "";
       };
-      $("chatInput").addEventListener("keydown", e => {
+      document.getElementById("chatInput").addEventListener("keydown", e => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
-          const text = $("chatInput").value.trim();
+          const text = document.getElementById("chatInput").value.trim();
           if (text) sendMessageWithUndo(text);
-          $("chatInput").value = "";
+          document.getElementById("chatInput").value = "";
         }
       });
-      $("chatInput").oninput = handleTyping;
-      $("stickerBtn").onclick = showStickerPicker;
-      $("voiceBtn").onclick = toggleVoiceRecording;
-      $("selfDestructBtn").onclick = () => {
-        const text = prompt("Введите сообщение для самоуничтожения (секунд):", "10");
-        if (text) {
-          const seconds = parseInt(text) || 10;
+      document.getElementById("chatInput").oninput = handleTyping;
+      document.getElementById("stickerBtn").onclick = showStickerPicker;
+      document.getElementById("voiceBtn").onclick = toggleVoiceRecording;
+      document.getElementById("selfDestructBtn").onclick = () => {
+        const seconds = prompt("Секунд до самоуничтожения (5-60):", "10");
+        if (seconds) {
+          const sec = Math.min(60, Math.max(5, parseInt(seconds) || 10));
           const msg = prompt("Текст сообщения:");
-          if (msg) sendSelfDestructingMessage(msg, Math.min(60, Math.max(5, seconds)));
+          if (msg) window.sendSelfDestructingMessage(msg, sec);
         }
       };
 
@@ -2326,9 +2311,11 @@
         recordingSeconds = 0;
         recordingStartTime = Date.now();
 
-        const voiceBtn = $("voiceBtn");
-        voiceBtn.textContent = "⏹️";
-        voiceBtn.classList.add("recording");
+        const voiceBtn = document.getElementById("voiceBtn");
+        if (voiceBtn) {
+          voiceBtn.textContent = "⏹️";
+          voiceBtn.classList.add("recording");
+        }
 
         const indicator = document.createElement("div");
         indicator.id = "recordingIndicator";
@@ -2364,9 +2351,11 @@
     function cleanupRecording() {
       isRecording = false;
       clearInterval(recordingTimer);
-      const voiceBtn = $("voiceBtn");
-      voiceBtn.textContent = "🎤";
-      voiceBtn.classList.remove("recording");
+      const voiceBtn = document.getElementById("voiceBtn");
+      if (voiceBtn) {
+        voiceBtn.textContent = "🎤";
+        voiceBtn.classList.remove("recording");
+      }
       const indicator = document.getElementById("recordingIndicator");
       if (indicator) indicator.remove();
       if (stream) {
@@ -2402,11 +2391,11 @@
         padding: 12px; max-width: 90vw; z-index: 6;
       `;
       div.innerHTML = `
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin:0 auto;">
           ${STICKERS.map(s => `<button class="sticker" data-sticker="${s}">${s}</button>`).join("")}
         </div>
         <div style="margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">Мои стикерпаки</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin-top:4px;" id="customStickers"></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:280px;margin:4px auto 0;" id="customStickers"></div>
       `;
       document.getElementById("chatPage")?.appendChild(div);
       
@@ -2424,18 +2413,16 @@
           }
         }
         container.innerHTML = allStickers.slice(0, 8).map(s => `
-          <button class="sticker" onclick="sendCustomSticker('${s}')">
+          <button class="sticker" onclick="window.sendCustomSticker('${s}')">
             <img src="${s}" style="width:40px;height:40px;object-fit:contain;border-radius:8px;">
           </button>
-        `).join("") || `<div style="color:var(--muted);font-size:10px;">Нет стикеров</div>`;
+        `).join("") || `<div style="color:var(--muted);font-size:10px;grid-column:span 4;text-align:center;">Нет стикеров</div>`;
       });
 
-      div.querySelectorAll(".sticker").forEach(btn => {
+      div.querySelectorAll(".sticker[data-sticker]").forEach(btn => {
         btn.onclick = () => {
-          if (btn.dataset.sticker) {
-            sendSticker(btn.dataset.sticker);
-            div.remove();
-          }
+          sendSticker(btn.dataset.sticker);
+          div.remove();
         };
       });
       
@@ -2449,7 +2436,7 @@
       }, 100);
     }
 
-    window.sendCustomSticker = async (data) => {
+    window.sendCustomSticker = async function(data) {
       if (!currentChatId) return;
       const messageRef = push(ref(db, `chats/${currentChatId}/messages`));
       await set(messageRef, {
@@ -2493,7 +2480,7 @@
     }
 
     function renderMessages(messages) {
-      const container = $("messages");
+      const container = document.getElementById("messages");
       if (!container) return;
       const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
       const entries = Object.entries(messages)
@@ -2509,7 +2496,7 @@
         const mine = message.senderUid === user.uid;
         const reactions = message.reactions || {};
         const reactionHtml = Object.entries(reactions).map(([emoji, data]) =>
-          `<button class="message-reaction" onclick="addMessageReaction('${id}','${encodeURIComponent(emoji)}')">${emoji} ${data?.count || 1}</button>`
+          `<button class="message-reaction" onclick="window.addMessageReaction('${id}','${encodeURIComponent(emoji)}')">${emoji} ${data?.count || 1}</button>`
         ).join("");
 
         let content = "";
@@ -2524,8 +2511,8 @@
           const data = message.data || "";
           content = `
             <div class="voice-message ${mine ? "mine" : ""}">
-              <button class="voice-play" onclick="toggleVoicePlay(this, '${escapeHtml(data)}')">▶</button>
-              <div class="voice-timeline" onclick="seekVoice(this, event)">
+              <button class="voice-play" onclick="window.toggleVoicePlay(this, '${escapeHtml(data)}')">▶</button>
+              <div class="voice-timeline" onclick="window.seekVoice(this, event)">
                 <div class="progress" style="width:0%"></div>
               </div>
               <span class="voice-time">${formatDuration(duration)}</span>
@@ -2542,7 +2529,7 @@
 
         return `
           <div class="message-row ${mine ? "mine" : "theirs"}">
-            <div class="message ${mine ? "mine" : "theirs"} ${fontClass}" ${mine ? `oncontextmenu="deleteMessage('${id}');return false;"` : ""}>
+            <div class="message ${mine ? "mine" : "theirs"} ${fontClass}" ${mine ? `oncontextmenu="window.deleteMessage('${id}');return false;"` : ""}>
               ${content}
               ${isSelfDestruct ? `<div style="font-size:9px;color:var(--muted);">⏱️ ${timeLeft}s</div>` : ""}
               ${reactionHtml ? `<div class="message-reactions">${reactionHtml}</div>` : ""}
@@ -2619,7 +2606,7 @@
 
     // ===== CHAT META =====
     async function sendChatMessage() {
-      const input = $("chatInput");
+      const input = document.getElementById("chatInput");
       if (!input || !currentChatId) return;
       const text = input.value.trim();
       if (!text) return;
@@ -2634,7 +2621,6 @@
       const messageRef = push(ref(db, `chats/${chatId}/messages`));
       await set(messageRef, { senderUid: user.uid, type: "reaction", emoji, createdAt: Date.now() });
       await updateChatMeta(chatId, `${emoji} Реакция`);
-      incrementReactionStats(currentChatFriendId, emoji);
     }
 
     window.deleteMessage = async function(messageId) {
@@ -2691,8 +2677,8 @@
         if (currentChatId !== chatId) return;
         const data = snap.val() || {};
         const friendTyping = data[currentChatFriendId];
-        const typingText = $("typingText");
-        const typingStatus = $("typingStatus");
+        const typingText = document.getElementById("typingText");
+        const typingStatus = document.getElementById("typingStatus");
         if (friendTyping?.active) {
           typingText?.classList.remove("hidden");
           if (typingStatus) typingStatus.textContent = "печатает…";
@@ -2701,15 +2687,6 @@
           if (typingStatus) typingStatus.textContent = "В сети";
         }
       });
-    }
-
-    // ===== REACTION STATISTICS =====
-    async function incrementReactionStats(friendUid, emoji) {
-      if (!friendUid || !user) return;
-      const path = `reactionStats/${user.uid}/${friendUid}/${emoji}`;
-      const snap = await get(ref(db, path));
-      const count = Number(snap.val()?.count || 0) + 1;
-      await set(ref(db, path), { count, updatedAt: Date.now() });
     }
 
     // ===== BIG REACTION PANEL =====
@@ -2742,14 +2719,15 @@
         };
       });
 
-      $("sendReactionBtn").onclick = () => sendReaction(friendUid);
+      document.getElementById("sendReactionBtn").onclick = () => sendReaction(friendUid);
     };
 
     async function sendReaction(friendUid) {
-      let count = Math.floor(Number($("reactionCount").value) || 1);
+      let count = Math.floor(Number(document.getElementById("reactionCount").value) || 1);
       count = Math.max(1, Math.min(20000, count));
-      $("reactionCount").value = count;
-      $("sendReactionBtn").disabled = true;
+      document.getElementById("reactionCount").value = count;
+      const btn = document.getElementById("sendReactionBtn");
+      btn.disabled = true;
 
       try {
         const reactionRef = push(ref(db, `reactions/${friendUid}`));
@@ -2760,13 +2738,12 @@
           fromName: profile.name || "Друг",
           createdAt: Date.now()
         });
-        await incrementReactionStats(friendUid, selectedReaction);
         toast(`${selectedReaction} ×${count.toLocaleString("ru-RU")} отправлено!`);
         closePanel();
       } catch (error) {
         console.error(error);
         toast("Ошибка: " + friendlyError(error));
-        $("sendReactionBtn").disabled = false;
+        btn.disabled = false;
       }
     }
 
@@ -2797,7 +2774,7 @@
     }
 
     function createReactionExplosion({ emoji, count, fromName, fromUid }) {
-      const overlay = $("reactionOverlay");
+      const overlay = document.getElementById("reactionOverlay");
       overlay.innerHTML = "";
 
       const dark = document.createElement("div");
@@ -2882,12 +2859,12 @@
         <button id="saveProfileBtn" class="btn full">Сохранить</button>
       `);
 
-      $("saveProfileBtn").onclick = saveProfile;
-      $("avatarInput").onchange = uploadAvatar;
+      document.getElementById("saveProfileBtn").onclick = saveProfile;
+      document.getElementById("avatarInput").onchange = uploadAvatar;
     }
 
     async function saveProfile() {
-      const name = $("profileNameInput").value.trim();
+      const name = document.getElementById("profileNameInput").value.trim();
       if (!name) { toast("Введите имя."); return; }
       await update(ref(db, `profiles/${user.uid}`), { name });
       toast("Профиль сохранён.");
@@ -2900,32 +2877,9 @@
       const avatar = await compressImage(file, 256, .78);
       await update(ref(db, `profiles/${user.uid}`), { avatar });
       profile.avatar = avatar;
-      $("profileAvatar").src = avatar;
+      document.getElementById("profileAvatar").src = avatar;
       renderMeMarker();
       toast("Аватар обновлён ✨");
-    }
-
-    function compressImage(file, maxSize = 256, quality = .78) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const img = new Image();
-          img.onload = () => {
-            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-            const width = Math.round(img.width * scale);
-            const height = Math.round(img.height * scale);
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL("image/jpeg", quality));
-          };
-          img.onerror = reject;
-          img.src = reader.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
     }
 
     // ===== SETTINGS =====
@@ -2944,17 +2898,17 @@
         <button class="btn full secondary" onclick="renderHideOnlineSettings()">👻 Скрыть "В сети"</button>
         <button class="btn full secondary" onclick="renderStickerPacks()">🎨 Мои стикерпаки</button>
         <button class="btn full secondary" onclick="renderPlaylists()">🎵 Плейлисты</button>
-        <button class="btn full primary" onclick="startHideSeek()">🕵️ Прятки с друзьями</button>
+        <button class="btn full primary" onclick="window.startHideSeek()">🕵️ Прятки с друзьями</button>
         <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
         <div class="note">Версия 2.0 • ${Object.keys(friends).length} друзей</div>
       `);
 
-      $("locationToggle").onclick = toggleLocation;
-      $("hideLocationBtn").onclick = async () => {
+      document.getElementById("locationToggle").onclick = toggleLocation;
+      document.getElementById("hideLocationBtn").onclick = async () => {
         await remove(ref(db, `locations/${user.uid}`));
         toast("Геолокация скрыта.");
       };
-      $("themeToggleBtn").onclick = toggleTheme;
+      document.getElementById("themeToggleBtn").onclick = toggleTheme;
     }
 
     async function toggleLocation() {
@@ -2976,8 +2930,9 @@
     function toggleTheme() {
       isDarkTheme = !isDarkTheme;
       document.documentElement.setAttribute("data-theme", isDarkTheme ? "dark" : "light");
-      $("themeToggleBtn").classList.toggle("on", isDarkTheme);
-      $("themeToggle").textContent = isDarkTheme ? "🌙" : "☀️";
+      const btn = document.getElementById("themeToggleBtn");
+      if (btn) btn.classList.toggle("on", isDarkTheme);
+      document.getElementById("themeToggle").textContent = isDarkTheme ? "🌙" : "☀️";
       localStorage.setItem("link_theme", isDarkTheme ? "dark" : "light");
     }
 
@@ -3023,7 +2978,6 @@
 
     // ===== START =====
     initMap();
-    loadHideOnlineSettings();
   </script>
 </body>
 </html>
