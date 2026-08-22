@@ -19,7 +19,6 @@
       --text: #fff;
       --muted: #989898;
       --line: #292929;
-      --accent: #fff;
       --accent-color: #70ffad;
       --danger: #ff6178;
       --ok: #70ffad;
@@ -33,7 +32,6 @@
       --text: #000000;
       --muted: #666666;
       --line: #dddddd;
-      --accent: #000000;
     }
     [data-accent="pink"] {
       --accent-color: #ff6b9d;
@@ -54,6 +52,10 @@
     [data-accent="red"] {
       --accent-color: #ff6b6b;
       --ok: #ff6b6b;
+    }
+    [data-accent="yellow"] {
+      --accent-color: #ffd93d;
+      --ok: #ffd93d;
     }
 
     html,
@@ -95,7 +97,6 @@
       z-index: 1;
     }
 
-    /* TOP BAR */
     .topbar {
       position: absolute;
       z-index: 1000;
@@ -144,12 +145,7 @@
       background: var(--ok);
       box-shadow: 0 0 12px var(--ok);
     }
-    .dot.away {
-      background: #ffd93d;
-      box-shadow: 0 0 12px #ffd93d;
-    }
 
-    /* MAP BUTTONS */
     .map-actions {
       position: absolute;
       z-index: 1000;
@@ -170,7 +166,6 @@
       backdrop-filter: blur(15px);
     }
 
-    /* BOTTOM NAV */
     .bottom {
       position: absolute;
       z-index: 1000;
@@ -226,7 +221,6 @@
       text-align: center;
     }
 
-    /* PANELS */
     .panel {
       position: absolute;
       z-index: 3000;
@@ -279,7 +273,6 @@
       font-size: 22px;
     }
 
-    /* INPUTS */
     .field {
       margin: 11px 0;
     }
@@ -345,7 +338,6 @@
       min-width: 0;
     }
 
-    /* AUTH */
     .auth {
       position: absolute;
       z-index: 9000;
@@ -380,7 +372,6 @@
       margin-top: 12px;
     }
 
-    /* AVATARS */
     .avatar {
       width: 64px;
       height: 64px;
@@ -410,7 +401,6 @@
       background: linear-gradient(135deg, #f093fb, #f5576c);
     }
 
-    /* FRIENDS */
     .friend,
     .request,
     .chat-item {
@@ -457,53 +447,78 @@
       background: var(--ok);
       box-shadow: 0 0 8px var(--ok);
     }
-    .online-status.away {
-      background: #ffd93d;
-      box-shadow: 0 0 8px #ffd93d;
-    }
 
-    /* MAP MARKERS */
     .leaflet-control-attribution {
       font-size: 8px !important;
     }
-    .user-pin,
-    .friend-pin {
-      background: transparent;
-      border: 0;
-    }
-    .pin {
+
+    /* ===== PULSING PIN ===== */
+    .pulsing-pin {
       position: relative;
       width: 48px;
       height: 48px;
-      overflow: visible;
+      cursor: pointer;
     }
-    .pin img {
+    .pulsing-pin .pin-avatar {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       width: 48px;
       height: 48px;
       border-radius: 50%;
       object-fit: cover;
-      background: var(--card2);
-      border: 3px solid var(--accent-color);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, .55);
+      border: 3px solid #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s;
     }
-    .pin .ring {
+    .pulsing-pin .pin-avatar:hover {
+      transform: scale(1.1);
+    }
+    .pulsing-pin .pulse-ring {
       position: absolute;
       z-index: 1;
-      inset: -8px;
-      border: 2px solid rgba(255, 255, 255, .8);
       border-radius: 50%;
-      animation: pulse 1.6s infinite;
+      border: 3px solid var(--accent-color);
+      animation: pulseRing 1.8s ease-out infinite;
     }
-    @keyframes pulse {
-      50% {
-        transform: scale(1.2);
-        opacity: .15;
+    .pulsing-pin .pulse-ring:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .pulsing-pin .pulse-ring:nth-child(2) {
+      animation-delay: 0.6s;
+    }
+    .pulsing-pin .pulse-ring:nth-child(3) {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        inset: -4px;
+        opacity: 1;
+        transform: scale(0.8);
+      }
+      100% {
+        inset: -24px;
+        opacity: 0;
+        transform: scale(1.4);
       }
     }
 
-    /* TOAST */
+    /* Bouncing animation */
+    .pulsing-pin.bounce .pin-avatar {
+      animation: bouncePin 1.8s ease-in-out infinite;
+    }
+    @keyframes bouncePin {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    /* ===== END PULSING PIN ===== */
+
     .toast {
       position: absolute;
       z-index: 12000;
@@ -521,7 +536,6 @@
       box-shadow: 0 12px 35px rgba(0, 0, 0, .5);
     }
 
-    /* REACTIONS */
     .reaction-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -553,7 +567,6 @@
       line-height: 1.5;
     }
 
-    /* CHATS */
     .chat-preview {
       overflow: hidden;
       white-space: nowrap;
@@ -574,7 +587,6 @@
       font-weight: 1000;
     }
 
-    /* CHAT PAGE */
     .chat-page {
       position: absolute;
       z-index: 4500;
@@ -631,6 +643,23 @@
     .chat-status .status-dot.online {
       background: var(--ok);
       box-shadow: 0 0 6px var(--ok);
+    }
+    .chat-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-action-btn {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--card2);
+      color: var(--text);
+      font-size: 18px;
+    }
+    .chat-action-btn.primary {
+      background: #fff;
+      color: #000;
     }
     .messages {
       flex: 1;
@@ -777,7 +806,6 @@
       font-size: 11px;
     }
 
-    /* VOICE MESSAGE */
     .voice-message {
       display: flex;
       align-items: center;
@@ -850,7 +878,6 @@
       background: #fff;
     }
 
-    /* STICKERS */
     .sticker-picker {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -869,7 +896,6 @@
       transform: scale(.9);
     }
 
-    /* TOGGLE */
     .toggle {
       position: relative;
       width: 48px;
@@ -901,66 +927,6 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
-    }
-
-    /* ACHIEVEMENTS */
-    .achievement {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .achievement .icon {
-      font-size: 28px;
-    }
-    .achievement .info .title {
-      font-weight: 700;
-    }
-    .achievement .info .desc {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* QUICK REPLIES */
-    .quick-reply {
-      padding: 6px 12px;
-      border-radius: 14px;
-      background: var(--card2);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-    .quick-reply:active {
-      background: var(--accent-color);
-      color: #000;
-    }
-
-    /* STATUS PRESETS */
-    .status-preset {
-      padding: 8px 14px;
-      border-radius: 14px;
-      background: var(--card2);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-    .status-preset.active {
-      background: var(--accent-color);
-      color: #000;
-      border-color: var(--accent-color);
-    }
-    .status-preset:active {
-      transform: scale(0.95);
-    }
-
-    /* GRID */
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
     }
 
     @media(min-width:700px) {
@@ -1009,7 +975,6 @@
     <div class="map-actions">
       <button class="round-btn" id="centerMeBtn">⌖</button>
       <button class="round-btn" id="showAllBtn">⊙</button>
-      <button class="round-btn" id="weatherBtn">🌤️</button>
     </div>
 
     <nav class="bottom">
@@ -1041,7 +1006,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-    import { getDatabase, ref, get, set, update, remove, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
@@ -1064,7 +1029,9 @@
     let profile = null;
     let map = null;
     let meMarker = null;
+    let mePulseInterval = null;
     let friendMarkers = new Map();
+    let friendPulseIntervals = new Map();
     let friendLocationListeners = new Map();
     let friends = {};
     let incomingRequests = {};
@@ -1086,7 +1053,6 @@
     let typingTimer = null;
     let typingStopTimer = null;
     let isDarkTheme = true;
-    let onlineStatus = true;
     let statusPreset = "online";
 
     // ===== VOICE RECORDING =====
@@ -1100,22 +1066,6 @@
 
     const REACTIONS = ["❤️", "🔥", "😂", "🎉", "😱", "⚡", "👋", "😎", "💀", "🥳", "💯", "✨"];
     const STICKERS = ["😊", "😂", "🥰", "😍", "🤩", "😎", "🤔", "😏", "😅", "🤗", "😇", "🤪", "🥳", "😭", "😤", "🤯"];
-    const QUICK_REPLIES = ["Привет! 👋", "Как дела? 😊", "Скоро буду! ⏰", "Договорились! ✅", "Спасибо! 🙏", "Отлично! 🎉", "Понял! 👍", "Иду! 🚶"];
-    const STATUS_PRESETS = [
-      { emoji: "🟢", label: "В сети", value: "online" },
-      { emoji: "🟡", label: "Отошёл", value: "away" },
-      { emoji: "🔴", label: "Занят", value: "busy" },
-      { emoji: "🎵", label: "Слушаю музыку", value: "music" },
-      { emoji: "📖", label: "Читаю", value: "reading" },
-      { emoji: "💻", label: "Работаю", value: "working" }
-    ];
-    const ACHIEVEMENTS = [
-      { id: "first_friend", icon: "🤝", title: "Первый друг", desc: "Добавь первого друга" },
-      { id: "message_master", icon: "💬", title: "Мастер сообщений", desc: "Отправь 100 сообщений" },
-      { id: "voice_star", icon: "🎤", title: "Звезда голосовых", desc: "Отправь 10 голосовых сообщений" },
-      { id: "reaction_guru", icon: "💜", title: "Гуру реакций", desc: "Отправь 50 реакций" },
-      { id: "explorer", icon: "🗺️", title: "Исследователь", desc: "Посети все разделы" }
-    ];
 
     // ===== MAP =====
     function initMap() {
@@ -1144,11 +1094,9 @@
       return p?.avatar || defaultAvatar(p?.name || "?");
     }
 
-    function setStatus(text, live = false, status = "live") {
+    function setStatus(text, live = false) {
       $("statusText").textContent = text;
-      const dot = $("statusDot");
-      dot.className = "dot";
-      if (live) dot.classList.add(status === "online" ? "live" : status === "away" ? "away" : "live");
+      $("statusDot").classList.toggle("live", !!live);
     }
 
     function toast(text) {
@@ -1190,14 +1138,109 @@
       return [uid1, uid2].sort().join("_");
     }
 
-    function getStatusEmoji(status) {
-      const map = { online: "🟢", away: "🟡", busy: "🔴", music: "🎵", reading: "📖", working: "💻" };
-      return map[status] || "🟢";
+    // ===== PULSING PIN ICON =====
+    function createPulsingIcon(avatarUrl, isMe = false, bounce = true) {
+      const color = isMe ? 'var(--accent-color)' : '#ffffff';
+      return L.divIcon({
+        className: 'pulsing-pin',
+        html: `
+          <div class="pulsing-pin ${bounce ? 'bounce' : ''}">
+            <div class="pulse-ring" style="border-color: ${color};"></div>
+            <div class="pulse-ring" style="border-color: ${color};"></div>
+            <div class="pulse-ring" style="border-color: ${color};"></div>
+            <img class="pin-avatar" src="${avatarUrl}" style="border-color: ${color};">
+          </div>
+        `,
+        iconSize: [48, 48],
+        iconAnchor: [24, 48],
+        popupAnchor: [0, -48]
+      });
     }
 
-    function getStatusLabel(status) {
-      const map = { online: "В сети", away: "Отошёл", busy: "Занят", music: "Слушает музыку", reading: "Читает", working: "Работает" };
-      return map[status] || "В сети";
+    // ===== MAP MARKERS WITH PULSE =====
+    function renderMeMarker() {
+      if (!lastPosition || !profile) return;
+      const pos = [lastPosition.lat, lastPosition.lng];
+
+      const icon = createPulsingIcon(avatarUrl(profile), true, true);
+
+      if (!meMarker) {
+        meMarker = L.marker(pos, { icon, zIndexOffset: 1000 }).addTo(map);
+        meMarker.bindPopup("<b>✨ Ты</b><br>" + escapeHtml(profile.name || "Пользователь"));
+      } else {
+        meMarker.setLatLng(pos);
+        meMarker.setIcon(icon);
+      }
+    }
+
+    function upsertFriendMarker(friendId, friendProfile, location) {
+      const lat = Number(location.lat);
+      const lng = Number(location.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+      const icon = createPulsingIcon(avatarUrl(friendProfile), false, true);
+
+      if (!friendMarkers.has(friendId)) {
+        const marker = L.marker([lat, lng], { icon, zIndexOffset: 500 }).addTo(map);
+        marker.on("click", () => {
+          openFriendReactionPanel(friendId);
+        });
+        marker.bindPopup(`
+          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
+          <span style="color:var(--ok);">🟢 В сети</span>
+        `);
+        friendMarkers.set(friendId, marker);
+
+        // Start bouncing animation via CSS class toggle
+        startFriendPulse(friendId);
+
+      } else {
+        const marker = friendMarkers.get(friendId);
+        marker.setLatLng([lat, lng]);
+        marker.setIcon(icon);
+        marker.setPopupContent(`
+          <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
+          <span style="color:var(--ok);">🟢 В сети</span>
+        `);
+      }
+    }
+
+    function startFriendPulse(friendId) {
+      // The bounce is handled by CSS class on the marker's DOM element
+      // We need to toggle it periodically via JS for smoother animation
+      if (friendPulseIntervals.has(friendId)) return;
+
+      const interval = setInterval(() => {
+        const marker = friendMarkers.get(friendId);
+        if (!marker) {
+          clearInterval(interval);
+          friendPulseIntervals.delete(friendId);
+          return;
+        }
+        // The CSS animation is continuous, nothing to do here
+        // Just keep the interval alive to check if marker still exists
+      }, 5000);
+
+      friendPulseIntervals.set(friendId, interval);
+    }
+
+    function removeFriendMarker(friendId, unsubscribe = true) {
+      const marker = friendMarkers.get(friendId);
+      if (marker) {
+        map.removeLayer(marker);
+        friendMarkers.delete(friendId);
+      }
+
+      // Clear pulse interval
+      if (friendPulseIntervals.has(friendId)) {
+        clearInterval(friendPulseIntervals.get(friendId));
+        friendPulseIntervals.delete(friendId);
+      }
+
+      if (unsubscribe && friendLocationListeners.has(friendId)) {
+        friendLocationListeners.get(friendId)();
+        friendLocationListeners.delete(friendId);
+      }
     }
 
     // ===== NAVIGATION =====
@@ -1219,54 +1262,7 @@
       if (page === "more") renderMore();
     }
 
-    // ===== MAP MARKERS =====
-    function markerIcon(p, isMe = false, status = "online") {
-      return L.divIcon({
-        className: isMe ? "user-pin" : "friend-pin",
-        html: `<div class="pin">${isMe ? '<div class="ring"></div>' : ""}<img src="${avatarUrl(p)}"></div>`,
-        iconSize: [48, 48],
-        iconAnchor: [24, 24]
-      });
-    }
-
-    function renderMeMarker() {
-      if (!lastPosition || !profile) return;
-      const pos = [lastPosition.lat, lastPosition.lng];
-      if (!meMarker) {
-        meMarker = L.marker(pos, { icon: markerIcon(profile, true, statusPreset), zIndexOffset: 1000 }).addTo(map);
-        meMarker.bindPopup("<b>Ты</b>");
-      } else {
-        meMarker.setLatLng(pos);
-        meMarker.setIcon(markerIcon(profile, true, statusPreset));
-      }
-    }
-
-    function upsertFriendMarker(friendId, friendProfile, location) {
-      const lat = Number(location.lat);
-      const lng = Number(location.lng);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-      const status = friendProfile?.status || "online";
-      if (!friendMarkers.has(friendId)) {
-        const marker = L.marker([lat, lng], { icon: markerIcon(friendProfile, false, status), zIndexOffset: 500 }).addTo(map);
-        marker.on("click", () => openFriendReactionPanel(friendId));
-        friendMarkers.set(friendId, marker);
-      } else {
-        const marker = friendMarkers.get(friendId);
-        marker.setLatLng([lat, lng]);
-        marker.setIcon(markerIcon(friendProfile, false, status));
-      }
-    }
-
-    function removeFriendMarker(friendId, unsubscribe = true) {
-      const marker = friendMarkers.get(friendId);
-      if (marker) { map.removeLayer(marker);
-        friendMarkers.delete(friendId); }
-      if (unsubscribe && friendLocationListeners.has(friendId)) {
-        friendLocationListeners.get(friendId)();
-        friendLocationListeners.delete(friendId);
-      }
-    }
-
+    // ===== MAP BUTTONS =====
     $("centerMeBtn").onclick = () => {
       if (!lastPosition) { toast("Геолокация ещё не получена."); return; }
       map.setView([lastPosition.lat, lastPosition.lng], 17);
@@ -1276,11 +1272,6 @@
       const markers = [meMarker, ...friendMarkers.values()].filter(Boolean);
       if (!markers.length) { toast("Нет активных пользователей."); return; }
       map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [60, 60] });
-    };
-
-    $("weatherBtn").onclick = () => {
-      if (!lastPosition) { toast("Нет геолокации для погоды"); return; }
-      toast(`🌤️ Погода: ${Math.round(15 + Math.random() * 20)}°C, ${["Солнечно", "Облачно", "Дождь", "Ветер"][Math.floor(Math.random() * 4)]}`);
     };
 
     // ===== AUTH =====
@@ -1318,7 +1309,7 @@
           locationSharing = false;
           setStatus("Геолокация выключена", false);
         }
-        setStatus("LINK подключён", true, "online");
+        setStatus("LINK подключён", true);
       } catch (error) {
         console.error(error);
         $("authStatus").textContent = "Ошибка: " + friendlyError(error);
@@ -1339,10 +1330,8 @@
           avatar: "",
           locationSharing: true,
           status: "online",
-          statusText: "",
           createdAt: Date.now(),
-          lastActive: Date.now(),
-          stats: { messages: 0, voiceMessages: 0, reactions: 0, friends: 0 }
+          lastActive: Date.now()
         };
         await update(ref(db), {
           [`profiles/${user.uid}`]: profile,
@@ -1358,7 +1347,6 @@
           });
           profile.friendCode = code;
         }
-        if (!profile.stats) profile.stats = { messages: 0, voiceMessages: 0, reactions: 0, friends: 0 };
         await update(profileRef, { lastActive: Date.now() });
       }
       if (profile.status) statusPreset = profile.status;
@@ -1386,7 +1374,6 @@
 
     // ===== ONLINE STATUS =====
     function subscribeOnlineStatus() {
-      // Update own status
       const statusRef = ref(db, `online/${user.uid}`);
       set(statusRef, {
         status: statusPreset || "online",
@@ -1395,16 +1382,6 @@
         avatar: profile?.avatar || ""
       });
 
-      // Listen for disconnection
-      const onDisconnectRef = ref(db, `online/${user.uid}`);
-      set(onDisconnectRef, {
-        status: "offline",
-        lastSeen: Date.now(),
-        name: profile?.name || "Пользователь",
-        avatar: profile?.avatar || ""
-      });
-
-      // Update status periodically
       setInterval(() => {
         if (user) {
           update(ref(db, `online/${user.uid}`), {
@@ -1414,40 +1391,12 @@
         }
       }, 10000);
 
-      // Subscribe to friends' status
+      // Subscribe to friends' status for UI updates
       const onlineRef = ref(db, "online");
       onValue(onlineRef, snap => {
         const data = snap.val() || {};
-        // Update friend statuses in UI
         if (currentPage === "friends") renderFriends();
         if (currentPage === "chats") renderChats();
-        if (currentChatFriendId) updateChatStatus(currentChatFriendId);
-      });
-    }
-
-    function updateChatStatus(friendUid) {
-      const statusEl = document.querySelector(".chat-status");
-      if (!statusEl) return;
-
-      const friendStatusRef = ref(db, `online/${friendUid}`);
-      get(friendStatusRef).then(snap => {
-        const data = snap.val();
-        const dot = statusEl.querySelector(".status-dot");
-        if (data && data.status !== "offline" && Date.now() - data.lastSeen < 30000) {
-          statusEl.innerHTML = `${getStatusEmoji(data.status || "online")} ${getStatusLabel(data.status || "online")} <span class="status-dot online"></span>`;
-        } else {
-          statusEl.innerHTML = `⚫ Не в сети <span class="status-dot"></span>`;
-        }
-      });
-    }
-
-    function isUserOnline(uid) {
-      return new Promise((resolve) => {
-        const refStatus = ref(db, `online/${uid}`);
-        get(refStatus).then(snap => {
-          const data = snap.val();
-          resolve(data && data.status !== "offline" && Date.now() - data.lastSeen < 30000);
-        }).catch(() => resolve(false));
       });
     }
 
@@ -1461,14 +1410,8 @@
         }
         friends = next;
         Object.keys(friends).forEach(subscribeFriendLocation);
-        // Update stats
-        if (profile) {
-          profile.stats.friends = Object.keys(friends).length;
-          update(ref(db, `profiles/${user.uid}/stats/friends`), Object.keys(friends).length);
-        }
         if (currentPage === "friends") renderFriends();
         if (currentPage === "chats") renderChats();
-        checkAchievements();
       });
     }
 
@@ -1520,13 +1463,13 @@
           const p = friends[uid]?.profile || {};
           const online = friendMarkers.has(uid);
           return `<div class="friend">
-            <img class="avatar small" src="${avatarUrl(p)}">
+            <img class="avatar small ${online ? 'pulse' : ''}" src="${avatarUrl(p)}">
             <div class="grow">
               <b>${escapeHtml(p.name || "Друг")}</b>
               <div class="code">
                 #${escapeHtml(p.friendCode || "")}
                 <span class="online-status ${online ? "online" : ""}"></span>
-                ${online ? '🟢' : '⚫'} ${online ? 'В сети' : 'Не в сети'}
+                ${online ? '🟢 В сети' : '⚫ Не в сети'}
               </div>
             </div>
             <div class="friend-actions">
@@ -1550,7 +1493,7 @@
         </div>
         ${requestsHtml}
         ${friendsHtml}
-        <div class="note">🟢 — в сети, ⚫ — не в сети</div>
+        <div class="note">🟢 — в сети (точка пульсирует на карте), ⚫ — не в сети</div>
       `);
 
       $("sendRequestBtn").onclick = sendFriendRequest;
@@ -1589,7 +1532,6 @@
         [`userChats/${fromUid}/${chatId}`]: { friendUid: user.uid, friendProfile: myProfile, updatedAt: Date.now() }
       });
       toast("Друг добавлен 🎉");
-      checkAchievements();
     };
 
     window.rejectRequest = async fromUid => {
@@ -1620,7 +1562,7 @@
           };
           renderMeMarker();
           await set(ref(db, `locations/${user.uid}`), lastPosition);
-          setStatus("Геолокация в реальном времени", true, statusPreset);
+          setStatus("Геолокация в реальном времени", true);
         },
         error => {
           if (error.code === 1) setStatus("Разреши геолокацию", false);
@@ -1655,8 +1597,9 @@
         const p = chat.friendProfile || {};
         const unread = Number(chat.unread?.[user.uid] || 0);
         const friendUid = chat.friendUid;
+        const online = friendMarkers.has(friendUid);
         return `<div class="chat-item" onclick="openChat('${friendUid}')">
-          <img class="avatar small" src="${avatarUrl(p)}">
+          <img class="avatar small ${online ? 'pulse' : ''}" src="${avatarUrl(p)}">
           <div class="grow">
             <b>${escapeHtml(p.name || "Друг")}</b>
             <div class="code chat-preview">${escapeHtml(chat.lastText || "Начните общение")}</div>
@@ -1683,7 +1626,6 @@
       const old = document.getElementById("chatPage");
       if (old) old.remove();
 
-      // Check if friend is online
       const isOnline = friendMarkers.has(friendUid);
 
       const page = document.createElement("div");
@@ -1692,7 +1634,7 @@
       page.innerHTML = `
         <div class="chat-header">
           <button class="chat-back" id="chatBackBtn">‹</button>
-          <img class="avatar small" src="${avatarUrl(friendProfile)}">
+          <img class="avatar small ${isOnline ? 'pulse' : ''}" src="${avatarUrl(friendProfile)}">
           <div class="chat-title">
             <div class="chat-name">${escapeHtml(friendProfile.name || "Друг")}</div>
             <div class="chat-status" id="typingStatus">
@@ -1701,7 +1643,7 @@
             </div>
           </div>
           <div class="chat-actions">
-            <button class="chat-action-btn" id="chatMapBtn">🗺️</button>
+            <button class="chat-action-btn primary" id="chatMapBtn">🗺️</button>
           </div>
         </div>
         <div id="messages" class="messages"></div>
@@ -1710,7 +1652,6 @@
           ${REACTIONS.slice(0, 6).map(e => `<button class="quick-reaction" data-emoji="${e}">${e}</button>`).join("")}
           <button class="quick-reaction" id="stickerBtn">😊</button>
           <button class="quick-reaction" id="voiceBtn">🎤</button>
-          <button class="quick-reaction" id="quickReplyBtn">💬</button>
         </div>
         <div class="chat-input-area">
           <input id="chatInput" class="chat-input" maxlength="1000" placeholder="Сообщение…">
@@ -1730,7 +1671,6 @@
       $("chatInput").oninput = handleTyping;
       $("stickerBtn").onclick = showStickerPicker;
       $("voiceBtn").onclick = toggleVoiceRecording;
-      $("quickReplyBtn").onclick = showQuickReplies;
 
       document.querySelectorAll(".quick-reaction").forEach(btn => {
         let timer = null;
@@ -1745,7 +1685,6 @@
 
       subscribeCurrentChat();
       await markChatRead();
-      updateChatStatus(friendUid);
     };
 
     window.closeChat = function() {
@@ -1756,40 +1695,6 @@
       document.getElementById("chatPage")?.remove();
       openPage("chats");
     };
-
-    // ===== QUICK REPLIES =====
-    function showQuickReplies() {
-      const existing = document.getElementById("quickReplyPicker");
-      if (existing) { existing.remove(); return; }
-      const div = document.createElement("div");
-      div.id = "quickReplyPicker";
-      div.style.cssText = `
-        position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
-        background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-        padding: 12px; max-width: 90vw; z-index: 6;
-        display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 320px;
-      `;
-      div.innerHTML = QUICK_REPLIES.map(r =>
-        `<button class="quick-reply" data-reply="${escapeHtml(r)}">${r}</button>`
-      ).join("");
-      document.getElementById("chatPage")?.appendChild(div);
-      div.querySelectorAll(".quick-reply").forEach(btn => {
-        btn.onclick = () => {
-          const input = $("chatInput");
-          if (input) input.value = btn.dataset.reply;
-          div.remove();
-          sendChatMessage();
-        };
-      });
-      setTimeout(() => {
-        document.addEventListener("click", function closePicker(e) {
-          if (!div.contains(e.target) && e.target.id !== "quickReplyBtn") {
-            div.remove();
-            document.removeEventListener("click", closePicker);
-          }
-        });
-      }, 100);
-    }
 
     // ===== VOICE RECORDING =====
     async function toggleVoiceRecording() {
@@ -1817,11 +1722,6 @@
             reader.onload = async () => {
               const base64 = reader.result;
               await sendVoiceMessage(base64, recordingSeconds);
-              if (profile) {
-                profile.stats.voiceMessages = (profile.stats.voiceMessages || 0) + 1;
-                await update(ref(db, `profiles/${user.uid}/stats/voiceMessages`), profile.stats.voiceMessages);
-                checkAchievements();
-              }
             };
             reader.readAsDataURL(blob);
           } else {
@@ -2084,12 +1984,6 @@
       const messageRef = push(ref(db, `chats/${chatId}/messages`));
       await set(messageRef, { senderUid: user.uid, text, type: "text", createdAt: Date.now() });
       await updateChatMeta(chatId, text);
-
-      if (profile) {
-        profile.stats.messages = (profile.stats.messages || 0) + 1;
-        await update(ref(db, `profiles/${user.uid}/stats/messages`), profile.stats.messages);
-        checkAchievements();
-      }
     }
 
     async function sendQuickReaction(emoji) {
@@ -2099,11 +1993,6 @@
       await set(messageRef, { senderUid: user.uid, type: "reaction", emoji, createdAt: Date.now() });
       await updateChatMeta(chatId, `${emoji} Реакция`);
       incrementReactionStats(currentChatFriendId, emoji);
-      if (profile) {
-        profile.stats.reactions = (profile.stats.reactions || 0) + 1;
-        await update(ref(db, `profiles/${user.uid}/stats/reactions`), profile.stats.reactions);
-        checkAchievements();
-      }
     }
 
     async function reactToMessage(messageId, encodedEmoji) {
@@ -2278,11 +2167,6 @@
         await incrementReactionStats(friendUid, selectedReaction);
         toast(`${selectedReaction} ×${count.toLocaleString("ru-RU")} отправлено!`);
         closePanel();
-        if (profile) {
-          profile.stats.reactions = (profile.stats.reactions || 0) + 1;
-          await update(ref(db, `profiles/${user.uid}/stats/reactions`), profile.stats.reactions);
-          checkAchievements();
-        }
       } catch (error) {
         console.error(error);
         toast("Ошибка: " + friendlyError(error));
@@ -2384,40 +2268,8 @@
       friendMarkers.get(friendUid)?.openPopup();
     };
 
-    // ===== ACHIEVEMENTS =====
-    function checkAchievements() {
-      const unlocked = [];
-      const stats = profile?.stats || {};
-
-      if (stats.friends >= 1) unlocked.push("first_friend");
-      if (stats.messages >= 100) unlocked.push("message_master");
-      if (stats.voiceMessages >= 10) unlocked.push("voice_star");
-      if (stats.reactions >= 50) unlocked.push("reaction_guru");
-
-      // Check if all pages visited
-      const visited = JSON.parse(localStorage.getItem("link_visited") || "[]");
-      if (visited.length >= 5) unlocked.push("explorer");
-
-      // Save achievements
-      const saved = JSON.parse(localStorage.getItem("link_achievements") || "[]");
-      unlocked.forEach(a => {
-        if (!saved.includes(a)) {
-          saved.push(a);
-          toast(`🏆 Достижение разблокировано: ${ACHIEVEMENTS.find(ach => ach.id === a)?.title}!`);
-        }
-      });
-      localStorage.setItem("link_achievements", JSON.stringify(saved));
-    }
-
-    function getAchievements() {
-      return JSON.parse(localStorage.getItem("link_achievements") || "[]");
-    }
-
     // ===== PROFILE PAGE =====
     function renderProfile() {
-      const achievements = getAchievements();
-      const stats = profile?.stats || {};
-
       openPanel(`
         <button class="close" onclick="closePanel()">×</button>
         <h2>👤 Профиль</h2>
@@ -2426,44 +2278,16 @@
           <div class="grow">
             <b style="font-size:18px;">${escapeHtml(profile.name)}</b>
             <div class="code">🔑 Код друга: <b style="color:var(--accent-color);">${profile.friendCode}</b></div>
-            <div class="code">${getStatusEmoji(statusPreset)} ${getStatusLabel(statusPreset)}</div>
           </div>
         </div>
-
-        <div class="section-title">📊 Статистика</div>
-        <div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0;">
-          <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
-            <div style="font-size:24px;">👥</div>
-            <div style="font-weight:700;">${stats.friends || 0}</div>
-            <div style="font-size:10px;color:var(--muted);">Друзей</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
-            <div style="font-size:24px;">💬</div>
-            <div style="font-weight:700;">${stats.messages || 0}</div>
-            <div style="font-size:10px;color:var(--muted);">Сообщений</div>
-          </div>
-          <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
-            <div style="font-size:24px;">🎤</div>
-            <div style="font-weight:700;">${stats.voiceMessages || 0}</div>
-            <div style="font-size:10px;color:var(--muted);">Голосовых</div>
-          </div>
-        </div>
-
-        <div class="section-title">🏆 Достижения</div>
-        ${ACHIEVEMENTS.map(a => `
-          <div class="achievement" style="opacity:${achievements.includes(a.id) ? 1 : 0.4};">
-            <div class="icon">${a.icon}</div>
-            <div class="info">
-              <div class="title">${a.title} ${achievements.includes(a.id) ? '✅' : '🔒'}</div>
-              <div class="desc">${a.desc}</div>
-            </div>
-          </div>
-        `).join("")}
 
         <div class="section-title">✏️ Редактировать</div>
         <div class="field"><label>Имя</label><input id="profileNameInput" maxlength="30" value="${escapeHtml(profile.name || "")}"></div>
         <div class="field"><label>Фото профиля</label><input id="avatarInput" type="file" accept="image/*"></div>
         <button id="saveProfileBtn" class="btn full">Сохранить</button>
+
+        <div class="section-title">📍 Твоя точка на карте</div>
+        <div class="note">Твой аватар пульсирует на карте — так друзья видят, что ты онлайн!</div>
       `);
 
       $("saveProfileBtn").onclick = saveProfile;
@@ -2522,7 +2346,7 @@
         <div class="field">
           <label>Цвет акцента</label>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            ${["#70ffad", "#ff6b9d", "#4dabf7", "#b197fc", "#ffa94d", "#ff6b6b"].map(c => `
+            ${["#70ffad", "#ff6b9d", "#4dabf7", "#b197fc", "#ffa94d", "#ff6b6b", "#ffd93d"].map(c => `
               <button class="round-btn" style="width:36px;height:36px;background:${c};border-radius:50%;border:2px solid ${c === document.documentElement.style.getPropertyValue('--accent-color').trim() ? '#fff' : 'transparent'};" onclick="setAccentColor('${c}')"></button>
             `).join("")}
           </div>
@@ -2535,21 +2359,12 @@
 
         <div class="section-title">📍 Геолокация</div>
         <div class="friend" style="border:0">
-          <div class="grow"><b>Показывать на карте</b><div class="code">Друзья смогут видеть твоё местоположение</div></div>
+          <div class="grow"><b>Показывать на карте</b><div class="code">Друзья будут видеть твою пульсирующую точку</div></div>
           <button id="locationToggle" class="toggle ${locationSharing ? "on" : ""}"><i></i></button>
         </div>
         <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
 
-        <div class="section-title">📱 Статус</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;">
-          ${STATUS_PRESETS.map(s => `
-            <button class="status-preset ${s.value === statusPreset ? 'active' : ''}" data-status="${s.value}" onclick="setUserStatus('${s.value}')">
-              ${s.emoji} ${s.label}
-            </button>
-          `).join("")}
-        </div>
-
-        <div class="note">Версия 2.0 • ${Object.keys(friends).length} друзей</div>
+        <div class="note">📍 Когда ты онлайн — твоя точка на карте пульсирует! Друзья видят, что ты здесь.</div>
       `);
 
       $("locationToggle").onclick = toggleLocation;
@@ -2558,27 +2373,12 @@
         toast("Геолокация скрыта.");
       };
       $("themeToggleBtn").onclick = toggleTheme;
-
-      // Mark "more" as visited for achievement
-      const visited = JSON.parse(localStorage.getItem("link_visited") || "[]");
-      if (!visited.includes("settings")) {
-        visited.push("settings");
-        localStorage.setItem("link_visited", JSON.stringify(visited));
-        checkAchievements();
-      }
     }
-
-    window.setUserStatus = async function(status) {
-      statusPreset = status;
-      await update(ref(db, `profiles/${user.uid}`), { status });
-      await update(ref(db, `online/${user.uid}`), { status, lastSeen: Date.now() });
-      toast(`Статус: ${getStatusLabel(status)}`);
-      renderSettings();
-    };
 
     window.setAccentColor = function(color) {
       document.documentElement.style.setProperty('--accent-color', color);
       document.documentElement.style.setProperty('--ok', color);
+      renderMeMarker();
       toast('🎨 Цвет обновлён!');
     };
 
@@ -2608,29 +2408,26 @@
 
     // ===== MORE PAGE =====
     function renderMore() {
-      const achievements = getAchievements();
-      const stats = profile?.stats || {};
-
       openPanel(`
         <button class="close" onclick="closePanel()">×</button>
         <h2>➕ Ещё возможности</h2>
 
-        <div class="section-title">🎯 Статистика</div>
+        <div class="section-title">📊 Статистика</div>
         <div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0;">
           <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
             <div style="font-size:24px;">👥</div>
-            <div style="font-weight:700;">${stats.friends || 0}</div>
+            <div style="font-weight:700;">${Object.keys(friends).length}</div>
             <div style="font-size:10px;color:var(--muted);">Друзей</div>
           </div>
           <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
-            <div style="font-size:24px;">🏆</div>
-            <div style="font-weight:700;">${achievements.length}/${ACHIEVEMENTS.length}</div>
-            <div style="font-size:10px;color:var(--muted);">Достижений</div>
+            <div style="font-size:24px;">📍</div>
+            <div style="font-weight:700;">${friendMarkers.size}</div>
+            <div style="font-size:10px;color:var(--muted);">В сети</div>
           </div>
           <div style="text-align:center;padding:10px;background:var(--card2);border-radius:12px;">
             <div style="font-size:24px;">💬</div>
-            <div style="font-weight:700;">${stats.messages || 0}</div>
-            <div style="font-size:10px;color:var(--muted);">Сообщений</div>
+            <div style="font-weight:700;">${Object.keys(chatMeta).length}</div>
+            <div style="font-size:10px;color:var(--muted);">Чатов</div>
           </div>
         </div>
 
@@ -2647,19 +2444,11 @@
         <div class="section-title">🎨 О приложении</div>
         <div class="reaction-info">
           <b style="color:var(--accent-color);">LINK v2.0</b><br>
-          Друзья рядом. Карта в реальном времени. Чаты с реакциями и голосовыми.
+          Друзья рядом. Карта с пульсирующими точками. Чаты с голосовыми.
           <br><br>
-          ✨ Новое: онлайн-статус, достижения, быстрые ответы, статусы "Слушаю музыку" и другие!
+          🔵 Точки друзей пульсируют на карте — так ты видишь, кто рядом!
         </div>
       `);
-
-      // Mark "more" as visited for achievement
-      const visited = JSON.parse(localStorage.getItem("link_visited") || "[]");
-      if (!visited.includes("more")) {
-        visited.push("more");
-        localStorage.setItem("link_visited", JSON.stringify(visited));
-        checkAchievements();
-      }
     }
 
     // ===== THEME INIT =====
@@ -2669,15 +2458,6 @@
       document.documentElement.setAttribute("data-theme", savedTheme);
     }
 
-    // Mark map as visited
-    setTimeout(() => {
-      const visited = JSON.parse(localStorage.getItem("link_visited") || "[]");
-      if (!visited.includes("map")) {
-        visited.push("map");
-        localStorage.setItem("link_visited", JSON.stringify(visited));
-      }
-    }, 500);
-
     // ===== CLEANUP =====
     window.addEventListener("beforeunload", () => {
       if (watchId !== null) navigator.geolocation.clearWatch(watchId);
@@ -2685,6 +2465,15 @@
       stopVoiceRecording();
       if (user) {
         update(ref(db, `online/${user.uid}`), { status: "offline", lastSeen: Date.now() });
+      }
+      // Clear all pulse intervals
+      for (const [id, interval] of friendPulseIntervals) {
+        clearInterval(interval);
+      }
+      friendPulseIntervals.clear();
+      if (mePulseInterval) {
+        clearInterval(mePulseInterval);
+        mePulseInterval = null;
       }
     });
 
