@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <meta name="theme-color" content="#080808">
-  <title>LINK — звонки и чат</title>
+  <title>LINK — звонки с видео</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     * {
@@ -981,6 +981,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      background: #111;
     }
     .call-video-container .local-video {
       position: absolute;
@@ -990,9 +991,13 @@
       height: 160px;
       border-radius: 16px;
       object-fit: cover;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
       background: #111;
+      z-index: 10;
+    }
+    .call-video-container .local-video.hidden-video {
+      display: none;
     }
     .call-video-container .call-controls {
       position: absolute;
@@ -1006,6 +1011,7 @@
       padding: 12px 24px;
       border-radius: 40px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 20;
     }
     .call-video-container .call-controls .btn {
       width: 48px;
@@ -1028,6 +1034,11 @@
     .call-video-container .call-controls .btn-mute.active {
       background: #ff3b30;
       color: #fff;
+    }
+    .call-video-container .call-controls .btn-switch {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 16px;
     }
 
     .call-notification {
@@ -1088,6 +1099,35 @@
     .call-notification .call-btns .btn-reject {
       background: #ff3b30;
       color: #fff;
+    }
+
+    /* Call status overlay on video */
+    .call-status-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      text-align: center;
+      color: #fff;
+    }
+    .call-status-overlay .big-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 16px;
+    }
+    .call-status-overlay .status-text {
+      font-size: 18px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+    .call-status-overlay .status-sub {
+      font-size: 14px;
+      opacity: 0.5;
+      margin-top: 4px;
     }
 
     @media(min-width:700px) {
@@ -1156,7 +1196,7 @@
   <div id="auth" class="auth">
     <div class="authbox">
       <div class="logo">LINK</div>
-      <div class="subtitle">Друзья рядом. Карта. Чаты. Звонки.</div>
+      <div class="subtitle">Друзья рядом. Карта. Чаты. Видеозвонки.</div>
       <button id="startBtn" class="btn full">Начать</button>
       <div id="authStatus" class="auth-status">Подключаем Firebase…</div>
       <div class="note">Аккаунт создаётся автоматически.</div>
@@ -1225,6 +1265,7 @@
     let isVideoCall = false;
     let callSubscriptions = [];
     let currentCallId = null;
+    let isLocalVideoVisible = true;
 
     // ===== VOICE RECORDING =====
     let mediaRecorder = null;
@@ -1243,7 +1284,8 @@
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
-        { urls: "stun:stun2.l.google.com:19302" }
+        { urls: "stun:stun2.l.google.com:19302" },
+        { urls: "stun:stun3.l.google.com:19302" }
       ]
     };
 
@@ -1663,7 +1705,11 @@
       try {
         const constraints = {
           audio: true,
-          video: video ? { width: { ideal: 640 }, height: { ideal: 480 } } : false
+          video: video ? {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: "user"
+          } : false
         };
         return await navigator.mediaDevices.getUserMedia(constraints);
       } catch (e) {
@@ -1690,13 +1736,23 @@
         if (!isCallActive) {
           isCallActive = true;
           startCallTimer();
+          updateCallUI("active");
         }
       };
 
       // ICE connection state
       pc.oniceconnectionstatechange = () => {
+        console.log("ICE state:", pc.iceConnectionState);
         if (pc.iceConnectionState === "disconnected" || pc.iceConnectionState === "failed") {
+          toast("Соединение потеряно");
           endCall();
+        }
+      };
+
+      pc.onconnectionstatechange = () => {
+        console.log("Connection state:", pc.connectionState);
+        if (pc.connectionState === "connected") {
+          toast("Соединение установлено!");
         }
       };
 
@@ -1704,31 +1760,40 @@
     }
 
     function showRemoteStream(stream) {
-      const videoContainer = document.getElementById("callVideoContainer");
-      if (videoContainer) {
-        let remoteVideo = videoContainer.querySelector(".remote-video");
+      const container = document.getElementById("callVideoContainer");
+      if (container) {
+        let remoteVideo = container.querySelector(".remote-video");
         if (!remoteVideo) {
           remoteVideo = document.createElement("video");
           remoteVideo.className = "remote-video";
           remoteVideo.autoplay = true;
           remoteVideo.playsInline = true;
-          videoContainer.prepend(remoteVideo);
+          container.prepend(remoteVideo);
         }
         remoteVideo.srcObject = stream;
+        console.log("Remote stream attached");
+      }
 
-        // Show local video if video call
-        if (isVideoCall && localStream) {
-          let localVideo = videoContainer.querySelector(".local-video");
-          if (!localVideo) {
-            localVideo = document.createElement("video");
-            localVideo.className = "local-video";
-            localVideo.autoplay = true;
-            localVideo.playsInline = true;
-            localVideo.muted = true;
-            videoContainer.appendChild(localVideo);
-          }
-          localVideo.srcObject = localStream;
+      // Hide status overlay
+      const overlay = document.querySelector(".call-status-overlay");
+      if (overlay) overlay.style.display = "none";
+    }
+
+    function showLocalVideo(stream) {
+      const container = document.getElementById("callVideoContainer");
+      if (container && stream) {
+        let localVideo = container.querySelector(".local-video");
+        if (!localVideo) {
+          localVideo = document.createElement("video");
+          localVideo.className = "local-video";
+          localVideo.autoplay = true;
+          localVideo.playsInline = true;
+          localVideo.muted = true;
+          container.appendChild(localVideo);
         }
+        localVideo.srcObject = stream;
+        localVideo.classList.remove("hidden-video");
+        console.log("Local video attached");
       }
     }
 
@@ -1744,6 +1809,11 @@
 
         // Create peer connection
         peerConnection = await createPeerConnection();
+
+        // Show local video if video call
+        if (video) {
+          showLocalVideo(localStream);
+        }
 
         // Create offer
         const offer = await peerConnection.createOffer();
@@ -1773,7 +1843,13 @@
         });
 
         toast(`📞 Вызов ${friends[friendUid].profile.name}...`);
-        showCallUI(callId, call, friends[friendUid].profile, "outgoing", video);
+
+        // Show call UI
+        if (video) {
+          showVideoCallUI(callId, call, friends[friendUid].profile, "outgoing");
+        } else {
+          showCallUI(callId, call, friends[friendUid].profile, "outgoing");
+        }
 
         // Listen for answer
         const callRef = ref(db, `calls/${friendUid}/${callId}`);
@@ -1788,6 +1864,7 @@
             isCallActive = true;
             startCallTimer();
             updateCallUI("active");
+            if (video) updateVideoCallUI("active");
             unsubscribe();
             toast("Собеседник ответил!");
           }
@@ -1810,6 +1887,7 @@
       } catch (e) {
         console.error(e);
         toast("Ошибка вызова: " + e.message);
+        cleanupCall();
       }
     }
 
@@ -1824,6 +1902,11 @@
 
         // Create peer connection
         peerConnection = await createPeerConnection();
+
+        // Show local video if video call
+        if (video) {
+          showLocalVideo(localStream);
+        }
 
         // Set remote offer
         const offer = JSON.parse(call.offer);
@@ -1843,15 +1926,18 @@
 
         isCallActive = true;
         startCallTimer();
-        updateCallUI("active");
+        if (video) updateVideoCallUI("active");
         toast("Вызов принят 🎉");
 
-        // Cleanup notification
+        // Cleanup notification and overlay
         document.getElementById("callNotification")?.remove();
+        const overlay = document.getElementById("callOverlay");
+        if (overlay) overlay.style.display = "none";
 
       } catch (e) {
         console.error(e);
         toast("Ошибка ответа: " + e.message);
+        cleanupCall();
       }
     }
 
@@ -1868,17 +1954,18 @@
     // ===== END CALL =====
     async function endCall() {
       if (currentCallId) {
-        await update(ref(db), {
-          [`calls/${user.uid}/${currentCallId}/status`]: "ended"
-        });
-        // Also update other participant
-        const snap = await get(ref(db, `calls/${user.uid}/${currentCallId}`));
-        const call = snap.val();
-        if (call?.to) {
+        try {
+          const snap = await get(ref(db, `calls/${user.uid}/${currentCallId}`));
+          const call = snap.val();
+          if (call?.to) {
+            await update(ref(db), {
+              [`calls/${call.to}/${currentCallId}/status`]: "ended"
+            });
+          }
           await update(ref(db), {
-            [`calls/${call.to}/${currentCallId}/status`]: "ended"
+            [`calls/${user.uid}/${currentCallId}/status`]: "ended"
           });
-        }
+        } catch (e) {}
       }
       cleanupCall();
       toast("Вызов завершён");
@@ -1907,6 +1994,7 @@
 
       currentCallId = null;
       isVideoCall = false;
+      isMuted = false;
     }
 
     function startCallTimer() {
@@ -1940,41 +2028,28 @@
         document.getElementById("callEndBtn").onclick = endCall;
         document.getElementById("callMuteBtn").onclick = toggleMute;
       }
+    }
 
-      // If video call, show video container
-      if (isVideoCall && localStream) {
-        const existing = document.getElementById("callVideoContainer");
-        if (!existing) {
-          const container = document.createElement("div");
-          container.id = "callVideoContainer";
-          container.className = "call-video-container";
-          container.innerHTML = `
-            <video class="remote-video" autoplay playsinline></video>
-            <video class="local-video" autoplay playsinline muted></video>
-            <div class="call-controls">
-              <button class="btn btn-mute" id="videoMuteBtn">🔊</button>
-              <button class="btn btn-end" id="videoEndBtn">⏹</button>
-            </div>
-          `;
-          document.body.appendChild(container);
+    function updateVideoCallUI(status) {
+      const container = document.getElementById("callVideoContainer");
+      if (!container) return;
 
-          // Show local video
-          const localVideo = container.querySelector(".local-video");
-          if (localVideo) localVideo.srcObject = localStream;
-
-          // Show remote video if available
-          if (remoteStream) {
-            const remoteVideo = container.querySelector(".remote-video");
-            if (remoteVideo) remoteVideo.srcObject = remoteStream;
-          }
-
-          document.getElementById("videoEndBtn").onclick = endCall;
-          document.getElementById("videoMuteBtn").onclick = toggleMute;
-
-          // Hide regular call overlay but keep it for controls
-          overlay.style.display = "none";
-        }
+      // Update controls
+      const controls = container.querySelector(".call-controls");
+      if (controls) {
+        controls.innerHTML = `
+          <button class="btn btn-mute ${isMuted ? 'active' : ''}" id="videoMuteBtn">${isMuted ? '🔇' : '🔊'}</button>
+          <button class="btn btn-switch" id="switchCameraBtn">🔄</button>
+          <button class="btn btn-end" id="videoEndBtn">⏹</button>
+        `;
+        document.getElementById("videoEndBtn").onclick = endCall;
+        document.getElementById("videoMuteBtn").onclick = toggleMute;
+        document.getElementById("switchCameraBtn").onclick = switchCamera;
       }
+
+      // Hide status overlay
+      const overlay = container.querySelector(".call-status-overlay");
+      if (overlay) overlay.style.display = "none";
     }
 
     function toggleMute() {
@@ -1992,8 +2067,53 @@
       toast(isMuted ? "Микрофон выключен" : "Микрофон включён");
     }
 
+    async function switchCamera() {
+      if (!localStream) return;
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (!videoTrack) return;
+
+      const currentFacing = videoTrack.getSettings().facingMode || "user";
+      const newFacing = currentFacing === "user" ? "environment" : "user";
+
+      try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: { facingMode: newFacing }
+        });
+
+        // Replace video track
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldVideoTrack = localStream.getVideoTracks()[0];
+        localStream.removeTrack(oldVideoTrack);
+        localStream.addTrack(newVideoTrack);
+
+        // Update peer connection
+        if (peerConnection) {
+          const senders = peerConnection.getSenders();
+          for (const sender of senders) {
+            if (sender.track?.kind === "video") {
+              sender.replaceTrack(newVideoTrack);
+            }
+          }
+        }
+
+        // Update local video
+        const localVideo = document.querySelector(".local-video");
+        if (localVideo) {
+          localVideo.srcObject = localStream;
+        }
+
+        oldVideoTrack.stop();
+        toast("Камера переключена");
+
+      } catch (e) {
+        console.error(e);
+        toast("Не удалось переключить камеру");
+      }
+    }
+
     // ===== SHOW CALL UI =====
-    function showCallUI(callId, call, friendProfile, mode = "incoming", video = false) {
+    function showCallUI(callId, call, friendProfile, mode = "incoming") {
       const existing = document.getElementById("callOverlay");
       if (existing) existing.remove();
 
@@ -2001,7 +2121,6 @@
       overlay.id = "callOverlay";
       overlay.className = "call-overlay";
 
-      const isVideo = video || call.type === "video";
       const statusText = mode === "incoming" ? "📞 Входящий вызов..." : "🔴 Вызов...";
 
       overlay.innerHTML = `
@@ -2009,7 +2128,6 @@
           <img class="avatar large" src="${avatarUrl(friendProfile)}">
           <div class="call-name">${escapeHtml(friendProfile.name || "Друг")}</div>
           <div class="call-status ${mode === "incoming" ? "incoming" : "ringing"}">${statusText}</div>
-          ${isVideo ? '<div style="font-size:40px;margin-bottom:10px;">📹</div>' : ''}
           <div class="call-timer" id="callTimerDisplay">${formatDuration(0)}</div>
           <div class="call-actions">
             ${mode === "incoming" ? `
@@ -2029,6 +2147,62 @@
         document.getElementById("callRejectBtn").onclick = () => rejectCall(callId, call);
       } else {
         document.getElementById("callEndBtn").onclick = endCall;
+      }
+    }
+
+    function showVideoCallUI(callId, call, friendProfile, mode = "incoming") {
+      // Remove any existing overlay
+      document.getElementById("callOverlay")?.remove();
+
+      const container = document.createElement("div");
+      container.id = "callVideoContainer";
+      container.className = "call-video-container";
+
+      const isVideo = call.type === "video";
+
+      container.innerHTML = `
+        <div class="call-status-overlay" id="callStatusOverlay">
+          <img class="big-avatar" src="${avatarUrl(friendProfile)}">
+          <div class="status-text">${mode === "incoming" ? "📞 Входящий вызов..." : "🔴 Вызов..."}</div>
+          <div class="status-sub">${escapeHtml(friendProfile.name || "Друг")}</div>
+          <div class="call-timer" id="callTimerDisplay">${formatDuration(0)}</div>
+        </div>
+        <video class="remote-video" autoplay playsinline style="display:none;"></video>
+        <video class="local-video ${isVideo ? '' : 'hidden-video'}" autoplay playsinline muted></video>
+        <div class="call-controls">
+          ${mode === "incoming" ? `
+            <button class="btn btn-accept" id="callAcceptBtn">✓</button>
+            <button class="btn btn-reject" id="callRejectBtn">✕</button>
+          ` : `
+            <button class="btn btn-mute" id="videoMuteBtn">🔊</button>
+            <button class="btn btn-switch" id="switchCameraBtn">🔄</button>
+            <button class="btn btn-end" id="videoEndBtn">⏹</button>
+          `}
+        </div>
+      `;
+
+      document.body.appendChild(container);
+
+      // Show local video if we have it
+      if (localStream && isVideo) {
+        const localVideo = container.querySelector(".local-video");
+        if (localVideo) {
+          localVideo.srcObject = localStream;
+          localVideo.classList.remove("hidden-video");
+        }
+      }
+
+      if (mode === "incoming") {
+        document.getElementById("callAcceptBtn").onclick = () => {
+          answerCall(callId, call);
+        };
+        document.getElementById("callRejectBtn").onclick = () => {
+          rejectCall(callId, call);
+        };
+      } else {
+        document.getElementById("videoEndBtn").onclick = endCall;
+        document.getElementById("videoMuteBtn").onclick = toggleMute;
+        document.getElementById("switchCameraBtn").onclick = switchCamera;
       }
     }
 
@@ -2069,10 +2243,19 @@
       `;
       document.body.appendChild(notification);
 
-      showCallUI(callId, call, friendProfile, "incoming");
+      // Show full UI
+      if (call.type === "video") {
+        showVideoCallUI(callId, call, friendProfile, "incoming");
+      } else {
+        showCallUI(callId, call, friendProfile, "incoming");
+      }
 
       document.getElementById("acceptCallBtn").onclick = () => {
-        answerCall(callId, call);
+        if (call.type === "video") {
+          answerCall(callId, call);
+        } else {
+          answerCall(callId, call);
+        }
         notification.remove();
       };
 
@@ -2087,6 +2270,7 @@
           rejectCall(callId, call);
           notification.remove();
           document.getElementById("callOverlay")?.remove();
+          document.getElementById("callVideoContainer")?.remove();
           toast("Вызов пропущен");
         }
       }, 30000);
@@ -2903,7 +3087,7 @@
           <button class="btn secondary small" onclick="openPage('settings');closePanel();">⚙️ Настройки</button>
         </div>
         <div class="section-title">🎨 О приложении</div>
-        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>📞 Новое: реальные аудио/видео звонки через WebRTC!</div>
+        <div class="reaction-info"><b>LINK v2.0</b><br>Друзья рядом. Карта в реальном времени. Чаты с реакциями.<br><br>📹 Новое: видеозвонки с картинкой-в-картинке!</div>
       `);
     }
 
