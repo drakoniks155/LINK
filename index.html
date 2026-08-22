@@ -1,1135 +1,3972 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#080808">
-  <title>LINK — друзья на карте</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080808">
+<title>LINK — друзья на карте</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-  <style>
-    *{box-sizing:border-box}
-    :root{
-      --bg:#080808;--card:#121212;--card2:#191919;--text:#fff;--muted:#9b9b9b;
-      --line:#2b2b2b;--accent:#fff;--danger:#ff5d73;--ok:#70ffad
-    }
-    html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);
-      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-    body{overflow:hidden}
-    button,input{font:inherit}
-    button{cursor:pointer;-webkit-tap-highlight-color:transparent}
-    .hidden{display:none!important}
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    #app{position:relative;width:100%;height:100dvh;overflow:hidden;background:#111}
-    #map{position:absolute;inset:0;z-index:1}
+:root{
+  --bg:#080808;
+  --card:#121212;
+  --card2:#191919;
+  --text:#fff;
+  --muted:#9b9b9b;
+  --line:#2b2b2b;
+  --danger:#ff5d73;
+  --ok:#70ffad;
+}
 
-    .topbar{
-      position:absolute;z-index:1000;top:12px;left:12px;right:12px;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none
-    }
-    .brand,.status{
-      pointer-events:auto;background:rgba(10,10,10,.84);backdrop-filter:blur(16px);
-      border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:10px 14px;
-      box-shadow:0 10px 35px rgba(0,0,0,.38)
-    }
-    .brand{font-weight:950;letter-spacing:.7px}
-    .status{font-size:12px;color:#ddd;max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#777;margin-right:7px}
-    .dot.live{background:var(--ok);box-shadow:0 0 13px var(--ok)}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
 
-    .map-actions{
-      position:absolute;z-index:1000;right:12px;bottom:104px;display:flex;flex-direction:column;gap:8px
-    }
-    .round-btn{
-      width:48px;height:48px;border:1px solid rgba(255,255,255,.14);border-radius:17px;
-      background:rgba(10,10,10,.88);backdrop-filter:blur(14px);color:#fff;font-size:20px;
-      box-shadow:0 10px 30px rgba(0,0,0,.35)
-    }
+body{
+  overflow:hidden;
+}
 
-    .bottom{
-      position:absolute;z-index:1000;left:10px;right:10px;bottom:10px;
-      display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px;
-      background:rgba(8,8,8,.91);backdrop-filter:blur(18px);
-      border:1px solid rgba(255,255,255,.12);border-radius:24px;
-      box-shadow:0 15px 50px rgba(0,0,0,.45)
-    }
-    .navbtn{
-      position:relative;border:0;background:transparent;color:#999;border-radius:18px;
-      padding:9px 3px;transition:.2s
-    }
-    .navbtn.active{background:#fff;color:#000;transform:scale(.98)}
-    .navicon{display:block;font-size:19px;line-height:22px}
-    .navtext{display:block;font-size:10px;font-weight:850}
-    .badge{
-      position:absolute;top:5px;right:18%;min-width:17px;height:17px;padding:0 4px;
-      border-radius:20px;background:#ff4862;color:#fff;font-size:10px;line-height:17px;font-weight:900
-    }
+button,input{
+  font:inherit;
+}
 
-    .panel{
-      position:absolute;z-index:2000;inset:0;background:rgba(0,0,0,.58);
-      backdrop-filter:blur(4px);display:flex;align-items:flex-end
-    }
-    .sheet{
-      width:100%;max-height:88dvh;overflow:auto;background:#0d0d0d;
-      border:1px solid #292929;border-bottom:0;border-radius:28px 28px 0 0;
-      padding:18px 16px 32px;animation:up .22s ease-out
-    }
-    @keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
-    .handle{width:42px;height:4px;background:#444;border-radius:20px;margin:0 auto 16px}
-    .sheet h2{margin:4px 0 16px;font-size:22px}
-    .close{float:right;border:0;background:#222;color:#fff;border-radius:50%;width:36px;height:36px;font-size:22px}
+button{
+  cursor:pointer;
+}
 
-    .field{margin:11px 0}
-    .field label{display:block;color:#aaa;font-size:12px;margin-bottom:6px}
-    input{
-      width:100%;border:1px solid #303030;background:#171717;color:#fff;
-      border-radius:14px;padding:13px;outline:none
-    }
-    input:focus{border-color:#777}
-    .btn{
-      border:0;border-radius:15px;padding:13px 15px;background:#fff;color:#000;font-weight:900
-    }
-    .btn.full{width:100%;margin-top:8px}
-    .btn.secondary{background:#222;color:#fff;border:1px solid #333}
-    .btn.danger{background:#2a1115;color:#ff8b9a;border:1px solid #54202a}
-    .btn.small{padding:9px 12px;border-radius:12px;font-size:12px}
+.hidden{
+  display:none!important;
+}
 
-    .auth{
-      position:absolute;z-index:5000;inset:0;background:#080808;
-      display:flex;align-items:center;justify-content:center;padding:20px
-    }
-    .authbox{
-      width:min(430px,100%);background:#111;border:1px solid #292929;border-radius:28px;
-      padding:25px;box-shadow:0 20px 80px #000
-    }
-    .logo{font-size:46px;font-weight:1000;letter-spacing:-2px;margin-bottom:5px}
-    .subtitle{color:#999;margin-bottom:20px;line-height:1.45}
-    .auth-status{font-size:13px;min-height:22px;color:#aaa;margin-top:12px}
+#app{
+  position:relative;
+  width:100%;
+  height:100dvh;
+  overflow:hidden;
+  background:#111;
+}
 
-    .profile-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-    .avatar{
-      width:64px;height:64px;border-radius:50%;object-fit:cover;background:#222;
-      border:2px solid #fff;display:block
-    }
-    .avatar.small{width:47px;height:47px;border-width:1px}
-    .name{font-size:18px;font-weight:900}
-    .code{color:#999;font-size:12px;margin-top:3px}
-    .upload{position:relative;overflow:hidden;margin-top:8px}
-    .upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
-    .row{display:flex;gap:8px;align-items:center}
-    .grow{flex:1;min-width:0}
+#map{
+  position:absolute;
+  inset:0;
+  z-index:1;
+}
 
-    .friend,.request{
-      display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #242424
-    }
-    .friend:last-child,.request:last-child{border-bottom:0}
-    .friend-actions{display:flex;gap:7px}
-    .empty{color:#888;text-align:center;padding:30px 10px}
-    .section-title{margin:20px 0 6px;font-size:13px;color:#aaa;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+/* TOP */
 
-    .leaflet-control-attribution{font-size:8px!important}
-    .leaflet-control-zoom{margin-bottom:90px!important}
-    .user-pin,.friend-pin{background:transparent;border:0}
-    .pin{
-      width:48px;height:48px;border-radius:50%;overflow:hidden;background:#222;
-      border:3px solid #fff;box-shadow:0 5px 20px rgba(0,0,0,.55);position:relative
-    }
-    .pin img{width:100%;height:100%;object-fit:cover}
-    .pin .ring{position:absolute;inset:-8px;border:2px solid rgba(255,255,255,.7);border-radius:50%;animation:pulse 1.6s infinite}
-    @keyframes pulse{50%{transform:scale(1.16);opacity:.2}}
+.topbar{
+  position:absolute;
+  z-index:1000;
+  top:12px;
+  left:12px;
+  right:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  pointer-events:none;
+}
 
-    .toast{
-      position:absolute;z-index:6000;left:50%;bottom:92px;transform:translateX(-50%);
-      background:#fff;color:#000;padding:11px 15px;border-radius:14px;font-weight:800;font-size:13px;
-      box-shadow:0 12px 35px rgba(0,0,0,.4);max-width:90%;text-align:center
-    }
-    .toggle{width:48px;height:28px;border:0;border-radius:20px;background:#333;position:relative;flex:none}
-    .toggle i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}
-    .toggle.on{background:#fff}.toggle.on i{left:23px;background:#000}
-    .note{color:#777;font-size:12px;line-height:1.5;margin-top:12px}
+.brand,
+.status{
+  pointer-events:auto;
+  background:rgba(10,10,10,.84);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  padding:10px 14px;
+  box-shadow:0 10px 35px rgba(0,0,0,.38);
+}
 
-    .online-status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px}
-    .online-status.online{background:#70ffad;box-shadow:0 0 8px #70ffad}
-    .online-status.offline{background:#777}
+.brand{
+  font-weight:950;
+  letter-spacing:.7px;
+}
 
-    @media(min-width:700px){
-      .bottom{left:50%;right:auto;width:520px;transform:translateX(-50%)}
-      .panel{align-items:center;justify-content:center}
-      .sheet{width:520px;max-height:80vh;border:1px solid #292929;border-radius:28px}
-    }
-  </style>
+.status{
+  font-size:12px;
+  color:#ddd;
+  max-width:58%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#777;
+  margin-right:7px;
+}
+
+.dot.live{
+  background:var(--ok);
+  box-shadow:0 0 13px var(--ok);
+}
+
+/* MAP BUTTONS */
+
+.map-actions{
+  position:absolute;
+  z-index:1000;
+  right:12px;
+  bottom:104px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.round-btn{
+  width:48px;
+  height:48px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:17px;
+  background:rgba(10,10,10,.88);
+  backdrop-filter:blur(14px);
+  color:#fff;
+  font-size:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+/* BOTTOM NAV */
+
+.bottom{
+  position:absolute;
+  z-index:1000;
+  left:10px;
+  right:10px;
+  bottom:10px;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  padding:7px;
+
+  background:rgba(8,8,8,.91);
+  backdrop-filter:blur(18px);
+
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+
+  box-shadow:0 15px 50px rgba(0,0,0,.45);
+}
+
+.navbtn{
+  position:relative;
+  border:0;
+  background:transparent;
+  color:#999;
+  border-radius:18px;
+  padding:9px 3px;
+  transition:.2s;
+}
+
+.navbtn.active{
+  background:#fff;
+  color:#000;
+  transform:scale(.98);
+}
+
+.navicon{
+  display:block;
+  font-size:19px;
+  line-height:22px;
+}
+
+.navtext{
+  display:block;
+  font-size:10px;
+  font-weight:850;
+}
+
+.badge{
+  position:absolute;
+  top:5px;
+  right:18%;
+  min-width:17px;
+  height:17px;
+  padding:0 4px;
+  border-radius:20px;
+  background:#ff4862;
+  color:#fff;
+  font-size:10px;
+  line-height:17px;
+  font-weight:900;
+}
+
+/* PANEL */
+
+.panel{
+  position:absolute;
+  z-index:2000;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:flex-end;
+}
+
+.sheet{
+  width:100%;
+  max-height:88dvh;
+  overflow:auto;
+
+  background:#0d0d0d;
+  border:1px solid #292929;
+  border-bottom:0;
+
+  border-radius:28px 28px 0 0;
+
+  padding:18px 16px 32px;
+
+  animation:up .22s ease-out;
+}
+
+@keyframes up{
+  from{
+    transform:translateY(30px);
+    opacity:0;
+  }
+
+  to{
+    transform:none;
+    opacity:1;
+  }
+}
+
+.handle{
+  width:42px;
+  height:4px;
+  background:#444;
+  border-radius:20px;
+  margin:0 auto 16px;
+}
+
+.sheet h2{
+  margin:4px 0 16px;
+  font-size:22px;
+}
+
+.close{
+  float:right;
+  border:0;
+  background:#222;
+  color:#fff;
+  border-radius:50%;
+  width:36px;
+  height:36px;
+  font-size:22px;
+}
+
+/* FORMS */
+
+.field{
+  margin:11px 0;
+}
+
+.field label{
+  display:block;
+  color:#aaa;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  border:1px solid #303030;
+  background:#171717;
+  color:#fff;
+  border-radius:14px;
+  padding:13px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#777;
+}
+
+.btn{
+  border:0;
+  border-radius:15px;
+  padding:13px 15px;
+  background:#fff;
+  color:#000;
+  font-weight:900;
+}
+
+.btn.full{
+  width:100%;
+  margin-top:8px;
+}
+
+.btn.secondary{
+  background:#222;
+  color:#fff;
+  border:1px solid #333;
+}
+
+.btn.danger{
+  background:#2a1115;
+  color:#ff8b9a;
+  border:1px solid #54202a;
+}
+
+.btn.small{
+  padding:9px 12px;
+  border-radius:12px;
+  font-size:12px;
+}
+
+/* AUTH */
+
+.auth{
+  position:absolute;
+  z-index:5000;
+  inset:0;
+  background:#080808;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+}
+
+.authbox{
+  width:min(430px,100%);
+  background:#111;
+  border:1px solid #292929;
+  border-radius:28px;
+  padding:25px;
+  box-shadow:0 20px 80px #000;
+}
+
+.logo{
+  font-size:46px;
+  font-weight:1000;
+  letter-spacing:-2px;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  color:#999;
+  margin-bottom:20px;
+  line-height:1.45;
+}
+
+.auth-status{
+  font-size:13px;
+  min-height:22px;
+  color:#aaa;
+  margin-top:12px;
+}
+
+/* PROFILE */
+
+.profile-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:16px;
+}
+
+.avatar{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#222;
+  border:2px solid #fff;
+  display:block;
+}
+
+.avatar.small{
+  width:47px;
+  height:47px;
+  border-width:1px;
+}
+
+.name{
+  font-size:18px;
+  font-weight:900;
+}
+
+.code{
+  color:#999;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.upload{
+  position:relative;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.upload input{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.grow{
+  flex:1;
+  min-width:0;
+}
+
+/* FRIENDS */
+
+.friend,
+.request{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #242424;
+}
+
+.friend{
+  cursor:pointer;
+}
+
+.friend:last-child,
+.request:last-child{
+  border-bottom:0;
+}
+
+.friend-actions{
+  display:flex;
+  gap:7px;
+}
+
+.empty{
+  color:#888;
+  text-align:center;
+  padding:30px 10px;
+}
+
+.section-title{
+  margin:20px 0 6px;
+  font-size:13px;
+  color:#aaa;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.last-reaction{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:5px;
+  font-size:11px;
+  color:#aaa;
+}
+
+.last-reaction .emoji{
+  font-size:18px;
+}
+
+/* MAP */
+
+.leaflet-control-attribution{
+  font-size:8px!important;
+}
+
+.leaflet-control-zoom{
+  margin-bottom:90px!important;
+}
+
+.user-pin,
+.friend-pin{
+  background:transparent;
+  border:0;
+}
+
+.pin{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#222;
+  border:3px solid #fff;
+  box-shadow:0 5px 20px rgba(0,0,0,.55);
+  position:relative;
+}
+
+.pin img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.pin .ring{
+  position:absolute;
+  inset:-8px;
+  border:2px solid rgba(255,255,255,.7);
+  border-radius:50%;
+  animation:pulse 1.6s infinite;
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.16);
+    opacity:.2;
+  }
+}
+
+/* TOAST */
+
+.toast{
+  position:absolute;
+  z-index:6000;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+
+  background:#fff;
+  color:#000;
+  padding:11px 15px;
+  border-radius:14px;
+
+  font-weight:800;
+  font-size:13px;
+
+  box-shadow:0 12px 35px rgba(0,0,0,.4);
+  max-width:90%;
+  text-align:center;
+}
+
+/* SETTINGS */
+
+.toggle{
+  width:48px;
+  height:28px;
+  border:0;
+  border-radius:20px;
+  background:#333;
+  position:relative;
+  flex:none;
+}
+
+.toggle i{
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#fff;
+  transition:.2s;
+}
+
+.toggle.on{
+  background:#fff;
+}
+
+.toggle.on i{
+  left:23px;
+  background:#000;
+}
+
+.note{
+  color:#777;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:12px;
+}
+
+.online-status{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  margin-left:6px;
+}
+
+.online-status.online{
+  background:#70ffad;
+  box-shadow:0 0 8px #70ffad;
+}
+
+.online-status.offline{
+  background:#777;
+}
+
+/* FRIEND CARD */
+
+.friend-card-avatar{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+  margin:5px auto 12px;
+  border:3px solid #fff;
+}
+
+.friend-card-name{
+  text-align:center;
+  font-size:24px;
+  font-weight:950;
+}
+
+.friend-card-code{
+  text-align:center;
+  color:#888;
+  font-size:13px;
+  margin-top:4px;
+}
+
+.friend-status{
+  text-align:center;
+  margin:12px auto 20px;
+  font-size:12px;
+  color:#aaa;
+}
+
+.reaction-title{
+  text-align:center;
+  color:#aaa;
+  font-size:13px;
+  margin:18px 0 12px;
+}
+
+.reaction-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+}
+
+.reaction-btn{
+  height:65px;
+  border-radius:20px;
+  border:1px solid #2b2b2b;
+  background:#161616;
+  color:#fff;
+  font-size:30px;
+  transition:.15s;
+}
+
+.reaction-btn:active{
+  transform:scale(.88);
+  background:#fff;
+}
+
+/* FULLSCREEN REACTION */
+
+#reactionOverlay{
+  position:fixed;
+  z-index:10000;
+  inset:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(0,0,0,.94);
+  backdrop-filter:blur(18px);
+
+  overflow:hidden;
+}
+
+.reaction-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.16),transparent 55%);
+  animation:reactionBg 2s ease-in-out infinite alternate;
+}
+
+@keyframes reactionBg{
+  from{
+    transform:scale(1);
+    opacity:.5;
+  }
+
+  to{
+    transform:scale(1.25);
+    opacity:1;
+  }
+}
+
+.reaction-content{
+  position:relative;
+  z-index:2;
+  width:100%;
+  text-align:center;
+  padding:30px;
+}
+
+.reaction-sender-avatar{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #fff;
+  margin:0 auto 18px;
+
+  animation:avatarReaction .6s cubic-bezier(.2,1.4,.4,1);
+}
+
+@keyframes avatarReaction{
+  from{
+    transform:scale(0);
+    opacity:0;
+  }
+
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+.reaction-from{
+  color:#aaa;
+  font-size:14px;
+  margin-bottom:4px;
+}
+
+.reaction-name{
+  font-size:25px;
+  font-weight:950;
+  margin-bottom:20px;
+}
+
+.reaction-emoji{
+  font-size:min(42vw,180px);
+  line-height:1;
+
+  animation:emojiReaction 1.8s cubic-bezier(.2,1.2,.3,1) infinite alternate;
+
+  filter:drop-shadow(0 20px 30px rgba(255,255,255,.15));
+}
+
+@keyframes emojiReaction{
+  0%{
+    transform:scale(.55) rotate(-10deg);
+    opacity:0;
+  }
+
+  35%{
+    transform:scale(1.15) rotate(8deg);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(.92) rotate(-4deg);
+  }
+}
+
+.reaction-text{
+  margin-top:20px;
+  font-size:17px;
+  font-weight:850;
+}
+
+.reaction-close{
+  margin-top:30px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  padding:13px 24px;
+  border-radius:16px;
+  font-weight:850;
+}
+
+.reaction-particle{
+  position:absolute;
+  z-index:1;
+  font-size:30px;
+  animation:particleFly 2.5s ease-out forwards;
+  pointer-events:none;
+}
+
+@keyframes particleFly{
+  from{
+    transform:translate(0,0) scale(.4);
+    opacity:1;
+  }
+
+  to{
+    transform:translate(var(--x),var(--y)) scale(1.4) rotate(360deg);
+    opacity:0;
+  }
+}
+
+@media(min-width:700px){
+
+  .bottom{
+    left:50%;
+    right:auto;
+    width:520px;
+    transform:translateX(-50%);
+  }
+
+  .panel{
+    align-items:center;
+    justify-content:center;
+  }
+
+  .sheet{
+    width:520px;
+    max-height:80vh;
+    border:1px solid #292929;
+    border-radius:28px;
+  }
+
+}
+</style>
 </head>
+
 <body>
+
 <div id="app">
+
   <div id="map"></div>
 
   <div class="topbar">
     <div class="brand">LINK</div>
-    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Подключение…</span></div>
+
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Подключение…</span>
+    </div>
   </div>
 
   <div class="map-actions">
-    <button class="round-btn" id="centerMeBtn" title="Моя геолокация">⌖</button>
-    <button class="round-btn" id="showAllBtn" title="Показать всех друзей">⊙</button>
+    <button class="round-btn" id="centerMeBtn">⌖</button>
+    <button class="round-btn" id="showAllBtn">⊙</button>
   </div>
 
   <nav class="bottom">
-    <button class="navbtn active" data-page="map"><span class="navicon">🗺️</span><span class="navtext">Карта</span></button>
-    <button class="navbtn" data-page="friends">
-      <span class="navicon">👥</span><span class="navtext">Друзья</span><span id="requestBadge" class="badge hidden">0</span>
+
+    <button class="navbtn active" data-page="map">
+      <span class="navicon">🗺️</span>
+      <span class="navtext">Карта</span>
     </button>
-    <button class="navbtn" data-page="profile"><span class="navicon">👤</span><span class="navtext">Профиль</span></button>
-    <button class="navbtn" data-page="settings"><span class="navicon">⚙️</span><span class="navtext">Настройки</span></button>
+
+    <button class="navbtn" data-page="friends">
+      <span class="navicon">👥</span>
+      <span class="navtext">Друзья</span>
+      <span id="requestBadge" class="badge hidden">0</span>
+    </button>
+
+    <button class="navbtn" data-page="profile">
+      <span class="navicon">👤</span>
+      <span class="navtext">Профиль</span>
+    </button>
+
+    <button class="navbtn" data-page="settings">
+      <span class="navicon">⚙️</span>
+      <span class="navtext">Настройки</span>
+    </button>
+
   </nav>
 
-  <div id="panel" class="panel hidden"><div id="sheet" class="sheet"></div></div>
+  <div id="panel" class="panel hidden">
+    <div id="sheet" class="sheet"></div>
+  </div>
+
   <div id="toast" class="toast hidden"></div>
+
 </div>
 
-<div id="auth" class="auth">
-  <div class="authbox">
-    <div class="logo">LINK</div>
-    <div class="subtitle">Друзья рядом. В реальном времени.</div>
-    <button id="startBtn" class="btn full">Начать</button>
-    <div id="authStatus" class="auth-status">Подключаем Firebase…</div>
-    <div class="note">Аккаунт создаётся автоматически и работает без email и пароля.</div>
+<!-- FULLSCREEN REACTION -->
+
+<div id="reactionOverlay" class="hidden">
+  <div class="reaction-bg"></div>
+
+  <div id="reactionParticles"></div>
+
+  <div class="reaction-content">
+
+    <img id="reactionSenderAvatar" class="reaction-sender-avatar">
+
+    <div class="reaction-from">Тебе отправил реакцию</div>
+
+    <div id="reactionSenderName" class="reaction-name">
+      Друг
+    </div>
+
+    <div id="reactionEmoji" class="reaction-emoji">
+      ❤️
+    </div>
+
+    <div class="reaction-text">
+      Реакция специально для тебя
+    </div>
+
+    <button id="closeReactionBtn" class="reaction-close">
+      Закрыть
+    </button>
+
   </div>
+</div>
+
+<!-- AUTH -->
+
+<div id="auth" class="auth">
+
+  <div class="authbox">
+
+    <div class="logo">LINK</div>
+
+    <div class="subtitle">
+      Друзья рядом. В реальном времени.
+    </div>
+
+    <button id="startBtn" class="btn full">
+      Начать
+    </button>
+
+    <div id="authStatus" class="auth-status">
+      Подключаем Firebase…
+    </div>
+
+    <div class="note">
+      Аккаунт создаётся автоматически и работает без email и пароля.
+    </div>
+
+  </div>
+
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getAuth, signInAnonymously, onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import {
-    getDatabase, ref, get, set, update, remove, onValue, off, query, orderByChild, equalTo
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
-    authDomain: "link-69afb.firebaseapp.com",
-    databaseURL: "https://link-69afb-default-rtdb.firebaseio.com",
-    projectId: "link-69afb",
-    storageBucket: "link-69afb.firebasestorage.app",
-    messagingSenderId: "488681419482",
-    appId: "1:488681419482:web:9c4cd030e20137a4946be3",
-    measurementId: "G-6T5XDS5W43"
-  };
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-  const $ = id => document.getElementById(id);
+import {
+  getDatabase,
+  ref,
+  get,
+  set,
+  update,
+  remove,
+  onValue
+} from
+"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  let user = null;
-  let profile = null;
-  let map;
-  let meMarker = null;
-  let friendMarkers = new Map();
-  let friendLocationListeners = new Map();
-  let friends = {};
-  let incomingRequests = {};
-  let watchId = null;
-  let lastPosition = null;
-  let locationSharing = true;
-  let currentPage = "map";
-  let profileUnsubscribe = null;
-  let friendsUnsubscribe = null;
-  let requestsUnsubscribe = null;
-  let locationCleanupInterval = null;
 
-  function initMap(){
-    map = L.map("map", { zoomControl:true }).setView([20,0],2);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+const firebaseConfig = {
+  apiKey:"AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
+  authDomain:"link-69afb.firebaseapp.com",
+  databaseURL:"https://link-69afb-default-rtdb.firebaseio.com",
+  projectId:"link-69afb",
+  storageBucket:"link-69afb.firebasestorage.app",
+  messagingSenderId:"488681419482",
+  appId:"1:488681419482:web:9c4cd030e20137a4946be3",
+  measurementId:"G-6T5XDS5W43"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const $ = id => document.getElementById(id);
+
+
+/* VARIABLES */
+
+let user = null;
+let profile = null;
+
+let map;
+let meMarker = null;
+
+let friendMarkers = new Map();
+let friendLocationListeners = new Map();
+
+let friends = {};
+let incomingRequests = {};
+
+let watchId = null;
+let lastPosition = null;
+
+let locationSharing = true;
+
+let currentPage = "map";
+
+let profileUnsubscribe = null;
+let friendsUnsubscribe = null;
+let requestsUnsubscribe = null;
+let reactionsUnsubscribe = null;
+
+let locationCleanupInterval = null;
+
+let currentReactionId = null;
+
+
+/* HELPERS */
+
+function defaultAvatar(name=""){
+
+  const letter =
+    String(name || "?")
+    .trim()
+    .slice(0,1)
+    .toUpperCase() || "?";
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+        <rect width="160" height="160" fill="#242424"/>
+        <text
+          x="80"
+          y="104"
+          text-anchor="middle"
+          font-family="Arial"
+          font-size="72"
+          fill="white"
+        >${letter}</text>
+      </svg>
+    `);
+}
+
+function avatarUrl(p){
+  return p?.avatar || defaultAvatar(p?.name || "?");
+}
+
+function escapeHtml(s){
+
+  return String(s ?? "")
+    .replace(/[&<>"']/g,c=>({
+
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+
+    }[c]));
+
+}
+
+
+/* MAP */
+
+function initMap(){
+
+  map = L.map("map",{
+    zoomControl:true
+  }).setView([20,0],2);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
       maxZoom:19,
       attribution:"© OpenStreetMap contributors"
-    }).addTo(map);
+    }
+  ).addTo(map);
+
+}
+
+
+function markerIcon(p,isMe=false){
+
+  const html = `
+    <div class="pin">
+      ${isMe ? '<div class="ring"></div>' : ""}
+      <img src="${avatarUrl(p)}">
+    </div>
+  `;
+
+  return L.divIcon({
+
+    className:isMe ? "user-pin" : "friend-pin",
+
+    html,
+
+    iconSize:[48,48],
+
+    iconAnchor:[24,24],
+
+    popupAnchor:[0,-25]
+
+  });
+
+}
+
+
+/* STATUS */
+
+function setStatus(text,live=false){
+
+  $("statusText").textContent = text;
+
+  $("statusDot")
+    .classList
+    .toggle("live",!!live);
+
+}
+
+
+function toast(text){
+
+  $("toast").textContent = text;
+
+  $("toast").classList.remove("hidden");
+
+  clearTimeout(window.__toastTimer);
+
+  window.__toastTimer = setTimeout(()=>{
+
+    $("toast").classList.add("hidden");
+
+  },2800);
+
+}
+
+
+/* PANELS */
+
+function openPanel(html){
+
+  $("sheet").innerHTML =
+    `<div class="handle"></div>${html}`;
+
+  $("panel").classList.remove("hidden");
+
+}
+
+
+function closePanel(){
+
+  $("panel").classList.add("hidden");
+
+}
+
+window.closePanel = closePanel;
+
+
+$("panel").addEventListener("click",e=>{
+
+  if(e.target === $("panel")){
+    closePanel();
   }
 
-  function defaultAvatar(name=""){
-    const letter = String(name || "?").trim().slice(0,1).toUpperCase() || "?";
-    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
-        <rect width="160" height="160" fill="#242424"/>
-        <text x="80" y="104" text-anchor="middle" font-family="Arial" font-size="72" fill="white">${letter}</text>
-      </svg>`
+});
+
+
+/* NAVIGATION */
+
+document
+.querySelectorAll(".navbtn")
+.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    openPage(btn.dataset.page);
+
+  });
+
+});
+
+
+function openPage(page){
+
+  currentPage = page;
+
+  document
+  .querySelectorAll(".navbtn")
+  .forEach(btn=>{
+
+    btn.classList.toggle(
+      "active",
+      btn.dataset.page === page
     );
-  }
 
-  function avatarUrl(p){
-    return p?.avatar || defaultAvatar(p?.name || "?");
-  }
-
-  function escapeHtml(s){
-    return String(s ?? "").replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[c]));
-  }
-
-  function markerIcon(p, isMe=false){
-    const html = `
-      <div class="pin">
-        ${isMe ? '<div class="ring"></div>' : ''}
-        <img src="${avatarUrl(p)}">
-      </div>`;
-    return L.divIcon({
-      className:isMe ? "user-pin" : "friend-pin",
-      html,
-      iconSize:[48,48],
-      iconAnchor:[24,24],
-      popupAnchor:[0,-25]
-    });
-  }
-
-  function setStatus(text, live=false){
-    $("statusText").textContent = text;
-    $("statusDot").classList.toggle("live", !!live);
-  }
-
-  function toast(text){
-    $("toast").textContent = text;
-    $("toast").classList.remove("hidden");
-    clearTimeout(window.__toastTimer);
-    window.__toastTimer = setTimeout(() => $("toast").classList.add("hidden"), 2800);
-  }
-
-  function openPanel(html){
-    $("sheet").innerHTML = `<div class="handle"></div>${html}`;
-    $("panel").classList.remove("hidden");
-  }
-
-  function closePanel(){
-    $("panel").classList.add("hidden");
-  }
-
-  window.closePanel = closePanel;
-
-  $("panel").addEventListener("click", e => {
-    if(e.target === $("panel")) closePanel();
   });
 
-  document.querySelectorAll(".navbtn").forEach(btn => {
-    btn.addEventListener("click", () => openPage(btn.dataset.page));
-  });
 
-  function openPage(page){
-    currentPage = page;
-    document.querySelectorAll(".navbtn").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.page === page);
-    });
+  if(page === "map"){
 
-    if(page === "map"){
-      closePanel();
-      setTimeout(() => map.invalidateSize(), 100);
-    }else if(page === "friends"){
-      renderFriends();
-    }else if(page === "profile"){
-      renderProfile();
-    }else if(page === "settings"){
-      renderSettings();
-    }
+    closePanel();
+
+    setTimeout(()=>{
+
+      map.invalidateSize();
+
+    },100);
+
   }
 
-  $("centerMeBtn").onclick = () => {
-    if(lastPosition){
-      map.setView([lastPosition.lat, lastPosition.lng], 17);
-    }else{
-      toast("Геолокация ещё не получена.");
+  if(page === "friends"){
+    renderFriends();
+  }
+
+  if(page === "profile"){
+    renderProfile();
+  }
+
+  if(page === "settings"){
+    renderSettings();
+  }
+
+}
+
+
+/* MAP BUTTONS */
+
+$("centerMeBtn").onclick = ()=>{
+
+  if(lastPosition){
+
+    map.setView(
+      [lastPosition.lat,lastPosition.lng],
+      17
+    );
+
+  }else{
+
+    toast("Геолокация ещё не получена.");
+
+  }
+
+};
+
+
+$("showAllBtn").onclick = ()=>{
+
+  const markers = [
+    meMarker,
+    ...Array.from(friendMarkers.values())
+  ].filter(Boolean);
+
+  if(!markers.length){
+
+    toast("Нет активных маркеров.");
+
+    return;
+  }
+
+  const group = L.featureGroup(markers);
+
+  map.fitBounds(
+    group.getBounds(),
+    {
+      padding:[50,50]
     }
-  };
+  );
 
-  $("showAllBtn").onclick = () => {
-    const markers = [meMarker, ...Array.from(friendMarkers.values())].filter(Boolean);
-    if(markers.length === 0){
-      toast("Нет активных маркеров.");
-      return;
-    }
-    const group = L.featureGroup(markers);
-    map.fitBounds(group.getBounds(), { padding: [50, 50] });
-  };
+};
 
-  async function ensureProfile(){
-    const profileRef = ref(db, `profiles/${user.uid}`);
-    const snap = await get(profileRef);
 
-    if(!snap.exists()){
-      const code = await createUniqueFriendCode();
-      const newProfile = {
-        name: `LINK ${Math.floor(100 + Math.random() * 900)}`,
-        friendCode: code,
-        avatar: "",
-        createdAt: Date.now(),
-        locationSharing: true,
-        lastActive: Date.now()
-      };
+/* PROFILE */
 
-      await update(ref(db), {
-        [`profiles/${user.uid}`]: newProfile,
-        [`friendCodes/${code}`]: user.uid
+async function ensureProfile(){
+
+  const profileRef =
+    ref(db,`profiles/${user.uid}`);
+
+  const snap =
+    await get(profileRef);
+
+
+  if(!snap.exists()){
+
+    const code =
+      await createUniqueFriendCode();
+
+    const newProfile = {
+
+      name:`LINK ${Math.floor(100 + Math.random()*900)}`,
+
+      friendCode:code,
+
+      avatar:"",
+
+      createdAt:Date.now(),
+
+      locationSharing:true,
+
+      lastActive:Date.now()
+
+    };
+
+
+    await update(ref(db),{
+
+      [`profiles/${user.uid}`]:newProfile,
+
+      [`friendCodes/${code}`]:user.uid
+
+    });
+
+    profile = newProfile;
+
+  }
+
+  else{
+
+    profile = snap.val();
+
+    if(!profile.friendCode){
+
+      const code =
+        await createUniqueFriendCode();
+
+      await update(ref(db),{
+
+        [`profiles/${user.uid}/friendCode`]:code,
+
+        [`friendCodes/${code}`]:user.uid
+
       });
 
-      profile = newProfile;
-    }else{
-      profile = snap.val();
-      if(!profile.friendCode){
-        const code = await createUniqueFriendCode();
-        await update(ref(db), {
-          [`profiles/${user.uid}/friendCode`]: code,
-          [`friendCodes/${code}`]: user.uid
-        });
-        profile.friendCode = code;
+      profile.friendCode = code;
+
+    }
+
+    await update(
+      ref(db,`profiles/${user.uid}`),
+      {
+        lastActive:Date.now()
       }
-      // Update last active
-      await update(ref(db, `profiles/${user.uid}`), { lastActive: Date.now() });
-    }
+    );
+
   }
 
-  async function createUniqueFriendCode(){
-    for(let i=0;i<30;i++){
-      const code = String(Math.floor(1000 + Math.random() * 9000));
-      const existing = await get(ref(db, `friendCodes/${code}`));
-      if(!existing.exists()) return code;
+}
+
+
+async function createUniqueFriendCode(){
+
+  for(let i=0;i<30;i++){
+
+    const code =
+      String(
+        Math.floor(
+          1000 + Math.random()*9000
+        )
+      );
+
+    const existing =
+      await get(
+        ref(db,`friendCodes/${code}`)
+      );
+
+    if(!existing.exists()){
+      return code;
     }
-    throw new Error("Не удалось создать свободный код. Попробуй ещё раз.");
+
   }
 
-  async function startApp(){
-    $("startBtn").disabled = true;
-    $("authStatus").textContent = "Входим в LINK…";
-    try{
-      await signInAnonymously(auth);
-    }catch(error){
-      console.error(error);
-      $("authStatus").textContent = "Ошибка: " + friendlyError(error);
-      $("startBtn").disabled = false;
-    }
+  throw new Error(
+    "Не удалось создать свободный код."
+  );
+
+}
+
+
+/* AUTH */
+
+async function startApp(){
+
+  $("startBtn").disabled = true;
+
+  $("authStatus").textContent =
+    "Входим в LINK…";
+
+  try{
+
+    await signInAnonymously(auth);
+
   }
 
-  $("startBtn").onclick = startApp;
+  catch(error){
 
-  onAuthStateChanged(auth, async firebaseUser => {
+    console.error(error);
+
+    $("authStatus").textContent =
+      "Ошибка: " + friendlyError(error);
+
+    $("startBtn").disabled = false;
+
+  }
+
+}
+
+$("startBtn").onclick = startApp;
+
+
+/* AUTH STATE */
+
+onAuthStateChanged(
+  auth,
+  async firebaseUser=>{
+
     if(!firebaseUser) return;
-    if(user?.uid === firebaseUser.uid) return;
+
+    if(user?.uid === firebaseUser.uid){
+      return;
+    }
 
     try{
+
       user = firebaseUser;
-      $("authStatus").textContent = "Создаём профиль…";
+
+      $("authStatus").textContent =
+        "Создаём профиль…";
+
       await ensureProfile();
 
       $("auth").classList.add("hidden");
+
+
       subscribeProfile();
+
       subscribeFriends();
+
       subscribeIncomingRequests();
-      setStatus("LINK подключён", true);
+
+      subscribeReactions();
+
+
+      setStatus(
+        "LINK подключён",
+        true
+      );
+
 
       if(profile.locationSharing !== false){
+
         locationSharing = true;
+
         startLocation();
-      }else{
-        locationSharing = false;
-        setStatus("Геолокация выключена", false);
+
       }
 
+      else{
+
+        locationSharing = false;
+
+        setStatus(
+          "Геолокация выключена",
+          false
+        );
+
+      }
+
+
       renderMeMarker();
-      
-      // Cleanup old locations every 5 minutes
-      locationCleanupInterval = setInterval(cleanupOldLocations, 5 * 60 * 1000);
-    }catch(error){
-      console.error(error);
-      $("authStatus").textContent = "Ошибка запуска: " + friendlyError(error);
-      $("auth").classList.remove("hidden");
-      $("startBtn").disabled = false;
+
+
+      locationCleanupInterval =
+        setInterval(
+          cleanupOldLocations,
+          5 * 60 * 1000
+        );
+
     }
-  });
 
-  function subscribeProfile(){
-    if(profileUnsubscribe) profileUnsubscribe();
+    catch(error){
 
-    const profileRef = ref(db, `profiles/${user.uid}`);
-    profileUnsubscribe = onValue(profileRef, snap => {
+      console.error(error);
+
+      $("authStatus").textContent =
+        "Ошибка запуска: " +
+        friendlyError(error);
+
+      $("auth").classList.remove("hidden");
+
+      $("startBtn").disabled = false;
+
+    }
+
+  }
+);
+
+
+/* PROFILE SUBSCRIBE */
+
+function subscribeProfile(){
+
+  const profileRef =
+    ref(db,`profiles/${user.uid}`);
+
+  profileUnsubscribe =
+    onValue(profileRef,snap=>{
+
       if(!snap.exists()) return;
+
       profile = snap.val();
 
-      if(meMarker) renderMeMarker();
-      if(currentPage === "profile") renderProfile();
-    });
-  }
-
-  function subscribeFriends(){
-    if(friendsUnsubscribe) friendsUnsubscribe();
-
-    const friendsRef = ref(db, `friends/${user.uid}`);
-    friendsUnsubscribe = onValue(friendsRef, async snap => {
-      const nextFriends = snap.val() || {};
-      const oldIds = Object.keys(friends);
-
-      for(const id of oldIds){
-        if(!nextFriends[id]){
-          removeFriendMarker(id);
-        }
-      }
-
-      friends = nextFriends;
-
-      for(const friendId of Object.keys(friends)){
-        subscribeFriendLocation(friendId);
-      }
-
-      if(currentPage === "friends") renderFriends();
-    });
-  }
-
-  function subscribeIncomingRequests(){
-    if(requestsUnsubscribe) requestsUnsubscribe();
-
-    const requestRef = ref(db, `friendRequests/${user.uid}`);
-    requestsUnsubscribe = onValue(requestRef, snap => {
-      incomingRequests = snap.val() || {};
-      updateRequestBadge();
-      if(currentPage === "friends") renderFriends();
-    });
-  }
-
-  function updateRequestBadge(){
-    const count = Object.keys(incomingRequests).length;
-    $("requestBadge").textContent = count;
-    $("requestBadge").classList.toggle("hidden", count === 0);
-  }
-
-  function subscribeFriendLocation(friendId){
-    if(friendLocationListeners.has(friendId)) return;
-
-    const locationRef = ref(db, `locations/${friendId}`);
-    const unsubscribe = onValue(locationRef, async snap => {
-      const location = snap.val();
-      if(!location){
-        removeFriendMarker(friendId, false);
-        return;
-      }
-
-      // Check if location is stale (older than 5 minutes)
-      const isStale = (Date.now() - location.updatedAt) > 5 * 60 * 1000;
-      if(isStale){
-        removeFriendMarker(friendId, false);
-        return;
-      }
-
-      const profileSnap = await get(ref(db, `profiles/${friendId}`));
-      if(!profileSnap.exists()) return;
-
-      const friendProfile = profileSnap.val();
-      upsertFriendMarker(friendId, friendProfile, location);
-    });
-
-    friendLocationListeners.set(friendId, unsubscribe);
-  }
-
-  function upsertFriendMarker(friendId, friendProfile, location){
-    const lat = Number(location.lat);
-    const lng = Number(location.lng);
-    if(!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-    if(!friendMarkers.has(friendId)){
-      const marker = L.marker([lat,lng], {
-        icon:markerIcon(friendProfile),
-        zIndexOffset:500
-      }).addTo(map);
-
-      const lastActive = friendProfile.lastActive ? new Date(friendProfile.lastActive) : null;
-      const statusText = lastActive ? `Последний раз: ${lastActive.toLocaleString()}` : "Онлайн на карте";
-      
-      marker.bindPopup(`
-        <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
-        ${statusText}
-      `);
-      friendMarkers.set(friendId, marker);
-    }else{
-      const marker = friendMarkers.get(friendId);
-      marker.setLatLng([lat,lng]);
-      marker.setIcon(markerIcon(friendProfile));
-      
-      const lastActive = friendProfile.lastActive ? new Date(friendProfile.lastActive) : null;
-      const statusText = lastActive ? `Последний раз: ${lastActive.toLocaleString()}` : "Онлайн на карте";
-      
-      marker.getPopup()?.setContent(`
-        <b>${escapeHtml(friendProfile.name || "Друг")}</b><br>
-        ${statusText}
-      `);
-    }
-  }
-
-  function removeFriendMarker(friendId, unsubscribe=true){
-    const marker = friendMarkers.get(friendId);
-    if(marker){
-      map.removeLayer(marker);
-      friendMarkers.delete(friendId);
-    }
-
-    if(unsubscribe && friendLocationListeners.has(friendId)){
-      friendLocationListeners.get(friendId)();
-      friendLocationListeners.delete(friendId);
-    }
-  }
-
-  function renderMeMarker(){
-    if(!lastPosition || !profile) return;
-
-    const latlng = [lastPosition.lat, lastPosition.lng];
-    if(!meMarker){
-      meMarker = L.marker(latlng, {
-        icon:markerIcon(profile, true),
-        zIndexOffset:1000
-      }).addTo(map);
-      meMarker.bindPopup("<b>Ты</b><br>Это твоя геолокация");
-    }else{
-      meMarker.setLatLng(latlng);
-      meMarker.setIcon(markerIcon(profile, true));
-    }
-  }
-
-  function startLocation(){
-    if(!navigator.geolocation){
-      setStatus("GPS не поддерживается", false);
-      toast("Этот браузер не поддерживает геолокацию.");
-      return;
-    }
-
-    if(watchId !== null){
-      navigator.geolocation.clearWatch(watchId);
-    }
-
-    setStatus("Получаем геолокацию…", true);
-
-    watchId = navigator.geolocation.watchPosition(
-      async pos => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        lastPosition = {
-          lat: latitude,
-          lng: longitude,
-          accuracy: accuracy || 0,
-          updatedAt: Date.now()
-        };
-
+      if(meMarker){
         renderMeMarker();
-        setStatus("Геолокация в реальном времени", true);
+      }
 
-        try{
-          await set(ref(db, `locations/${user.uid}`), {
-            lat: latitude,
-            lng: longitude,
-            accuracy: accuracy || 0,
-            updatedAt: Date.now()
-          });
-        }catch(error){
-          console.error(error);
-          setStatus("Ошибка отправки GPS", false);
+      if(currentPage === "profile"){
+        renderProfile();
+      }
+
+    });
+
+}
+
+
+/* FRIENDS SUBSCRIBE */
+
+function subscribeFriends(){
+
+  const friendsRef =
+    ref(db,`friends/${user.uid}`);
+
+  friendsUnsubscribe =
+    onValue(
+      friendsRef,
+      snap=>{
+
+        const nextFriends =
+          snap.val() || {};
+
+        const oldIds =
+          Object.keys(friends);
+
+
+        for(const id of oldIds){
+
+          if(!nextFriends[id]){
+
+            removeFriendMarker(id);
+
+          }
+
         }
-      },
-      error => {
-        if(error.code === 1){
-          setStatus("Разреши геолокацию", false);
-          toast("Разреши доступ к геолокации в браузере.");
-        }else{
-          setStatus("GPS временно недоступен", false);
+
+
+        friends = nextFriends;
+
+
+        for(
+          const friendId of Object.keys(friends)
+        ){
+
+          subscribeFriendLocation(friendId);
+
         }
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 3000,
-        timeout: 15000
+
+
+        if(currentPage === "friends"){
+
+          renderFriends();
+
+        }
+
       }
     );
-  }
 
-  async function cleanupOldLocations(){
-    try{
-      const locationsRef = ref(db, 'locations');
-      const snapshot = await get(locationsRef);
-      if(!snapshot.exists()) return;
-      
-      const locations = snapshot.val();
-      const now = Date.now();
-      const staleThreshold = 10 * 60 * 1000; // 10 minutes
-      
-      for(const [uid, location] of Object.entries(locations)){
-        if(uid === user.uid) continue; // Don't clean up own location
-        if((now - location.updatedAt) > staleThreshold){
-          await remove(ref(db, `locations/${uid}`));
-          removeFriendMarker(uid);
+}
+
+
+/* REQUESTS */
+
+function subscribeIncomingRequests(){
+
+  const requestRef =
+    ref(db,`friendRequests/${user.uid}`);
+
+  requestsUnsubscribe =
+    onValue(requestRef,snap=>{
+
+      incomingRequests =
+        snap.val() || {};
+
+      updateRequestBadge();
+
+      if(currentPage === "friends"){
+
+        renderFriends();
+
+      }
+
+    });
+
+}
+
+
+function updateRequestBadge(){
+
+  const count =
+    Object.keys(incomingRequests).length;
+
+  $("requestBadge").textContent = count;
+
+  $("requestBadge")
+    .classList
+    .toggle(
+      "hidden",
+      count === 0
+    );
+
+}
+
+
+/* REACTIONS SUBSCRIBE */
+
+function subscribeReactions(){
+
+  const reactionsRef =
+    ref(db,`reactions/${user.uid}`);
+
+  reactionsUnsubscribe =
+    onValue(
+      reactionsRef,
+      async snap=>{
+
+        const reactions =
+          snap.val() || {};
+
+        const reactionEntries =
+          Object.entries(reactions)
+          .sort((a,b)=>
+            (b[1]?.createdAt || 0) -
+            (a[1]?.createdAt || 0)
+          );
+
+
+        if(!reactionEntries.length){
+          return;
         }
-      }
-    }catch(error){
-      console.error('Cleanup error:', error);
-    }
-  }
 
-  function renderFriends(){
-    const friendIds = Object.keys(friends);
-    const requestIds = Object.keys(incomingRequests);
 
-    const requestsHtml = requestIds.length ? requestIds.map(uid => {
-      const req = incomingRequests[uid] || {};
-      const p = req.profile || {};
-      return `
-        <div class="request">
-          <img class="avatar small" src="${avatarUrl(p)}">
-          <div class="grow">
-            <b>${escapeHtml(p.name || "Пользователь")}</b>
-            <div class="code">Хочет добавить тебя в друзья</div>
-          </div>
-          <div class="friend-actions">
-            <button class="btn small" onclick="acceptRequest('${uid}')">✓</button>
-            <button class="btn small secondary" onclick="rejectRequest('${uid}')">×</button>
-          </div>
-        </div>`;
-    }).join("") : "";
+        const [reactionId,reaction] =
+          reactionEntries[0];
 
-    const friendsHtml = friendIds.length ? friendIds.map(uid => {
-      const f = friends[uid] || {};
-      const p = f.profile || {};
-      const isOnline = friendMarkers.has(uid);
-      return `
-        <div class="friend">
-          <img class="avatar small" src="${avatarUrl(p)}">
-          <div class="grow">
-            <b>${escapeHtml(p.name || "Друг")}</b>
-            <div class="code">
-              #${escapeHtml(p.friendCode || "")}
-              <span class="online-status ${isOnline ? 'online' : 'offline'}"></span>
-            </div>
-          </div>
-          <button class="btn small secondary" onclick="showFriendOnMap('${uid}')">Карта</button>
-          <button class="btn small danger" onclick="removeFriend('${uid}')">×</button>
-        </div>`;
-    }).join("") : `<div class="empty">Пока нет друзей. Добавь кого-нибудь по коду!</div>`;
 
-    openPanel(`
-      <button class="close" onclick="closePanel()">×</button>
-      <h2>Друзья</h2>
-
-      <div class="field">
-        <label>Добавить друга по 4-значному коду</label>
-        <div class="row">
-          <input id="friendCodeInput" maxlength="4" inputmode="numeric" placeholder="1234">
-          <button id="sendRequestBtn" class="btn" style="width:125px">Добавить</button>
-        </div>
-      </div>
-
-      ${requestsHtml ? `<div class="section-title">Входящие заявки</div>${requestsHtml}` : ""}
-      <div class="section-title">Мои друзья</div>
-      <div>${friendsHtml}</div>
-    `);
-
-    $("sendRequestBtn").onclick = sendFriendRequest;
-  }
-
-  async function sendFriendRequest(){
-    const code = $("friendCodeInput").value.replace(/\D/g, "").slice(0,4);
-    $("friendCodeInput").value = code;
-
-    if(!/^\d{4}$/.test(code)){
-      toast("Введи 4 цифры.");
-      return;
-    }
-
-    try{
-      const codeSnap = await get(ref(db, `friendCodes/${code}`));
-
-      if(!codeSnap.exists()){
-        toast("Пользователь с таким кодом не найден.");
-        return;
-      }
-
-      const targetUid = codeSnap.val();
-
-      if(targetUid === user.uid){
-        toast("Нельзя добавить самого себя.");
-        return;
-      }
-
-      const [friendSnap, outgoingSnap, incomingSnap] = await Promise.all([
-        get(ref(db, `friends/${user.uid}/${targetUid}`)),
-        get(ref(db, `friendRequests/${targetUid}/${user.uid}`)),
-        get(ref(db, `friendRequests/${user.uid}/${targetUid}`))
-      ]);
-
-      if(friendSnap.exists()){
-        toast("Этот пользователь уже у тебя в друзьях.");
-        return;
-      }
-
-      if(outgoingSnap.exists()){
-        toast("Заявка уже отправлена.");
-        return;
-      }
-
-      if(incomingSnap.exists()){
-        toast("У тебя уже есть заявка от этого пользователя.");
-        return;
-      }
-
-      await set(ref(db, `friendRequests/${targetUid}/${user.uid}`), {
-        fromUid: user.uid,
-        createdAt: Date.now(),
-        profile: {
-          name: profile.name || "Пользователь",
-          friendCode: profile.friendCode || "",
-          avatar: profile.avatar || ""
+        if(!reaction){
+          return;
         }
-      });
 
-      $("friendCodeInput").value = "";
-      toast("Заявка в друзья отправлена ✨");
-    }catch(error){
-      console.error(error);
-      toast("Ошибка: " + friendlyError(error));
-    }
-  }
 
-  window.acceptRequest = async function(fromUid){
-    const req = incomingRequests[fromUid];
-    if(!req) return;
+        if(currentReactionId === reactionId){
+          return;
+        }
 
-    const fromProfile = req.profile || {};
-    const myProfile = {
-      name: profile.name || "Пользователь",
-      friendCode: profile.friendCode || "",
-      avatar: profile.avatar || ""
-    };
 
-    try{
-      await update(ref(db), {
-        [`friends/${user.uid}/${fromUid}`]: {
-          since: Date.now(),
-          profile: fromProfile
-        },
-        [`friends/${fromUid}/${user.uid}`]: {
-          since: Date.now(),
-          profile: myProfile
-        },
-        [`friendRequests/${user.uid}/${fromUid}`]: null
-      });
+        currentReactionId = reactionId;
 
-      toast("Друг добавлен 🎉");
-    }catch(error){
-      console.error(error);
-      toast("Ошибка: " + friendlyError(error));
-    }
-  };
 
-  window.rejectRequest = async function(fromUid){
-    try{
-      await remove(ref(db, `friendRequests/${user.uid}/${fromUid}`));
-      toast("Заявка отклонена.");
-    }catch(error){
-      toast("Ошибка: " + friendlyError(error));
-    }
-  };
+        showFullscreenReaction(
+          reactionId,
+          reaction
+        );
 
-  window.removeFriend = async function(friendUid){
-    if(!confirm("Удалить этого друга?")) return;
-    
-    try{
-      await update(ref(db), {
-        [`friends/${user.uid}/${friendUid}`]: null,
-        [`friends/${friendUid}/${user.uid}`]: null
-      });
-      toast("Друг удалён.");
-    }catch(error){
-      toast("Ошибка: " + friendlyError(error));
-    }
-  };
-
-  window.showFriendOnMap = async function(friendUid){
-    try{
-      const snap = await get(ref(db, `locations/${friendUid}`));
-      if(!snap.exists()){
-        toast("Сейчас геолокация друга недоступна.");
-        return;
       }
+    );
 
-      const loc = snap.val();
-      if(!Number.isFinite(Number(loc.lat)) || !Number.isFinite(Number(loc.lng))){
-        toast("Некорректные координаты друга.");
-        return;
+}
+
+
+/* FULLSCREEN REACTION */
+
+function showFullscreenReaction(
+  reactionId,
+  reaction
+){
+
+  const overlay =
+    $("reactionOverlay");
+
+  const sender =
+    reaction.sender || {};
+
+  $("reactionSenderName").textContent =
+    sender.name || "Друг";
+
+  $("reactionSenderAvatar").src =
+    avatarUrl(sender);
+
+  $("reactionEmoji").textContent =
+    reaction.emoji || "❤️";
+
+
+  overlay.classList.remove("hidden");
+
+
+  createReactionParticles(
+    reaction.emoji || "❤️"
+  );
+
+
+  window.__reactionTimer =
+    setTimeout(()=>{
+
+      closeReaction(
+        reactionId
+      );
+
+    },6500);
+
+}
+
+
+function createReactionParticles(emoji){
+
+  const container =
+    $("reactionParticles");
+
+  container.innerHTML = "";
+
+  for(let i=0;i<22;i++){
+
+    const particle =
+      document.createElement("div");
+
+    particle.className =
+      "reaction-particle";
+
+    particle.textContent =
+      emoji;
+
+    particle.style.left =
+      (45 + Math.random()*10) + "%";
+
+    particle.style.top =
+      (45 + Math.random()*10) + "%";
+
+    particle.style.setProperty(
+      "--x",
+      `${(Math.random()-.5)*110}vw`
+    );
+
+    particle.style.setProperty(
+      "--y",
+      `${(Math.random()-.5)*110}vh`
+    );
+
+    particle.style.animationDelay =
+      `${Math.random()*.4}s`;
+
+    container.appendChild(
+      particle
+    );
+
+  }
+
+}
+
+
+async function closeReaction(reactionId){
+
+  clearTimeout(
+    window.__reactionTimer
+  );
+
+  $("reactionOverlay")
+    .classList
+    .add("hidden");
+
+  $("reactionParticles").innerHTML = "";
+
+  try{
+
+    await remove(
+      ref(
+        db,
+        `reactions/${user.uid}/${reactionId}`
+      )
+    );
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Reaction remove error",
+      error
+    );
+
+  }
+
+}
+
+
+$("closeReactionBtn").onclick = ()=>{
+
+  if(currentReactionId){
+
+    closeReaction(
+      currentReactionId
+    );
+
+  }
+
+};
+
+
+/* FRIEND LOCATION */
+
+function subscribeFriendLocation(friendId){
+
+  if(
+    friendLocationListeners
+    .has(friendId)
+  ){
+    return;
+  }
+
+
+  const locationRef =
+    ref(
+      db,
+      `locations/${friendId}`
+    );
+
+
+  const unsubscribe =
+    onValue(
+      locationRef,
+      async snap=>{
+
+        const location =
+          snap.val();
+
+
+        if(!location){
+
+          removeFriendMarker(
+            friendId,
+            false
+          );
+
+          return;
+        }
+
+
+        const isStale =
+          Date.now() -
+          location.updatedAt
+          >
+          5 * 60 * 1000;
+
+
+        if(isStale){
+
+          removeFriendMarker(
+            friendId,
+            false
+          );
+
+          return;
+        }
+
+
+        const profileSnap =
+          await get(
+            ref(
+              db,
+              `profiles/${friendId}`
+            )
+          );
+
+
+        if(!profileSnap.exists()){
+          return;
+        }
+
+
+        const friendProfile =
+          profileSnap.val();
+
+
+        upsertFriendMarker(
+          friendId,
+          friendProfile,
+          location
+        );
+
       }
+    );
 
-      closePanel();
-      openPage("map");
-      map.setView([Number(loc.lat), Number(loc.lng)], 17);
 
-      const marker = friendMarkers.get(friendUid);
-      if(marker) marker.openPopup();
-    }catch(error){
-      toast("Ошибка: " + friendlyError(error));
-    }
-  };
+  friendLocationListeners.set(
+    friendId,
+    unsubscribe
+  );
 
-  function renderProfile(){
-    openPanel(`
-      <button class="close" onclick="closePanel()">×</button>
-      <h2>Профиль</h2>
+}
 
-      <div class="profile-head">
-        <img id="profileAvatar" class="avatar" src="${avatarUrl(profile)}">
-        <div>
-          <div class="name">${escapeHtml(profile.name || "Пользователь")}</div>
-          <div class="code">Твой код друга: <b>${escapeHtml(profile.friendCode || "")}</b></div>
-        </div>
-      </div>
 
-      <div class="upload">
-        <button class="btn full secondary">📷 Выбрать фотографию</button>
-        <input id="avatarInput" type="file" accept="image/*">
-      </div>
-      <div class="note">Фото автоматически уменьшается перед сохранением.</div>
+function upsertFriendMarker(
+  friendId,
+  friendProfile,
+  location
+){
 
-      <div class="field">
-        <label>Имя</label>
-        <input id="profileNameInput" maxlength="30" value="${escapeHtml(profile.name || "")}">
-      </div>
+  const lat =
+    Number(location.lat);
 
-      <button id="saveProfileBtn" class="btn full">Сохранить профиль</button>
-      <div class="note">Твой анонимный Firebase UID: ${escapeHtml(user.uid)}</div>
-    `);
+  const lng =
+    Number(location.lng);
 
-    $("saveProfileBtn").onclick = saveProfile;
-    $("avatarInput").onchange = uploadAvatar;
+
+  if(
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lng)
+  ){
+    return;
   }
 
-  async function saveProfile(){
-    const name = $("profileNameInput").value.trim();
-    if(!name){
-      toast("Введите имя.");
-      return;
-    }
 
-    try{
-      await update(ref(db, `profiles/${user.uid}`), { name });
-      profile.name = name;
-      toast("Профиль сохранён.");
-    }catch(error){
-      toast("Ошибка: " + friendlyError(error));
-    }
+  if(
+    !friendMarkers.has(friendId)
+  ){
+
+    const marker =
+      L.marker(
+        [lat,lng],
+        {
+          icon:
+            markerIcon(friendProfile),
+          zIndexOffset:500
+        }
+      ).addTo(map);
+
+
+    marker.on(
+      "click",
+      ()=>{
+
+        showFriendProfile(
+          friendId
+        );
+
+      }
+    );
+
+
+    friendMarkers.set(
+      friendId,
+      marker
+    );
+
   }
 
-  async function uploadAvatar(event){
-    const file = event.target.files?.[0];
-    if(!file) return;
+  else{
 
-    if(!file.type.startsWith("image/")){
-      toast("Выбери изображение.");
-      return;
-    }
+    const marker =
+      friendMarkers.get(friendId);
 
-    if(file.size > 8 * 1024 * 1024){
-      toast("Фото должно быть меньше 8 МБ.");
-      return;
-    }
+    marker.setLatLng(
+      [lat,lng]
+    );
 
-    try{
-      toast("Обрабатываем фотографию…");
-      const avatar = await compressImage(file, 256, 0.78);
-      await update(ref(db, `profiles/${user.uid}`), { avatar });
-      profile.avatar = avatar;
-      $("profileAvatar").src = avatar;
-      renderMeMarker();
-      toast("Фото профиля обновлено ✨");
-    }catch(error){
-      console.error(error);
-      toast("Не удалось обработать фотографию.");
-    }
+    marker.setIcon(
+      markerIcon(friendProfile)
+    );
+
   }
 
-  function compressImage(file, maxSize=256, quality=0.78){
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+}
 
-      reader.onload = () => {
-        const img = new Image();
 
-        img.onload = () => {
-          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-          const width = Math.max(1, Math.round(img.width * scale));
-          const height = Math.max(1, Math.round(img.height * scale));
+function removeFriendMarker(
+  friendId,
+  unsubscribe=true
+){
 
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
+  const marker =
+    friendMarkers.get(friendId);
 
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
+  if(marker){
 
-          resolve(canvas.toDataURL("image/jpeg", quality));
+    map.removeLayer(marker);
+
+    friendMarkers.delete(friendId);
+
+  }
+
+
+  if(
+    unsubscribe &&
+    friendLocationListeners.has(friendId)
+  ){
+
+    friendLocationListeners
+      .get(friendId)();
+
+    friendLocationListeners
+      .delete(friendId);
+
+  }
+
+}
+
+
+/* MY MARKER */
+
+function renderMeMarker(){
+
+  if(!lastPosition || !profile){
+    return;
+  }
+
+
+  const latlng = [
+    lastPosition.lat,
+    lastPosition.lng
+  ];
+
+
+  if(!meMarker){
+
+    meMarker =
+      L.marker(
+        latlng,
+        {
+          icon:
+            markerIcon(
+              profile,
+              true
+            ),
+          zIndexOffset:1000
+        }
+      ).addTo(map);
+
+  }
+
+  else{
+
+    meMarker.setLatLng(latlng);
+
+    meMarker.setIcon(
+      markerIcon(
+        profile,
+        true
+      )
+    );
+
+  }
+
+}
+
+
+/* GEOLOCATION */
+
+function startLocation(){
+
+  if(!navigator.geolocation){
+
+    setStatus(
+      "GPS не поддерживается",
+      false
+    );
+
+    toast(
+      "Этот браузер не поддерживает геолокацию."
+    );
+
+    return;
+  }
+
+
+  if(watchId !== null){
+
+    navigator.geolocation
+      .clearWatch(watchId);
+
+  }
+
+
+  setStatus(
+    "Получаем геолокацию…",
+    true
+  );
+
+
+  watchId =
+    navigator.geolocation
+    .watchPosition(
+
+      async pos=>{
+
+        const {
+          latitude,
+          longitude,
+          accuracy
+        } = pos.coords;
+
+
+        lastPosition = {
+
+          lat:latitude,
+
+          lng:longitude,
+
+          accuracy:accuracy || 0,
+
+          updatedAt:Date.now()
+
         };
 
+
+        renderMeMarker();
+
+
+        setStatus(
+          "Геолокация в реальном времени",
+          true
+        );
+
+
+        try{
+
+          await set(
+            ref(
+              db,
+              `locations/${user.uid}`
+            ),
+            {
+              lat:latitude,
+              lng:longitude,
+              accuracy:accuracy || 0,
+              updatedAt:Date.now()
+            }
+          );
+
+        }
+
+        catch(error){
+
+          console.error(error);
+
+          setStatus(
+            "Ошибка отправки GPS",
+            false
+          );
+
+        }
+
+      },
+
+
+      error=>{
+
+        if(error.code === 1){
+
+          setStatus(
+            "Разреши геолокацию",
+            false
+          );
+
+          toast(
+            "Разреши доступ к геолокации."
+          );
+
+        }
+
+        else{
+
+          setStatus(
+            "GPS временно недоступен",
+            false
+          );
+
+        }
+
+      },
+
+
+      {
+
+        enableHighAccuracy:true,
+
+        maximumAge:3000,
+
+        timeout:15000
+
+      }
+
+    );
+
+}
+
+
+/* CLEANUP LOCATIONS */
+
+async function cleanupOldLocations(){
+
+  try{
+
+    const snapshot =
+      await get(
+        ref(db,"locations")
+      );
+
+
+    if(!snapshot.exists()){
+      return;
+    }
+
+
+    const locations =
+      snapshot.val();
+
+    const now =
+      Date.now();
+
+
+    for(
+      const [uid,location]
+      of Object.entries(locations)
+    ){
+
+      if(uid === user.uid){
+        continue;
+      }
+
+
+      if(
+        now - location.updatedAt
+        >
+        10 * 60 * 1000
+      ){
+
+        await remove(
+          ref(
+            db,
+            `locations/${uid}`
+          )
+        );
+
+        removeFriendMarker(uid);
+
+      }
+
+    }
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Cleanup error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* FRIENDS PAGE */
+
+function renderFriends(){
+
+  const friendIds =
+    Object.keys(friends);
+
+  const requestIds =
+    Object.keys(incomingRequests);
+
+
+  const requestsHtml =
+    requestIds.length
+
+    ? requestIds.map(uid=>{
+
+      const req =
+        incomingRequests[uid] || {};
+
+      const p =
+        req.profile || {};
+
+
+      return `
+
+      <div class="request">
+
+        <img
+          class="avatar small"
+          src="${avatarUrl(p)}"
+        >
+
+        <div class="grow">
+
+          <b>
+            ${escapeHtml(
+              p.name || "Пользователь"
+            )}
+          </b>
+
+          <div class="code">
+            Хочет добавить тебя в друзья
+          </div>
+
+        </div>
+
+        <div class="friend-actions">
+
+          <button
+            class="btn small"
+            onclick="acceptRequest('${uid}')"
+          >
+            ✓
+          </button>
+
+          <button
+            class="btn small secondary"
+            onclick="rejectRequest('${uid}')"
+          >
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }).join("")
+
+    : "";
+
+
+  const friendsHtml =
+    friendIds.length
+
+    ? friendIds.map(uid=>{
+
+      const f =
+        friends[uid] || {};
+
+      const p =
+        f.profile || {};
+
+      const isOnline =
+        friendMarkers.has(uid);
+
+
+      const lastReaction =
+        f.lastReaction;
+
+
+      return `
+
+      <div
+        class="friend"
+        onclick="showFriendProfile('${uid}')"
+      >
+
+        <img
+          class="avatar small"
+          src="${avatarUrl(p)}"
+        >
+
+        <div class="grow">
+
+          <b>
+            ${escapeHtml(
+              p.name || "Друг"
+            )}
+          </b>
+
+          <div class="code">
+
+            #${escapeHtml(
+              p.friendCode || ""
+            )}
+
+            <span
+              class="online-status ${
+                isOnline
+                ? "online"
+                : "offline"
+              }"
+            ></span>
+
+          </div>
+
+          ${
+            lastReaction
+
+            ? `
+
+              <div class="last-reaction">
+
+                <span class="emoji">
+                  ${lastReaction.emoji || ""}
+                </span>
+
+                <span>
+                  Последняя реакция
+                </span>
+
+              </div>
+
+            `
+
+            : ""
+
+          }
+
+        </div>
+
+
+        <div class="friend-actions">
+
+          <button
+            class="btn small secondary"
+            onclick="
+              event.stopPropagation();
+              showFriendOnMap('${uid}')
+            "
+          >
+            Карта
+          </button>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }).join("")
+
+    : `
+      <div class="empty">
+        Пока нет друзей.<br>
+        Добавь кого-нибудь по коду!
+      </div>
+    `;
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+    <h2>Друзья</h2>
+
+
+    <div class="field">
+
+      <label>
+        Добавить друга по 4-значному коду
+      </label>
+
+      <div class="row">
+
+        <input
+          id="friendCodeInput"
+          maxlength="4"
+          inputmode="numeric"
+          placeholder="1234"
+        >
+
+        <button
+          id="sendRequestBtn"
+          class="btn"
+          style="width:125px"
+        >
+          Добавить
+        </button>
+
+      </div>
+
+    </div>
+
+
+    ${
+      requestsHtml
+
+      ? `
+        <div class="section-title">
+          Входящие заявки
+        </div>
+
+        ${requestsHtml}
+      `
+
+      : ""
+
+    }
+
+
+    <div class="section-title">
+      Мои друзья
+    </div>
+
+    <div>
+      ${friendsHtml}
+    </div>
+
+  `);
+
+
+  $("sendRequestBtn").onclick =
+    sendFriendRequest;
+
+}
+
+
+/* FRIEND PROFILE + REACTIONS */
+
+window.showFriendProfile =
+async function(friendUid){
+
+  const friend =
+    friends[friendUid];
+
+  if(!friend){
+
+    toast(
+      "Друг не найден."
+    );
+
+    return;
+  }
+
+
+  const p =
+    friend.profile || {};
+
+
+  const isOnline =
+    friendMarkers.has(friendUid);
+
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+
+    <img
+      class="friend-card-avatar"
+      src="${avatarUrl(p)}"
+    >
+
+
+    <div class="friend-card-name">
+      ${escapeHtml(
+        p.name || "Друг"
+      )}
+    </div>
+
+
+    <div class="friend-card-code">
+
+      #${escapeHtml(
+        p.friendCode || ""
+      )}
+
+    </div>
+
+
+    <div class="friend-status">
+
+      <span class="online-status ${
+        isOnline
+        ? "online"
+        : "offline"
+      }"></span>
+
+      ${
+        isOnline
+        ? " Сейчас на карте"
+        : " Сейчас офлайн"
+      }
+
+    </div>
+
+
+    <div class="reaction-title">
+      Отправить реакцию
+    </div>
+
+
+    <div class="reaction-grid">
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','❤️')"
+      >❤️</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','😂')"
+      >😂</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','😭')"
+      >😭</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','😡')"
+      >😡</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','🔥')"
+      >🔥</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','👍')"
+      >👍</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','🫂')"
+      >🫂</button>
+
+      <button
+        class="reaction-btn"
+        onclick="sendReaction('${friendUid}','⚡')"
+      >⚡</button>
+
+    </div>
+
+
+    <button
+      class="btn full secondary"
+      onclick="showFriendOnMap('${friendUid}')"
+    >
+      📍 Показать на карте
+    </button>
+
+
+    <button
+      class="btn full danger"
+      onclick="removeFriend('${friendUid}')"
+    >
+      Удалить из друзей
+    </button>
+
+  `);
+
+};
+
+
+/* SEND REACTION */
+
+window.sendReaction =
+async function(friendUid,emoji){
+
+  if(!friends[friendUid]){
+
+    toast(
+      "Этот пользователь больше не в друзьях."
+    );
+
+    return;
+  }
+
+
+  const reactionId =
+    `${Date.now()}_${Math.random()
+      .toString(36)
+      .slice(2,8)}`;
+
+
+  const reaction = {
+
+    emoji,
+
+    createdAt:Date.now(),
+
+    senderUid:user.uid,
+
+    sender:{
+
+      name:
+        profile.name ||
+        "Пользователь",
+
+      friendCode:
+        profile.friendCode ||
+        "",
+
+      avatar:
+        profile.avatar ||
+        ""
+
+    }
+
+  };
+
+
+  try{
+
+    await update(ref(db),{
+
+      [`reactions/${friendUid}/${reactionId}`]:
+        reaction,
+
+      [`friends/${friendUid}/${user.uid}/lastReaction`]:
+        {
+          emoji,
+          createdAt:Date.now()
+        },
+
+      [`friends/${user.uid}/${friendUid}/lastReactionSent`]:
+        {
+          emoji,
+          createdAt:Date.now()
+        }
+
+    });
+
+
+    toast(
+      `Реакция ${emoji} отправлена!`
+    );
+
+
+    closePanel();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    toast(
+      "Не удалось отправить реакцию: " +
+      friendlyError(error)
+    );
+
+  }
+
+};
+
+
+/* SEND FRIEND REQUEST */
+
+async function sendFriendRequest(){
+
+  const code =
+    $("friendCodeInput")
+    .value
+    .replace(/\D/g,"")
+    .slice(0,4);
+
+
+  $("friendCodeInput").value = code;
+
+
+  if(!/^\d{4}$/.test(code)){
+
+    toast(
+      "Введи 4 цифры."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const codeSnap =
+      await get(
+        ref(
+          db,
+          `friendCodes/${code}`
+        )
+      );
+
+
+    if(!codeSnap.exists()){
+
+      toast(
+        "Пользователь с таким кодом не найден."
+      );
+
+      return;
+    }
+
+
+    const targetUid =
+      codeSnap.val();
+
+
+    if(targetUid === user.uid){
+
+      toast(
+        "Нельзя добавить самого себя."
+      );
+
+      return;
+    }
+
+
+    const friendSnap =
+      await get(
+        ref(
+          db,
+          `friends/${user.uid}/${targetUid}`
+        )
+      );
+
+
+    if(friendSnap.exists()){
+
+      toast(
+        "Этот пользователь уже у тебя в друзьях."
+      );
+
+      return;
+    }
+
+
+    await set(
+      ref(
+        db,
+        `friendRequests/${targetUid}/${user.uid}`
+      ),
+      {
+
+        fromUid:user.uid,
+
+        createdAt:Date.now(),
+
+        profile:{
+
+          name:
+            profile.name ||
+            "Пользователь",
+
+          friendCode:
+            profile.friendCode ||
+            "",
+
+          avatar:
+            profile.avatar ||
+            ""
+
+        }
+
+      }
+    );
+
+
+    $("friendCodeInput").value = "";
+
+    toast(
+      "Заявка в друзья отправлена ✨"
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+}
+
+
+/* ACCEPT REQUEST */
+
+window.acceptRequest =
+async function(fromUid){
+
+  const req =
+    incomingRequests[fromUid];
+
+  if(!req){
+    return;
+  }
+
+
+  const fromProfile =
+    req.profile || {};
+
+
+  const myProfile = {
+
+    name:
+      profile.name ||
+      "Пользователь",
+
+    friendCode:
+      profile.friendCode ||
+      "",
+
+    avatar:
+      profile.avatar ||
+      ""
+
+  };
+
+
+  try{
+
+    await update(ref(db),{
+
+      [`friends/${user.uid}/${fromUid}`]:{
+
+        since:Date.now(),
+
+        profile:fromProfile
+
+      },
+
+
+      [`friends/${fromUid}/${user.uid}`]:{
+
+        since:Date.now(),
+
+        profile:myProfile
+
+      },
+
+
+      [`friendRequests/${user.uid}/${fromUid}`]:
+        null
+
+    });
+
+
+    toast(
+      "Друг добавлен 🎉"
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+};
+
+
+/* REJECT */
+
+window.rejectRequest =
+async function(fromUid){
+
+  try{
+
+    await remove(
+      ref(
+        db,
+        `friendRequests/${user.uid}/${fromUid}`
+      )
+    );
+
+    toast(
+      "Заявка отклонена."
+    );
+
+  }
+
+  catch(error){
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+};
+
+
+/* REMOVE FRIEND */
+
+window.removeFriend =
+async function(friendUid){
+
+  if(!confirm(
+    "Удалить этого друга?"
+  )){
+    return;
+  }
+
+
+  try{
+
+    await update(ref(db),{
+
+      [`friends/${user.uid}/${friendUid}`]:
+        null,
+
+      [`friends/${friendUid}/${user.uid}`]:
+        null
+
+    });
+
+
+    removeFriendMarker(friendUid);
+
+    closePanel();
+
+    toast(
+      "Друг удалён."
+    );
+
+  }
+
+  catch(error){
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+};
+
+
+/* SHOW FRIEND ON MAP */
+
+window.showFriendOnMap =
+async function(friendUid){
+
+  try{
+
+    const snap =
+      await get(
+        ref(
+          db,
+          `locations/${friendUid}`
+        )
+      );
+
+
+    if(!snap.exists()){
+
+      toast(
+        "Сейчас геолокация друга недоступна."
+      );
+
+      return;
+    }
+
+
+    const loc =
+      snap.val();
+
+
+    if(
+      !Number.isFinite(Number(loc.lat)) ||
+      !Number.isFinite(Number(loc.lng))
+    ){
+
+      toast(
+        "Некорректные координаты друга."
+      );
+
+      return;
+    }
+
+
+    closePanel();
+
+    openPage("map");
+
+
+    map.setView(
+      [
+        Number(loc.lat),
+        Number(loc.lng)
+      ],
+      17
+    );
+
+
+    const marker =
+      friendMarkers.get(friendUid);
+
+
+    if(marker){
+
+      marker.openPopup();
+
+    }
+
+  }
+
+  catch(error){
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+};
+
+
+/* PROFILE PAGE */
+
+function renderProfile(){
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+    <h2>Профиль</h2>
+
+
+    <div class="profile-head">
+
+      <img
+        id="profileAvatar"
+        class="avatar"
+        src="${avatarUrl(profile)}"
+      >
+
+
+      <div>
+
+        <div class="name">
+          ${escapeHtml(
+            profile.name ||
+            "Пользователь"
+          )}
+        </div>
+
+
+        <div class="code">
+
+          Твой код друга:
+
+          <b>
+            ${escapeHtml(
+              profile.friendCode || ""
+            )}
+          </b>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="upload">
+
+      <button class="btn full secondary">
+        📷 Выбрать фотографию
+      </button>
+
+      <input
+        id="avatarInput"
+        type="file"
+        accept="image/*"
+      >
+
+    </div>
+
+
+    <div class="note">
+      Фото автоматически уменьшается перед сохранением.
+    </div>
+
+
+    <div class="field">
+
+      <label>Имя</label>
+
+      <input
+        id="profileNameInput"
+        maxlength="30"
+        value="${escapeHtml(
+          profile.name || ""
+        )}"
+      >
+
+    </div>
+
+
+    <button
+      id="saveProfileBtn"
+      class="btn full"
+    >
+      Сохранить профиль
+    </button>
+
+  `);
+
+
+  $("saveProfileBtn").onclick =
+    saveProfile;
+
+  $("avatarInput").onchange =
+    uploadAvatar;
+
+}
+
+
+async function saveProfile(){
+
+  const name =
+    $("profileNameInput")
+    .value
+    .trim();
+
+
+  if(!name){
+
+    toast(
+      "Введите имя."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    await update(
+      ref(
+        db,
+        `profiles/${user.uid}`
+      ),
+      {
+        name
+      }
+    );
+
+
+    profile.name = name;
+
+
+    /* Обновляем информацию о себе у друзей */
+
+    const updates = {};
+
+    Object.keys(friends)
+    .forEach(friendUid=>{
+
+      updates[
+        `friends/${friendUid}/${user.uid}/profile/name`
+      ] = name;
+
+    });
+
+
+    if(Object.keys(updates).length){
+
+      await update(
+        ref(db),
+        updates
+      );
+
+    }
+
+
+    toast(
+      "Профиль сохранён."
+    );
+
+  }
+
+  catch(error){
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+}
+
+
+/* AVATAR */
+
+async function uploadAvatar(event){
+
+  const file =
+    event.target.files?.[0];
+
+  if(!file){
+    return;
+  }
+
+
+  if(!file.type.startsWith("image/")){
+
+    toast(
+      "Выбери изображение."
+    );
+
+    return;
+  }
+
+
+  if(file.size > 8 * 1024 * 1024){
+
+    toast(
+      "Фото должно быть меньше 8 МБ."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    toast(
+      "Обрабатываем фотографию…"
+    );
+
+
+    const avatar =
+      await compressImage(
+        file,
+        256,
+        .78
+      );
+
+
+    await update(
+      ref(
+        db,
+        `profiles/${user.uid}`
+      ),
+      {
+        avatar
+      }
+    );
+
+
+    profile.avatar = avatar;
+
+
+    const updates = {};
+
+    Object.keys(friends)
+    .forEach(friendUid=>{
+
+      updates[
+        `friends/${friendUid}/${user.uid}/profile/avatar`
+      ] = avatar;
+
+    });
+
+
+    if(Object.keys(updates).length){
+
+      await update(
+        ref(db),
+        updates
+      );
+
+    }
+
+
+    $("profileAvatar").src =
+      avatar;
+
+
+    renderMeMarker();
+
+
+    toast(
+      "Фото профиля обновлено ✨"
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    toast(
+      "Не удалось обработать фотографию."
+    );
+
+  }
+
+}
+
+
+function compressImage(
+  file,
+  maxSize=256,
+  quality=.78
+){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload = ()=>{
+
+        const img =
+          new Image();
+
+
+        img.onload = ()=>{
+
+          const scale =
+            Math.min(
+              1,
+              maxSize /
+              Math.max(
+                img.width,
+                img.height
+              )
+            );
+
+
+          const width =
+            Math.max(
+              1,
+              Math.round(
+                img.width * scale
+              )
+            );
+
+
+          const height =
+            Math.max(
+              1,
+              Math.round(
+                img.height * scale
+              )
+            );
+
+
+          const canvas =
+            document.createElement("canvas");
+
+
+          canvas.width = width;
+
+          canvas.height = height;
+
+
+          const ctx =
+            canvas.getContext("2d");
+
+
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+
+          resolve(
+            canvas.toDataURL(
+              "image/jpeg",
+              quality
+            )
+          );
+
+        };
+
+
         img.onerror = reject;
+
         img.src = reader.result;
+
       };
 
+
       reader.onerror = reject;
+
       reader.readAsDataURL(file);
-    });
-  }
 
-  function renderSettings(){
-    openPanel(`
-      <button class="close" onclick="closePanel()">×</button>
-      <h2>Настройки</h2>
+    }
+  );
 
-      <div class="friend" style="border:0">
-        <div class="grow">
-          <b>📍 Показывать геолокацию друзьям</b>
-          <div class="code">Твои друзья смогут видеть тебя на карте.</div>
+}
+
+
+/* SETTINGS */
+
+function renderSettings(){
+
+  openPanel(`
+
+    <button
+      class="close"
+      onclick="closePanel()"
+    >
+      ×
+    </button>
+
+    <h2>Настройки</h2>
+
+
+    <div
+      class="friend"
+      style="border:0"
+    >
+
+      <div class="grow">
+
+        <b>
+          📍 Показывать геолокацию друзьям
+        </b>
+
+        <div class="code">
+          Твои друзья смогут видеть тебя на карте.
         </div>
-        <button id="locationToggle" class="toggle ${locationSharing ? "on" : ""}"><i></i></button>
+
       </div>
 
-      <button id="deleteLocationBtn" class="btn full secondary">Скрыть мою текущую геолокацию</button>
-      <button id="deleteAccountBtn" class="btn full danger" style="margin-top:8px">🗑️ Удалить аккаунт</button>
-      <div class="note">
-        Удаление аккаунта удалит все данные: профиль, геолокации и список друзей.
-      </div>
-    `);
 
-    $("locationToggle").onclick = toggleLocation;
-    $("deleteLocationBtn").onclick = async () => {
-      await remove(ref(db, `locations/${user.uid}`));
-      toast("Текущая геолокация удалена.");
+      <button
+        id="locationToggle"
+        class="toggle ${
+          locationSharing
+          ? "on"
+          : ""
+        }"
+      >
+        <i></i>
+      </button>
+
+    </div>
+
+
+    <button
+      id="deleteLocationBtn"
+      class="btn full secondary"
+    >
+      Скрыть мою текущую геолокацию
+    </button>
+
+
+    <button
+      id="deleteAccountBtn"
+      class="btn full danger"
+      style="margin-top:8px"
+    >
+      🗑️ Удалить аккаунт
+    </button>
+
+  `);
+
+
+  $("locationToggle").onclick =
+    toggleLocation;
+
+
+  $("deleteLocationBtn").onclick =
+    async ()=>{
+
+      await remove(
+        ref(
+          db,
+          `locations/${user.uid}`
+        )
+      );
+
+      toast(
+        "Текущая геолокация удалена."
+      );
+
     };
-    $("deleteAccountBtn").onclick = deleteAccount;
-  }
 
-  async function toggleLocation(){
-    locationSharing = !locationSharing;
 
-    try{
-      await update(ref(db, `profiles/${user.uid}`), {
+  $("deleteAccountBtn").onclick =
+    deleteAccount;
+
+}
+
+
+async function toggleLocation(){
+
+  locationSharing =
+    !locationSharing;
+
+
+  try{
+
+    await update(
+      ref(
+        db,
+        `profiles/${user.uid}`
+      ),
+      {
         locationSharing
-      });
-
-      if(locationSharing){
-        startLocation();
-        setStatus("Получаем геолокацию…", true);
-      }else{
-        if(watchId !== null){
-          navigator.geolocation.clearWatch(watchId);
-          watchId = null;
-        }
-
-        await remove(ref(db, `locations/${user.uid}`));
-
-        if(meMarker){
-          map.removeLayer(meMarker);
-          meMarker = null;
-        }
-
-        setStatus("Геолокация выключена", false);
       }
+    );
 
-      renderSettings();
-    }catch(error){
-      locationSharing = !locationSharing;
-      toast("Ошибка: " + friendlyError(error));
-    }
-  }
 
-  async function deleteAccount(){
-    if(!confirm("Точно удалить аккаунт? Все данные будут потеряны навсегда!")) return;
-    if(!confirm("Последний раз: удалить аккаунт?")) return;
+    if(locationSharing){
 
-    try{
-      toast("Удаление аккаунта…");
-      
-      // Clean up all data
-      await remove(ref(db, `profiles/${user.uid}`));
-      await remove(ref(db, `locations/${user.uid}`));
-      await remove(ref(db, `friends/${user.uid}`));
-      await remove(ref(db, `friendRequests/${user.uid}`));
-      
-      // Clean up friend code mapping
-      if(profile?.friendCode){
-        await remove(ref(db, `friendCodes/${profile.friendCode}`));
-      }
-      
-      // Clean up friend requests to this user
-      const requestsRef = ref(db, 'friendRequests');
-      const snapshot = await get(requestsRef);
-      if(snapshot.exists()){
-        const requests = snapshot.val();
-        for(const [uid, data] of Object.entries(requests)){
-          if(data[user.uid]){
-            await remove(ref(db, `friendRequests/${uid}/${user.uid}`));
-          }
-        }
-      }
-
-      // Delete auth user
-      await user.delete();
-      
-      toast("Аккаунт удалён.");
-      
-      // Reload page to show auth screen
-      setTimeout(() => location.reload(), 1000);
-    }catch(error){
-      console.error(error);
-      if(error.code === 'auth/requires-recent-login'){
-        toast("Нужно переавторизоваться. Перезагрузи страницу.");
-      }else{
-        toast("Ошибка: " + friendlyError(error));
-      }
-    }
-  }
-
-  function friendlyError(error){
-    const code = error?.code || "";
-    const message = error?.message || String(error || "Неизвестная ошибка");
-
-    if(code.includes("auth/operation-not-allowed")){
-      return "В Firebase не включена Anonymous Authentication.";
-    }
-    if(code.includes("permission-denied")){
-      return "Firebase Database отклонил доступ. Проверь Rules.";
-    }
-    if(code.includes("network-request-failed")){
-      return "Нет подключения к интернету.";
-    }
-    if(code.includes("auth/requires-recent-login")){
-      return "Требуется повторный вход. Перезагрузи страницу.";
-    }
-
-    return message;
-  }
-
-  // Handle offline/online events
-  window.addEventListener('online', () => {
-    toast("Интернет восстановлен.");
-    setStatus("Соединение восстановлено", true);
-    if(locationSharing && !watchId){
       startLocation();
+
+      setStatus(
+        "Получаем геолокацию…",
+        true
+      );
+
     }
-  });
 
-  window.addEventListener('offline', () => {
-    setStatus("Нет интернета", false);
-    toast("Потеряно соединение с интернетом.");
-  });
+    else{
 
-  // Cleanup before page unload
-  window.addEventListener('beforeunload', () => {
+      if(watchId !== null){
+
+        navigator.geolocation
+          .clearWatch(watchId);
+
+        watchId = null;
+
+      }
+
+
+      await remove(
+        ref(
+          db,
+          `locations/${user.uid}`
+        )
+      );
+
+
+      if(meMarker){
+
+        map.removeLayer(meMarker);
+
+        meMarker = null;
+
+      }
+
+
+      setStatus(
+        "Геолокация выключена",
+        false
+      );
+
+    }
+
+
+    renderSettings();
+
+  }
+
+  catch(error){
+
+    locationSharing =
+      !locationSharing;
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+}
+
+
+/* DELETE ACCOUNT */
+
+async function deleteAccount(){
+
+  if(!confirm(
+    "Точно удалить аккаунт? Все данные будут потеряны!"
+  )){
+    return;
+  }
+
+
+  try{
+
+    toast(
+      "Удаление аккаунта…"
+    );
+
+
+    await remove(
+      ref(
+        db,
+        `profiles/${user.uid}`
+      )
+    );
+
+
+    await remove(
+      ref(
+        db,
+        `locations/${user.uid}`
+      )
+    );
+
+
+    await remove(
+      ref(
+        db,
+        `friends/${user.uid}`
+      )
+    );
+
+
+    await remove(
+      ref(
+        db,
+        `friendRequests/${user.uid}`
+      )
+    );
+
+
+    await remove(
+      ref(
+        db,
+        `reactions/${user.uid}`
+      )
+    );
+
+
+    if(profile?.friendCode){
+
+      await remove(
+        ref(
+          db,
+          `friendCodes/${profile.friendCode}`
+        )
+      );
+
+    }
+
+
+    await user.delete();
+
+    toast(
+      "Аккаунт удалён."
+    );
+
+
+    setTimeout(
+      ()=>location.reload(),
+      1000
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    toast(
+      "Ошибка: " +
+      friendlyError(error)
+    );
+
+  }
+
+}
+
+
+/* ERRORS */
+
+function friendlyError(error){
+
+  const code =
+    error?.code || "";
+
+  const message =
+    error?.message ||
+    String(
+      error ||
+      "Неизвестная ошибка"
+    );
+
+
+  if(
+    code.includes(
+      "auth/operation-not-allowed"
+    )
+  ){
+
+    return "В Firebase не включена Anonymous Authentication.";
+
+  }
+
+
+  if(
+    code.includes(
+      "permission-denied"
+    )
+  ){
+
+    return "Firebase Database отклонил доступ. Проверь Rules.";
+
+  }
+
+
+  if(
+    code.includes(
+      "network-request-failed"
+    )
+  ){
+
+    return "Нет подключения к интернету.";
+
+  }
+
+
+  if(
+    code.includes(
+      "auth/requires-recent-login"
+    )
+  ){
+
+    return "Требуется повторный вход.";
+
+  }
+
+
+  return message;
+
+}
+
+
+/* INTERNET */
+
+window.addEventListener(
+  "online",
+  ()=>{
+
+    toast(
+      "Интернет восстановлен."
+    );
+
+    setStatus(
+      "Соединение восстановлено",
+      true
+    );
+
+
+    if(
+      locationSharing &&
+      watchId === null
+    ){
+
+      startLocation();
+
+    }
+
+  }
+);
+
+
+window.addEventListener(
+  "offline",
+  ()=>{
+
+    setStatus(
+      "Нет интернета",
+      false
+    );
+
+    toast(
+      "Потеряно соединение с интернетом."
+    );
+
+  }
+);
+
+
+/* CLEANUP */
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+
     if(watchId !== null){
-      navigator.geolocation.clearWatch(watchId);
-    }
-    if(locationCleanupInterval){
-      clearInterval(locationCleanupInterval);
-    }
-  });
 
-  initMap();
+      navigator.geolocation
+        .clearWatch(watchId);
+
+    }
+
+
+    if(locationCleanupInterval){
+
+      clearInterval(
+        locationCleanupInterval
+      );
+
+    }
+
+
+    friendLocationListeners
+    .forEach(unsubscribe=>{
+
+      try{
+        unsubscribe();
+      }
+      catch(e){}
+
+    });
+
+  }
+);
+
+
+/* START */
+
+initMap();
+
 </script>
+
 </body>
 </html>
