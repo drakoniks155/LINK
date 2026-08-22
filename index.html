@@ -452,14 +452,25 @@
       font-size: 8px !important;
     }
 
-    /* ===== PULSING PIN ===== */
-    .pulsing-pin {
+    /* ===== FLOATING PIN (ПЛАВНОЕ ПОКАЧИВАНИЕ ВВЕРХ-ВНИЗ) ===== */
+    .floating-pin {
       position: relative;
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       cursor: pointer;
+      animation: floatPin 2.8s ease-in-out infinite;
     }
-    .pulsing-pin .pin-avatar {
+    @keyframes floatPin {
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .floating-pin .pin-avatar {
       position: relative;
       z-index: 3;
       width: 48px;
@@ -468,56 +479,70 @@
       object-fit: cover;
       border: 3px solid #fff;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: block;
+      margin: 0 auto;
     }
-    .pulsing-pin .pin-avatar:hover {
+    .floating-pin .pin-avatar:hover {
       transform: scale(1.1);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.7);
     }
-    .pulsing-pin .pulse-ring {
+
+    .floating-pin .pulse-ring {
       position: absolute;
-      z-index: 1;
       border-radius: 50%;
-      border: 3px solid var(--accent-color);
-      animation: pulseRing 1.8s ease-out infinite;
+      border: 2.5px solid var(--accent-color);
+      animation: pulseRingFloat 2.8s ease-out infinite;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
-    .pulsing-pin .pulse-ring:nth-child(1) {
+    .floating-pin .pulse-ring:nth-child(1) {
       animation-delay: 0s;
     }
-    .pulsing-pin .pulse-ring:nth-child(2) {
-      animation-delay: 0.6s;
+    .floating-pin .pulse-ring:nth-child(2) {
+      animation-delay: 0.9s;
     }
-    .pulsing-pin .pulse-ring:nth-child(3) {
-      animation-delay: 1.2s;
+    .floating-pin .pulse-ring:nth-child(3) {
+      animation-delay: 1.8s;
     }
 
-    @keyframes pulseRing {
+    @keyframes pulseRingFloat {
       0% {
-        inset: -4px;
+        width: 48px;
+        height: 48px;
         opacity: 1;
-        transform: scale(0.8);
       }
       100% {
-        inset: -24px;
+        width: 80px;
+        height: 80px;
         opacity: 0;
-        transform: scale(1.4);
       }
     }
 
-    /* Bouncing animation */
-    .pulsing-pin.bounce .pin-avatar {
-      animation: bouncePin 1.8s ease-in-out infinite;
+    .floating-pin.me .pulse-ring {
+      border-color: var(--accent-color);
     }
-    @keyframes bouncePin {
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-12px);
-      }
+    .floating-pin.friend .pulse-ring {
+      border-color: rgba(255, 255, 255, 0.6);
     }
 
-    /* ===== END PULSING PIN ===== */
+    /* НЕМНОГО ЗАДЕРЖКА ДЛЯ РАЗНЫХ ТОЧЕК, ЧТОБЫ НЕ СИНХРОННО */
+    .floating-pin.delay-1 {
+      animation-delay: 0s;
+    }
+    .floating-pin.delay-2 {
+      animation-delay: 0.7s;
+    }
+    .floating-pin.delay-3 {
+      animation-delay: 1.4s;
+    }
+    .floating-pin.delay-4 {
+      animation-delay: 2.1s;
+    }
+
+    /* ===== END FLOATING PIN ===== */
 
     .toast {
       position: absolute;
@@ -1029,9 +1054,7 @@
     let profile = null;
     let map = null;
     let meMarker = null;
-    let mePulseInterval = null;
     let friendMarkers = new Map();
-    let friendPulseIntervals = new Map();
     let friendLocationListeners = new Map();
     let friends = {};
     let incomingRequests = {};
@@ -1138,31 +1161,33 @@
       return [uid1, uid2].sort().join("_");
     }
 
-    // ===== PULSING PIN ICON =====
-    function createPulsingIcon(avatarUrl, isMe = false, bounce = true) {
-      const color = isMe ? 'var(--accent-color)' : '#ffffff';
+    // ===== FLOATING PIN ICON (ПЛАВНОЕ ПОКАЧИВАНИЕ) =====
+    function createFloatingIcon(avatarUrl, isMe = false, delay = 0) {
+      const color = isMe ? 'var(--accent-color)' : 'rgba(255,255,255,0.6)';
+      const delayClass = delay === 0 ? '' : `delay-${(delay % 4) + 1}`;
+
       return L.divIcon({
-        className: 'pulsing-pin',
+        className: 'floating-pin',
         html: `
-          <div class="pulsing-pin ${bounce ? 'bounce' : ''}">
-            <div class="pulse-ring" style="border-color: ${color};"></div>
-            <div class="pulse-ring" style="border-color: ${color};"></div>
-            <div class="pulse-ring" style="border-color: ${color};"></div>
-            <img class="pin-avatar" src="${avatarUrl}" style="border-color: ${color};">
+          <div class="floating-pin ${isMe ? 'me' : 'friend'} ${delayClass}" style="animation-delay: ${delay}s;">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <img class="pin-avatar" src="${avatarUrl}" style="border-color: ${isMe ? 'var(--accent-color)' : '#ffffff'};">
           </div>
         `,
-        iconSize: [48, 48],
-        iconAnchor: [24, 48],
-        popupAnchor: [0, -48]
+        iconSize: [56, 56],
+        iconAnchor: [28, 56],
+        popupAnchor: [0, -56]
       });
     }
 
-    // ===== MAP MARKERS WITH PULSE =====
+    // ===== MAP MARKERS WITH FLOATING =====
     function renderMeMarker() {
       if (!lastPosition || !profile) return;
       const pos = [lastPosition.lat, lastPosition.lng];
 
-      const icon = createPulsingIcon(avatarUrl(profile), true, true);
+      const icon = createFloatingIcon(avatarUrl(profile), true, 0);
 
       if (!meMarker) {
         meMarker = L.marker(pos, { icon, zIndexOffset: 1000 }).addTo(map);
@@ -1178,7 +1203,10 @@
       const lng = Number(location.lng);
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
-      const icon = createPulsingIcon(avatarUrl(friendProfile), false, true);
+      // Случайная задержка для разных друзей (чтобы не синхронно)
+      const delay = Math.random() * 2.8;
+
+      const icon = createFloatingIcon(avatarUrl(friendProfile), false, delay);
 
       if (!friendMarkers.has(friendId)) {
         const marker = L.marker([lat, lng], { icon, zIndexOffset: 500 }).addTo(map);
@@ -1191,9 +1219,6 @@
         `);
         friendMarkers.set(friendId, marker);
 
-        // Start bouncing animation via CSS class toggle
-        startFriendPulse(friendId);
-
       } else {
         const marker = friendMarkers.get(friendId);
         marker.setLatLng([lat, lng]);
@@ -1205,36 +1230,11 @@
       }
     }
 
-    function startFriendPulse(friendId) {
-      // The bounce is handled by CSS class on the marker's DOM element
-      // We need to toggle it periodically via JS for smoother animation
-      if (friendPulseIntervals.has(friendId)) return;
-
-      const interval = setInterval(() => {
-        const marker = friendMarkers.get(friendId);
-        if (!marker) {
-          clearInterval(interval);
-          friendPulseIntervals.delete(friendId);
-          return;
-        }
-        // The CSS animation is continuous, nothing to do here
-        // Just keep the interval alive to check if marker still exists
-      }, 5000);
-
-      friendPulseIntervals.set(friendId, interval);
-    }
-
     function removeFriendMarker(friendId, unsubscribe = true) {
       const marker = friendMarkers.get(friendId);
       if (marker) {
         map.removeLayer(marker);
         friendMarkers.delete(friendId);
-      }
-
-      // Clear pulse interval
-      if (friendPulseIntervals.has(friendId)) {
-        clearInterval(friendPulseIntervals.get(friendId));
-        friendPulseIntervals.delete(friendId);
       }
 
       if (unsubscribe && friendLocationListeners.has(friendId)) {
@@ -1391,7 +1391,6 @@
         }
       }, 10000);
 
-      // Subscribe to friends' status for UI updates
       const onlineRef = ref(db, "online");
       onValue(onlineRef, snap => {
         const data = snap.val() || {};
@@ -1493,7 +1492,7 @@
         </div>
         ${requestsHtml}
         ${friendsHtml}
-        <div class="note">🟢 — в сети (точка пульсирует на карте), ⚫ — не в сети</div>
+        <div class="note">🟢 — в сети (точка плавно покачивается на карте), ⚫ — не в сети</div>
       `);
 
       $("sendRequestBtn").onclick = sendFriendRequest;
@@ -2287,7 +2286,7 @@
         <button id="saveProfileBtn" class="btn full">Сохранить</button>
 
         <div class="section-title">📍 Твоя точка на карте</div>
-        <div class="note">Твой аватар пульсирует на карте — так друзья видят, что ты онлайн!</div>
+        <div class="note">Твой аватар плавно покачивается на карте — так друзья видят, что ты онлайн!</div>
       `);
 
       $("saveProfileBtn").onclick = saveProfile;
@@ -2359,12 +2358,12 @@
 
         <div class="section-title">📍 Геолокация</div>
         <div class="friend" style="border:0">
-          <div class="grow"><b>Показывать на карте</b><div class="code">Друзья будут видеть твою пульсирующую точку</div></div>
+          <div class="grow"><b>Показывать на карте</b><div class="code">Друзья будут видеть твою плавно покачивающуюся точку</div></div>
           <button id="locationToggle" class="toggle ${locationSharing ? "on" : ""}"><i></i></button>
         </div>
         <button id="hideLocationBtn" class="btn full secondary">Скрыть текущую геолокацию</button>
 
-        <div class="note">📍 Когда ты онлайн — твоя точка на карте пульсирует! Друзья видят, что ты здесь.</div>
+        <div class="note">📍 Когда ты онлайн — твоя точка на карте плавно покачивается! Друзья видят, что ты здесь.</div>
       `);
 
       $("locationToggle").onclick = toggleLocation;
@@ -2444,9 +2443,9 @@
         <div class="section-title">🎨 О приложении</div>
         <div class="reaction-info">
           <b style="color:var(--accent-color);">LINK v2.0</b><br>
-          Друзья рядом. Карта с пульсирующими точками. Чаты с голосовыми.
+          Друзья рядом. Карта с плавно покачивающимися точками. Чаты с голосовыми.
           <br><br>
-          🔵 Точки друзей пульсируют на карте — так ты видишь, кто рядом!
+          🔵 Точки друзей плавно покачиваются на карте — так ты видишь, кто рядом!
         </div>
       `);
     }
@@ -2465,15 +2464,6 @@
       stopVoiceRecording();
       if (user) {
         update(ref(db, `online/${user.uid}`), { status: "offline", lastSeen: Date.now() });
-      }
-      // Clear all pulse intervals
-      for (const [id, interval] of friendPulseIntervals) {
-        clearInterval(interval);
-      }
-      friendPulseIntervals.clear();
-      if (mePulseInterval) {
-        clearInterval(mePulseInterval);
-        mePulseInterval = null;
       }
     });
 
