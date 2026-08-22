@@ -1,843 +1,843 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#080808">
-<title>LINK — друзья на карте</title>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-:root{
-  --bg:#080808;
-  --card:#121212;
-  --card2:#191919;
-  --text:#fff;
-  --muted:#9b9b9b;
-  --line:#2b2b2b;
-  --danger:#ff5d73;
-  --ok:#70ffad;
-}
-
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-}
-
-body{
-  overflow:hidden;
-}
-
-button,input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-#app{
-  position:relative;
-  width:100%;
-  height:100dvh;
-  overflow:hidden;
-  background:#111;
-}
-
-#map{
-  position:absolute;
-  inset:0;
-  z-index:1;
-}
-
-/* TOP */
-
-.topbar{
-  position:absolute;
-  z-index:1000;
-  top:12px;
-  left:12px;
-  right:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  pointer-events:none;
-}
-
-.brand,
-.status{
-  pointer-events:auto;
-  background:rgba(10,10,10,.84);
-  backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
-  padding:10px 14px;
-  box-shadow:0 10px 35px rgba(0,0,0,.38);
-}
-
-.brand{
-  font-weight:950;
-  letter-spacing:.7px;
-}
-
-.status{
-  font-size:12px;
-  color:#ddd;
-  max-width:58%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.dot{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#777;
-  margin-right:7px;
-}
-
-.dot.live{
-  background:var(--ok);
-  box-shadow:0 0 13px var(--ok);
-}
-
-/* MAP BUTTONS */
-
-.map-actions{
-  position:absolute;
-  z-index:1000;
-  right:12px;
-  bottom:104px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.round-btn{
-  width:48px;
-  height:48px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:17px;
-  background:rgba(10,10,10,.88);
-  backdrop-filter:blur(14px);
-  color:#fff;
-  font-size:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-
-/* BOTTOM NAV */
-
-.bottom{
-  position:absolute;
-  z-index:1000;
-  left:10px;
-  right:10px;
-  bottom:10px;
-
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-  padding:7px;
-
-  background:rgba(8,8,8,.91);
-  backdrop-filter:blur(18px);
-
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:24px;
-
-  box-shadow:0 15px 50px rgba(0,0,0,.45);
-}
-
-.navbtn{
-  position:relative;
-  border:0;
-  background:transparent;
-  color:#999;
-  border-radius:18px;
-  padding:9px 3px;
-  transition:.2s;
-}
-
-.navbtn.active{
-  background:#fff;
-  color:#000;
-  transform:scale(.98);
-}
-
-.navicon{
-  display:block;
-  font-size:19px;
-  line-height:22px;
-}
-
-.navtext{
-  display:block;
-  font-size:10px;
-  font-weight:850;
-}
-
-.badge{
-  position:absolute;
-  top:5px;
-  right:18%;
-  min-width:17px;
-  height:17px;
-  padding:0 4px;
-  border-radius:20px;
-  background:#ff4862;
-  color:#fff;
-  font-size:10px;
-  line-height:17px;
-  font-weight:900;
-}
-
-/* PANEL */
-
-.panel{
-  position:absolute;
-  z-index:2000;
-  inset:0;
-  background:rgba(0,0,0,.58);
-  backdrop-filter:blur(4px);
-  display:flex;
-  align-items:flex-end;
-}
-
-.sheet{
-  width:100%;
-  max-height:88dvh;
-  overflow:auto;
-
-  background:#0d0d0d;
-  border:1px solid #292929;
-  border-bottom:0;
-
-  border-radius:28px 28px 0 0;
-
-  padding:18px 16px 32px;
-
-  animation:up .22s ease-out;
-}
-
-@keyframes up{
-  from{
-    transform:translateY(30px);
-    opacity:0;
-  }
-
-  to{
-    transform:none;
-    opacity:1;
-  }
-}
-
-.handle{
-  width:42px;
-  height:4px;
-  background:#444;
-  border-radius:20px;
-  margin:0 auto 16px;
-}
-
-.sheet h2{
-  margin:4px 0 16px;
-  font-size:22px;
-}
-
-.close{
-  float:right;
-  border:0;
-  background:#222;
-  color:#fff;
-  border-radius:50%;
-  width:36px;
-  height:36px;
-  font-size:22px;
-}
-
-/* FORMS */
-
-.field{
-  margin:11px 0;
-}
-
-.field label{
-  display:block;
-  color:#aaa;
-  font-size:12px;
-  margin-bottom:6px;
-}
-
-input{
-  width:100%;
-  border:1px solid #303030;
-  background:#171717;
-  color:#fff;
-  border-radius:14px;
-  padding:13px;
-  outline:none;
-}
-
-input:focus{
-  border-color:#777;
-}
-
-.btn{
-  border:0;
-  border-radius:15px;
-  padding:13px 15px;
-  background:#fff;
-  color:#000;
-  font-weight:900;
-}
-
-.btn.full{
-  width:100%;
-  margin-top:8px;
-}
-
-.btn.secondary{
-  background:#222;
-  color:#fff;
-  border:1px solid #333;
-}
-
-.btn.danger{
-  background:#2a1115;
-  color:#ff8b9a;
-  border:1px solid #54202a;
-}
-
-.btn.small{
-  padding:9px 12px;
-  border-radius:12px;
-  font-size:12px;
-}
-
-/* AUTH */
-
-.auth{
-  position:absolute;
-  z-index:5000;
-  inset:0;
-  background:#080808;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:20px;
-}
-
-.authbox{
-  width:min(430px,100%);
-  background:#111;
-  border:1px solid #292929;
-  border-radius:28px;
-  padding:25px;
-  box-shadow:0 20px 80px #000;
-}
-
-.logo{
-  font-size:46px;
-  font-weight:1000;
-  letter-spacing:-2px;
-  margin-bottom:5px;
-}
-
-.subtitle{
-  color:#999;
-  margin-bottom:20px;
-  line-height:1.45;
-}
-
-.auth-status{
-  font-size:13px;
-  min-height:22px;
-  color:#aaa;
-  margin-top:12px;
-}
-
-/* PROFILE */
-
-.profile-head{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin-bottom:16px;
-}
-
-.avatar{
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#222;
-  border:2px solid #fff;
-  display:block;
-}
-
-.avatar.small{
-  width:47px;
-  height:47px;
-  border-width:1px;
-}
-
-.name{
-  font-size:18px;
-  font-weight:900;
-}
-
-.code{
-  color:#999;
-  font-size:12px;
-  margin-top:3px;
-}
-
-.upload{
-  position:relative;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.upload input{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  cursor:pointer;
-}
-
-.row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.grow{
-  flex:1;
-  min-width:0;
-}
-
-/* FRIENDS */
-
-.friend,
-.request{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid #242424;
-}
-
-.friend{
-  cursor:pointer;
-}
-
-.friend:last-child,
-.request:last-child{
-  border-bottom:0;
-}
-
-.friend-actions{
-  display:flex;
-  gap:7px;
-}
-
-.empty{
-  color:#888;
-  text-align:center;
-  padding:30px 10px;
-}
-
-.section-title{
-  margin:20px 0 6px;
-  font-size:13px;
-  color:#aaa;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.last-reaction{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  margin-top:5px;
-  font-size:11px;
-  color:#aaa;
-}
-
-.last-reaction .emoji{
-  font-size:18px;
-}
-
-/* MAP */
-
-.leaflet-control-attribution{
-  font-size:8px!important;
-}
-
-.leaflet-control-zoom{
-  margin-bottom:90px!important;
-}
-
-.user-pin,
-.friend-pin{
-  background:transparent;
-  border:0;
-}
-
-.pin{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  overflow:hidden;
-  background:#222;
-  border:3px solid #fff;
-  box-shadow:0 5px 20px rgba(0,0,0,.55);
-  position:relative;
-}
-
-.pin img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.pin .ring{
-  position:absolute;
-  inset:-8px;
-  border:2px solid rgba(255,255,255,.7);
-  border-radius:50%;
-  animation:pulse 1.6s infinite;
-}
-
-@keyframes pulse{
-  50%{
-    transform:scale(1.16);
-    opacity:.2;
-  }
-}
-
-/* TOAST */
-
-.toast{
-  position:absolute;
-  z-index:6000;
-  left:50%;
-  bottom:92px;
-  transform:translateX(-50%);
-
-  background:#fff;
-  color:#000;
-  padding:11px 15px;
-  border-radius:14px;
-
-  font-weight:800;
-  font-size:13px;
-
-  box-shadow:0 12px 35px rgba(0,0,0,.4);
-  max-width:90%;
-  text-align:center;
-}
-
-/* SETTINGS */
-
-.toggle{
-  width:48px;
-  height:28px;
-  border:0;
-  border-radius:20px;
-  background:#333;
-  position:relative;
-  flex:none;
-}
-
-.toggle i{
-  position:absolute;
-  top:3px;
-  left:3px;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  background:#fff;
-  transition:.2s;
-}
-
-.toggle.on{
-  background:#fff;
-}
-
-.toggle.on i{
-  left:23px;
-  background:#000;
-}
-
-.note{
-  color:#777;
-  font-size:12px;
-  line-height:1.5;
-  margin-top:12px;
-}
-
-.online-status{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  margin-left:6px;
-}
-
-.online-status.online{
-  background:#70ffad;
-  box-shadow:0 0 8px #70ffad;
-}
-
-.online-status.offline{
-  background:#777;
-}
-
-/* FRIEND CARD */
-
-.friend-card-avatar{
-  width:96px;
-  height:96px;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
-  margin:5px auto 12px;
-  border:3px solid #fff;
-}
-
-.friend-card-name{
-  text-align:center;
-  font-size:24px;
-  font-weight:950;
-}
-
-.friend-card-code{
-  text-align:center;
-  color:#888;
-  font-size:13px;
-  margin-top:4px;
-}
-
-.friend-status{
-  text-align:center;
-  margin:12px auto 20px;
-  font-size:12px;
-  color:#aaa;
-}
-
-.reaction-title{
-  text-align:center;
-  color:#aaa;
-  font-size:13px;
-  margin:18px 0 12px;
-}
-
-.reaction-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:9px;
-}
-
-.reaction-btn{
-  height:65px;
-  border-radius:20px;
-  border:1px solid #2b2b2b;
-  background:#161616;
-  color:#fff;
-  font-size:30px;
-  transition:.15s;
-}
-
-.reaction-btn:active{
-  transform:scale(.88);
-  background:#fff;
-}
-
-/* FULLSCREEN REACTION */
-
-#reactionOverlay{
-  position:fixed;
-  z-index:10000;
-  inset:0;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  background:rgba(0,0,0,.94);
-  backdrop-filter:blur(18px);
-
-  overflow:hidden;
-}
-
-.reaction-bg{
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at 50% 50%,rgba(255,255,255,.16),transparent 55%);
-  animation:reactionBg 2s ease-in-out infinite alternate;
-}
-
-@keyframes reactionBg{
-  from{
-    transform:scale(1);
-    opacity:.5;
-  }
-
-  to{
-    transform:scale(1.25);
-    opacity:1;
-  }
-}
-
-.reaction-content{
-  position:relative;
-  z-index:2;
-  width:100%;
-  text-align:center;
-  padding:30px;
-}
-
-.reaction-sender-avatar{
-  width:82px;
-  height:82px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #fff;
-  margin:0 auto 18px;
-
-  animation:avatarReaction .6s cubic-bezier(.2,1.4,.4,1);
-}
-
-@keyframes avatarReaction{
-  from{
-    transform:scale(0);
-    opacity:0;
-  }
-
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
-}
-
-.reaction-from{
-  color:#aaa;
-  font-size:14px;
-  margin-bottom:4px;
-}
-
-.reaction-name{
-  font-size:25px;
-  font-weight:950;
-  margin-bottom:20px;
-}
-
-.reaction-emoji{
-  font-size:min(42vw,180px);
-  line-height:1;
-
-  animation:emojiReaction 1.8s cubic-bezier(.2,1.2,.3,1) infinite alternate;
-
-  filter:drop-shadow(0 20px 30px rgba(255,255,255,.15));
-}
-
-@keyframes emojiReaction{
-  0%{
-    transform:scale(.55) rotate(-10deg);
-    opacity:0;
-  }
-
-  35%{
-    transform:scale(1.15) rotate(8deg);
-    opacity:1;
-  }
-
-  100%{
-    transform:scale(.92) rotate(-4deg);
-  }
-}
-
-.reaction-text{
-  margin-top:20px;
-  font-size:17px;
-  font-weight:850;
-}
-
-.reaction-close{
-  margin-top:30px;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.1);
-  color:#fff;
-  padding:13px 24px;
-  border-radius:16px;
-  font-weight:850;
-}
-
-.reaction-particle{
-  position:absolute;
-  z-index:1;
-  font-size:30px;
-  animation:particleFly 2.5s ease-out forwards;
-  pointer-events:none;
-}
-
-@keyframes particleFly{
-  from{
-    transform:translate(0,0) scale(.4);
-    opacity:1;
-  }
-
-  to{
-    transform:translate(var(--x),var(--y)) scale(1.4) rotate(360deg);
-    opacity:0;
-  }
-}
-
-@media(min-width:700px){
-
-  .bottom{
-    left:50%;
-    right:auto;
-    width:520px;
-    transform:translateX(-50%);
-  }
-
-  .panel{
-    align-items:center;
-    justify-content:center;
-  }
-
-  .sheet{
-    width:520px;
-    max-height:80vh;
-    border:1px solid #292929;
-    border-radius:28px;
-  }
-
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#080808">
+  <title>LINK — друзья на карте</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+    *{box-sizing:border-box}
+
+    :root{
+      --bg:#080808;
+      --card:#121212;
+      --card2:#191919;
+      --text:#fff;
+      --muted:#9b9b9b;
+      --line:#2b2b2b;
+      --accent:#fff;
+      --danger:#ff5d73;
+      --ok:#70ffad;
+    }
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+
+    body{overflow:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .hidden{display:none!important}
+
+    #app{
+      position:relative;
+      width:100%;
+      height:100dvh;
+      overflow:hidden;
+      background:#111;
+    }
+
+    #map{
+      position:absolute;
+      inset:0;
+      z-index:1;
+    }
+
+    /* =========================
+       TOP BAR
+    ========================= */
+
+    .topbar{
+      position:absolute;
+      z-index:1000;
+      top:12px;
+      left:12px;
+      right:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      pointer-events:none;
+    }
+
+    .brand,.status{
+      pointer-events:auto;
+      background:rgba(10,10,10,.84);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:10px 14px;
+      box-shadow:0 10px 35px rgba(0,0,0,.38);
+    }
+
+    .brand{
+      font-weight:950;
+      letter-spacing:.7px;
+    }
+
+    .status{
+      font-size:12px;
+      color:#ddd;
+      max-width:58%;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .dot{
+      display:inline-block;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#777;
+      margin-right:7px;
+    }
+
+    .dot.live{
+      background:var(--ok);
+      box-shadow:0 0 13px var(--ok);
+    }
+
+    /* =========================
+       MAP BUTTONS
+    ========================= */
+
+    .map-actions{
+      position:absolute;
+      z-index:1000;
+      right:12px;
+      bottom:104px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .round-btn{
+      width:48px;
+      height:48px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:17px;
+      background:rgba(10,10,10,.88);
+      backdrop-filter:blur(14px);
+      color:#fff;
+      font-size:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+
+    /* =========================
+       BOTTOM NAVIGATION
+    ========================= */
+
+    .bottom{
+      position:absolute;
+      z-index:1000;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:5px;
+      padding:7px;
+      background:rgba(8,8,8,.91);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      box-shadow:0 15px 50px rgba(0,0,0,.45);
+    }
+
+    .navbtn{
+      position:relative;
+      border:0;
+      background:transparent;
+      color:#999;
+      border-radius:18px;
+      padding:9px 3px;
+      transition:.2s;
+    }
+
+    .navbtn.active{
+      background:#fff;
+      color:#000;
+      transform:scale(.98);
+    }
+
+    .navicon{
+      display:block;
+      font-size:19px;
+      line-height:22px;
+    }
+
+    .navtext{
+      display:block;
+      font-size:10px;
+      font-weight:850;
+    }
+
+    .badge{
+      position:absolute;
+      top:5px;
+      right:18%;
+      min-width:17px;
+      height:17px;
+      padding:0 4px;
+      border-radius:20px;
+      background:#ff4862;
+      color:#fff;
+      font-size:10px;
+      line-height:17px;
+      font-weight:900;
+    }
+
+    /* =========================
+       PANELS
+    ========================= */
+
+    .panel{
+      position:absolute;
+      z-index:2000;
+      inset:0;
+      background:rgba(0,0,0,.58);
+      backdrop-filter:blur(4px);
+      display:flex;
+      align-items:flex-end;
+    }
+
+    .sheet{
+      width:100%;
+      max-height:88dvh;
+      overflow:auto;
+      background:#0d0d0d;
+      border:1px solid #292929;
+      border-bottom:0;
+      border-radius:28px 28px 0 0;
+      padding:18px 16px 32px;
+      animation:up .22s ease-out;
+    }
+
+    @keyframes up{
+      from{
+        transform:translateY(30px);
+        opacity:0;
+      }
+      to{
+        transform:none;
+        opacity:1;
+      }
+    }
+
+    .handle{
+      width:42px;
+      height:4px;
+      background:#444;
+      border-radius:20px;
+      margin:0 auto 16px;
+    }
+
+    .sheet h2{
+      margin:4px 0 16px;
+      font-size:22px;
+    }
+
+    .close{
+      float:right;
+      border:0;
+      background:#222;
+      color:#fff;
+      border-radius:50%;
+      width:36px;
+      height:36px;
+      font-size:22px;
+    }
+
+    /* =========================
+       INPUTS
+    ========================= */
+
+    .field{
+      margin:11px 0;
+    }
+
+    .field label{
+      display:block;
+      color:#aaa;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+
+    input{
+      width:100%;
+      border:1px solid #303030;
+      background:#171717;
+      color:#fff;
+      border-radius:14px;
+      padding:13px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:#777;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:13px 15px;
+      background:#fff;
+      color:#000;
+      font-weight:900;
+    }
+
+    .btn.full{
+      width:100%;
+      margin-top:8px;
+    }
+
+    .btn.secondary{
+      background:#222;
+      color:#fff;
+      border:1px solid #333;
+    }
+
+    .btn.danger{
+      background:#2a1115;
+      color:#ff8b9a;
+      border:1px solid #54202a;
+    }
+
+    .btn.small{
+      padding:9px 12px;
+      border-radius:12px;
+      font-size:12px;
+    }
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    .auth{
+      position:absolute;
+      z-index:5000;
+      inset:0;
+      background:#080808;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .authbox{
+      width:min(430px,100%);
+      background:#111;
+      border:1px solid #292929;
+      border-radius:28px;
+      padding:25px;
+      box-shadow:0 20px 80px #000;
+    }
+
+    .logo{
+      font-size:46px;
+      font-weight:1000;
+      letter-spacing:-2px;
+      margin-bottom:5px;
+    }
+
+    .subtitle{
+      color:#999;
+      margin-bottom:20px;
+      line-height:1.45;
+    }
+
+    .auth-status{
+      font-size:13px;
+      min-height:22px;
+      color:#aaa;
+      margin-top:12px;
+    }
+
+    /* =========================
+       PROFILE
+    ========================= */
+
+    .profile-head{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .avatar{
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      object-fit:cover;
+      background:#222;
+      border:2px solid #fff;
+      display:block;
+    }
+
+    .avatar.small{
+      width:47px;
+      height:47px;
+      border-width:1px;
+    }
+
+    .name{
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .code{
+      color:#999;
+      font-size:12px;
+      margin-top:3px;
+    }
+
+    .upload{
+      position:relative;
+      overflow:hidden;
+      margin-top:8px;
+    }
+
+    .upload input{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      cursor:pointer;
+    }
+
+    .row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .grow{
+      flex:1;
+      min-width:0;
+    }
+
+    /* =========================
+       FRIENDS
+    ========================= */
+
+    .friend,.request{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 0;
+      border-bottom:1px solid #242424;
+    }
+
+    .friend:last-child,
+    .request:last-child{
+      border-bottom:0;
+    }
+
+    .friend-actions{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .empty{
+      color:#888;
+      text-align:center;
+      padding:30px 10px;
+    }
+
+    .section-title{
+      margin:20px 0 6px;
+      font-size:13px;
+      color:#aaa;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    /* =========================
+       MAP MARKERS
+    ========================= */
+
+    .leaflet-control-attribution{
+      font-size:8px!important;
+    }
+
+    .leaflet-control-zoom{
+      margin-bottom:90px!important;
+    }
+
+    .user-pin,.friend-pin{
+      background:transparent;
+      border:0;
+    }
+
+    .pin{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      overflow:hidden;
+      background:#222;
+      border:3px solid #fff;
+      box-shadow:0 5px 20px rgba(0,0,0,.55);
+      position:relative;
+    }
+
+    .pin img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .pin .ring{
+      position:absolute;
+      inset:-8px;
+      border:2px solid rgba(255,255,255,.7);
+      border-radius:50%;
+      animation:pulse 1.6s infinite;
+    }
+
+    @keyframes pulse{
+      50%{
+        transform:scale(1.16);
+        opacity:.2;
+      }
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast{
+      position:absolute;
+      z-index:6000;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%);
+      background:#fff;
+      color:#000;
+      padding:11px 15px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:13px;
+      box-shadow:0 12px 35px rgba(0,0,0,.4);
+      max-width:90%;
+      text-align:center;
+    }
+
+    /* =========================
+       SETTINGS
+    ========================= */
+
+    .toggle{
+      width:48px;
+      height:28px;
+      border:0;
+      border-radius:20px;
+      background:#333;
+      position:relative;
+      flex:none;
+    }
+
+    .toggle i{
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#fff;
+      transition:.2s;
+    }
+
+    .toggle.on{
+      background:#fff;
+    }
+
+    .toggle.on i{
+      left:23px;
+      background:#000;
+    }
+
+    .note{
+      color:#777;
+      font-size:12px;
+      line-height:1.5;
+      margin-top:12px;
+    }
+
+    .online-status{
+      display:inline-block;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      margin-left:6px;
+    }
+
+    .online-status.online{
+      background:#70ffad;
+      box-shadow:0 0 8px #70ffad;
+    }
+
+    .online-status.offline{
+      background:#777;
+    }
+
+    /* =========================
+       REACTIONS
+    ========================= */
+
+    .reaction-picker{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin:12px 0 16px;
+    }
+
+    .reaction-choice{
+      border:1px solid #333;
+      background:#171717;
+      color:#fff;
+      border-radius:18px;
+      min-height:65px;
+      font-size:30px;
+      transition:.18s;
+    }
+
+    .reaction-choice:active,
+    .reaction-choice.selected{
+      background:#fff;
+      color:#000;
+      transform:scale(.94);
+    }
+
+    .reaction-info{
+      background:#141414;
+      border:1px solid #292929;
+      border-radius:16px;
+      padding:13px;
+      color:#aaa;
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    /* =========================
+       FULL SCREEN REACTION
+    ========================= */
+
+    #reactionOverlay{
+      position:fixed;
+      z-index:10000;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .reaction-dark{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,.18);
+      backdrop-filter:blur(1px);
+      animation:reactionDark 4.5s ease forwards;
+    }
+
+    @keyframes reactionDark{
+      0%{opacity:0}
+      10%{opacity:1}
+      85%{opacity:1}
+      100%{opacity:0}
+    }
+
+    .reaction-center{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:min(88vw,430px);
+      text-align:center;
+      z-index:3;
+      animation:reactionCenter 4.5s ease forwards;
+    }
+
+    @keyframes reactionCenter{
+      0%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(.3);
+      }
+      12%{
+        opacity:1;
+        transform:translate(-50%,-50%) scale(1.08);
+      }
+      20%{
+        transform:translate(-50%,-50%) scale(1);
+      }
+      85%{
+        opacity:1;
+      }
+      100%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(.8);
+      }
+    }
+
+    .reaction-big{
+      font-size:clamp(90px,28vw,170px);
+      line-height:1;
+      filter:drop-shadow(0 15px 35px rgba(0,0,0,.6));
+      animation:reactionEmoji 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes reactionEmoji{
+      from{
+        transform:scale(.96) rotate(-5deg);
+      }
+      to{
+        transform:scale(1.08) rotate(5deg);
+      }
+    }
+
+    .reaction-title{
+      margin-top:12px;
+      font-size:clamp(20px,6vw,30px);
+      font-weight:950;
+      text-shadow:0 4px 20px #000;
+    }
+
+    .reaction-count{
+      margin-top:6px;
+      font-size:clamp(30px,10vw,58px);
+      font-weight:1000;
+      text-shadow:0 5px 25px #000;
+    }
+
+    .reaction-subtitle{
+      margin-top:8px;
+      color:#ddd;
+      font-size:14px;
+    }
+
+    .reaction-particle{
+      position:absolute;
+      left:50%;
+      top:50%;
+      z-index:2;
+      font-size:var(--size);
+      will-change:transform,opacity;
+      animation:particleFly var(--duration) cubic-bezier(.12,.75,.2,1) forwards;
+      animation-delay:var(--delay);
+      filter:drop-shadow(0 5px 10px rgba(0,0,0,.45));
+      transform:translate(-50%,-50%);
+    }
+
+    @keyframes particleFly{
+      0%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(.2) rotate(0deg);
+      }
+
+      8%{
+        opacity:1;
+      }
+
+      75%{
+        opacity:1;
+      }
+
+      100%{
+        opacity:0;
+        transform:
+          translate(
+            calc(-50% + var(--x)),
+            calc(-50% + var(--y))
+          )
+          scale(var(--scale))
+          rotate(var(--rotate));
+      }
+    }
+
+    .reaction-counter-top{
+      position:absolute;
+      top:18px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:5;
+      padding:10px 17px;
+      border-radius:999px;
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.2);
+      backdrop-filter:blur(15px);
+      font-weight:900;
+      animation:counterPop .5s ease;
+    }
+
+    @keyframes counterPop{
+      from{
+        transform:translateX(-50%) translateY(-20px) scale(.7);
+        opacity:0;
+      }
+
+      to{
+        transform:translateX(-50%) translateY(0) scale(1);
+        opacity:1;
+      }
+    }
+
+    .reaction-map-burst{
+      position:absolute;
+      z-index:7000;
+      pointer-events:none;
+      transform:translate(-50%,-50%);
+      font-size:42px;
+      animation:mapBurst 1.4s ease-out forwards;
+      filter:drop-shadow(0 5px 12px rgba(0,0,0,.5));
+    }
+
+    @keyframes mapBurst{
+      0%{
+        transform:translate(-50%,-50%) scale(.2);
+        opacity:0;
+      }
+
+      20%{
+        opacity:1;
+        transform:translate(-50%,-50%) scale(1.5);
+      }
+
+      100%{
+        transform:translate(-50%,-120%) scale(2.2);
+        opacity:0;
+      }
+    }
+
+    @media(min-width:700px){
+      .bottom{
+        left:50%;
+        right:auto;
+        width:520px;
+        transform:translateX(-50%);
+      }
+
+      .panel{
+        align-items:center;
+        justify-content:center;
+      }
+
+      .sheet{
+        width:520px;
+        max-height:80vh;
+        border:1px solid #292929;
+        border-radius:28px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -893,39 +893,7 @@ input:focus{
 
 </div>
 
-<!-- FULLSCREEN REACTION -->
-
-<div id="reactionOverlay" class="hidden">
-  <div class="reaction-bg"></div>
-
-  <div id="reactionParticles"></div>
-
-  <div class="reaction-content">
-
-    <img id="reactionSenderAvatar" class="reaction-sender-avatar">
-
-    <div class="reaction-from">Тебе отправил реакцию</div>
-
-    <div id="reactionSenderName" class="reaction-name">
-      Друг
-    </div>
-
-    <div id="reactionEmoji" class="reaction-emoji">
-      ❤️
-    </div>
-
-    <div class="reaction-text">
-      Реакция специально для тебя
-    </div>
-
-    <button id="closeReactionBtn" class="reaction-close">
-      Закрыть
-    </button>
-
-  </div>
-</div>
-
-<!-- AUTH -->
+<div id="reactionOverlay"></div>
 
 <div id="auth" class="auth">
 
@@ -957,15 +925,15 @@ input:focus{
 
 <script type="module">
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
   getAuth,
   signInAnonymously,
   onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
   getDatabase,
@@ -975,43 +943,70 @@ import {
   update,
   remove,
   onValue
-} from
-"https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+}
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+
+/* =========================================
+   FIREBASE
+========================================= */
 
 const firebaseConfig = {
+
   apiKey:"AIzaSyACo_xpctW1MDfaGO_bmDzXfFhb4KfwV2w",
+
   authDomain:"link-69afb.firebaseapp.com",
-  databaseURL:"https://link-69afb-default-rtdb.firebaseio.com",
+
+  databaseURL:
+  "https://link-69afb-default-rtdb.firebaseio.com",
+
   projectId:"link-69afb",
+
   storageBucket:"link-69afb.firebasestorage.app",
+
   messagingSenderId:"488681419482",
-  appId:"1:488681419482:web:9c4cd030e20137a4946be3",
+
+  appId:
+  "1:488681419482:web:9c4cd030e20137a4946be3",
+
   measurementId:"G-6T5XDS5W43"
+
 };
 
+
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+
 const db = getDatabase(app);
 
 const $ = id => document.getElementById(id);
 
 
-/* VARIABLES */
+/* =========================================
+   VARIABLES
+========================================= */
 
 let user = null;
+
 let profile = null;
 
-let map;
+let map = null;
+
 let meMarker = null;
 
 let friendMarkers = new Map();
+
 let friendLocationListeners = new Map();
 
 let friends = {};
+
 let incomingRequests = {};
 
+let incomingReactions = {};
+
 let watchId = null;
+
 let lastPosition = null;
 
 let locationSharing = true;
@@ -1019,68 +1014,46 @@ let locationSharing = true;
 let currentPage = "map";
 
 let profileUnsubscribe = null;
+
 let friendsUnsubscribe = null;
+
 let requestsUnsubscribe = null;
+
 let reactionsUnsubscribe = null;
 
 let locationCleanupInterval = null;
 
-let currentReactionId = null;
+let selectedReaction = "❤️";
 
 
-/* HELPERS */
-
-function defaultAvatar(name=""){
-
-  const letter =
-    String(name || "?")
-    .trim()
-    .slice(0,1)
-    .toUpperCase() || "?";
-
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
-        <rect width="160" height="160" fill="#242424"/>
-        <text
-          x="80"
-          y="104"
-          text-anchor="middle"
-          font-family="Arial"
-          font-size="72"
-          fill="white"
-        >${letter}</text>
-      </svg>
-    `);
-}
-
-function avatarUrl(p){
-  return p?.avatar || defaultAvatar(p?.name || "?");
-}
-
-function escapeHtml(s){
-
-  return String(s ?? "")
-    .replace(/[&<>"']/g,c=>({
-
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-
-    }[c]));
-
-}
+const REACTIONS = [
+  "❤️",
+  "🔥",
+  "😂",
+  "🎉",
+  "😱",
+  "⚡",
+  "👋",
+  "😎",
+  "💀",
+  "🥳",
+  "💯",
+  "✨"
+];
 
 
-/* MAP */
+/* =========================================
+   MAP
+========================================= */
 
 function initMap(){
 
-  map = L.map("map",{
-    zoomControl:true
-  }).setView([20,0],2);
+  map = L.map(
+    "map",
+    {
+      zoomControl:true
+    }
+  ).setView([20,0],2);
 
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -1093,18 +1066,98 @@ function initMap(){
 }
 
 
+/* =========================================
+   AVATAR
+========================================= */
+
+function defaultAvatar(name=""){
+
+  const letter =
+    String(name || "?")
+    .trim()
+    .slice(0,1)
+    .toUpperCase() || "?";
+
+  return
+    "data:image/svg+xml;charset=UTF-8," +
+
+    encodeURIComponent(
+
+      `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+
+        <rect width="160" height="160" fill="#242424"/>
+
+        <text
+          x="80"
+          y="104"
+          text-anchor="middle"
+          font-family="Arial"
+          font-size="72"
+          fill="white"
+        >
+          ${letter}
+        </text>
+
+      </svg>`
+
+    );
+
+}
+
+
+function avatarUrl(p){
+
+  return p?.avatar ||
+    defaultAvatar(p?.name || "?");
+
+}
+
+
+/* =========================================
+   HTML ESCAPE
+========================================= */
+
+function escapeHtml(s){
+
+  return String(s ?? "")
+
+    .replace(/[&<>"']/g, c => ({
+
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+
+    }[c]));
+
+}
+
+
+/* =========================================
+   MARKERS
+========================================= */
+
 function markerIcon(p,isMe=false){
 
   const html = `
+
     <div class="pin">
-      ${isMe ? '<div class="ring"></div>' : ""}
+
+      ${isMe ? '<div class="ring"></div>' : ''}
+
       <img src="${avatarUrl(p)}">
+
     </div>
+
   `;
 
   return L.divIcon({
 
-    className:isMe ? "user-pin" : "friend-pin",
+    className:
+      isMe
+      ? "user-pin"
+      : "friend-pin",
 
     html,
 
@@ -1119,7 +1172,9 @@ function markerIcon(p,isMe=false){
 }
 
 
-/* STATUS */
+/* =========================================
+   STATUS
+========================================= */
 
 function setStatus(text,live=false){
 
@@ -1132,64 +1187,83 @@ function setStatus(text,live=false){
 }
 
 
+/* =========================================
+   TOAST
+========================================= */
+
 function toast(text){
 
   $("toast").textContent = text;
 
-  $("toast").classList.remove("hidden");
+  $("toast")
+    .classList
+    .remove("hidden");
 
   clearTimeout(window.__toastTimer);
 
-  window.__toastTimer = setTimeout(()=>{
-
-    $("toast").classList.add("hidden");
-
-  },2800);
+  window.__toastTimer =
+    setTimeout(
+      () => $("toast")
+      .classList
+      .add("hidden"),
+      2800
+    );
 
 }
 
 
-/* PANELS */
+/* =========================================
+   PANEL
+========================================= */
 
 function openPanel(html){
 
   $("sheet").innerHTML =
     `<div class="handle"></div>${html}`;
 
-  $("panel").classList.remove("hidden");
+  $("panel")
+    .classList
+    .remove("hidden");
 
 }
 
 
 function closePanel(){
 
-  $("panel").classList.add("hidden");
+  $("panel")
+    .classList
+    .add("hidden");
 
 }
+
 
 window.closePanel = closePanel;
 
 
-$("panel").addEventListener("click",e=>{
+$("panel").addEventListener(
+  "click",
+  e => {
 
-  if(e.target === $("panel")){
-    closePanel();
+    if(e.target === $("panel")){
+      closePanel();
+    }
+
   }
+);
 
-});
 
-
-/* NAVIGATION */
+/* =========================================
+   NAVIGATION
+========================================= */
 
 document
 .querySelectorAll(".navbtn")
-.forEach(btn=>{
+.forEach(btn => {
 
-  btn.addEventListener("click",()=>{
-
-    openPage(btn.dataset.page);
-
-  });
+  btn.addEventListener(
+    "click",
+    () => openPage(btn.dataset.page)
+  );
 
 });
 
@@ -1200,7 +1274,7 @@ function openPage(page){
 
   document
   .querySelectorAll(".navbtn")
-  .forEach(btn=>{
+  .forEach(btn => {
 
     btn.classList.toggle(
       "active",
@@ -1214,41 +1288,53 @@ function openPage(page){
 
     closePanel();
 
-    setTimeout(()=>{
-
-      map.invalidateSize();
-
-    },100);
+    setTimeout(
+      () => map.invalidateSize(),
+      100
+    );
 
   }
 
-  if(page === "friends"){
+  else if(page === "friends"){
+
     renderFriends();
+
   }
 
-  if(page === "profile"){
+  else if(page === "profile"){
+
     renderProfile();
+
   }
 
-  if(page === "settings"){
+  else if(page === "settings"){
+
     renderSettings();
+
   }
 
 }
 
 
-/* MAP BUTTONS */
+/* =========================================
+   MAP BUTTONS
+========================================= */
 
-$("centerMeBtn").onclick = ()=>{
+$("centerMeBtn").onclick = () => {
 
   if(lastPosition){
 
     map.setView(
-      [lastPosition.lat,lastPosition.lng],
+      [
+        lastPosition.lat,
+        lastPosition.lng
+      ],
       17
     );
 
-  }else{
+  }
+
+  else{
 
     toast("Геолокация ещё не получена.");
 
@@ -1257,21 +1343,26 @@ $("centerMeBtn").onclick = ()=>{
 };
 
 
-$("showAllBtn").onclick = ()=>{
+$("showAllBtn").onclick = () => {
 
   const markers = [
     meMarker,
     ...Array.from(friendMarkers.values())
   ].filter(Boolean);
 
-  if(!markers.length){
+
+  if(markers.length === 0){
 
     toast("Нет активных маркеров.");
 
     return;
+
   }
 
-  const group = L.featureGroup(markers);
+
+  const group =
+    L.featureGroup(markers);
+
 
   map.fitBounds(
     group.getBounds(),
@@ -1283,12 +1374,17 @@ $("showAllBtn").onclick = ()=>{
 };
 
 
-/* PROFILE */
+/* =========================================
+   PROFILE
+========================================= */
 
 async function ensureProfile(){
 
   const profileRef =
-    ref(db,`profiles/${user.uid}`);
+    ref(
+      db,
+      `profiles/${user.uid}`
+    );
 
   const snap =
     await get(profileRef);
@@ -1299,9 +1395,13 @@ async function ensureProfile(){
     const code =
       await createUniqueFriendCode();
 
+
     const newProfile = {
 
-      name:`LINK ${Math.floor(100 + Math.random()*900)}`,
+      name:
+        `LINK ${Math.floor(
+          100 + Math.random() * 900
+        )}`,
 
       friendCode:code,
 
@@ -1316,13 +1416,19 @@ async function ensureProfile(){
     };
 
 
-    await update(ref(db),{
+    await update(
+      ref(db),
+      {
 
-      [`profiles/${user.uid}`]:newProfile,
+        [`profiles/${user.uid}`]:
+          newProfile,
 
-      [`friendCodes/${code}`]:user.uid
+        [`friendCodes/${code}`]:
+          user.uid
 
-    });
+      }
+    );
+
 
     profile = newProfile;
 
@@ -1332,25 +1438,37 @@ async function ensureProfile(){
 
     profile = snap.val();
 
+
     if(!profile.friendCode){
 
       const code =
         await createUniqueFriendCode();
 
-      await update(ref(db),{
 
-        [`profiles/${user.uid}/friendCode`]:code,
+      await update(
+        ref(db),
+        {
 
-        [`friendCodes/${code}`]:user.uid
+          [`profiles/${user.uid}/friendCode`]:
+            code,
 
-      });
+          [`friendCodes/${code}`]:
+            user.uid
+
+        }
+      );
+
 
       profile.friendCode = code;
 
     }
 
+
     await update(
-      ref(db,`profiles/${user.uid}`),
+      ref(
+        db,
+        `profiles/${user.uid}`
+      ),
       {
         lastActive:Date.now()
       }
@@ -1361,6 +1479,10 @@ async function ensureProfile(){
 }
 
 
+/* =========================================
+   FRIEND CODE
+========================================= */
+
 async function createUniqueFriendCode(){
 
   for(let i=0;i<30;i++){
@@ -1368,20 +1490,29 @@ async function createUniqueFriendCode(){
     const code =
       String(
         Math.floor(
-          1000 + Math.random()*9000
+          1000 +
+          Math.random()*9000
         )
       );
 
+
     const existing =
       await get(
-        ref(db,`friendCodes/${code}`)
+        ref(
+          db,
+          `friendCodes/${code}`
+        )
       );
 
+
     if(!existing.exists()){
+
       return code;
+
     }
 
   }
+
 
   throw new Error(
     "Не удалось создать свободный код."
@@ -1390,7 +1521,9 @@ async function createUniqueFriendCode(){
 }
 
 
-/* AUTH */
+/* =========================================
+   AUTH
+========================================= */
 
 async function startApp(){
 
@@ -1398,6 +1531,7 @@ async function startApp(){
 
   $("authStatus").textContent =
     "Входим в LINK…";
+
 
   try{
 
@@ -1410,7 +1544,8 @@ async function startApp(){
     console.error(error);
 
     $("authStatus").textContent =
-      "Ошибка: " + friendlyError(error);
+      "Ошибка: " +
+      friendlyError(error);
 
     $("startBtn").disabled = false;
 
@@ -1418,31 +1553,38 @@ async function startApp(){
 
 }
 
+
 $("startBtn").onclick = startApp;
 
 
-/* AUTH STATE */
+/* =========================================
+   AUTH STATE
+========================================= */
 
 onAuthStateChanged(
   auth,
-  async firebaseUser=>{
+  async firebaseUser => {
 
     if(!firebaseUser) return;
 
-    if(user?.uid === firebaseUser.uid){
-      return;
-    }
+    if(user?.uid === firebaseUser.uid) return;
+
 
     try{
 
       user = firebaseUser;
 
+
       $("authStatus").textContent =
         "Создаём профиль…";
 
+
       await ensureProfile();
 
-      $("auth").classList.add("hidden");
+
+      $("auth")
+        .classList
+        .add("hidden");
 
 
       subscribeProfile();
@@ -1451,7 +1593,7 @@ onAuthStateChanged(
 
       subscribeIncomingRequests();
 
-      subscribeReactions();
+      subscribeIncomingReactions();
 
 
       setStatus(
@@ -1486,7 +1628,7 @@ onAuthStateChanged(
       locationCleanupInterval =
         setInterval(
           cleanupOldLocations,
-          5 * 60 * 1000
+          5*60*1000
         );
 
     }
@@ -1499,7 +1641,11 @@ onAuthStateChanged(
         "Ошибка запуска: " +
         friendlyError(error);
 
-      $("auth").classList.remove("hidden");
+
+      $("auth")
+        .classList
+        .remove("hidden");
+
 
       $("startBtn").disabled = false;
 
@@ -1509,47 +1655,84 @@ onAuthStateChanged(
 );
 
 
-/* PROFILE SUBSCRIBE */
+/* =========================================
+   SUBSCRIBE PROFILE
+========================================= */
 
 function subscribeProfile(){
 
+  if(profileUnsubscribe){
+
+    profileUnsubscribe();
+
+  }
+
+
   const profileRef =
-    ref(db,`profiles/${user.uid}`);
+    ref(
+      db,
+      `profiles/${user.uid}`
+    );
+
 
   profileUnsubscribe =
-    onValue(profileRef,snap=>{
+    onValue(
+      profileRef,
+      snap => {
 
-      if(!snap.exists()) return;
+        if(!snap.exists()) return;
 
-      profile = snap.val();
 
-      if(meMarker){
-        renderMeMarker();
+        profile = snap.val();
+
+
+        if(meMarker){
+
+          renderMeMarker();
+
+        }
+
+
+        if(currentPage === "profile"){
+
+          renderProfile();
+
+        }
+
       }
-
-      if(currentPage === "profile"){
-        renderProfile();
-      }
-
-    });
+    );
 
 }
 
 
-/* FRIENDS SUBSCRIBE */
+/* =========================================
+   SUBSCRIBE FRIENDS
+========================================= */
 
 function subscribeFriends(){
 
+  if(friendsUnsubscribe){
+
+    friendsUnsubscribe();
+
+  }
+
+
   const friendsRef =
-    ref(db,`friends/${user.uid}`);
+    ref(
+      db,
+      `friends/${user.uid}`
+    );
+
 
   friendsUnsubscribe =
     onValue(
       friendsRef,
-      snap=>{
+      snap => {
 
         const nextFriends =
           snap.val() || {};
+
 
         const oldIds =
           Object.keys(friends);
@@ -1570,7 +1753,8 @@ function subscribeFriends(){
 
 
         for(
-          const friendId of Object.keys(friends)
+          const friendId
+          of Object.keys(friends)
         ){
 
           subscribeFriendLocation(friendId);
@@ -1590,28 +1774,46 @@ function subscribeFriends(){
 }
 
 
-/* REQUESTS */
+/* =========================================
+   FRIEND REQUESTS
+========================================= */
 
 function subscribeIncomingRequests(){
 
+  if(requestsUnsubscribe){
+
+    requestsUnsubscribe();
+
+  }
+
+
   const requestRef =
-    ref(db,`friendRequests/${user.uid}`);
+    ref(
+      db,
+      `friendRequests/${user.uid}`
+    );
+
 
   requestsUnsubscribe =
-    onValue(requestRef,snap=>{
+    onValue(
+      requestRef,
+      snap => {
 
-      incomingRequests =
-        snap.val() || {};
+        incomingRequests =
+          snap.val() || {};
 
-      updateRequestBadge();
 
-      if(currentPage === "friends"){
+        updateRequestBadge();
 
-        renderFriends();
+
+        if(currentPage === "friends"){
+
+          renderFriends();
+
+        }
 
       }
-
-    });
+    );
 
 }
 
@@ -1619,9 +1821,14 @@ function subscribeIncomingRequests(){
 function updateRequestBadge(){
 
   const count =
-    Object.keys(incomingRequests).length;
+    Object.keys(
+      incomingRequests
+    ).length;
 
-  $("requestBadge").textContent = count;
+
+  $("requestBadge").textContent =
+    count;
+
 
   $("requestBadge")
     .classList
@@ -1633,55 +1840,61 @@ function updateRequestBadge(){
 }
 
 
-/* REACTIONS SUBSCRIBE */
+/* =========================================
+   REACTIONS REALTIME
+========================================= */
 
-function subscribeReactions(){
+function subscribeIncomingReactions(){
+
+  if(reactionsUnsubscribe){
+
+    reactionsUnsubscribe();
+
+  }
+
 
   const reactionsRef =
-    ref(db,`reactions/${user.uid}`);
+    ref(
+      db,
+      `reactions/${user.uid}`
+    );
+
 
   reactionsUnsubscribe =
     onValue(
       reactionsRef,
-      async snap=>{
+      async snap => {
 
-        const reactions =
+        const data =
           snap.val() || {};
 
-        const reactionEntries =
-          Object.entries(reactions)
-          .sort((a,b)=>
-            (b[1]?.createdAt || 0) -
-            (a[1]?.createdAt || 0)
+
+        for(
+          const reactionId
+          of Object.keys(data)
+        ){
+
+          if(incomingReactions[reactionId]){
+
+            continue;
+
+          }
+
+
+          const reaction =
+            data[reactionId];
+
+
+          incomingReactions[reactionId] =
+            true;
+
+
+          await playIncomingReaction(
+            reaction,
+            reactionId
           );
 
-
-        if(!reactionEntries.length){
-          return;
         }
-
-
-        const [reactionId,reaction] =
-          reactionEntries[0];
-
-
-        if(!reaction){
-          return;
-        }
-
-
-        if(currentReactionId === reactionId){
-          return;
-        }
-
-
-        currentReactionId = reactionId;
-
-
-        showFullscreenReaction(
-          reactionId,
-          reaction
-        );
 
       }
     );
@@ -1689,123 +1902,419 @@ function subscribeReactions(){
 }
 
 
-/* FULLSCREEN REACTION */
+/* =========================================
+   PLAY REACTION
+========================================= */
 
-function showFullscreenReaction(
-  reactionId,
-  reaction
+async function playIncomingReaction(
+  reaction,
+  reactionId
 ){
+
+  if(!reaction) return;
+
+
+  const emoji =
+    reaction.emoji || "❤️";
+
+
+  const count =
+    Math.max(
+      1,
+      Math.min(
+        20000,
+        Number(reaction.count) || 1
+      )
+    );
+
+
+  const fromName =
+    reaction.fromName ||
+    "Твой друг";
+
+
+  openPage("map");
+
+
+  createReactionExplosion({
+
+    emoji,
+
+    count,
+
+    fromName,
+
+    fromUid:
+      reaction.fromUid || ""
+
+  });
+
+
+  if(reactionId){
+
+    try{
+
+      await remove(
+        ref(
+          db,
+          `reactions/${user.uid}/${reactionId}`
+        )
+      );
+
+    }
+
+    catch(error){
+
+      console.error(
+        "Reaction cleanup error:",
+        error
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =========================================
+   VISUAL EXPLOSION
+========================================= */
+
+function createReactionExplosion({
+
+  emoji,
+  count,
+  fromName,
+  fromUid
+
+}){
 
   const overlay =
     $("reactionOverlay");
 
-  const sender =
-    reaction.sender || {};
 
-  $("reactionSenderName").textContent =
-    sender.name || "Друг";
-
-  $("reactionSenderAvatar").src =
-    avatarUrl(sender);
-
-  $("reactionEmoji").textContent =
-    reaction.emoji || "❤️";
+  overlay.innerHTML = "";
 
 
-  overlay.classList.remove("hidden");
+  const dark =
+    document.createElement("div");
+
+  dark.className =
+    "reaction-dark";
 
 
-  createReactionParticles(
-    reaction.emoji || "❤️"
-  );
+  overlay.appendChild(dark);
 
 
-  window.__reactionTimer =
-    setTimeout(()=>{
+  const topCounter =
+    document.createElement("div");
 
-      closeReaction(
-        reactionId
-      );
+  topCounter.className =
+    "reaction-counter-top";
 
-    },6500);
-
-}
+  topCounter.textContent =
+    `${emoji} × ${count.toLocaleString("ru-RU")}`;
 
 
-function createReactionParticles(emoji){
+  overlay.appendChild(topCounter);
 
-  const container =
-    $("reactionParticles");
 
-  container.innerHTML = "";
+  const center =
+    document.createElement("div");
 
-  for(let i=0;i<22;i++){
+  center.className =
+    "reaction-center";
+
+
+  center.innerHTML = `
+
+    <div class="reaction-big">
+      ${emoji}
+    </div>
+
+    <div class="reaction-title">
+      ${escapeHtml(fromName)}
+      отправил тебе реакцию
+    </div>
+
+    <div class="reaction-count">
+      ×${count.toLocaleString("ru-RU")}
+    </div>
+
+    <div class="reaction-subtitle">
+      Реакции разлетаются по карте ✨
+    </div>
+
+  `;
+
+
+  overlay.appendChild(center);
+
+
+  /*
+    Не создаём 20 000 DOM элементов.
+
+    Чем больше реакций — тем больше
+    визуальных частиц, максимум 420.
+  */
+
+  const particleCount =
+    Math.min(
+      420,
+      Math.max(
+        30,
+        Math.floor(
+          Math.sqrt(count)*4
+        )
+      )
+    );
+
+
+  for(
+    let i=0;
+    i<particleCount;
+    i++
+  ){
 
     const particle =
       document.createElement("div");
 
+
     particle.className =
       "reaction-particle";
 
-    particle.textContent =
-      emoji;
 
-    particle.style.left =
-      (45 + Math.random()*10) + "%";
+    particle.textContent = emoji;
 
-    particle.style.top =
-      (45 + Math.random()*10) + "%";
+
+    const angle =
+      Math.random()*Math.PI*2;
+
+
+    const distance =
+      30 +
+      Math.random()*
+      Math.max(
+        window.innerWidth,
+        window.innerHeight
+      )*.85;
+
+
+    const x =
+      Math.cos(angle)*
+      distance;
+
+
+    const y =
+      Math.sin(angle)*
+      distance;
+
+
+    const size =
+      18+
+      Math.random()*32;
+
+
+    const duration =
+      2.2+
+      Math.random()*2;
+
+
+    const delay =
+      Math.random()*.55;
+
 
     particle.style.setProperty(
       "--x",
-      `${(Math.random()-.5)*110}vw`
+      `${x}px`
     );
 
     particle.style.setProperty(
       "--y",
-      `${(Math.random()-.5)*110}vh`
+      `${y}px`
     );
 
-    particle.style.animationDelay =
-      `${Math.random()*.4}s`;
-
-    container.appendChild(
-      particle
+    particle.style.setProperty(
+      "--size",
+      `${size}px`
     );
 
-  }
+    particle.style.setProperty(
+      "--duration",
+      `${duration}s`
+    );
 
-}
+    particle.style.setProperty(
+      "--delay",
+      `${delay}s`
+    );
 
-
-async function closeReaction(reactionId){
-
-  clearTimeout(
-    window.__reactionTimer
-  );
-
-  $("reactionOverlay")
-    .classList
-    .add("hidden");
-
-  $("reactionParticles").innerHTML = "";
-
-  try{
-
-    await remove(
-      ref(
-        db,
-        `reactions/${user.uid}/${reactionId}`
+    particle.style.setProperty(
+      "--scale",
+      String(
+        .6+Math.random()*1.8
       )
     );
 
+    particle.style.setProperty(
+      "--rotate",
+      `${-360+Math.random()*720}deg`
+    );
+
+
+    overlay.appendChild(particle);
+
   }
 
-  catch(error){
 
-    console.error(
-      "Reaction remove error",
-      error
+  playMapReactionBurst(
+    emoji,
+    count,
+    fromUid
+  );
+
+
+  if(navigator.vibrate){
+
+    const vibration =
+      count >= 10000
+      ? [80,40,100,40,160]
+      : count >= 1000
+      ? [60,40,90]
+      : [50];
+
+
+    navigator.vibrate(vibration);
+
+  }
+
+
+  setTimeout(
+    () => {
+
+      overlay.innerHTML = "";
+
+    },
+    4800
+  );
+
+}
+
+
+/* =========================================
+   MAP BURST FROM FRIEND
+========================================= */
+
+function playMapReactionBurst(
+  emoji,
+  count,
+  fromUid
+){
+
+  if(!map) return;
+
+
+  let point = null;
+
+
+  if(
+    fromUid &&
+    friendMarkers.has(fromUid)
+  ){
+
+    const marker =
+      friendMarkers.get(fromUid);
+
+
+    const latlng =
+      marker.getLatLng();
+
+
+    point =
+      map.latLngToContainerPoint(
+        latlng
+      );
+
+  }
+
+
+  if(!point){
+
+    point = {
+      x:window.innerWidth/2,
+      y:window.innerHeight/2
+    };
+
+  }
+
+
+  const mapContainer =
+    $("map");
+
+
+  const visualCount =
+    Math.min(
+      45,
+      Math.max(
+        10,
+        Math.floor(
+          Math.log10(count+1)*12
+        )
+      )
+    );
+
+
+  for(
+    let i=0;
+    i<visualCount;
+    i++
+  ){
+
+    const item =
+      document.createElement("div");
+
+
+    item.className =
+      "reaction-map-burst";
+
+
+    item.textContent = emoji;
+
+
+    const spread =
+      30+
+      Math.random()*220;
+
+
+    const angle =
+      Math.random()*Math.PI*2;
+
+
+    item.style.left =
+      (
+        point.x +
+        Math.cos(angle)*spread
+      )+"px";
+
+
+    item.style.top =
+      (
+        point.y +
+        Math.sin(angle)*spread
+      )+"px";
+
+
+    item.style.animationDelay =
+      `${Math.random()*.5}s`;
+
+
+    mapContainer.appendChild(item);
+
+
+    setTimeout(
+      () => item.remove(),
+      2200
     );
 
   }
@@ -1813,20 +2322,9 @@ async function closeReaction(reactionId){
 }
 
 
-$("closeReactionBtn").onclick = ()=>{
-
-  if(currentReactionId){
-
-    closeReaction(
-      currentReactionId
-    );
-
-  }
-
-};
-
-
-/* FRIEND LOCATION */
+/* =========================================
+   FRIEND LOCATION
+========================================= */
 
 function subscribeFriendLocation(friendId){
 
@@ -1834,7 +2332,9 @@ function subscribeFriendLocation(friendId){
     friendLocationListeners
     .has(friendId)
   ){
+
     return;
+
   }
 
 
@@ -1848,7 +2348,7 @@ function subscribeFriendLocation(friendId){
   const unsubscribe =
     onValue(
       locationRef,
-      async snap=>{
+      async snap => {
 
         const location =
           snap.val();
@@ -1862,14 +2362,16 @@ function subscribeFriendLocation(friendId){
           );
 
           return;
+
         }
 
 
         const isStale =
-          Date.now() -
-          location.updatedAt
-          >
-          5 * 60 * 1000;
+          (
+            Date.now() -
+            location.updatedAt
+          ) >
+          5*60*1000;
 
 
         if(isStale){
@@ -1880,6 +2382,7 @@ function subscribeFriendLocation(friendId){
           );
 
           return;
+
         }
 
 
@@ -1893,7 +2396,9 @@ function subscribeFriendLocation(friendId){
 
 
         if(!profileSnap.exists()){
+
           return;
+
         }
 
 
@@ -1936,13 +2441,13 @@ function upsertFriendMarker(
     !Number.isFinite(lat) ||
     !Number.isFinite(lng)
   ){
+
     return;
+
   }
 
 
-  if(
-    !friendMarkers.has(friendId)
-  ){
+  if(!friendMarkers.has(friendId)){
 
     const marker =
       L.marker(
@@ -1950,16 +2455,32 @@ function upsertFriendMarker(
         {
           icon:
             markerIcon(friendProfile),
+
           zIndexOffset:500
         }
       ).addTo(map);
 
 
+    marker.bindPopup(
+      `
+      <b>
+        ${escapeHtml(
+          friendProfile.name || "Друг"
+        )}
+      </b>
+
+      <br>
+
+      Нажми, чтобы посмотреть
+      `
+    );
+
+
     marker.on(
       "click",
-      ()=>{
+      () => {
 
-        showFriendProfile(
+        openFriendReactionPanel(
           friendId
         );
 
@@ -1979,9 +2500,9 @@ function upsertFriendMarker(
     const marker =
       friendMarkers.get(friendId);
 
-    marker.setLatLng(
-      [lat,lng]
-    );
+
+    marker.setLatLng([lat,lng]);
+
 
     marker.setIcon(
       markerIcon(friendProfile)
@@ -2000,6 +2521,7 @@ function removeFriendMarker(
   const marker =
     friendMarkers.get(friendId);
 
+
   if(marker){
 
     map.removeLayer(marker);
@@ -2011,11 +2533,13 @@ function removeFriendMarker(
 
   if(
     unsubscribe &&
-    friendLocationListeners.has(friendId)
+    friendLocationListeners
+    .has(friendId)
   ){
 
     friendLocationListeners
       .get(friendId)();
+
 
     friendLocationListeners
       .delete(friendId);
@@ -2025,12 +2549,19 @@ function removeFriendMarker(
 }
 
 
-/* MY MARKER */
+/* =========================================
+   MY MARKER
+========================================= */
 
 function renderMeMarker(){
 
-  if(!lastPosition || !profile){
+  if(
+    !lastPosition ||
+    !profile
+  ){
+
     return;
+
   }
 
 
@@ -2047,13 +2578,16 @@ function renderMeMarker(){
         latlng,
         {
           icon:
-            markerIcon(
-              profile,
-              true
-            ),
+            markerIcon(profile,true),
+
           zIndexOffset:1000
         }
       ).addTo(map);
+
+
+    meMarker.bindPopup(
+      "<b>Ты</b><br>Это твоя геолокация"
+    );
 
   }
 
@@ -2062,10 +2596,7 @@ function renderMeMarker(){
     meMarker.setLatLng(latlng);
 
     meMarker.setIcon(
-      markerIcon(
-        profile,
-        true
-      )
+      markerIcon(profile,true)
     );
 
   }
@@ -2073,7 +2604,9 @@ function renderMeMarker(){
 }
 
 
-/* GEOLOCATION */
+/* =========================================
+   GEOLOCATION
+========================================= */
 
 function startLocation(){
 
@@ -2089,6 +2622,7 @@ function startLocation(){
     );
 
     return;
+
   }
 
 
@@ -2107,10 +2641,9 @@ function startLocation(){
 
 
   watchId =
-    navigator.geolocation
-    .watchPosition(
+    navigator.geolocation.watchPosition(
 
-      async pos=>{
+      async pos => {
 
         const {
           latitude,
@@ -2125,9 +2658,11 @@ function startLocation(){
 
           lng:longitude,
 
-          accuracy:accuracy || 0,
+          accuracy:
+            accuracy || 0,
 
-          updatedAt:Date.now()
+          updatedAt:
+            Date.now()
 
         };
 
@@ -2149,10 +2684,17 @@ function startLocation(){
               `locations/${user.uid}`
             ),
             {
+
               lat:latitude,
+
               lng:longitude,
-              accuracy:accuracy || 0,
-              updatedAt:Date.now()
+
+              accuracy:
+                accuracy || 0,
+
+              updatedAt:
+                Date.now()
+
             }
           );
 
@@ -2172,7 +2714,7 @@ function startLocation(){
       },
 
 
-      error=>{
+      error => {
 
         if(error.code === 1){
 
@@ -2214,28 +2756,39 @@ function startLocation(){
 }
 
 
-/* CLEANUP LOCATIONS */
+/* =========================================
+   CLEANUP
+========================================= */
 
 async function cleanupOldLocations(){
 
   try{
 
+    const locationsRef =
+      ref(db,"locations");
+
+
     const snapshot =
-      await get(
-        ref(db,"locations")
-      );
+      await get(locationsRef);
 
 
     if(!snapshot.exists()){
+
       return;
+
     }
 
 
     const locations =
       snapshot.val();
 
+
     const now =
       Date.now();
+
+
+    const staleThreshold =
+      10*60*1000;
 
 
     for(
@@ -2244,14 +2797,16 @@ async function cleanupOldLocations(){
     ){
 
       if(uid === user.uid){
+
         continue;
+
       }
 
 
       if(
-        now - location.updatedAt
-        >
-        10 * 60 * 1000
+        now -
+        location.updatedAt >
+        staleThreshold
       ){
 
         await remove(
@@ -2260,6 +2815,7 @@ async function cleanupOldLocations(){
             `locations/${uid}`
           )
         );
+
 
         removeFriendMarker(uid);
 
@@ -2281,12 +2837,15 @@ async function cleanupOldLocations(){
 }
 
 
-/* FRIENDS PAGE */
+/* =========================================
+   FRIENDS PAGE
+========================================= */
 
 function renderFriends(){
 
   const friendIds =
     Object.keys(friends);
+
 
   const requestIds =
     Object.keys(incomingRequests);
@@ -2295,10 +2854,13 @@ function renderFriends(){
   const requestsHtml =
     requestIds.length
 
-    ? requestIds.map(uid=>{
+    ?
+
+    requestIds.map(uid => {
 
       const req =
         incomingRequests[uid] || {};
+
 
       const p =
         req.profile || {};
@@ -2306,158 +2868,145 @@ function renderFriends(){
 
       return `
 
-      <div class="request">
+        <div class="request">
 
-        <img
-          class="avatar small"
-          src="${avatarUrl(p)}"
-        >
+          <img
+            class="avatar small"
+            src="${avatarUrl(p)}"
+          >
 
-        <div class="grow">
+          <div class="grow">
 
-          <b>
-            ${escapeHtml(
-              p.name || "Пользователь"
-            )}
-          </b>
+            <b>
+              ${escapeHtml(
+                p.name || "Пользователь"
+              )}
+            </b>
 
-          <div class="code">
-            Хочет добавить тебя в друзья
+            <div class="code">
+              Хочет добавить тебя в друзья
+            </div>
+
+          </div>
+
+          <div class="friend-actions">
+
+            <button
+              class="btn small"
+              onclick="acceptRequest('${uid}')"
+            >
+              ✓
+            </button>
+
+            <button
+              class="btn small secondary"
+              onclick="rejectRequest('${uid}')"
+            >
+              ×
+            </button>
+
           </div>
 
         </div>
-
-        <div class="friend-actions">
-
-          <button
-            class="btn small"
-            onclick="acceptRequest('${uid}')"
-          >
-            ✓
-          </button>
-
-          <button
-            class="btn small secondary"
-            onclick="rejectRequest('${uid}')"
-          >
-            ×
-          </button>
-
-        </div>
-
-      </div>
 
       `;
 
     }).join("")
 
-    : "";
+    :
+
+    "";
 
 
   const friendsHtml =
     friendIds.length
 
-    ? friendIds.map(uid=>{
+    ?
+
+    friendIds.map(uid => {
 
       const f =
         friends[uid] || {};
 
+
       const p =
         f.profile || {};
+
 
       const isOnline =
         friendMarkers.has(uid);
 
 
-      const lastReaction =
-        f.lastReaction;
-
-
       return `
 
-      <div
-        class="friend"
-        onclick="showFriendProfile('${uid}')"
-      >
+        <div class="friend">
 
-        <img
-          class="avatar small"
-          src="${avatarUrl(p)}"
-        >
+          <img
+            class="avatar small"
+            src="${avatarUrl(p)}"
+          >
 
-        <div class="grow">
+          <div class="grow">
 
-          <b>
-            ${escapeHtml(
-              p.name || "Друг"
-            )}
-          </b>
+            <b>
+              ${escapeHtml(
+                p.name || "Друг"
+              )}
+            </b>
 
-          <div class="code">
+            <div class="code">
 
-            #${escapeHtml(
-              p.friendCode || ""
-            )}
+              #${escapeHtml(
+                p.friendCode || ""
+              )}
 
-            <span
-              class="online-status ${
-                isOnline
-                ? "online"
-                : "offline"
-              }"
-            ></span>
+              <span
+                class="
+                  online-status
+                  ${isOnline ? "online" : "offline"}
+                "
+              ></span>
+
+            </div>
 
           </div>
 
-          ${
-            lastReaction
+          <div class="friend-actions">
 
-            ? `
+            <button
+              class="btn small"
+              onclick="openFriendReactionPanel('${uid}')"
+            >
+              Реакция
+            </button>
 
-              <div class="last-reaction">
+            <button
+              class="btn small secondary"
+              onclick="showFriendOnMap('${uid}')"
+            >
+              Карта
+            </button>
 
-                <span class="emoji">
-                  ${lastReaction.emoji || ""}
-                </span>
+            <button
+              class="btn small danger"
+              onclick="removeFriend('${uid}')"
+            >
+              ×
+            </button>
 
-                <span>
-                  Последняя реакция
-                </span>
-
-              </div>
-
-            `
-
-            : ""
-
-          }
-
-        </div>
-
-
-        <div class="friend-actions">
-
-          <button
-            class="btn small secondary"
-            onclick="
-              event.stopPropagation();
-              showFriendOnMap('${uid}')
-            "
-          >
-            Карта
-          </button>
+          </div>
 
         </div>
-
-      </div>
 
       `;
 
     }).join("")
 
-    : `
+    :
+
+    `
       <div class="empty">
-        Пока нет друзей.<br>
+        Пока нет друзей.
         Добавь кого-нибудь по коду!
       </div>
     `;
@@ -2473,7 +3022,6 @@ function renderFriends(){
     </button>
 
     <h2>Друзья</h2>
-
 
     <div class="field">
 
@@ -2503,28 +3051,26 @@ function renderFriends(){
     </div>
 
 
-    ${
-      requestsHtml
+    ${requestsHtml ? `
 
-      ? `
-        <div class="section-title">
-          Входящие заявки
-        </div>
+      <div class="section-title">
+        Входящие заявки
+      </div>
 
-        ${requestsHtml}
-      `
+      ${requestsHtml}
 
-      : ""
-
-    }
+    ` : ""}
 
 
     <div class="section-title">
       Мои друзья
     </div>
 
+
     <div>
+
       ${friendsHtml}
+
     </div>
 
   `);
@@ -2536,30 +3082,38 @@ function renderFriends(){
 }
 
 
-/* FRIEND PROFILE + REACTIONS */
+/* =========================================
+   REACTION PANEL
+========================================= */
 
-window.showFriendProfile =
-async function(friendUid){
+window.openFriendReactionPanel =
+function(friendUid){
 
   const friend =
-    friends[friendUid];
-
-  if(!friend){
-
-    toast(
-      "Друг не найден."
-    );
-
-    return;
-  }
+    friends[friendUid] || {};
 
 
-  const p =
+  const friendProfile =
     friend.profile || {};
 
 
-  const isOnline =
-    friendMarkers.has(friendUid);
+  selectedReaction = "❤️";
+
+
+  const choices =
+    REACTIONS.map(emoji => `
+
+      <button
+        class="
+          reaction-choice
+          ${emoji === selectedReaction ? "selected" : ""}
+        "
+        data-reaction="${emoji}"
+      >
+        ${emoji}
+      </button>
+
+    `).join("");
 
 
   openPanel(`
@@ -2572,187 +3126,215 @@ async function(friendUid){
     </button>
 
 
-    <img
-      class="friend-card-avatar"
-      src="${avatarUrl(p)}"
-    >
-
-
-    <div class="friend-card-name">
-      ${escapeHtml(
-        p.name || "Друг"
-      )}
-    </div>
-
-
-    <div class="friend-card-code">
-
-      #${escapeHtml(
-        p.friendCode || ""
-      )}
-
-    </div>
-
-
-    <div class="friend-status">
-
-      <span class="online-status ${
-        isOnline
-        ? "online"
-        : "offline"
-      }"></span>
-
-      ${
-        isOnline
-        ? " Сейчас на карте"
-        : " Сейчас офлайн"
-      }
-
-    </div>
-
-
-    <div class="reaction-title">
+    <h2>
       Отправить реакцию
+    </h2>
+
+
+    <div class="profile-head">
+
+      <img
+        class="avatar"
+        src="${avatarUrl(friendProfile)}"
+      >
+
+      <div>
+
+        <div class="name">
+          ${escapeHtml(
+            friendProfile.name || "Друг"
+          )}
+        </div>
+
+        <div class="code">
+          Реакция появится у друга
+          на весь экран
+        </div>
+
+      </div>
+
     </div>
 
 
-    <div class="reaction-grid">
+    <div class="section-title">
+      Выбери реакцию
+    </div>
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','❤️')"
-      >❤️</button>
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','😂')"
-      >😂</button>
+    <div
+      id="reactionPicker"
+      class="reaction-picker"
+    >
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','😭')"
-      >😭</button>
+      ${choices}
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','😡')"
-      >😡</button>
+    </div>
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','🔥')"
-      >🔥</button>
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','👍')"
-      >👍</button>
+    <div class="field">
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','🫂')"
-      >🫂</button>
+      <label>
+        Количество реакций
+        от 1 до 20 000
+      </label>
 
-      <button
-        class="reaction-btn"
-        onclick="sendReaction('${friendUid}','⚡')"
-      >⚡</button>
+      <input
+        id="reactionCount"
+        type="number"
+        min="1"
+        max="20000"
+        value="1"
+        inputmode="numeric"
+      >
+
+    </div>
+
+
+    <div class="reaction-info">
+
+      При большом количестве реакций
+      LINK не создаёт 20 000 отдельных элементов,
+      чтобы телефон не завис.
+
+      Вместо этого создаётся большой
+      визуальный взрыв частиц,
+      а настоящее количество
+      показывается на экране.
 
     </div>
 
 
     <button
-      class="btn full secondary"
-      onclick="showFriendOnMap('${friendUid}')"
+      id="sendReactionBtn"
+      class="btn full"
     >
-      📍 Показать на карте
-    </button>
-
-
-    <button
-      class="btn full danger"
-      onclick="removeFriend('${friendUid}')"
-    >
-      Удалить из друзей
+      Отправить реакцию
     </button>
 
   `);
 
+
+  document
+  .querySelectorAll(".reaction-choice")
+  .forEach(button => {
+
+    button.onclick = () => {
+
+      selectedReaction =
+        button.dataset.reaction;
+
+
+      document
+      .querySelectorAll(".reaction-choice")
+      .forEach(item => {
+
+        item.classList.toggle(
+          "selected",
+          item === button
+        );
+
+      });
+
+    };
+
+  });
+
+
+  $("sendReactionBtn").onclick =
+    () => sendReaction(friendUid);
+
 };
 
 
-/* SEND REACTION */
+/* =========================================
+   SEND REACTION
+========================================= */
 
-window.sendReaction =
-async function(friendUid,emoji){
+async function sendReaction(friendUid){
 
-  if(!friends[friendUid]){
+  const countInput =
+    $("reactionCount");
 
-    toast(
-      "Этот пользователь больше не в друзьях."
-    );
 
-    return;
+  let count =
+    Number(countInput.value);
+
+
+  if(!Number.isFinite(count)){
+
+    count = 1;
+
   }
+
+
+  count =
+    Math.floor(count);
+
+
+  if(count < 1){
+
+    count = 1;
+
+  }
+
+
+  if(count > 20000){
+
+    count = 20000;
+
+  }
+
+
+  countInput.value = count;
 
 
   const reactionId =
     `${Date.now()}_${Math.random()
       .toString(36)
-      .slice(2,8)}`;
+      .slice(2,9)}`;
 
 
-  const reaction = {
+  $("sendReactionBtn").disabled =
+    true;
 
-    emoji,
 
-    createdAt:Date.now(),
-
-    senderUid:user.uid,
-
-    sender:{
-
-      name:
-        profile.name ||
-        "Пользователь",
-
-      friendCode:
-        profile.friendCode ||
-        "",
-
-      avatar:
-        profile.avatar ||
-        ""
-
-    }
-
-  };
+  $("sendReactionBtn").textContent =
+    "Отправляем…";
 
 
   try{
 
-    await update(ref(db),{
+    await set(
 
-      [`reactions/${friendUid}/${reactionId}`]:
-        reaction,
+      ref(
+        db,
+        `reactions/${friendUid}/${reactionId}`
+      ),
 
-      [`friends/${friendUid}/${user.uid}/lastReaction`]:
-        {
-          emoji,
-          createdAt:Date.now()
-        },
+      {
 
-      [`friends/${user.uid}/${friendUid}/lastReactionSent`]:
-        {
-          emoji,
-          createdAt:Date.now()
-        }
+        emoji:
+          selectedReaction,
 
-    });
+        count,
+
+        fromUid:
+          user.uid,
+
+        fromName:
+          profile?.name ||
+          "Друг",
+
+        createdAt:
+          Date.now()
+
+      }
+
+    );
 
 
     toast(
-      `Реакция ${emoji} отправлена!`
+      `${selectedReaction} ×${count.toLocaleString("ru-RU")} отправлено!`
     );
 
 
@@ -2764,17 +3346,28 @@ async function(friendUid,emoji){
 
     console.error(error);
 
+
     toast(
-      "Не удалось отправить реакцию: " +
+      "Ошибка: " +
       friendlyError(error)
     );
 
+
+    $("sendReactionBtn").disabled =
+      false;
+
+
+    $("sendReactionBtn").textContent =
+      "Отправить реакцию";
+
   }
 
-};
+}
 
 
-/* SEND FRIEND REQUEST */
+/* =========================================
+   FRIEND REQUEST SEND
+========================================= */
 
 async function sendFriendRequest(){
 
@@ -2785,16 +3378,16 @@ async function sendFriendRequest(){
     .slice(0,4);
 
 
-  $("friendCodeInput").value = code;
+  $("friendCodeInput").value =
+    code;
 
 
   if(!/^\d{4}$/.test(code)){
 
-    toast(
-      "Введи 4 цифры."
-    );
+    toast("Введи 4 цифры.");
 
     return;
+
   }
 
 
@@ -2816,6 +3409,7 @@ async function sendFriendRequest(){
       );
 
       return;
+
     }
 
 
@@ -2830,16 +3424,39 @@ async function sendFriendRequest(){
       );
 
       return;
+
     }
 
 
-    const friendSnap =
-      await get(
-        ref(
-          db,
-          `friends/${user.uid}/${targetUid}`
+    const [
+      friendSnap,
+      outgoingSnap,
+      incomingSnap
+    ] =
+      await Promise.all([
+
+        get(
+          ref(
+            db,
+            `friends/${user.uid}/${targetUid}`
+          )
+        ),
+
+        get(
+          ref(
+            db,
+            `friendRequests/${targetUid}/${user.uid}`
+          )
+        ),
+
+        get(
+          ref(
+            db,
+            `friendRequests/${user.uid}/${targetUid}`
+          )
         )
-      );
+
+      ]);
 
 
     if(friendSnap.exists()){
@@ -2849,19 +3466,46 @@ async function sendFriendRequest(){
       );
 
       return;
+
+    }
+
+
+    if(outgoingSnap.exists()){
+
+      toast(
+        "Заявка уже отправлена."
+      );
+
+      return;
+
+    }
+
+
+    if(incomingSnap.exists()){
+
+      toast(
+        "У тебя уже есть заявка от этого пользователя."
+      );
+
+      return;
+
     }
 
 
     await set(
+
       ref(
         db,
         `friendRequests/${targetUid}/${user.uid}`
       ),
+
       {
 
-        fromUid:user.uid,
+        fromUid:
+          user.uid,
 
-        createdAt:Date.now(),
+        createdAt:
+          Date.now(),
 
         profile:{
 
@@ -2880,10 +3524,13 @@ async function sendFriendRequest(){
         }
 
       }
+
     );
 
 
-    $("friendCodeInput").value = "";
+    $("friendCodeInput").value =
+      "";
+
 
     toast(
       "Заявка в друзья отправлена ✨"
@@ -2905,7 +3552,9 @@ async function sendFriendRequest(){
 }
 
 
-/* ACCEPT REQUEST */
+/* =========================================
+   ACCEPT REQUEST
+========================================= */
 
 window.acceptRequest =
 async function(fromUid){
@@ -2913,9 +3562,8 @@ async function(fromUid){
   const req =
     incomingRequests[fromUid];
 
-  if(!req){
-    return;
-  }
+
+  if(!req) return;
 
 
   const fromProfile =
@@ -2941,35 +3589,38 @@ async function(fromUid){
 
   try{
 
-    await update(ref(db),{
+    await update(
+      ref(db),
+      {
 
-      [`friends/${user.uid}/${fromUid}`]:{
+        [`friends/${user.uid}/${fromUid}`]:{
 
-        since:Date.now(),
+          since:Date.now(),
 
-        profile:fromProfile
+          profile:
+            fromProfile
 
-      },
-
-
-      [`friends/${fromUid}/${user.uid}`]:{
-
-        since:Date.now(),
-
-        profile:myProfile
-
-      },
+        },
 
 
-      [`friendRequests/${user.uid}/${fromUid}`]:
-        null
+        [`friends/${fromUid}/${user.uid}`]:{
 
-    });
+          since:Date.now(),
+
+          profile:
+            myProfile
+
+        },
 
 
-    toast(
-      "Друг добавлен 🎉"
+        [`friendRequests/${user.uid}/${fromUid}`]:
+          null
+
+      }
     );
+
+
+    toast("Друг добавлен 🎉");
 
   }
 
@@ -2987,7 +3638,9 @@ async function(fromUid){
 };
 
 
-/* REJECT */
+/* =========================================
+   REJECT REQUEST
+========================================= */
 
 window.rejectRequest =
 async function(fromUid){
@@ -2995,11 +3648,14 @@ async function(fromUid){
   try{
 
     await remove(
+
       ref(
         db,
         `friendRequests/${user.uid}/${fromUid}`
       )
+
     );
+
 
     toast(
       "Заявка отклонена."
@@ -3019,34 +3675,39 @@ async function(fromUid){
 };
 
 
-/* REMOVE FRIEND */
+/* =========================================
+   REMOVE FRIEND
+========================================= */
 
 window.removeFriend =
 async function(friendUid){
 
-  if(!confirm(
-    "Удалить этого друга?"
-  )){
+  if(
+    !confirm(
+      "Удалить этого друга?"
+    )
+  ){
+
     return;
+
   }
 
 
   try{
 
-    await update(ref(db),{
+    await update(
+      ref(db),
+      {
 
-      [`friends/${user.uid}/${friendUid}`]:
-        null,
+        [`friends/${user.uid}/${friendUid}`]:
+          null,
 
-      [`friends/${friendUid}/${user.uid}`]:
-        null
+        [`friends/${friendUid}/${user.uid}`]:
+          null
 
-    });
+      }
+    );
 
-
-    removeFriendMarker(friendUid);
-
-    closePanel();
 
     toast(
       "Друг удалён."
@@ -3066,7 +3727,9 @@ async function(friendUid){
 };
 
 
-/* SHOW FRIEND ON MAP */
+/* =========================================
+   SHOW FRIEND ON MAP
+========================================= */
 
 window.showFriendOnMap =
 async function(friendUid){
@@ -3089,6 +3752,7 @@ async function(friendUid){
       );
 
       return;
+
     }
 
 
@@ -3097,8 +3761,13 @@ async function(friendUid){
 
 
     if(
-      !Number.isFinite(Number(loc.lat)) ||
-      !Number.isFinite(Number(loc.lng))
+      !Number.isFinite(
+        Number(loc.lat)
+      )
+      ||
+      !Number.isFinite(
+        Number(loc.lng)
+      )
     ){
 
       toast(
@@ -3106,6 +3775,7 @@ async function(friendUid){
       );
 
       return;
+
     }
 
 
@@ -3147,7 +3817,9 @@ async function(friendUid){
 };
 
 
-/* PROFILE PAGE */
+/* =========================================
+   PROFILE PAGE
+========================================= */
 
 function renderProfile(){
 
@@ -3159,6 +3831,7 @@ function renderProfile(){
     >
       ×
     </button>
+
 
     <h2>Профиль</h2>
 
@@ -3175,10 +3848,12 @@ function renderProfile(){
       <div>
 
         <div class="name">
+
           ${escapeHtml(
             profile.name ||
             "Пользователь"
           )}
+
         </div>
 
 
@@ -3188,7 +3863,8 @@ function renderProfile(){
 
           <b>
             ${escapeHtml(
-              profile.friendCode || ""
+              profile.friendCode ||
+              ""
             )}
           </b>
 
@@ -3201,9 +3877,12 @@ function renderProfile(){
 
     <div class="upload">
 
-      <button class="btn full secondary">
+      <button
+        class="btn full secondary"
+      >
         📷 Выбрать фотографию
       </button>
+
 
       <input
         id="avatarInput"
@@ -3215,7 +3894,10 @@ function renderProfile(){
 
 
     <div class="note">
-      Фото автоматически уменьшается перед сохранением.
+
+      Фото автоматически уменьшается
+      перед сохранением.
+
     </div>
 
 
@@ -3247,6 +3929,7 @@ function renderProfile(){
   $("saveProfileBtn").onclick =
     saveProfile;
 
+
   $("avatarInput").onchange =
     uploadAvatar;
 
@@ -3263,11 +3946,10 @@ async function saveProfile(){
 
   if(!name){
 
-    toast(
-      "Введите имя."
-    );
+    toast("Введите имя.");
 
     return;
+
   }
 
 
@@ -3285,30 +3967,6 @@ async function saveProfile(){
 
 
     profile.name = name;
-
-
-    /* Обновляем информацию о себе у друзей */
-
-    const updates = {};
-
-    Object.keys(friends)
-    .forEach(friendUid=>{
-
-      updates[
-        `friends/${friendUid}/${user.uid}/profile/name`
-      ] = name;
-
-    });
-
-
-    if(Object.keys(updates).length){
-
-      await update(
-        ref(db),
-        updates
-      );
-
-    }
 
 
     toast(
@@ -3329,35 +3987,43 @@ async function saveProfile(){
 }
 
 
-/* AVATAR */
+/* =========================================
+   AVATAR UPLOAD
+========================================= */
 
 async function uploadAvatar(event){
 
   const file =
     event.target.files?.[0];
 
-  if(!file){
-    return;
-  }
+
+  if(!file) return;
 
 
-  if(!file.type.startsWith("image/")){
+  if(
+    !file.type.startsWith("image/")
+  ){
 
     toast(
       "Выбери изображение."
     );
 
     return;
+
   }
 
 
-  if(file.size > 8 * 1024 * 1024){
+  if(
+    file.size >
+    8*1024*1024
+  ){
 
     toast(
       "Фото должно быть меньше 8 МБ."
     );
 
     return;
+
   }
 
 
@@ -3387,29 +4053,8 @@ async function uploadAvatar(event){
     );
 
 
-    profile.avatar = avatar;
-
-
-    const updates = {};
-
-    Object.keys(friends)
-    .forEach(friendUid=>{
-
-      updates[
-        `friends/${friendUid}/${user.uid}/profile/avatar`
-      ] = avatar;
-
-    });
-
-
-    if(Object.keys(updates).length){
-
-      await update(
-        ref(db),
-        updates
-      );
-
-    }
+    profile.avatar =
+      avatar;
 
 
     $("profileAvatar").src =
@@ -3445,19 +4090,19 @@ function compressImage(
 ){
 
   return new Promise(
-    (resolve,reject)=>{
+    (resolve,reject) => {
 
       const reader =
         new FileReader();
 
 
-      reader.onload = ()=>{
+      reader.onload = () => {
 
         const img =
           new Image();
 
 
-        img.onload = ()=>{
+        img.onload = () => {
 
           const scale =
             Math.min(
@@ -3474,7 +4119,7 @@ function compressImage(
             Math.max(
               1,
               Math.round(
-                img.width * scale
+                img.width*scale
               )
             );
 
@@ -3483,18 +4128,22 @@ function compressImage(
             Math.max(
               1,
               Math.round(
-                img.height * scale
+                img.height*scale
               )
             );
 
 
           const canvas =
-            document.createElement("canvas");
+            document.createElement(
+              "canvas"
+            );
 
 
-          canvas.width = width;
+          canvas.width =
+            width;
 
-          canvas.height = height;
+          canvas.height =
+            height;
 
 
           const ctx =
@@ -3520,14 +4169,19 @@ function compressImage(
         };
 
 
-        img.onerror = reject;
+        img.onerror =
+          reject;
 
-        img.src = reader.result;
+
+        img.src =
+          reader.result;
 
       };
 
 
-      reader.onerror = reject;
+      reader.onerror =
+        reject;
+
 
       reader.readAsDataURL(file);
 
@@ -3537,7 +4191,9 @@ function compressImage(
 }
 
 
-/* SETTINGS */
+/* =========================================
+   SETTINGS
+========================================= */
 
 function renderSettings(){
 
@@ -3549,6 +4205,7 @@ function renderSettings(){
     >
       ×
     </button>
+
 
     <h2>Настройки</h2>
 
@@ -3565,7 +4222,10 @@ function renderSettings(){
         </b>
 
         <div class="code">
-          Твои друзья смогут видеть тебя на карте.
+
+          Твои друзья смогут
+          видеть тебя на карте.
+
         </div>
 
       </div>
@@ -3573,11 +4233,10 @@ function renderSettings(){
 
       <button
         id="locationToggle"
-        class="toggle ${
-          locationSharing
-          ? "on"
-          : ""
-        }"
+        class="
+          toggle
+          ${locationSharing ? "on" : ""}
+        "
       >
         <i></i>
       </button>
@@ -3601,6 +4260,15 @@ function renderSettings(){
       🗑️ Удалить аккаунт
     </button>
 
+
+    <div class="note">
+
+      Удаление аккаунта удалит
+      профиль, геолокацию,
+      друзей и входящие реакции.
+
+    </div>
+
   `);
 
 
@@ -3609,7 +4277,7 @@ function renderSettings(){
 
 
   $("deleteLocationBtn").onclick =
-    async ()=>{
+    async () => {
 
       await remove(
         ref(
@@ -3617,6 +4285,7 @@ function renderSettings(){
           `locations/${user.uid}`
         )
       );
+
 
       toast(
         "Текущая геолокация удалена."
@@ -3707,6 +4376,7 @@ async function toggleLocation(){
     locationSharing =
       !locationSharing;
 
+
     toast(
       "Ошибка: " +
       friendlyError(error)
@@ -3717,14 +4387,31 @@ async function toggleLocation(){
 }
 
 
-/* DELETE ACCOUNT */
+/* =========================================
+   DELETE ACCOUNT
+========================================= */
 
 async function deleteAccount(){
 
-  if(!confirm(
-    "Точно удалить аккаунт? Все данные будут потеряны!"
-  )){
+  if(
+    !confirm(
+      "Точно удалить аккаунт?"
+    )
+  ){
+
     return;
+
+  }
+
+
+  if(
+    !confirm(
+      "Последний раз: удалить аккаунт?"
+    )
+  ){
+
+    return;
+
   }
 
 
@@ -3789,13 +4476,14 @@ async function deleteAccount(){
 
     await user.delete();
 
+
     toast(
       "Аккаунт удалён."
     );
 
 
     setTimeout(
-      ()=>location.reload(),
+      () => location.reload(),
       1000
     );
 
@@ -3815,12 +4503,15 @@ async function deleteAccount(){
 }
 
 
-/* ERRORS */
+/* =========================================
+   ERRORS
+========================================= */
 
 function friendlyError(error){
 
   const code =
     error?.code || "";
+
 
   const message =
     error?.message ||
@@ -3836,7 +4527,8 @@ function friendlyError(error){
     )
   ){
 
-    return "В Firebase не включена Anonymous Authentication.";
+    return
+      "В Firebase не включена Anonymous Authentication.";
 
   }
 
@@ -3847,7 +4539,8 @@ function friendlyError(error){
     )
   ){
 
-    return "Firebase Database отклонил доступ. Проверь Rules.";
+    return
+      "Firebase Database отклонил доступ. Проверь Rules.";
 
   }
 
@@ -3858,18 +4551,8 @@ function friendlyError(error){
     )
   ){
 
-    return "Нет подключения к интернету.";
-
-  }
-
-
-  if(
-    code.includes(
-      "auth/requires-recent-login"
-    )
-  ){
-
-    return "Требуется повторный вход.";
+    return
+      "Нет подключения к интернету.";
 
   }
 
@@ -3879,15 +4562,18 @@ function friendlyError(error){
 }
 
 
-/* INTERNET */
+/* =========================================
+   INTERNET EVENTS
+========================================= */
 
 window.addEventListener(
   "online",
-  ()=>{
+  () => {
 
     toast(
       "Интернет восстановлен."
     );
+
 
     setStatus(
       "Соединение восстановлено",
@@ -3897,7 +4583,7 @@ window.addEventListener(
 
     if(
       locationSharing &&
-      watchId === null
+      !watchId
     ){
 
       startLocation();
@@ -3910,26 +4596,29 @@ window.addEventListener(
 
 window.addEventListener(
   "offline",
-  ()=>{
+  () => {
 
     setStatus(
       "Нет интернета",
       false
     );
 
+
     toast(
-      "Потеряно соединение с интернетом."
+      "Потеряно соединение."
     );
 
   }
 );
 
 
-/* CLEANUP */
+/* =========================================
+   CLEANUP
+========================================= */
 
 window.addEventListener(
   "beforeunload",
-  ()=>{
+  () => {
 
     if(watchId !== null){
 
@@ -3947,22 +4636,13 @@ window.addEventListener(
 
     }
 
-
-    friendLocationListeners
-    .forEach(unsubscribe=>{
-
-      try{
-        unsubscribe();
-      }
-      catch(e){}
-
-    });
-
   }
 );
 
 
-/* START */
+/* =========================================
+   START
+========================================= */
 
 initMap();
 
